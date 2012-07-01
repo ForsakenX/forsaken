@@ -7,7 +7,7 @@
 CC=gcc
 
 # general compiler settings
-FLAGS= -m32 -pipe
+FLAGS= -m32 -std=gnu99 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
 LDFLAGS=$(FLAGS)
 

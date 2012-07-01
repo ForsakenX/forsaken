@@ -27,23 +27,23 @@
 /*===================================================================
 		Externals...	
 ===================================================================*/
-extern	BOOL	ShowPlaneRGB;
+extern	_Bool	ShowPlaneRGB;
 extern	float	WhiteOut;
-extern	uint16	NumGroupsVisible;
-extern	uint16	GroupsVisible[MAXGROUPS];
-extern	int16	ShowPortal;
+extern	u_int16_t	NumGroupsVisible;
+extern	u_int16_t	GroupsVisible[MAXGROUPS];
+extern	int16_t	ShowPortal;
 
 extern	int		NumOfVertsConsidered;
 extern	int		NumOfVertsTouched;
 
 extern	float	framelag;
 extern	float	SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	uint16	GroupWaterInfo[MAXGROUPS];
+extern	u_int16_t	GroupWaterInfo[MAXGROUPS];
 extern	float	GroupWaterLevel[MAXGROUPS];
 extern	float	GroupWaterIntensity_Red[MAXGROUPS];
 extern	float	GroupWaterIntensity_Green[MAXGROUPS];
 extern	float	GroupWaterIntensity_Blue[MAXGROUPS];
-extern BOOL	BrightShips;
+extern _Bool	BrightShips;
 
 extern	CAMERA	CurrentCamera;
 void PrintInitViewStatus( BYTE Status );
@@ -65,8 +65,8 @@ COLOR GroupColours[ 8 ] = {
 
 XLIGHT * FirstLightVisible = NULL;
 XLIGHT	XLights[MAXXLIGHTS];
-uint16	FirstXLightUsed;
-uint16	FirstXLightFree;
+u_int16_t	FirstXLightUsed;
+u_int16_t	FirstXLightFree;
 
 WORD	status;		
 DWORD	chop_status;		
@@ -105,56 +105,56 @@ __asm
 ===================================================================*/
 void	InitXLights()
 {
-	uint16	i;
-	FirstXLightUsed = (uint16) -1;
+	u_int16_t	i;
+	FirstXLightUsed = (u_int16_t) -1;
 	FirstXLightFree = 0;
 	for( i = 0 ; i < MAXXLIGHTS ; i++ )
 	{
 		XLights[i].Index = i;
 		XLights[i].Next = i + 1;
-		XLights[i].Prev = (uint16) -1;
+		XLights[i].Prev = (u_int16_t) -1;
 		XLights[i].Type = POINT_LIGHT;
 	}
 
-	XLights[MAXXLIGHTS-1].Next = (uint16) -1;
+	XLights[MAXXLIGHTS-1].Next = (u_int16_t) -1;
 }
 /*===================================================================
 	Procedure	:	Find a free light and move it from the free list to
 					the used list
 	Input		:	nothing
-	Output		:	uint16 number of light free....
+	Output		:	u_int16_t number of light free....
 ===================================================================*/
-uint16	FindFreeXLight()
+u_int16_t	FindFreeXLight()
 {
-	uint16 i;
+	u_int16_t i;
 
 	i = FirstXLightFree;
 	
-	if ( i == (uint16) -1)
+	if ( i == (u_int16_t) -1)
 		return i;
  
 	XLights[i].Prev = FirstXLightUsed;
-	if ( FirstXLightUsed != (uint16) -1)
+	if ( FirstXLightUsed != (u_int16_t) -1)
 	{
 		XLights[FirstXLightUsed].Next = i;
 	}
 	FirstXLightUsed = i;
 	FirstXLightFree = XLights[i].Next;
 	XLights[i].Type = POINT_LIGHT;
-	XLights[i].Visible = TRUE;
+	XLights[i].Visible = true;
 
 	return i ;
 }
 /*===================================================================
 	Procedure	:	Kill a used light and move it from the used list to
 					the free list
-	Input		:	uint16 number of light free....
+	Input		:	u_int16_t number of light free....
 	Output		:	nothing
 ===================================================================*/
-void	KillUsedXLight( uint16 light )
+void	KillUsedXLight( u_int16_t light )
 {
-	uint16	its_prev;
-	uint16	its_next;
+	u_int16_t	its_prev;
+	u_int16_t	its_next;
 	
 	its_prev = XLights[light].Prev;
 	its_next = XLights[light].Next;
@@ -162,13 +162,13 @@ void	KillUsedXLight( uint16 light )
 	if ( light == FirstXLightUsed )
 		FirstXLightUsed = XLights[light].Prev;
 
-	if( its_prev != (uint16) -1)
+	if( its_prev != (u_int16_t) -1)
 		XLights[its_prev].Next = its_next;
 
-	if( its_next != (uint16) -1)
+	if( its_next != (u_int16_t) -1)
 		XLights[its_next].Prev = its_prev;
 
-	XLights[light].Prev = (uint16) -1;
+	XLights[light].Prev = (u_int16_t) -1;
 	XLights[light].Next = FirstXLightFree;
 	FirstXLightFree	= light;
 }
@@ -179,13 +179,13 @@ void	KillUsedXLight( uint16 light )
 	Input		:	nothing
 	Output		:	nothing
 ===================================================================*/
-BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
+_Bool	ProcessXLights( MLOADHEADER * Mloadheader )
 {
-	uint16	light;
-	uint16	oldlight;
+	u_int16_t	light;
+	u_int16_t	oldlight;
 
 	light = FirstXLightUsed;
-	while( light != (uint16 ) -1 )
+	while( light != (u_int16_t ) -1 )
 	{
 		oldlight = XLights[light].Prev;
 
@@ -207,7 +207,7 @@ BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
 		light = oldlight;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -217,7 +217,7 @@ BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
 *		cause a light to go red and get smaller then die...
 ===================================================================*/
 
-void SetLightDie ( uint16 light )
+void SetLightDie ( u_int16_t light )
 {				
 	XLights[light].SizeCount = 50.0F;
 	XLights[light].ColorCount = 2.0F;
@@ -233,7 +233,7 @@ void SetLightDie ( uint16 light )
 float	cral = 0.0F;
 
 
-BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
+_Bool	XLight1Group( MLOADHEADER * Mloadheader, u_int16_t group )
 {
 	XLIGHT * XLightPnt;
 	float	blf;
@@ -249,8 +249,8 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	LPLVERTEX	lpLVERTEX2 = NULL;
 	COLOR col;
 	VERTEXCELL * VertexCellPnt;
-	uint16 * VertexIndexPnt;
-	uint16 * OrgVertexIndexPnt;
+	u_int16_t * VertexIndexPnt;
+	u_int16_t * OrgVertexIndexPnt;
 	int	Cell;
 	int	CellIndex_x;
 	int	CellIndex_y;
@@ -273,23 +273,23 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	float	Cosa,CosArc = 0.0f;
 	float	rlen;
 	float	intense;
-	uint32	tempiR;
-	uint32	tempiG;
-	uint32	tempiB;
-	uint32	tempiA;
+	u_int32_t	tempiR;
+	u_int32_t	tempiG;
+	u_int32_t	tempiB;
+	u_int32_t	tempiA;
 	float	centerx;  
 	float	centery;  
 	float	centerz;  
 	float	half_sizex;
 	float	half_sizey;
 	float	half_sizez;
-	uint32 inc;
-	uint32 carry;
-	uint32 clamp;
-	uint32 r,g,b,intWhiteOut;
+	u_int32_t inc;
+	u_int32_t carry;
+	u_int32_t clamp;
+	u_int32_t r,g,b,intWhiteOut;
 	POLYANIM * PolyAnim;
 	int i,e;
-	uint32 * uint32Pnt;
+	u_int32_t * u_int32Pnt;
 	TANIMUV * TanimUV;
 	float	intensity;
 
@@ -312,7 +312,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 		render_lighting_env_water_green = GroupWaterIntensity_Green[group];
 		render_lighting_env_water_blue= GroupWaterIntensity_Blue[group];
 	}
-	return TRUE;
+	return true;
 #endif
 
 	intWhiteOut = (int)WhiteOut;
@@ -328,7 +328,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	{
 		if (!(FSLockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 		{
-			return FALSE;
+			return false;
 		}	
 
 //		lpPointer = (LPLVERTEX) debDesc.lpData;
@@ -352,11 +352,11 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 				{
 					// something has changed....
 
-					uint32Pnt = (uint32*)PolyAnim->vert;
+					u_int32Pnt = (u_int32_t*)PolyAnim->vert;
 					for( e = 0 ; e < PolyAnim->vertices ; e++ )
 					{
 
-						lpLVERTEX = lpPointer+ *uint32Pnt++;
+						lpLVERTEX = lpPointer+ *u_int32Pnt++;
 						TanimUV = PolyAnim->UVs;
 						TanimUV += e + (PolyAnim->vertices * PolyAnim->newframe);
 						lpLVERTEX->tu = TanimUV->u;
@@ -812,7 +812,7 @@ __asm
 								Celly = CellIndex_y;
 								while( Celly <= CellRange_y )
 								{
-									Cell = (uint16) ( CellIndex_x + NumOfxCells *
+									Cell = (u_int16_t) ( CellIndex_x + NumOfxCells *
 										            ( Celly + NumOfyCells *
 										              Cellz ) );
 									Cellx = CellRange_x - CellIndex_x + 1;
@@ -904,10 +904,10 @@ __asm
 		}
 		/*	unlock the execute buffer	*/
 		if(!FSUnlockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf]))
-			return FALSE;
+			return false;
 	}
 	
-	return TRUE;
+	return true;
 }
 
 
@@ -917,7 +917,7 @@ __asm
 	Input		:	nothing
 	Output		:	nothing
 ===================================================================*/
-BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
+_Bool	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
 	VECTOR	Temp;
@@ -942,9 +942,9 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 	int	tempiG;
 	int	tempiB;
 	int	tempiA;
-	uint32 inc;
-	uint32 carry;
-	uint32 clamp;
+	u_int32_t inc;
+	u_int32_t carry;
+	u_int32_t clamp;
 	float	blf;
 	float	glf;
 	float	rlf;
@@ -952,7 +952,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 #ifdef NEW_LIGHTING
 	render_lighting_enabled = 1;
 	render_lighting_point_lights_only = 0;
-	return TRUE;
+	return true;
 #endif
 
 	group = MXloadheader->num_groups;
@@ -964,7 +964,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 		{
 			if (!(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
-				return FALSE;
+				return false;
 			}
 
 //			lpPointer = (LPLVERTEX) debDesc.lpData;
@@ -1134,22 +1134,22 @@ PLOP:
 			}
 			/*	unlock the execute buffer	*/
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-//				return FALSE;
+//				return false;
 			if (!(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
 	
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:	Xlight Mxloadheader...
 	Input		:	nothing
 	Output		:	nothing
 ===================================================================*/
-BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
+_Bool	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
 	VECTOR	Temp;
@@ -1174,9 +1174,9 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 	int	tempiG;
 	int	tempiB;
 	int	tempiA;
-	uint32 inc;
-	uint32 carry;
-	uint32 clamp;
+	u_int32_t inc;
+	u_int32_t carry;
+	u_int32_t clamp;
 	float	blf;
 	float	glf;
 	float	rlf;
@@ -1184,7 +1184,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 #ifdef NEW_LIGHTING
 	render_lighting_enabled = 1;
 	render_lighting_point_lights_only = 0;
-	return TRUE;
+	return true;
 #endif
 
 	group = MXloadheader->num_groups;
@@ -1196,7 +1196,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 		{
 			if (!(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
-				return FALSE;
+				return false;
 			}
 		
 			lpLVERTEX = lpPointer;
@@ -1363,15 +1363,15 @@ PLOP2:
 			}
 			/*	unlock the execute buffer	*/
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-//				return FALSE;
+//				return false;
 			if (!(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
 	
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -1380,7 +1380,7 @@ PLOP2:
 	Output		:	COLOR
 ===================================================================*/
 extern  BYTE          MyGameStatus;
-COLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group )
+COLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, u_int16_t group )
 {
 	COLOR Col;
 	COLOR * colpnt;
@@ -1463,7 +1463,7 @@ COLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 grou
 	Input		:	Group the Current camera is in..
 	Output		:	nothing
 ===================================================================*/
-void BuildVisibleLightList( uint16 Group )
+void BuildVisibleLightList( u_int16_t Group )
 {
 	int		light;
 	XLIGHT * XLightPnt;
@@ -1471,11 +1471,11 @@ void BuildVisibleLightList( uint16 Group )
 	light = FirstXLightUsed;
 	FirstLightVisible = NULL;
 
-	while( light != (uint16 ) -1 )
+	while( light != (u_int16_t ) -1 )
 	{
 		XLightPnt = &XLights[light];
 
-		if( (Group == (uint16) -1) || (XLightPnt->Visible && VisibleOverlap( Group, XLightPnt->Group , NULL ) ) )
+		if( (Group == (u_int16_t) -1) || (XLightPnt->Visible && VisibleOverlap( Group, XLightPnt->Group , NULL ) ) )
 		{
 			XLightPnt->NextVisible = FirstLightVisible;
 			FirstLightVisible = XLightPnt;
@@ -1492,32 +1492,32 @@ void BuildVisibleLightList( uint16 Group )
 FILE * SaveXLights( FILE * fp )
 {
 	int		i;
-	uint16	TempIndex = (uint16) -1;
+	u_int16_t	TempIndex = (u_int16_t) -1;
 
 	if( fp )
 	{
-		fwrite( &FirstXLightUsed, sizeof( uint16 ), 1, fp );
-		fwrite( &FirstXLightFree, sizeof( uint16 ), 1, fp );
-		if( FirstLightVisible  ) fwrite( &FirstLightVisible->Index, sizeof( uint16 ), 1, fp );
-		else fwrite( &TempIndex, sizeof( uint16 ), 1, fp );
+		fwrite( &FirstXLightUsed, sizeof( u_int16_t ), 1, fp );
+		fwrite( &FirstXLightFree, sizeof( u_int16_t ), 1, fp );
+		if( FirstLightVisible  ) fwrite( &FirstLightVisible->Index, sizeof( u_int16_t ), 1, fp );
+		else fwrite( &TempIndex, sizeof( u_int16_t ), 1, fp );
 		
 		for( i = 0; i < MAXXLIGHTS; i++ )
 		{
 			fwrite( &XLights[ i ].Type, sizeof( int ), 1, fp );
-			fwrite( &XLights[ i ].Visible, sizeof( BOOL ), 1, fp );
+			fwrite( &XLights[ i ].Visible, sizeof( _Bool ), 1, fp );
 			fwrite( &XLights[ i ].r, sizeof( float ), 1, fp );
 			fwrite( &XLights[ i ].g, sizeof( float ), 1, fp );
 			fwrite( &XLights[ i ].b, sizeof( float ), 1, fp );
 			fwrite( &XLights[ i ].Size, sizeof( float ), 1, fp );
 			fwrite( &XLights[ i ].SizeCount, sizeof( float ), 1, fp );
 			fwrite( &XLights[ i ].CosArc, sizeof( float ), 1, fp );
-			fwrite( &XLights[ i ].Next, sizeof( uint16 ), 1, fp );
-			fwrite( &XLights[ i ].Prev, sizeof( uint16 ), 1, fp );
+			fwrite( &XLights[ i ].Next, sizeof( u_int16_t ), 1, fp );
+			fwrite( &XLights[ i ].Prev, sizeof( u_int16_t ), 1, fp );
 			fwrite( &XLights[ i ].Pos, sizeof( VECTOR ), 1, fp );
 			fwrite( &XLights[ i ].Dir, sizeof( VECTOR ), 1, fp );
-			fwrite( &XLights[ i ].Group, sizeof( uint16 ), 1, fp );
-			if( XLights[ i ].NextVisible ) fwrite( &XLights[ i ].NextVisible->Index, sizeof( uint16 ), 1, fp );
-			else fwrite( &TempIndex, sizeof( uint16 ), 1, fp );
+			fwrite( &XLights[ i ].Group, sizeof( u_int16_t ), 1, fp );
+			if( XLights[ i ].NextVisible ) fwrite( &XLights[ i ].NextVisible->Index, sizeof( u_int16_t ), 1, fp );
+			else fwrite( &TempIndex, sizeof( u_int16_t ), 1, fp );
 		}
 	}
 
@@ -1532,33 +1532,33 @@ FILE * SaveXLights( FILE * fp )
 FILE * LoadXLights( FILE * fp )
 {
 	int		i;
-	uint16	TempIndex;
+	u_int16_t	TempIndex;
 
 	if( fp )
 	{
-		fread( &FirstXLightUsed, sizeof( uint16 ), 1, fp );
-		fread( &FirstXLightFree, sizeof( uint16 ), 1, fp );
-		fread( &TempIndex, sizeof( uint16 ), 1, fp );
-		if( TempIndex != (uint16) -1 ) FirstLightVisible = &XLights[ TempIndex ];
+		fread( &FirstXLightUsed, sizeof( u_int16_t ), 1, fp );
+		fread( &FirstXLightFree, sizeof( u_int16_t ), 1, fp );
+		fread( &TempIndex, sizeof( u_int16_t ), 1, fp );
+		if( TempIndex != (u_int16_t) -1 ) FirstLightVisible = &XLights[ TempIndex ];
 		else FirstLightVisible = NULL;
 		
 		for( i = 0; i < MAXXLIGHTS; i++ )
 		{
 			fread( &XLights[ i ].Type, sizeof( int ), 1, fp );
-			fread( &XLights[ i ].Visible, sizeof( BOOL ), 1, fp );
+			fread( &XLights[ i ].Visible, sizeof( _Bool ), 1, fp );
 			fread( &XLights[ i ].r, sizeof( float ), 1, fp );
 			fread( &XLights[ i ].g, sizeof( float ), 1, fp );
 			fread( &XLights[ i ].b, sizeof( float ), 1, fp );
 			fread( &XLights[ i ].Size, sizeof( float ), 1, fp );
 			fread( &XLights[ i ].SizeCount, sizeof( float ), 1, fp );
 			fread( &XLights[ i ].CosArc, sizeof( float ), 1, fp );
-			fread( &XLights[ i ].Next, sizeof( uint16 ), 1, fp );
-			fread( &XLights[ i ].Prev, sizeof( uint16 ), 1, fp );
+			fread( &XLights[ i ].Next, sizeof( u_int16_t ), 1, fp );
+			fread( &XLights[ i ].Prev, sizeof( u_int16_t ), 1, fp );
 			fread( &XLights[ i ].Pos, sizeof( VECTOR ), 1, fp );
 			fread( &XLights[ i ].Dir, sizeof( VECTOR ), 1, fp );
-			fread( &XLights[ i ].Group, sizeof( uint16 ), 1, fp );
-			fread( &TempIndex, sizeof( uint16 ), 1, fp );
-			if( TempIndex != (uint16) -1 ) XLights[ i ].NextVisible = &XLights[ TempIndex ];
+			fread( &XLights[ i ].Group, sizeof( u_int16_t ), 1, fp );
+			fread( &TempIndex, sizeof( u_int16_t ), 1, fp );
+			if( TempIndex != (u_int16_t) -1 ) XLights[ i ].NextVisible = &XLights[ TempIndex ];
 			else XLights[ i ].NextVisible = NULL;
 		}
 	}

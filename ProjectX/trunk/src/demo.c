@@ -30,20 +30,20 @@
 
 extern BYTE TeamNumber[MAX_PLAYERS];
 extern LIST DemoList;
-extern BOOL TeamGame;
-extern BOOL CTF;
-extern BOOL CaptureTheFlag;
-extern BOOL BountyHunt;
-extern uint16 RandomStartPosModify;
+extern _Bool TeamGame;
+extern _Bool CTF;
+extern _Bool CaptureTheFlag;
+extern _Bool BountyHunt;
+extern u_int16_t RandomStartPosModify;
 extern int CameraStatus;  
-extern BOOL CountDownOn;
-extern BOOL DemoShipInit[];
-extern uint16 CopyOfSeed1;
-extern uint16 CopyOfSeed2;
-extern BOOL RandomPickups;
-extern BOOL PlayDemo;
+extern _Bool CountDownOn;
+extern _Bool DemoShipInit[];
+extern u_int16_t CopyOfSeed1;
+extern u_int16_t CopyOfSeed2;
+extern _Bool RandomPickups;
+extern _Bool PlayDemo;
 extern void DebugLastError( void );
-extern BOOL ChangeLevel( void );
+extern _Bool ChangeLevel( void );
 
 FILE	*	DemoFp = NULL;
 FILE	*	DemoFpClean = NULL;
@@ -88,12 +88,12 @@ void StartDemoCleaning( MENUITEM * Item )
 #ifdef DEMO_SUPPORT
 	char buf[256];
 	int i;
-	uint32 mp_version;
-	uint32 flags;
+	u_int32_t mp_version;
+	u_int32_t flags;
 	char *clean_name;
-	uint16	TempSeed1, TempSeed2;
-	BOOL	TempRandomPickups;
-	uint32	TempPackedInfo[ MAX_PICKUPFLAGS ];
+	u_int16_t	TempSeed1, TempSeed2;
+	_Bool	TempRandomPickups;
+	u_int32_t	TempPackedInfo[ MAX_PICKUPFLAGS ];
 
 	NewLevelNum = -1;
 
@@ -121,10 +121,10 @@ void StartDemoCleaning( MENUITEM * Item )
 	fread( &TempPackedInfo[ 0 ], sizeof( TempPackedInfo ), 1, DemoFp );
 
 	fread( &flags, sizeof( flags ), 1, DemoFp );
-	TeamGame = ( flags & TeamGameBit ) ? TRUE : FALSE;
-	CTF = ( flags & CTFGameBit ) ? TRUE : FALSE;
-	CaptureTheFlag = ( flags & FlagGameBit ) ? TRUE : FALSE;
-	BountyHunt = ( flags & BountyGameBit ) ? TRUE : FALSE;
+	TeamGame = ( flags & TeamGameBit ) ? true : false;
+	CTF = ( flags & CTFGameBit ) ? true : false;
+	CaptureTheFlag = ( flags & FlagGameBit ) ? true : false;
+	BountyHunt = ( flags & BountyGameBit ) ? true : false;
 
 	fread( &RandomStartPosModify, sizeof( RandomStartPosModify ), 1, DemoFp );
 
@@ -211,12 +211,12 @@ void StartDemoPlayback( MENUITEM * Item )
 #ifdef DEMO_SUPPORT
 	char buf[256];
 	int i;
-	uint32 mp_version;
-	uint32 flags;
-	uint32 PackedInfo[ MAX_PICKUPFLAGS ];
+	u_int32_t mp_version;
+	u_int32_t flags;
+	u_int32_t PackedInfo[ MAX_PICKUPFLAGS ];
 
-	TeamGame = FALSE;
-	CountDownOn = FALSE;
+	TeamGame = false;
+	CountDownOn = false;
 
 	if( DemoList.item[0][0] == 0 )
 	{
@@ -227,8 +227,8 @@ void StartDemoPlayback( MENUITEM * Item )
 	NewLevelNum = -1;
 
 	for ( i = 0; i < MAX_PLAYERS; i++ )
-		DemoShipInit[ i ] = FALSE;
-	DemoShipInit[ MAX_PLAYERS ] = TRUE;
+		DemoShipInit[ i ] = false;
+	DemoShipInit[ MAX_PLAYERS ] = true;
 	memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
 
 	DemoFp = file_open( DemoFileName( DemoList.item[DemoList.selected_item] ) , "rb" );
@@ -257,10 +257,10 @@ void StartDemoPlayback( MENUITEM * Item )
 	UnpackPickupInfo( &PackedInfo[ 0 ] );
 
 	fread( &flags, sizeof( flags ), 1, DemoFp );
-	TeamGame = ( flags & TeamGameBit ) ? TRUE : FALSE;
-	CTF = ( flags & CTFGameBit ) ? TRUE : FALSE;
-	CaptureTheFlag = ( flags & FlagGameBit ) ? TRUE : FALSE;
-	BountyHunt = ( flags & BountyGameBit ) ? TRUE : FALSE;
+	TeamGame = ( flags & TeamGameBit ) ? true : false;
+	CTF = ( flags & CTFGameBit ) ? true : false;
+	CaptureTheFlag = ( flags & FlagGameBit ) ? true : false;
+	BountyHunt = ( flags & BountyGameBit ) ? true : false;
 
 	fread( &RandomStartPosModify, sizeof( RandomStartPosModify ), 1, DemoFp );
 
@@ -292,7 +292,7 @@ void StartDemoPlayback( MENUITEM * Item )
 	ReleaseView();
 	DestroySound( DESTROYSOUND_All );	// ReleaseView will not do a DestroySound if MyGameStatus == STATUS_Title
 
-	PlayDemo = TRUE;
+	PlayDemo = true;
 
 	MyGameStatus = STATUS_ChangeLevelPostPlayingDemo;
 	WhoIAm = MAX_PLAYERS;

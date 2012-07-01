@@ -25,9 +25,9 @@
 ===================================================================*/
 	extern	TLOADHEADER	Tloadheader;
 	extern	TRIGGERVAR	*	DecreaseTemperature;
-	extern	BOOL	CaptureTheFlag;
-	extern	BOOL	CTF;
-	extern	BOOL	BountyHunt;
+	extern	_Bool	CaptureTheFlag;
+	extern	_Bool	CTF;
+	extern	_Bool	BountyHunt;
 	extern	BYTE	ChangeLevel_MyGameStatus;
 	extern	float	UV_Fix;
 
@@ -35,16 +35,16 @@ extern render_info_t render_info;
 /*===================================================================
 	Globals
 ===================================================================*/
-#define	DO_SCALE		TRUE
-#define	DONT_SCALE		FALSE
+#define	DO_SCALE		true
+#define	DONT_SCALE		false
 
-int8	*	OffsetPath = "data\\offsets\\";
-int8  * FontBigFile = "fontbig.off";
-int8	*	Font512File = "font512.off";
-int8	*	VduFont512	= "f512x384.off";
-int8		FontFile[ 16 ];
-int8    FontFileBig [ 16 ];
-int8		TitleFontFile[ 16 ];
+int8_t	*	OffsetPath = "data\\offsets\\";
+int8_t  * FontBigFile = "fontbig.off";
+int8_t	*	Font512File = "font512.off";
+int8_t	*	VduFont512	= "f512x384.off";
+int8_t		FontFile[ 16 ];
+int8_t    FontFileBig [ 16 ];
+int8_t		TitleFontFile[ 16 ];
 
 float VduScaleX, VduScaleY;
 
@@ -187,30 +187,30 @@ typedef struct
 /*===================================================================
 	Procedure	:	Load Texture Pages, Offsets and Sizes
 				:	for 2D Faceme polygons
-	Input		:	int8		*	Filename of offset file
-				:	BOOL			Scale
-				:	BOOL			LoadTPages
+	Input		:	int8_t		*	Filename of offset file
+				:	_Bool			Scale
+				:	_Bool			LoadTPages
 	Output		:	FRAME_INFO	*	Structure for offset file
 ===================================================================*/
-FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *last_tpage, int16 xsize, int16 ysize, BOOL placeholder )
+FRAME_INFO * Load_Off_File( int8_t * Filename, _Bool Scale, int LoadTPages, int16_t *last_tpage, int16_t xsize, int16_t ysize, _Bool placeholder )
 {
-	int16			Name_Index[ MAX_NAMES ];
-	int8		*	Off_Buffer;
-	uint32			File_Size;
-	uint32			Read_Size;
-	int8		*	Char_Ptr;
-	int16		*	Short_Ptr;
+	int16_t			Name_Index[ MAX_NAMES ];
+	int8_t		*	Off_Buffer;
+	u_int32_t			File_Size;
+	u_int32_t			Read_Size;
+	int8_t		*	Char_Ptr;
+	int16_t		*	Short_Ptr;
 	BOX_INFO	*	Box_Info;
-	int16			Num_Boxes;
+	int16_t			Num_Boxes;
 	BIT_INFO	*	Bit_Info;
-	int16			Num_Frames;
+	int16_t			Num_Frames;
 	OFF_INFO	*	Off_Info;
-	int16			Num_Offs;
+	int16_t			Num_Offs;
 	FRAME_INFO	*	Frm_Info = NULL;
-	int16			Num_TPages;
-	int16			Count;
+	int16_t			Num_TPages;
+	int16_t			Count;
 	char			tpagename[32];
-	int8			TempFilename[ 256 ];
+	int8_t			TempFilename[ 256 ];
 	OFF_BUFFER		*Placeholder_Off_Buffer;
 	
 	Frm_Info = malloc( sizeof( FRAME_INFO ) );							// Allocate memory for return structure
@@ -225,7 +225,7 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 			return( NULL );
 		}
 
-		Frm_Info->vid_tpage_index = AddTexture( &Tloadheader, "", TRUE , Scale , FALSE, xsize, ysize );	// add dummy texture
+		Frm_Info->vid_tpage_index = AddTexture( &Tloadheader, "", true , Scale , false, xsize, ysize );	// add dummy texture
 		if( Frm_Info->vid_tpage_index == -1 )
 		{
 			free( Frm_Info );
@@ -256,7 +256,7 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 		Bit_Info->numbits = 1;
 
 		Frm_Info->Num_Frames = 1;
-		Frm_Info->File_Addr = ( int8 *)Placeholder_Off_Buffer;
+		Frm_Info->File_Addr = ( int8_t *)Placeholder_Off_Buffer;
 		Frm_Info->Box_Info = Box_Info;
 		Frm_Info->Off_Info = Off_Info;
 		Frm_Info->Bit_Info = Bit_Info;
@@ -288,11 +288,11 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 			return( NULL );
 		}
 																			
-		Short_Ptr = (int16 *) Off_Buffer;									
+		Short_Ptr = (int16_t *) Off_Buffer;									
 																			
 		Num_TPages = *Short_Ptr++;											// Number of possible new texture pages
 
-		Char_Ptr = (int8 *) Short_Ptr;
+		Char_Ptr = (int8_t *) Short_Ptr;
 
 		for( Count = 0; Count < Num_TPages; Count++ )
 		{
@@ -300,7 +300,7 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 
 			if( LoadTPages & LOAD_TPAGES)
 			{
-				Name_Index[ Count ] = AddTexture( &Tloadheader, &TempFilename[ 0 ], TRUE , Scale , FALSE, 0, 0 );
+				Name_Index[ Count ] = AddTexture( &Tloadheader, &TempFilename[ 0 ], true , Scale , false, 0, 0 );
 				strcpy ( tpagename, Char_Ptr );
 				*last_tpage = Name_Index[ Count ];
 				if( Name_Index[ Count ] == -1 )
@@ -319,15 +319,15 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 		Frm_Info->vid_tpage_index = Name_Index[ 0 ];
 		Frm_Info->sys_tpage_index = -1;
 
-		Short_Ptr = (int16 *) Char_Ptr;
+		Short_Ptr = (int16_t *) Char_Ptr;
 		Num_Boxes = *Short_Ptr++;											// Number of Boxes
 		Box_Info = (BOX_INFO *) Short_Ptr;
 
-		Short_Ptr = (int16 *) ( Box_Info + Num_Boxes );
+		Short_Ptr = (int16_t *) ( Box_Info + Num_Boxes );
 		Num_Frames = *Short_Ptr++;											// Number of Frames
 		Bit_Info = (BIT_INFO *) Short_Ptr;
 
-		Short_Ptr = (int16 *) ( Bit_Info + Num_Frames );
+		Short_Ptr = (int16_t *) ( Bit_Info + Num_Frames );
 		Num_Offs = *Short_Ptr++;											// Number of Offsets
 		Off_Info = (OFF_INFO *) Short_Ptr;
 
@@ -351,14 +351,14 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 /*===================================================================
 	Procedure	:	Load All Offset Files
 	Input		:	Nothing
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
+_Bool Load_All_Off_Files( OFF_FILES * FileInfo )
 {
-	int8			TempFilename[ 256 ];
-	int16			last_tpage;
+	int8_t			TempFilename[ 256 ];
+	int16_t			last_tpage;
 
-	if( !FileInfo ) return( FALSE );
+	if( !FileInfo ) return( false );
 
 	EnableRelevantOffFiles( FileInfo );
 
@@ -396,13 +396,13 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 			if( *FileInfo->InfoPtrAddr == NULL )
 			{
 				Msg( "offset file missing or too many tpages\n%s\n", &TempFilename[ 0 ] );
-				return FALSE;
+				return false;
 			}
 		}
 		FileInfo++;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -429,10 +429,10 @@ void Free_All_Off_Files( OFF_FILES * FileInfo )
 /*===================================================================
 	Procedure	:	Get TPage
 	Input		:	FRAME_INFO	*	FrameInfo
-				:	int16			Frame
-	Output		:	int16			TPage (-1 is non specified)
+				:	int16_t			Frame
+	Output		:	int16_t			TPage (-1 is non specified)
 ===================================================================*/
-int16 GetTPage( FRAME_INFO * FrameInfo, int16 Frame )
+int16_t GetTPage( FRAME_INFO * FrameInfo, int16_t Frame )
 {
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
@@ -445,18 +445,18 @@ int16 GetTPage( FRAME_INFO * FrameInfo, int16 Frame )
 	   	Box_Ptr = ( FrameInfo->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 		return ( Box_Ptr->tpage );
 	}
-	return( (uint16) -1 );
+	return( (u_int16_t) -1 );
 }
 
 /*===================================================================
 	Procedure	:	Calc FrameInfo Ptr Index
 	Input		:	FRM_INFO	**	FrameInfoPtr Address
-	Output		:	int16			Index
+	Output		:	int16_t			Index
 ===================================================================*/
-int16 Get_Frm_Info_Index( FRAME_INFO ** Frame_Info )
+int16_t Get_Frm_Info_Index( FRAME_INFO ** Frame_Info )
 {
 	OFF_FILES * FileInfo;
-	int16		Count;
+	int16_t		Count;
 
 	FileInfo = &OffsetFiles[ 0 ];
 	Count = 0;
@@ -477,10 +477,10 @@ int16 Get_Frm_Info_Index( FRAME_INFO ** Frame_Info )
 
 /*===================================================================
 	Procedure	:	Calc FrameInfo Ptr Index
-	Input		:	int16			Index
+	Input		:	int16_t			Index
 	Output		:	FRM_INFO	**	FraneInfoPtr Address
 ===================================================================*/
-FRAME_INFO ** Get_Frm_Info_Address( int16 Index )
+FRAME_INFO ** Get_Frm_Info_Address( int16_t Index )
 {
 	if( Index == -1 ) return( NULL );
 
@@ -497,7 +497,7 @@ FRAME_INFO ** Get_Frm_Info_Address( int16 Index )
 // in case they don't have the new font file we just default to use old one
 void EnableRelevantFontOffFiles( void )
 {
-	int8 path[256];
+	int8_t path[256];
 	sprintf(path,"%s%s",OffsetPath,FontBigFile);
 	if( Get_File_Size( path ) == 0 )
 	{
@@ -549,16 +549,16 @@ void EnableRelevantOffFiles( OFF_FILES * FileInfo )
 /*===================================================================
 	Procedure	:	Enable Specific off files for loading
 	Input		:	OFF_FILES	*	Ptr to first Offset filename
-				:	int8		*	File to enable
+				:	int8_t		*	File to enable
 	Output		:	Nothing
 ===================================================================*/
-void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename )
+void EnableOffFile( OFF_FILES * FileInfo, int8_t * Filename )
 {
 	while( FileInfo->InfoPtrAddr != NULL )
 	{
 		if( !strcasecmp( &FileInfo->Filename[ 0 ], Filename ) )
 		{
-			FileInfo->LoadEnable = TRUE;
+			FileInfo->LoadEnable = true;
 			return;
 		}
 
@@ -569,16 +569,16 @@ void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename )
 /*===================================================================
 	Procedure	:	Disable Specific off files for loading
 	Input		:	OFF_FILES	*	Ptr to first Offset filename
-				:	int8		*	File to disable
+				:	int8_t		*	File to disable
 	Output		:	Nothing
 ===================================================================*/
-void DisableOffFile( OFF_FILES * FileInfo, int8 * Filename )
+void DisableOffFile( OFF_FILES * FileInfo, int8_t * Filename )
 {
 	while( FileInfo->InfoPtrAddr != NULL )
 	{
 		if( !strcasecmp( &FileInfo->Filename[ 0 ], Filename ) )
 		{
-			FileInfo->LoadEnable = FALSE;
+			FileInfo->LoadEnable = false;
 			return;
 		}
 

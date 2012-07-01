@@ -50,7 +50,7 @@ extern  BYTE  TeamNumber[MAX_PLAYERS];	// which team each player is on
 // (Ships.c)
 extern char* GetName(int Player);				// returns player's short name
 // (Title.c)
-extern BOOL TeamGame;										// team game?  
+extern _Bool TeamGame;										// team game?  
 extern int MilestoneMessagesColour;			// colour to display messages 
 extern SLIDER WatchPlayerSelect;				// which player is being watched 
 extern float LevelTimeTaken; // time elapsed in this game
@@ -69,8 +69,8 @@ int x, z;																						// index counters
 int	ScoreSortTab[MAX_PLAYERS + 1];												// player numbers in order of highest score to lowest 								
 char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITAL" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
-BOOL FirstBlood = FALSE;
-BOOL FirstToFifty = FALSE;
+_Bool FirstBlood = false;
+_Bool FirstToFifty = false;
 
 /*===================================================================
   Procedure :   Get Weapon Name...
@@ -182,7 +182,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 			{
 					if(GetTotalKills(i) > 0)
 					{
-						FirstBlood = TRUE;
+						FirstBlood = true;
 						break;
 					}
 			}
@@ -190,7 +190,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 			// this is the first (non-suicide) kill
 			if(!FirstBlood && Killer != Victim)
 			{
-					FirstBlood = TRUE;					
+					FirstBlood = true;					
 					if(Killer == WhoIAm)
 						AddColourMessageToQue(MilestoneMessagesColour, "YOU GOT FIRST BLOOD");
 					else
@@ -210,7 +210,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 			{
 					if(GetTotalKills(i) >= 50)
 					{
-						FirstToFifty = TRUE;
+						FirstToFifty = true;
 						break;
 					}
 			}
@@ -218,7 +218,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 			// this is the person to 50 kills
 			if(!FirstToFifty && Killer!=Victim && GetTotalKills(Killer) == 49)
 			{
-					FirstToFifty = TRUE;
+					FirstToFifty = true;
 					if(Killer == WhoIAm)
 						AddColourMessageToQue( MilestoneMessagesColour, "YOU ARE FIRST TO 50 KILLS" );
 					else
@@ -276,7 +276,7 @@ void UpdateKillCount(int Killer)
 {
 	char	tempstr[256];
 	char	prefix[256];
-	BOOL PlaySound = FALSE;
+	_Bool PlaySound = false;
 
 	// update counter
 	KillCounter[Killer]++;
@@ -291,7 +291,7 @@ void UpdateKillCount(int Killer)
 	}
 
 	if(Killer == WatchPlayerSelect.value)
-		PlaySound = TRUE;
+		PlaySound = true;
 
 	// check for milestone achievements
 	switch(KillCounter[Killer])
@@ -491,9 +491,9 @@ void ScoreSort()
 		if ( scoreable_status(i) )
 			players++;
 
-	while( TRUE )
+	while( true )
 	{
-		int swapped = FALSE;
+		int swapped = false;
 		for( i = 0; i < (players-1); i++ ) // -1 because we need to compare with next valid player
 		{
 			// if my score is worse than player bellow me
@@ -503,11 +503,11 @@ void ScoreSort()
 				temp				= ScoreSortTab[i];
 				ScoreSortTab[i]		= ScoreSortTab[i+1];
 				ScoreSortTab[i+1]	= temp;
-				swapped				= TRUE;
+				swapped				= true;
 			}
 		}
 		// no players needed swapping
-		if ( swapped == FALSE )
+		if ( swapped == false )
 			break;
 	}
 

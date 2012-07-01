@@ -38,18 +38,18 @@
 ===================================================================*/
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	float framelag;
-extern	BOOL	Entry;
-extern	BOOL	Exit;
-extern	BOOL	In;
-extern	BOOL	ShowEFZones;
-extern	BOOL	DebugInfo;
-extern	BOOL	GodMode;
-BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , uint16 StartNumSides );
+extern	_Bool	Entry;
+extern	_Bool	Exit;
+extern	_Bool	In;
+extern	_Bool	ShowEFZones;
+extern	_Bool	DebugInfo;
+extern	_Bool	GodMode;
+_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
 
 /*===================================================================
 		Globals ...
 ===================================================================*/
-int32	NumOfExternalForces = 0;
+int32_t	NumOfExternalForces = 0;
 
 EXTERNALFORCE * ExternalForcesGroupLink[MAXGROUPS];
 
@@ -58,22 +58,22 @@ EXTERNALFORCE * ExternalForces = NULL;
 /*===================================================================
 	Procedure	:	External Forces load...
 	Input		:	char * filename....
-	Output		:	BOOL
+	Output		:	_Bool
 ===================================================================*/
-BOOL ExternalForcesLoad( char * Filename )
+_Bool ExternalForcesLoad( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
-	uint16		*	Uint16Pnt;
+	u_int16_t		*	Uint16Pnt;
 	EXTERNALFORCE * EFpnt;
 	float * floatpnt;
 	int i,j;
 	TRIGGER_ZONE * ZonePnt;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
-	uint32		*	uint32Pnt;
-	int32		*	int32Pnt;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
+	u_int32_t		*	u_int32Pnt;
+	int32_t		*	int32Pnt;
 	char		*	OrgBuffer;
 
 	DebugPrintf("You might crash right here... Let methods know... That external forces is fucked...\n");
@@ -88,7 +88,7 @@ BOOL ExternalForcesLoad( char * Filename )
 	if( !File_Size )
 	{
 		// dont need External Forces..
-		return TRUE;
+		return true;
 	}
 	Buffer = malloc( File_Size );
 	OrgBuffer = Buffer;
@@ -96,28 +96,28 @@ BOOL ExternalForcesLoad( char * Filename )
 	if( !Buffer )
 	{
 		Msg( "External Forces Load : Unable to allocate file buffer %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 	if( Read_Size != File_Size )
 	{
 		Msg( "External Forces Load Error reading %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
-	uint32Pnt = (int32 *) Buffer;
-	MagicNumber = *uint32Pnt++;
-	VersionNumber = *uint32Pnt++;
-	Buffer = (char *) uint32Pnt;
+	u_int32Pnt = (int32_t *) Buffer;
+	MagicNumber = *u_int32Pnt++;
+	VersionNumber = *u_int32Pnt++;
+	Buffer = (char *) u_int32Pnt;
 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != EXTERNALFORCES_VERSION_NUMBER  ) )
 	{
 		Msg( "ExternalForcesLoad() Incompatible ( .efc ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 
 
-	int32Pnt = (int32 *) Buffer;
+	int32Pnt = (int32_t *) Buffer;
 	NumOfExternalForces = *int32Pnt++;
 	Buffer = (char *) int32Pnt;
 
@@ -126,13 +126,13 @@ BOOL ExternalForcesLoad( char * Filename )
 	if( !EFpnt )
 	{
 		Msg( "External Forces : cant allocate buffer %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	
 
 	for( i = 0 ; i < NumOfExternalForces ; i++ )
 	{
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		EFpnt->Status = *Uint16Pnt++;
 		EFpnt->ForceType = *Uint16Pnt++;
 		EFpnt->Group = *Uint16Pnt++;
@@ -164,7 +164,7 @@ BOOL ExternalForcesLoad( char * Filename )
 		EFpnt->Range = 1.0F / *floatpnt++;
 		Buffer = (char *) floatpnt;
 
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		EFpnt->Type = *Uint16Pnt++;
 		Buffer = (char *) Uint16Pnt;
 		floatpnt = (float *) Buffer;
@@ -180,7 +180,7 @@ BOOL ExternalForcesLoad( char * Filename )
 		if( EFpnt->Type != ZONE_Sphere )
 		{
 			// convex hull...
-			Uint16Pnt = (uint16 *) Buffer;
+			Uint16Pnt = (u_int16_t *) Buffer;
 			EFpnt->num_sides = *Uint16Pnt++;
 			Buffer = (char *) Uint16Pnt;
 			
@@ -190,7 +190,7 @@ BOOL ExternalForcesLoad( char * Filename )
 			if( !ZonePnt )
 			{
 				Msg( "External Forces maloc Error with %s\n", Filename );
-				return( FALSE );
+				return( false );
 			}
 			floatpnt = (float * ) Buffer;
 			for( j = 0 ; j < EFpnt->num_sides ; j++ )
@@ -212,7 +212,7 @@ BOOL ExternalForcesLoad( char * Filename )
 	}
 	free( OrgBuffer );
 
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:	Release Forces load...
@@ -244,15 +244,15 @@ void ReleaseExternalForces( void )
 /*===================================================================
 	Procedure	:	Check if im in an Active External Force....
 	Input		:	void
-	Output		:	TRUE/FALSE
+	Output		:	true/false
 ===================================================================*/
-BOOL ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Group , VECTOR * ExtForce , float * Shield )
+_Bool ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group , VECTOR * ExtForce , float * Shield )
 {
 	EXTERNALFORCE * EFpnt;
 	float	Distance;
 	float	Power;
 	float	Force;
-	BOOL	OnehasEffectedMe = FALSE;
+	_Bool	OnehasEffectedMe = false;
 
 	EFpnt = ExternalForcesGroupLink[Group];
 	
@@ -264,7 +264,7 @@ BOOL ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Group ,
 			if( In | Entry | Exit )
 			{
 				// Were in the Zone....
-				OnehasEffectedMe = TRUE;
+				OnehasEffectedMe = true;
 
 				Distance = DistanceVector2Vector( &EFpnt->Origin , NewPos );
 				Power =  1.0F - (Distance * EFpnt->Range );		// how much of the force is needed...
@@ -301,10 +301,10 @@ BOOL ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Group ,
 
 /*===================================================================
 	Procedure	:	Display External Forces
-	Input		:	uint16	Group
+	Input		:	u_int16_t	Group
 	Output		:	Nothing
 ===================================================================*/
-void DisplayExternalForcesInGroup( uint16 Group )
+void DisplayExternalForcesInGroup( u_int16_t Group )
 {
 	EXTERNALFORCE * EFpnt;
 
@@ -359,22 +359,22 @@ void DisplayExternalForcesInGroup( uint16 Group )
 void ExternalForcesZoneCheck( VECTOR * OldPos , VECTOR * NewPos , EXTERNALFORCE * EFpnt )
 {
 
-	BOOL	OldIn;
-	BOOL	NewIn;
-	Entry = FALSE;
-	Exit = FALSE;
-	In = FALSE;
+	_Bool	OldIn;
+	_Bool	NewIn;
+	Entry = false;
+	Exit = false;
+	In = false;
 	if( EFpnt->Type == ZONE_Sphere )
 	{
    		OldIn = DistanceVector2Vector( &EFpnt->Pos , OldPos ) < EFpnt->half_size.x;
    		NewIn = DistanceVector2Vector( &EFpnt->Pos , NewPos ) < EFpnt->half_size.x;
    		if( !OldIn && NewIn )
-   			Entry = TRUE;
+   			Entry = true;
    		if( OldIn && !NewIn )
-   			Exit = TRUE;
+   			Exit = true;
    		if( OldIn && NewIn )
    		{
-   			In = TRUE;
+   			In = true;
    		}
    	}else{
    		RayToHull( EFpnt->Zone , OldPos , NewPos , EFpnt->num_sides );
@@ -387,7 +387,7 @@ void ExternalForcesZoneCheck( VECTOR * OldPos , VECTOR * NewPos , EXTERNALFORCE 
 	Input		:	void
 	Output		:	void
 ===================================================================*/
-void StartExternalForce( uint16 * Data )
+void StartExternalForce( u_int16_t * Data )
 {
 	EXTERNALFORCE * EFpnt;
 	EFpnt = ExternalForces;
@@ -401,7 +401,7 @@ void StartExternalForce( uint16 * Data )
 	Input		:	void
 	Output		:	void
 ===================================================================*/
-void StopExternalForce( uint16 * Data )
+void StopExternalForce( u_int16_t * Data )
 {
 	EXTERNALFORCE * EFpnt;
 	EFpnt = ExternalForces;
@@ -423,13 +423,13 @@ FILE * SaveExternalForces( FILE * fp )
 
 	if( fp )
 	{
-		fwrite( &NumOfExternalForces, sizeof( int16 ), 1, fp );
+		fwrite( &NumOfExternalForces, sizeof( int16_t ), 1, fp );
 
 		ExtForcesPtr = ExternalForces;
 
 		for( i = 0; i < NumOfExternalForces; i++ )
 		{
-			fwrite( &ExtForcesPtr->Status, sizeof( uint16 ), 1, fp );
+			fwrite( &ExtForcesPtr->Status, sizeof( u_int16_t ), 1, fp );
 			ExtForcesPtr++;
 		}
 	}
@@ -446,11 +446,11 @@ FILE * LoadExternalForces( FILE * fp )
 {
 	int				i;
 	EXTERNALFORCE *	ExtForcesPtr;
-	int16			NumExtForces;
+	int16_t			NumExtForces;
 
 	if( fp )
 	{
-		fread( &NumExtForces, sizeof( int16 ), 1, fp );
+		fread( &NumExtForces, sizeof( int16_t ), 1, fp );
 
 		if( NumExtForces != NumOfExternalForces )
 		{
@@ -462,7 +462,7 @@ FILE * LoadExternalForces( FILE * fp )
 
 		for( i = 0; i < NumOfExternalForces; i++ )
 		{
-			fread( &ExtForcesPtr->Status, sizeof( uint16 ), 1, fp );
+			fread( &ExtForcesPtr->Status, sizeof( u_int16_t ), 1, fp );
 			ExtForcesPtr++;
 		}
 	}

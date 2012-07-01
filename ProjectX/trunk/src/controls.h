@@ -64,13 +64,13 @@ typedef struct {
 } SHIPCONTROL;
 
 typedef struct {
-	BOOL exists;
+	_Bool exists;
 	char *name;
 	int action;
 	float sensitivity;
 	int deadzone;	// percentage
-	BOOL inverted;
-	BOOL fine;
+	_Bool inverted;
+	_Bool fine;
 } JOYSTICKAXIS;
 
 typedef struct {
@@ -174,12 +174,12 @@ WhichJoystickPressed( void );
 
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum);
 void SetUpJoystickAxis(int joystick);
-BOOL IsJoystickButtonPressed( int joysticknum );
-BOOL IsAnyJoystickButtonPressed( void );
-BOOL IsJoystickButtonReleased( int joysticknum );
-BOOL IsAnyJoystickButtonReleased( void );
+_Bool IsJoystickButtonPressed( int joysticknum );
+_Bool IsAnyJoystickButtonPressed( void );
+_Bool IsJoystickButtonReleased( int joysticknum );
+_Bool IsAnyJoystickButtonReleased( void );
 int ToggleGodMode( char *cheat );
-void FlashMenuText( char *text, float activetime, uint16 sfx );
+void FlashMenuText( char *text, float activetime, u_int16_t sfx );
 void ProcessMenuFlashText( void );
 void DisableCheats( void );
 

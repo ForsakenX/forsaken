@@ -48,7 +48,7 @@
 #define OUTSIDE_GROUP_TOLERANCE		(25.0F)
 
 
-extern BOOL PISDistRecursive( VECTOR *Pos, BSP_NODE *node);
+extern _Bool PISDistRecursive( VECTOR *Pos, BSP_NODE *node);
 extern void ObjForceExternalOneOff( OBJECT *Obj, VECTOR *force );
 
 extern	float	MaxMoveSpeed;
@@ -84,9 +84,9 @@ extern	ENEMY			Enemies[ MAXENEMIES ];
 extern	MCLOADHEADER	MCloadheadert0;					//  0 thickness collision map...
 extern	MCLOADHEADER	MCloadheader;					//  ship collision map...
 extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
-extern	uint16			IsGroupVisible[MAXGROUPS];
+extern	u_int16_t			IsGroupVisible[MAXGROUPS];
 
-extern BOOL	DebugInfo;
+extern _Bool	DebugInfo;
 int no_collision = 0;
 int outside_group = 0;
 
@@ -101,10 +101,10 @@ static int			ColCollided;
 static float		ColRadius;
 static VECTOR		ColDir;
 static BGOBJECT *	ColParent;
-static int16		ColZoneNum;
+static int16_t		ColZoneNum;
 
-static	uint16		CompEnemyHit = (uint16) -1;
-static	uint16		AnyCompEnemyHit = (uint16) -1;
+static	u_int16_t		CompEnemyHit = (u_int16_t) -1;
+static	u_int16_t		AnyCompEnemyHit = (u_int16_t) -1;
 static	VECTOR		CompEnemyHitPos;
 static	NORMAL		CompEnemyHitNormal;
 static	float		CompEnemyHitDist;
@@ -122,47 +122,47 @@ extern	RESTART	*	FirstRestartUsed;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	ENEMY	*		FirstEnemyUsed;
 
-BOOL CheckRestartPointCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
+_Bool CheckRestartPointCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject );
 
-BOOL CheckEnemyPolyCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
+_Bool CheckEnemyPolyCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject );
 
 /*===================================================================
 	Procedure	:		Load .mc File Collision file..
 	Input		:		char	*	Filename , MCLOADHEADER * MCloadheader
-	Output		:		BOOL
+	Output		:		_Bool
 ===================================================================*/
-BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
+_Bool MCload( char * Filename , MCLOADHEADER * MCloadheader )
 {
 #ifdef POLYGONAL_COLLISIONS
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
-	uint16		*	Uint16Pnt;
-	uint32		*	Uint32Pnt;
+	u_int16_t		*	Uint16Pnt;
+	u_int32_t		*	Uint32Pnt;
 	int				i;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
 
 	File_Size = Get_File_Size( Filename );	
 
 	if( !File_Size )
-		return ( FALSE );
+		return ( false );
 
 	Buffer = malloc( File_Size );
 
 	if( Buffer == NULL )
-		return( FALSE );
+		return( false );
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 
 	if( Read_Size != File_Size )
-		return( FALSE );
+		return( false );
 	
 	MCloadheader->Buffer = Buffer;
 
-	Uint32Pnt = (uint32 *) Buffer;
+	Uint32Pnt = (u_int32_t *) Buffer;
 	MagicNumber = *Uint32Pnt++;
 	VersionNumber = *Uint32Pnt++;
 	Buffer = (char *) Uint32Pnt;
@@ -170,10 +170,10 @@ BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != MC_VERSION_NUMBER  ) )
 	{
 		Msg( "MCload() Incompatible collision ( .MC ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 	/*	get the number of Groups	*/
 	MCloadheader->num_of_groups = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;		
@@ -181,7 +181,7 @@ BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
 	for( i=0 ; i<MCloadheader->num_of_groups;i++)
 	{
 		/* get the number of polys in the group	*/
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		MCloadheader->num_of_faces_in_group[i] = *Uint16Pnt++ ;
 		Buffer = (char *) Uint16Pnt;		
 		/* make a note of the address of the Faces	*/
@@ -190,7 +190,7 @@ BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
 	}
 #endif // POLYGONAL_COLLISIONS
 
-	return( TRUE );
+	return( true );
 }
 
 #ifdef OPT_ON
@@ -205,12 +205,12 @@ BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
 				:	VECTOR	*	Origin
 				:	VECTOR	*	Direction
 				:	VECTOR	*	Intersect Point
-	Output		:	int			TRUE/ FALSE
+	Output		:	int			true/ false
 ===================================================================*/
 #ifdef USEINLINE
 __inline
 #endif
-BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
+_Bool RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	 				 VERT *  Point, NORMAL * FaceNormal , float D , float * TempDistance)
 {
 	float		t;
@@ -252,7 +252,7 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	
 //	Div = ColDotProduct( &ODir , FaceNormal );
 	
-	if( Div >= 0.0F ) return FALSE;		/* Reject, Parallel */
+	if( Div >= 0.0F ) return false;		/* Reject, Parallel */
 
 
 	Num = ( ( Origin.x * FaceNormal->nx ) +
@@ -264,8 +264,8 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	
 	t = -( Num / Div );
 
-	if( t < 0.0F ) return FALSE;		/* Intersection behind origin */
-	if( t > 1.0F ) return FALSE;		/* Intersection Greater then ray length */
+	if( t < 0.0F ) return false;		/* Intersection behind origin */
+	if( t > 1.0F ) return false;		/* Intersection Greater then ray length */
 
 	*TempDistance = t;
 
@@ -349,9 +349,9 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	    ( Np1x * ( Np2y - Np4y ) ) +
 	    ( Np2x * ( Np4y - Np1y ) ) < 0.0F )
 	{
-		if( AntiCount ) return FALSE;
+		if( AntiCount ) return false;
 	}else{
-		if( ClockCount ) return FALSE;
+		if( ClockCount ) return false;
 	}
 
 	if( P3 == (float*) -1)	//if -1 then only a tri....
@@ -361,29 +361,29 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 		    ( Np2x * ( Np0y - Np4y ) ) +
 		    ( Np0x * ( Np4y - Np2y ) ) < 0.0F )
 		{
-			if( AntiCount ) return FALSE;
+			if( AntiCount ) return false;
 		}else{
-			if( ClockCount ) return FALSE;
+			if( ClockCount ) return false;
 		}
 	}else{			// otherwise it must be a quad...
 		if( ( Np4x * ( Np2y - Np3y ) ) +
 		    ( Np2x * ( Np3y - Np4y ) ) +
 		    ( Np3x * ( Np4y - Np2y ) ) < 0.0F )
 		{
-			if( AntiCount ) return FALSE;
+			if( AntiCount ) return false;
 		}else{
-			if( ClockCount ) return FALSE;
+			if( ClockCount ) return false;
 		}
 		if( ( Np4x * ( Np3y - Np0y ) ) +
 		    ( Np3x * ( Np0y - Np4y ) ) +
 		    ( Np0x * ( Np4y - Np3y ) ) < 0.0F )
 		{
-			if( AntiCount ) return FALSE;
+			if( AntiCount ) return false;
 		}else{
-			if( ClockCount ) return FALSE;
+			if( ClockCount ) return false;
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -397,7 +397,7 @@ typedef enum
 #ifdef USEINLINE
 __inline
 #endif
-BOOL ColRayPolyIntersect( MCFACE *face )
+_Bool ColRayPolyIntersect( MCFACE *face )
 {
 	float		t;
 	float		Div, Num;
@@ -411,10 +411,10 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	float		v3y;
 	float		ix;
 	float		iy;
-	BOOL		Clockwise;
+	_Bool		Clockwise;
 
 	if ( !DebugInfo && ( face->type & 0x800000L ) )
-		return FALSE; // ignore backfacing patch collision polys unless debugging
+		return false; // ignore backfacing patch collision polys unless debugging
 /*===================================================================
 	Calculate T
 ===================================================================*/
@@ -424,7 +424,7 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	
 //	Div = ColDotProduct( &ODir , (NORMAL *) &face->nx );
 	
-	if( Div >= 0.0F ) return FALSE;		/* Reject, Parallel */
+	if( Div >= 0.0F ) return false;		/* Reject, Parallel */
 
 
 	Num = ( ( Origin.x * face->nx ) +
@@ -440,8 +440,8 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	Do Polygon collision
 ===================================================================*/
 
-	if( t < 0.0F ) return FALSE;		/* Intersection behind origin */
-	if( t > 1.0F ) return FALSE;		/* Intersection Greater then ray length */
+	if( t < 0.0F ) return false;		/* Intersection behind origin */
+	if( t > 1.0F ) return false;		/* Intersection Greater then ray length */
 
 	IPoint.x = ( Origin.x + ( ODir.x * t ) );
 	IPoint.y = ( Origin.y + ( ODir.y * t ) );
@@ -470,11 +470,11 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	    ( v0x * ( v1y - iy ) ) +
 	    ( v1x * ( iy - v0y ) ) < 0.0F )
 	{
-		Clockwise = TRUE;
+		Clockwise = true;
 	}
 	else
 	{
-		Clockwise = FALSE;
+		Clockwise = false;
 	}
 
 	if( ( ix * ( v1y - v2y ) ) +
@@ -482,12 +482,12 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	    ( v2x * ( iy - v1y ) ) < 0.0F )
 	{
 		if( !Clockwise )
-			return FALSE;
+			return false;
 	}
 	else
 	{
 		if( Clockwise )
-			return FALSE;
+			return false;
 	}
 
 	if( face->type & 1 ) // face is a quad
@@ -500,24 +500,24 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 		    ( v3x * ( iy - v2y ) ) < 0.0F )
 		{
 			if( !Clockwise )
-				return FALSE;
+				return false;
 		}
 		else
 		{
 			if( Clockwise )
-				return FALSE;
+				return false;
 		}
 		if( ( ix * ( v3y - v0y ) ) +
 		    ( v3x * ( v0y - iy ) ) +
 		    ( v0x * ( iy - v3y ) ) < 0.0F )
 		{
 			if( !Clockwise )
-				return FALSE;
+				return false;
 		}
 		else
 		{
 			if( Clockwise )
-				return FALSE;
+				return false;
 		}
 	}
 	else // face only a tri
@@ -527,21 +527,21 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 		    ( v0x * ( iy - v2y ) ) < 0.0F )
 		{
 			if( !Clockwise )
-				return FALSE;
+				return false;
 		}
 		else
 		{
 			if( Clockwise )
-				return FALSE;
+				return false;
 		}
 	}
 	IDist = t;
-	return TRUE;
+	return true;
 }
 
 
 
-BOOL ColRayPlaneIntersect( VECTOR *normal, float offset )
+_Bool ColRayPlaneIntersect( VECTOR *normal, float offset )
 {
 	float		t;
 	float		Div, Num;
@@ -555,7 +555,7 @@ BOOL ColRayPlaneIntersect( VECTOR *normal, float offset )
 	
 //	Div = ColDotProduct( &ODir , (NORMAL *) &normal->nx );
 	
-	if( Div >= 0.0F ) return FALSE;		/* Reject, Parallel */
+	if( Div >= 0.0F ) return false;		/* Reject, Parallel */
 
 
 	Num = ( ( Origin.x * normal->x ) +
@@ -571,15 +571,15 @@ BOOL ColRayPlaneIntersect( VECTOR *normal, float offset )
 	Do plane collision
 ===================================================================*/
 
-	if( t < 0.0F ) return FALSE;		/* Intersection behind origin */
-	if( t > 1.0F ) return FALSE;		/* Intersection Greater then ray length */
+	if( t < 0.0F ) return false;		/* Intersection behind origin */
+	if( t > 1.0F ) return false;		/* Intersection Greater then ray length */
 
 	IPoint.x = ( Origin.x + ( ODir.x * t ) );
 	IPoint.y = ( Origin.y + ( ODir.y * t ) );
 	IPoint.z = ( Origin.z + ( ODir.z * t ) );
 
 	IDist = t;
-	return TRUE;
+	return true;
 }
 
 
@@ -630,7 +630,7 @@ float ColDotProduct( VECTOR * vec0 , NORMAL * vec1 )
 
 
 
-#define NIL ((uint16) -1)
+#define NIL ((u_int16_t) -1)
 
 static float hit_portal_offset = 0.0F;
 
@@ -656,21 +656,21 @@ static float hit_portal_offset = 0.0F;
  *	NewTarget	=	new target position after sliding along collision face (if collided at all)
  *
  * Returns
- *	TRUE if collided with background, FALSE if no collision
+ *	true if collided with background, false if no collision
  */
 #ifdef BSP_ONLY
-BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
-					  VECTOR *StartPos, uint16 StartGroup, VECTOR *MoveOffset, 
-					  VECTOR *EndPos, uint16 *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, BOOL BGCol, BGOBJECT ** BGObject )
+_Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
+					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
+					  VECTOR *EndPos, u_int16_t *EndGroup,
+					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
 {
 	float poffset, pdist;
 	VECTOR ppos, pmove, epos, tpos;
 	NORMAL fnorm, pnorm; ZEROMEM(pnorm);
-	uint16 group;
-	uint16 next_group;
-	uint16 last_group = 0;
-	BOOL hit_bg, hit_portal, hit_any_portal;
+	u_int16_t group;
+	u_int16_t next_group;
+	u_int16_t last_group = 0;
+	_Bool hit_bg, hit_portal, hit_any_portal;
 	float dist_bg;
 	VECTOR dv;
 	float impact_offset;
@@ -678,18 +678,18 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 	VECTOR	OldPPos;
 	float impact_dotp;
 
-	CompEnemyHit = (uint16) -1;
-	AnyCompEnemyHit = (uint16) -1;
+	CompEnemyHit = (u_int16_t) -1;
+	AnyCompEnemyHit = (u_int16_t) -1;
 	next_group = StartGroup;
 	ppos = *StartPos;
 	pmove = *MoveOffset;
-	hit_any_portal = FALSE;
+	hit_any_portal = false;
 	do {
 		group = next_group;
-		hit_portal = FALSE;
+		hit_portal = false;
 		OldPMove = pmove;
 		OldPPos = ppos;
-		hit_bg = FALSE;
+		hit_bg = false;
 		if ( OneGroupPolyCol( c, m, group, &OldPPos, &OldPMove, &epos, &fnorm, &tpos, BGCol, BGObject ) )
 		{
 			BSP_PORTAL_GROUP	*pg;
@@ -713,13 +713,13 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 					{
 						if ( PISDistRecursive( &epos, bp->bsp.Root ) )
 						{
-							hit_portal = TRUE;
+							hit_portal = true;
 							next_group = bp->group;
 							pmove.x += ppos.x - epos.x;
 							pmove.y += ppos.y - epos.y;
 							pmove.z += ppos.z - epos.z;
 							ppos = epos;
-							hit_any_portal = TRUE;
+							hit_any_portal = true;
 							pnorm.nx = bp->normal.x;
 							pnorm.ny = bp->normal.y;
 							pnorm.nz = bp->normal.z;
@@ -732,11 +732,11 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 			}
 			if ( hit_portal )
 			{
-				hit_bg = FALSE;
+				hit_bg = false;
 			}
 			else
 			{
-				hit_bg = TRUE;
+				hit_bg = true;
 				dv = *MoveOffset;
 				NormaliseVector( &dv );
 				impact_dotp = -( dv.x * fnorm.nx + dv.y * fnorm.ny + dv.z * fnorm.nz );
@@ -791,18 +791,18 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 
 #else // !BSP_ONLY
 
-BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
-					  VECTOR *StartPos, uint16 StartGroup, VECTOR *MoveOffset, 
-					  VECTOR *EndPos, uint16 *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, BOOL BGCol, BGOBJECT ** BGObject )
+_Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
+					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
+					  VECTOR *EndPos, u_int16_t *EndGroup,
+					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
 {
 	float poffset, pdist;
 	VECTOR ppos, pmove, epos, tpos;
 	NORMAL fnorm, pnorm;
-	uint16 group;
-	uint16 next_group;
-	uint16 last_group;
-	BOOL hit_bg, hit_portal, hit_any_portal;
+	u_int16_t group;
+	u_int16_t next_group;
+	u_int16_t last_group;
+	_Bool hit_bg, hit_portal, hit_any_portal;
 	float dist_bg, dist_portal;
 	VECTOR dv;
 	float impact_offset;
@@ -810,20 +810,20 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 	VECTOR	OldPPos;
 	float impact_dotp;
 
-	CompEnemyHit = (uint16) -1;
-	AnyCompEnemyHit = (uint16) -1;
+	CompEnemyHit = (u_int16_t) -1;
+	AnyCompEnemyHit = (u_int16_t) -1;
 	next_group = StartGroup;
 	ppos = *StartPos;
 	pmove = *MoveOffset;
-	hit_any_portal = FALSE;
+	hit_any_portal = false;
 	do {
 		group = next_group;
-		hit_portal = FALSE;
+		hit_portal = false;
 		OldPMove = pmove;
 		OldPPos = ppos;
 		if ( !Bsp_Portal_Header.state && OneGroupPortalCol( m, group, &ppos, &pmove, &epos, &pnorm, &next_group, 0 ) )
 		{
-			hit_portal = TRUE;
+			hit_portal = true;
 			dv.x = epos.x - StartPos->x;
 			dv.y = epos.y - StartPos->y;
 			dv.z = epos.z - StartPos->z;
@@ -832,10 +832,10 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 			pmove.y += ppos.y - epos.y;
 			pmove.z += ppos.z - epos.z;
 			ppos = epos;
-			hit_any_portal = TRUE;
+			hit_any_portal = true;
 			last_group = group;
 		}
-		hit_bg = FALSE;
+		hit_bg = false;
 		if ( OneGroupPolyCol( c, m, group, &OldPPos, &OldPMove, &epos, &fnorm, &tpos, BGCol, BGObject ) )
 		{
 			dv.x = epos.x - StartPos->x;
@@ -860,13 +860,13 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 						{
 							if ( PISDistRecursive( &epos, bp->bsp.Root ) )
 							{
-								hit_portal = TRUE;
+								hit_portal = true;
 								next_group = bp->group;
 								pmove.x += ppos.x - epos.x;
 								pmove.y += ppos.y - epos.y;
 								pmove.z += ppos.z - epos.z;
 								ppos = epos;
-								hit_any_portal = TRUE;
+								hit_any_portal = true;
 								last_group = group;
 								break;
 							}
@@ -878,12 +878,12 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 			{
 				if ( Bsp_Portal_Header.state || (float) fabs( dist_bg - dist_portal ) < 0.1F )
 				{
-					hit_bg = FALSE;
+					hit_bg = false;
 				}
 				else if ( dist_bg < dist_portal )
 				{
-					hit_bg = TRUE;
-					hit_portal = FALSE;
+					hit_bg = true;
+					hit_portal = false;
 					dv = *MoveOffset;
 					NormaliseVector( &dv );
 					impact_dotp = -( dv.x * fnorm.nx + dv.y * fnorm.ny + dv.z * fnorm.nz );
@@ -914,7 +914,7 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 			}
 			else
 			{
-				hit_bg = TRUE;
+				hit_bg = true;
 				dv = *MoveOffset;
 				NormaliseVector( &dv );
 				impact_dotp = -( dv.x * fnorm.nx + dv.y * fnorm.ny + dv.z * fnorm.nz );
@@ -991,32 +991,32 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
  *	NewTarget	=	new target position after sliding along collision face (if collided at all)
  *
  * Returns
- *	TRUE if collided with background, FALSE if no collision
+ *	true if collided with background, false if no collision
  */
 #ifdef BSP_ONLY
-BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
-					  VECTOR *StartPos, uint16 StartGroup, VECTOR *MoveOffset, 
-					  VECTOR *EndPos, uint16 *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, BOOL BGCol, BGOBJECT ** BGObject )
+_Bool BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
+					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
+					  VECTOR *EndPos, u_int16_t *EndGroup,
+					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
 {
 	VECTOR ppos, pmove, epos, tpos;
 	NORMAL fnorm;
-	uint16 group;
-	uint16 next_group;
-	BOOL hit_bg, hit_portal;
+	u_int16_t group;
+	u_int16_t next_group;
+	_Bool hit_bg, hit_portal;
 	float dist_bg;
 	VECTOR dv;
 	float impact_offset;
 	float impact_dotp;
 
-	CompEnemyHit = (uint16) -1;
-	AnyCompEnemyHit = (uint16) -1;
+	CompEnemyHit = (u_int16_t) -1;
+	AnyCompEnemyHit = (u_int16_t) -1;
 	next_group = StartGroup;
 	ppos = *StartPos;
 	pmove = *MoveOffset;
 	group = next_group;
-	hit_portal = FALSE;
-	hit_bg = FALSE;
+	hit_portal = false;
+	hit_bg = false;
 	if ( OneGroupPolyCol( c, m, group, StartPos, MoveOffset, &epos, &fnorm, &tpos, BGCol, BGObject ) )
 	{
 		BSP_PORTAL_GROUP	*pg;
@@ -1035,7 +1035,7 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 				{
 					if ( PISDistRecursive( &epos, bp->bsp.Root ) )
 					{
-						hit_portal = TRUE;
+						hit_portal = true;
 						next_group = bp->group;
 						pmove.x += ppos.x - epos.x;
 						pmove.y += ppos.y - epos.y;
@@ -1048,11 +1048,11 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 		}
 		if ( hit_portal )
 		{
-			hit_bg = FALSE;
+			hit_bg = false;
 		}
 		else
 		{
-			hit_bg = TRUE;
+			hit_bg = true;
 			dv.x = epos.x - StartPos->x;
 			dv.y = epos.y - StartPos->y;
 			dv.z = epos.z - StartPos->z;
@@ -1101,31 +1101,31 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 #else // ! BSP_ONLY
 
 
-BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
-					  VECTOR *StartPos, uint16 StartGroup, VECTOR *MoveOffset, 
-					  VECTOR *EndPos, uint16 *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, BOOL BGCol, BGOBJECT ** BGObject )
+_Bool BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
+					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
+					  VECTOR *EndPos, u_int16_t *EndGroup,
+					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
 {
 	VECTOR ppos, pmove, epos, tpos;
 	NORMAL fnorm;
-	uint16 group;
-	uint16 next_group;
-	BOOL hit_bg, hit_portal;
+	u_int16_t group;
+	u_int16_t next_group;
+	_Bool hit_bg, hit_portal;
 	float dist_bg, dist_portal;
 	VECTOR dv;
 	float impact_offset;
 	float impact_dotp;
 
-	CompEnemyHit = (uint16) -1;
-	AnyCompEnemyHit = (uint16) -1;
+	CompEnemyHit = (u_int16_t) -1;
+	AnyCompEnemyHit = (u_int16_t) -1;
 	next_group = StartGroup;
 	ppos = *StartPos;
 	pmove = *MoveOffset;
 	group = next_group;
-	hit_portal = FALSE;
+	hit_portal = false;
 	if ( !Bsp_Portal_Header.state && OneGroupPortalCol( m, group, &ppos, &pmove, &epos, &fnorm, &next_group, 0 ) )
 	{
-		hit_portal = TRUE;
+		hit_portal = true;
 		dv.x = epos.x - StartPos->x;
 		dv.y = epos.y - StartPos->y;
 		dv.z = epos.z - StartPos->z;
@@ -1135,7 +1135,7 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 		pmove.z += ppos.z - epos.z;
 		ppos = epos;
 	}
-	hit_bg = FALSE;
+	hit_bg = false;
 	if ( OneGroupPolyCol( c, m, group, StartPos, MoveOffset, &epos, &fnorm, &tpos, BGCol, BGObject ) )
 	{
 		dv.x = epos.x - StartPos->x;
@@ -1160,7 +1160,7 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 					{
 						if ( PISDistRecursive( &epos, bp->bsp.Root ) )
 						{
-							hit_portal = TRUE;
+							hit_portal = true;
 							next_group = bp->group;
 							pmove.x += ppos.x - epos.x;
 							pmove.y += ppos.y - epos.y;
@@ -1176,12 +1176,12 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 		{
 			if ( Bsp_Portal_Header.state || (float) fabs( dist_bg - dist_portal ) < 0.1F )
 			{
-				hit_bg = FALSE;
+				hit_bg = false;
 			}
 			else if ( dist_bg < dist_portal )
 			{
-				hit_bg = TRUE;
-				hit_portal = FALSE;
+				hit_bg = true;
+				hit_portal = false;
 				dv = *MoveOffset;
 				NormaliseVector( &dv );
 				impact_dotp = -( dv.x * fnorm.nx + dv.y * fnorm.ny + dv.z * fnorm.nz );
@@ -1205,7 +1205,7 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 		}
 		else
 		{
-			hit_bg = TRUE;
+			hit_bg = true;
 			dv = *MoveOffset;
 			NormaliseVector( &dv );
 			impact_dotp = -( dv.x * fnorm.nx + dv.y * fnorm.ny + dv.z * fnorm.nz );
@@ -1229,7 +1229,7 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 		}
 	}
 //	if ( no_collision )
-//		hit_bg = FALSE;
+//		hit_bg = false;
 	if ( !hit_bg )
 	{
 		if ( hit_portal )
@@ -1268,14 +1268,14 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
  * Returns
  *	EndGroup	=	group final position is in
  */
-uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *MoveOffset )
+u_int16_t MoveGroup( MLOADHEADER *m, VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset )
 #ifdef BSP_ONLY
 {
 	VECTOR ppos, pmove, epos;
 	NORMAL pnorm;
-	uint16 group;
-	uint16 next_group;
-	BOOL hit_portal;
+	u_int16_t group;
+	u_int16_t next_group;
+	_Bool hit_portal;
 	VECTOR dv;
 
 	next_group = StartGroup;
@@ -1283,10 +1283,10 @@ uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *M
 	pmove = *MoveOffset;
 	do {
 		group = next_group;
-		hit_portal = FALSE;
+		hit_portal = false;
 		if ( OneGroupPortalCol( m, group, &ppos, &pmove, &epos, &pnorm, &next_group, 0 ) )
 		{
-			hit_portal = TRUE;
+			hit_portal = true;
 			pmove.x += ppos.x - epos.x;
 			pmove.y += ppos.y - epos.y;
 			pmove.z += ppos.z - epos.z;
@@ -1307,16 +1307,16 @@ uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *M
 {
 	VECTOR ppos, pmove, epos;
 	NORMAL pnorm;
-	uint16 group;
-	uint16 next_group;
-	BOOL hit_portal;
+	u_int16_t group;
+	u_int16_t next_group;
+	_Bool hit_portal;
 	VECTOR dv;
 
 #ifdef NO_SEPARATE_BSP_PORTAL_COLLIDE
 	if ( Bsp_Portal_Header.state )
 	{
 		BackgroundCollide( &MCloadheadert0, &Mloadheader, StartPos, StartGroup, MoveOffset,
-			&epos, &group, &pnorm, &dv, FALSE, NULL );
+			&epos, &group, &pnorm, &dv, false, NULL );
 	}
 	else
 #endif
@@ -1326,10 +1326,10 @@ uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *M
 		pmove = *MoveOffset;
 		do {
 			group = next_group;
-			hit_portal = FALSE;
+			hit_portal = false;
 			if ( OneGroupPortalCol( m, group, &ppos, &pmove, &epos, &pnorm, &next_group, 0 ) )
 			{
-				hit_portal = TRUE;
+				hit_portal = true;
 				pmove.x += ppos.x - epos.x;
 				pmove.y += ppos.y - epos.y;
 				pmove.z += ppos.z - epos.z;
@@ -1355,18 +1355,18 @@ uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *M
 	Procedure	:	Does the collision between a specified group
 	Input		:	MCLOADHEADER *
 				:	MLOADHEADER *
-				:	uint16 group
+				:	u_int16_t group
 				:	VECTOR * Pos
 				:	VECTOR * Dir
 				:	VECTOR * ImpactPoint
 				:	NORMAL * FaceNormal
 				:	VECTOR * Pos_New
-				:	BOOL	BGCol
-  Output		:	BOOL
+				:	_Bool	BGCol
+  Output		:	_Bool
 ===================================================================*/
-BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , uint16 group ,
+_Bool OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , u_int16_t group ,
 					 VECTOR * Pos, VECTOR * Dir  ,
-					 VECTOR * ImpactPoint , NORMAL  * FaceNormal , VECTOR * Pos_New, BOOL BGCol, BGOBJECT ** BGColObject )
+					 VECTOR * ImpactPoint , NORMAL  * FaceNormal , VECTOR * Pos_New, _Bool BGCol, BGOBJECT ** BGColObject )
 #ifdef BSP_ONLY
 {
 #ifdef POLYGONAL_COLLISIONS
@@ -1386,8 +1386,8 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 	float		ImpactOffset;
 	MCFACE		BSPFace; ZEROMEM(BSPFace);
 	
-	if( group == (uint16) -1)
-		return FALSE;
+	if( group == (u_int16_t) -1)
+		return false;
 
 	Origin.x = Pos->x;
 	Origin.y = Pos->y;
@@ -1516,8 +1516,8 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 
 		if( CheckBGObjectsCol( group, Distance, ImpactPoint, collided, Pos_New, FaceNormal, BGColObject ) )
 		{
-			CompEnemyHit = (uint16) -1;
-			AnyCompEnemyHit = (uint16) -1;
+			CompEnemyHit = (u_int16_t) -1;
+			AnyCompEnemyHit = (u_int16_t) -1;
 			collided += ColCollided;
 			e.x = ( ImpactPoint->x - Pos->x );
 			e.y = ( ImpactPoint->y - Pos->y );
@@ -1531,7 +1531,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 		}
 		else
 		{
-			if( !collided ) return (FALSE);
+			if( !collided ) return (false);
 		   	
 			FaceNormal->nx = CollFace->nx;
 			FaceNormal->ny = CollFace->ny;
@@ -1557,7 +1557,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 	}
 	else
 	{
-		if( !collided ) return (FALSE);
+		if( !collided ) return (false);
 	   	
 		FaceNormal->nx = CollFace->nx;
 		FaceNormal->ny = CollFace->ny;
@@ -1580,7 +1580,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 		Pos_New->y = e.y + Dn.y;
 		Pos_New->z = e.z + Dn.z;
 	}
-	return(TRUE);
+	return(true);
 }
 #else // !BSP_ONLY
 {
@@ -1601,8 +1601,8 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 	MCFACE		BSPFace;
 #endif
 	
-	if( group == (uint16) -1)
-		return FALSE;
+	if( group == (u_int16_t) -1)
+		return false;
 
 	Origin.x = Pos->x;
 	Origin.y = Pos->y;
@@ -1732,7 +1732,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 		}
 		else
 		{
-			if( !collided ) return (FALSE);
+			if( !collided ) return (false);
 		   	
 			FaceNormal->nx = CollFace->nx;
 			FaceNormal->ny = CollFace->ny;
@@ -1758,7 +1758,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 	}
 	else
 	{
-		if( !collided ) return (FALSE);
+		if( !collided ) return (false);
 	   	
 		FaceNormal->nx = CollFace->nx;
 		FaceNormal->ny = CollFace->ny;
@@ -1781,7 +1781,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 		Pos_New->y = e.y + Dn.y;
 		Pos_New->z = e.z + Dn.z;
 	}
-	return(TRUE);
+	return(true);
 }
 #endif // !BSP_ONLY
 
@@ -1789,29 +1789,29 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 /*===================================================================
 	Procedure	:	Does the collision between the portals in a specified group
 	Input		:	MLOADHEADER *
-				:	uint16 group
+				:	u_int16_t group
 				:	VECTOR * Pos
 				:	VECTOR * Dir
 				:	VECTOR * ImpactPoint
 				:	NORMAL * FaceNormal
-				:	uint16 * PortalHit
-  Output		:	BOOL
+				:	u_int16_t * PortalHit
+  Output		:	_Bool
 ===================================================================*/
-BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
+_Bool OneGroupPortalCol( MLOADHEADER * Mloadheader , u_int16_t group ,
 						VECTOR * Pos, VECTOR * Dir  ,
-						VECTOR * ImpactPoint , NORMAL * FaceNormal, uint16 *Next_Group,
+						VECTOR * ImpactPoint , NORMAL * FaceNormal, u_int16_t *Next_Group,
 						int collisionhint )
 #ifdef BSP_ONLY
 {
 	float		Distance = 0.0f;
-	uint16		flag = 0;	
-	BOOL		res;
+	u_int16_t		flag = 0;	
+	_Bool		res;
 	BSP_PORTAL_GROUP	*pg;
 	BSP_PORTAL			*bp;
 	int					j;
 	
-	if( group == (uint16) -1)
-		return FALSE;
+	if( group == (u_int16_t) -1)
+		return false;
 
 	Origin.x = Pos->x;
 	Origin.y = Pos->y;
@@ -1825,7 +1825,7 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 	{
 		bp = &pg->portal[ j ];
 		res = ColRayPlaneIntersect( &bp->normal, bp->offset );
-		if( res == TRUE )
+		if( res == true )
 		{
 			if ( PISDistRecursive( &IPoint, bp->bsp.Root ) )
 			{
@@ -1859,15 +1859,15 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 		}
 	}
 
-	return ( flag ) ? TRUE : FALSE;
+	return ( flag ) ? true : false;
 }
 #else // ! BSP_ONLY
 {
 	PORTAL	*	PortalPnt;
-	uint16		i;
+	u_int16_t		i;
 	float		Distance;
-	uint16		flag = 0;	
-	BOOL		res;
+	u_int16_t		flag = 0;	
+	_Bool		res;
 	float		SkinThickness = 300.0F * GLOBAL_SCALE;
 	int			k;
 	
@@ -1878,8 +1878,8 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 	ODir.y = Dir->y;
 	ODir.z = Dir->z;
 
-	if( group == (uint16) -1)
-		return FALSE;
+	if( group == (u_int16_t) -1)
+		return false;
 
 	if ( Bsp_Portal_Header.state )
 	{
@@ -1892,7 +1892,7 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 		{
 			bp = &pg->portal[ j ];
 			res = ColRayPlaneIntersect( &bp->normal, bp->offset );
-			if( res == TRUE )
+			if( res == true )
 			{
 				if ( PISDistRecursive( &IPoint, bp->bsp.Root ) )
 				{
@@ -1935,7 +1935,7 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 			for ( k = 0; k < PortalPnt->num_polys_in_portal; k++ )
 			{
 				res = ColRayPolyIntersect( &PortalPnt->Poly[ k ] );
-				if( res == TRUE )
+				if( res == true )
 				{
 					if ( flag == 0 )
 					{
@@ -1984,11 +1984,11 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 	}
 #endif
 
-	return ( flag ) ? TRUE : FALSE;
+	return ( flag ) ? true : false;
 }
 #endif // !BSP_ONLY
 
-BOOL AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, uint16 EndGroup )
+_Bool AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, u_int16_t EndGroup )
 {
 	VECTOR	dv;
 
@@ -2004,10 +2004,10 @@ static BGOBJECT	*	CurParent = NULL;
 
 /*===================================================================
 	Procedure	:	Check Ship to Background Objects Collision
-	Input		:	uint16	Group
+	Input		:	u_int16_t	Group
 	Output		:	Nothing
 ===================================================================*/
-BOOL CheckBGObjectsCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
+_Bool CheckBGObjectsCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject )
 {
 	float			D;
@@ -2090,7 +2090,7 @@ BOOL CheckBGObjectsCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 		New_Pos->x = e.x + Dn.x;
 		New_Pos->y = e.y + Dn.y;
 		New_Pos->z = e.z + Dn.z;
-		return( TRUE );
+		return( true );
 	}
 	else
 	{
@@ -2100,21 +2100,21 @@ BOOL CheckBGObjectsCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 		}
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Check Ship to RestartPoints Collision
-	Input		:	uint16		Group
+	Input		:	u_int16_t		Group
 				:	float		Distance to intersection
 				:	VECTOR	*	ImpactPoint
 				:	int			collided
 				:	VECTOR	*	New_Pos
 				:	NORMAL	*	Collision Normal
 				:	BGOBJECT ** Bgobject
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL CheckRestartPointCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
+_Bool CheckRestartPointCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject )
 {
 	float			D;
@@ -2170,7 +2170,7 @@ BOOL CheckRestartPointCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 		New_Pos->x = e.x + Dn.x;
 		New_Pos->y = e.y + Dn.y;
 		New_Pos->z = e.z + Dn.z;
-		return( TRUE );
+		return( true );
 	}
 
 	if( BGObject )
@@ -2178,21 +2178,21 @@ BOOL CheckRestartPointCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 		*BGObject = NULL;
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Check Ray to Enemy Polygonal Collision
-	Input		:	uint16		Group
+	Input		:	u_int16_t		Group
 				:	float		Distance to intersection
 				:	VECTOR	*	ImpactPoint
 				:	int			collided
 				:	VECTOR	*	New_Pos
 				:	NORMAL	*	Collision Normal
 				:	BGOBJECT ** Bgobject
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL CheckEnemyPolyCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
+_Bool CheckEnemyPolyCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject )
 {
 	float			D;
@@ -2202,7 +2202,7 @@ BOOL CheckEnemyPolyCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 	float			nDOTe;
 	ENEMY		*	Object;
 	int				OldColCollided;
-	uint16			EnemyHit = (uint16) -1;
+	u_int16_t			EnemyHit = (u_int16_t) -1;
 
 	ColDist = Distance;
 	ColChild = NULL;
@@ -2281,22 +2281,22 @@ SkipIt:
 			CompEnemyHitNormal.nz = FaceNormal->nz;
 			CompEnemyHitDist = ColDist;
 		}
-		return( TRUE );
+		return( true );
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Process components of Background Object
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	Nothing
 ===================================================================*/
-void CollideBGOChildren( COMP_OBJ * Children, int16 NumChildren )
+void CollideBGOChildren( COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16					Zone;
-	int16					Count;
+	int16_t					Zone;
+	int16_t					Count;
 	VECTOR					NewOrigin;
 	VECTOR					NewDir;
 	VECTOR					NewEnd;
@@ -2430,8 +2430,8 @@ void CollideBGOChildren( COMP_OBJ * Children, int16 NumChildren )
 /*===================================================================
 	Procedure	:	Does the collision between a specified group
 	Input		:	float		Distance to int
-				:	int16		Collided
-				:	uint16		group
+				:	int16_t		Collided
+				:	u_int16_t		group
 				:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
 				:	VECTOR	*	ImpactPoint
@@ -2439,22 +2439,22 @@ void CollideBGOChildren( COMP_OBJ * Children, int16 NumChildren )
 				:	VECTOR	*	Pos_New
 				:	BGOBJECT **	BGObject collided with
 				:	float		Radius
-  Output		:	BOOL
+  Output		:	_Bool
 ===================================================================*/
-BOOL OneGroupBGObjectCol( float Distance, int16 Collided, uint16 Group, VECTOR * Pos, VECTOR * Dir  ,
+_Bool OneGroupBGObjectCol( float Distance, int16_t Collided, u_int16_t Group, VECTOR * Pos, VECTOR * Dir  ,
 					 VECTOR * ImpactPoint , NORMAL  * FaceNormal , VECTOR * Pos_New, BGOBJECT ** BGObject, float Radius )
 {
 #if ENABLEENEMYCOLLISIONS
 
-	int16	ColCount = 0;
+	int16_t	ColCount = 0;
 
-	if( Group == (uint16) -1) return FALSE;
+	if( Group == (u_int16_t) -1) return false;
 
 	Origin = *Pos;
 	ODir = *Dir;
 	ColRadius = Radius;
-	AnyCompEnemyHit = (uint16) -1;
-	CompEnemyHit = (uint16) -1;
+	AnyCompEnemyHit = (u_int16_t) -1;
+	CompEnemyHit = (u_int16_t) -1;
 
 	if(	CheckEnemyPolyCol( Group, Distance, ImpactPoint, Collided, Pos_New, FaceNormal, BGObject ) )
 	{
@@ -2467,21 +2467,21 @@ BOOL OneGroupBGObjectCol( float Distance, int16 Collided, uint16 Group, VECTOR *
 		ColCount++;
 	}
 
-	if( !ColCount ) return( FALSE );
+	if( !ColCount ) return( false );
 
 #else
 
-	if( Group == (uint16) -1) return FALSE;
+	if( Group == (u_int16_t) -1) return false;
 
 	Origin = *Pos;
 	ODir = *Dir;
 	ColRadius = Radius;
 
-	if( !CheckBGObjectsCol( Group, Distance, ImpactPoint, Collided, Pos_New, FaceNormal, BGObject ) ) return (FALSE);
+	if( !CheckBGObjectsCol( Group, Distance, ImpactPoint, Collided, Pos_New, FaceNormal, BGObject ) ) return (false);
 
 #endif
 
-	return(TRUE);
+	return(true);
 }
 
 /*===================================================================
@@ -2493,7 +2493,7 @@ BOOL OneGroupBGObjectCol( float Distance, int16 Collided, uint16 Group, VECTOR *
 				:	float		Radius
 	Output		:	Nothing
 ===================================================================*/
-BOOL CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVector, float * DamagePtr, float Radius )
+_Bool CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVector, float * DamagePtr, float Radius )
 {
 	float	Speed;
 
@@ -2503,7 +2503,7 @@ BOOL CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVecto
 	ColRadius = Radius;
 
 	if( !PointToSphere( (VERT *) &Object->ColCenter, ( Object->ColRadius +  ( SHIP_RADIUS * 1.5F ) ), (VERT *) Pos ) )
-		return( FALSE );
+		return( false );
 
 	if( Object->NumChildren && Object->Children )
 	{
@@ -2537,11 +2537,11 @@ BOOL CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVecto
 			PushVector->x *= Speed;
 			PushVector->y *= Speed;
 			PushVector->z *= Speed;
-			return( TRUE );
+			return( true );
 		}
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
@@ -2553,7 +2553,7 @@ BOOL CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVecto
 				:	float		Radius
 	Output		:	Nothing
 ===================================================================*/
-BOOL CheckCompObjectCollision( VECTOR * Pos, COMP_OBJ * Comps, VECTOR * PushVector, float * DamagePtr, float Radius )
+_Bool CheckCompObjectCollision( VECTOR * Pos, COMP_OBJ * Comps, VECTOR * PushVector, float * DamagePtr, float Radius )
 {
 	float	Speed;
 
@@ -2594,23 +2594,23 @@ BOOL CheckCompObjectCollision( VECTOR * Pos, COMP_OBJ * Comps, VECTOR * PushVect
 			PushVector->x *= Speed;
 			PushVector->y *= Speed;
 			PushVector->z *= Speed;
-			return( TRUE );
+			return( true );
 		}
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Process components of Background Object
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	Nothing
 ===================================================================*/
-void CollideBGOToCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
+void CollideBGOToCompObjChildren( COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16					Zone;
-	int16					Count;
+	int16_t					Zone;
+	int16_t					Count;
 	VECTOR					NewOrigin;
 	VECTOR					NewDir;
 	VECTOR					NewEnd;
@@ -2766,14 +2766,14 @@ void CollideBGOToCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 }
 
 
-static BOOL move_object = TRUE;
-static BOOL bounce_object = TRUE;
-static BOOL NoBGObject = TRUE;
+static _Bool move_object = true;
+static _Bool bounce_object = true;
+static _Bool NoBGObject = true;
 
 
 #if 0
 
-BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -2787,7 +2787,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 		struct {
 			float dx, dy;
 		} start, end;
-		uint16 line;
+		u_int16_t line;
 	} FeelerOffset[ MAX_FEELER_RAYS ] =
 	{
 		{ 0.0F, 0.0F,  0.0F, 0.0F, -1 },
@@ -2808,7 +2808,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 #endif
 	};
 	VECTOR FeelerImpactPoint;
-	uint16 FeelerImpactGroup;
+	u_int16_t FeelerImpactGroup;
 	NORMAL FeelerFaceNormal;
 	VECTOR FeelerPos_New;
 	BGOBJECT *FeelerBGObject;
@@ -2826,21 +2826,21 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 	VECTOR FeelerEndPoint;
 	float Num, Div;
 #ifdef DEBUG_MULTI_RAYS
-	uint16 line;
+	u_int16_t line;
 #endif
-	static uint16 target_line = -1;
+	static u_int16_t target_line = -1;
 	VECTOR FeelerStart;
-	uint16 FeelerGroup;
+	u_int16_t FeelerGroup;
 	int truncated;
 	NORMAL ImpactNormal;
 	float ImpactPlane;
 	float FeelerLength = 1.25F * radius;
 	VECTOR StartPos;
 	VECTOR Pos_New;
-	BOOL hit;
+	_Bool hit;
 	VECTOR ImpactPoint;
 	
-	hit = FALSE;
+	hit = false;
 	StartPos = Obj->Pos;
 	Move_Dir = *Move_Off;
 	NormaliseVector( &Move_Dir );
@@ -2875,12 +2875,12 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 		Feeler.y += radius * ( dx1 * Right.y + dy1 * Up.y );
 		Feeler.z += radius * ( dx1 * Right.z + dy1 * Up.z );
 #ifdef DEBUG_MULTI_RAYS
-		if ( FeelerOffset[ f ].line == (uint16) -1 )
+		if ( FeelerOffset[ f ].line == (u_int16_t) -1 )
 		{
 			FeelerOffset[ f ].line = FindFreeLine();
 		}
 		line = FeelerOffset[ f ].line;
-		if ( line != (uint16) -1 )
+		if ( line != (u_int16_t) -1 )
 		{
 			Lines[ line ].StartPos = FeelerStart;
 			Lines[ line ].EndPos.x = FeelerStart.x + Feeler.x;
@@ -2899,7 +2899,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 #endif
 		if ( BackgroundCollide( &MCloadheadert0, &Mloadheader,
 			&FeelerStart, FeelerGroup, &Feeler,
-			&FeelerImpactPoint , &FeelerImpactGroup, &FeelerFaceNormal, &FeelerPos_New, TRUE, ( BGObject ) ? &FeelerBGObject : NULL ) )
+			&FeelerImpactPoint , &FeelerImpactGroup, &FeelerFaceNormal, &FeelerPos_New, true, ( BGObject ) ? &FeelerBGObject : NULL ) )
 		{
 			FeelerPlane = -DotProduct( (VECTOR *)&FeelerFaceNormal, &FeelerImpactPoint ) - radius;
 			Div = DotProduct( &Move_Dir , (VECTOR *)&FeelerFaceNormal );
@@ -3005,9 +3005,9 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 		BumpForce.y = ImpactNormal.ny * MaxPerpendicularAccel;
 		BumpForce.z = ImpactNormal.nz * MaxPerpendicularAccel;
 #ifdef DEBUG_MULTI_RAYS
-		if ( target_line == (uint16) -1 )
+		if ( target_line == (u_int16_t) -1 )
 			target_line = FindFreeLine();
-		if ( target_line != (uint16) -1 )
+		if ( target_line != (u_int16_t) -1 )
 		{
 			Lines[ target_line ].StartPos = ImpactPoint;
 			Lines[ target_line ].EndPos = Pos_New;
@@ -3068,7 +3068,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 		}
 		//								DebugPrintf( "Move (%f, %f, %f)\n",
 		//									Move.x, Move., Move.z );
-		hit = TRUE;
+		hit = true;
 	}
 	Move_Off->x = ImpactPoint.x - StartPos.x;
 	Move_Off->y = ImpactPoint.y - StartPos.y;
@@ -3090,7 +3090,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 #define FEELER_LENGTH_TO_RADIUS_RATIO	(1.25F)
 
 
-BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -3117,7 +3117,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 		{-1.0F, 0.0F,  1.0F, 0.0F },
 	};
 	VECTOR FeelerImpactPoint;
-	uint16 FeelerImpactGroup;
+	u_int16_t FeelerImpactGroup;
 	NORMAL FeelerFaceNormal;
 	VECTOR FeelerPos_New;
 	BGOBJECT *FeelerBGObject;
@@ -3132,16 +3132,16 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 	VECTOR FeelerEndPoint;
 	float Num, Div;
 	VECTOR FeelerStart;
-	uint16 FeelerGroup;
+	u_int16_t FeelerGroup;
 	NORMAL ImpactNormal;
 	float ImpactPlane;
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
 	VECTOR Pos_New; ZEROMEM(Pos_New);
-	BOOL hit;
+	_Bool hit;
 	VECTOR ImpactPoint;
 	
-	hit = FALSE;
+	hit = false;
 	StartPos = Obj->Pos;
 	Move_Dir = *Move_Off;
 	NormaliseVector( &Move_Dir );
@@ -3269,7 +3269,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 				DebugPrintf( "impactdist = %f, no movement\n", ImpactDist );
 			}
 		}
-		hit = TRUE;
+		hit = true;
 	}
 	Move_Off->x = ImpactPoint.x - StartPos.x;
 	Move_Off->y = ImpactPoint.y - StartPos.y;
@@ -3286,44 +3286,44 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 #endif
 
 
-BOOL WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+_Bool WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
-	BOOL collide;
+	_Bool collide;
 
-	move_object = FALSE;
+	move_object = false;
 	collide = ObjectCollide( Obj, Move_Off, radius, BGObject );
-	move_object = TRUE;
+	move_object = true;
 
 	return collide;
 }
 
 
-BOOL ObjectCollideNoBounce( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+_Bool ObjectCollideNoBounce( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
-	BOOL collide;
+	_Bool collide;
 
-	bounce_object = FALSE;
+	bounce_object = false;
 	collide = ObjectCollide( Obj, Move_Off, radius, BGObject );
-	bounce_object = TRUE;
+	bounce_object = true;
 
 	return collide;
 }
 
 
-BOOL ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius )
+_Bool ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius )
 {
-	BOOL collide;
+	_Bool collide;
 
-	NoBGObject = FALSE;
+	NoBGObject = false;
 	collide = ObjectCollide( Obj, Move_Off, radius, NULL );
-	NoBGObject = TRUE;
+	NoBGObject = true;
 
 	return collide;
 }
 
 
 
-BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject )
+_Bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -3350,7 +3350,7 @@ BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Tar
 		{-1.0F, 0.0F,  1.0F, 0.0F },
 	};
 	VECTOR FeelerImpactPoint;
-	uint16 FeelerImpactGroup;
+	u_int16_t FeelerImpactGroup;
 	NORMAL FeelerFaceNormal;
 	VECTOR FeelerPos_New;
 	BGOBJECT *FeelerBGObject;
@@ -3363,16 +3363,16 @@ BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Tar
 	VECTOR FeelerEndPoint;
 	float Num, Div;
 	VECTOR FeelerStart;
-	uint16 FeelerGroup;
+	u_int16_t FeelerGroup;
 	NORMAL ImpactNormal;
 	float ImpactPlane;
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
 	VECTOR Pos_New; ZEROMEM(Pos_New);
-	BOOL hit;
+	_Bool hit;
 	VECTOR ImpactPoint;
 	
-	hit = FALSE;
+	hit = false;
 	StartPos = Obj->Pos;
 	Move_Dir = *Move_Off;
 	NormaliseVector( &Move_Dir );
@@ -3411,7 +3411,7 @@ BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Tar
 		Feeler.z += radius * ( dx1 * Right.z + dy1 * Up.z );
 		if ( BackgroundCollide( &MCloadheadert0, &Mloadheader,
 			&FeelerStart, FeelerGroup, &Feeler,
-			&FeelerImpactPoint , &FeelerImpactGroup, &FeelerFaceNormal, &FeelerPos_New, TRUE, ( BGObject ) ? &FeelerBGObject : NULL ) )
+			&FeelerImpactPoint , &FeelerImpactGroup, &FeelerFaceNormal, &FeelerPos_New, true, ( BGObject ) ? &FeelerBGObject : NULL ) )
 		{
 			FeelerPlane = -DotProduct( (VECTOR *)&FeelerFaceNormal, &FeelerImpactPoint ) - radius;
 			Div = DotProduct( &Move_Dir , (VECTOR *)&FeelerFaceNormal );
@@ -3454,7 +3454,7 @@ BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Tar
 	}
 	if ( ImpactDist < MoveDist )
 	{
-		hit = TRUE;
+		hit = true;
 	}
 	Move_Off->x = ImpactPoint.x - StartPos.x;
 	Move_Off->y = ImpactPoint.y - StartPos.y;
@@ -3472,7 +3472,7 @@ BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Tar
 }
 
 
-BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float radius, VECTOR *Impact_Point, uint16 *Impact_Group, NORMAL *Impact_Normal )
+_Bool QCollide( VECTOR *Start_Pos, u_int16_t Start_Group, VECTOR *Move_Off, float radius, VECTOR *Impact_Point, u_int16_t *Impact_Group, NORMAL *Impact_Normal )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -3495,7 +3495,7 @@ BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float ra
 		{ 0.0F, 0.0F, -1.0F, 1.0F },
 	};
 	VECTOR FeelerImpactPoint;
-	uint16 FeelerImpactGroup;
+	u_int16_t FeelerImpactGroup;
 	NORMAL FeelerFaceNormal;
 	VECTOR FeelerPos_New;
 	float FeelerImpactDist;
@@ -3508,14 +3508,14 @@ BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float ra
 	VECTOR FeelerEndPoint;
 	float Num, Div;
 	VECTOR FeelerStart;
-	uint16 FeelerGroup;
+	u_int16_t FeelerGroup;
 	NORMAL ImpactNormal; ZEROMEM(ImpactNormal);
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
-	BOOL hit;
+	_Bool hit;
 	VECTOR ImpactPoint;
 	
-	hit = FALSE;
+	hit = false;
 	StartPos = *Start_Pos;
 	Move_Dir = *Move_Off;
 	NormaliseVector( &Move_Dir );
@@ -3555,7 +3555,7 @@ BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float ra
 		Feeler.z += radius * ( dx1 * Right.z + dy1 * Up.z );
 		if ( BackgroundCollide( &MCloadheadert0, &Mloadheader,
 			&FeelerStart, FeelerGroup, &Feeler,
-			&FeelerImpactPoint , &FeelerImpactGroup, &FeelerFaceNormal, &FeelerPos_New, TRUE, NULL ) )
+			&FeelerImpactPoint , &FeelerImpactGroup, &FeelerFaceNormal, &FeelerPos_New, true, NULL ) )
 		{
 			FeelerPlane = -DotProduct( (VECTOR *)&FeelerFaceNormal, &FeelerImpactPoint ) - radius;
 			Div = DotProduct( &Move_Dir , (VECTOR *)&FeelerFaceNormal );
@@ -3599,7 +3599,7 @@ BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float ra
 		Move.z = ImpactPoint.z - StartPos.z;
 		*Impact_Point = ImpactPoint;
 		*Impact_Normal = ImpactNormal;
-		hit = TRUE;
+		hit = true;
 	}
 	*Impact_Group = MoveGroup( &Mloadheader, &StartPos, Start_Group, &Move );
 	return hit;
@@ -3610,11 +3610,11 @@ BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float ra
 	Input		:		VECTOR	*	Collision Point (TBFI)
 				:		NORMAL	*	Collision Normal (TBFI)
 				:		float	*	Collision Distance (TBFI)
-	Output		:		uint16		EnemyHit (0xffff) None
+	Output		:		u_int16_t		EnemyHit (0xffff) None
 ===================================================================*/
-uint16 GetComEnemyHitInfo( VECTOR * IntPoint, NORMAL * IntNormal, float * IntDistance )
+u_int16_t GetComEnemyHitInfo( VECTOR * IntPoint, NORMAL * IntNormal, float * IntDistance )
 {
-	if( CompEnemyHit == (uint16) -1 )
+	if( CompEnemyHit == (u_int16_t) -1 )
 	{
 		return( CompEnemyHit );
 	}
@@ -3633,9 +3633,9 @@ uint16 GetComEnemyHitInfo( VECTOR * IntPoint, NORMAL * IntNormal, float * IntDis
 /*===================================================================
 	Procedure	:		Check if hit any enemy
 	Input		:		Nothing
-	Output		:		uint16		EnemyHit (0xffff) None
+	Output		:		u_int16_t		EnemyHit (0xffff) None
 ===================================================================*/
-uint16 CheckAnyEnemyHit( void )
+u_int16_t CheckAnyEnemyHit( void )
 {
 	return( AnyCompEnemyHit );
 }

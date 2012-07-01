@@ -191,9 +191,9 @@ typedef struct VECTOR {
 	Short Vector
 ===================================================================*/
 typedef struct SHORTVECTOR {
-	int16	x;
-	int16	y;
-	int16	z;
+	int16_t	x;
+	int16_t	y;
+	int16_t	z;
 } SHORTVECTOR;
 
 
@@ -245,7 +245,7 @@ void VisPolyApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 );
 
 void MatrixTranspose( MATRIX * m1, MATRIX * m2 );
 
-uint16	Random_Range( uint16 Max );
+u_int16_t	Random_Range( u_int16_t Max );
 float Random_Range_Float( float Max );
 
 

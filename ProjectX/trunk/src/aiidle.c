@@ -46,7 +46,7 @@ void AI_AIR_IDLE( register ENEMY * Enemy )
 	}         
 	// Switch to AIMODE_SCAN
 	Enemy->Object.AI_Mode = AIMODE_SCAN;
-	Enemy->Timer  =	RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
+	Enemy->Timer  =	RESET_SCAN_TIME + (float) Random_Range( (u_int16_t) RESET_SCAN_TIME );
 }
 /*===================================================================
 	Procedure	:	TURRET Idle
@@ -74,7 +74,7 @@ void AI_TURRET_IDLE( register ENEMY * Enemy )
 	}         
 	// Switch to AIMODE_SCAN
 
-	AI_THINK( Enemy , TRUE , TRUE );
+	AI_THINK( Enemy , true , true );
 
 	if( Enemy->AIFlags & AI_ANYPLAYERINRANGE )
 	{
@@ -106,7 +106,7 @@ void AI_CRAWL_IDLE( register ENEMY * Enemy )
 	}         
 	// Switch to AIMODE_SCAN
 	Enemy->Object.AI_Mode = AIMODE_SCAN;
-	Enemy->Timer  =	RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
+	Enemy->Timer  =	RESET_SCAN_TIME + (float) Random_Range( (u_int16_t) RESET_SCAN_TIME );
 }
 
 

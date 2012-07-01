@@ -14,40 +14,40 @@
 
 typedef struct NODE
 {
-	BOOL	LegalGroup;
-	uint16	Flags;
-	int16	Group;
+	_Bool	LegalGroup;
+	u_int16_t	Flags;
+	int16_t	Group;
 	VECTOR	Pos;
 	VECTOR	SolidPos;
 	float	Radius;
-	uint16	NodeNum;		// what number in the array I am..
-	uint32	NetMask;		// which networks am I in..
-	int16	NumOfLinks;
+	u_int16_t	NodeNum;		// what number in the array I am..
+	u_int32_t	NetMask;		// which networks am I in..
+	int16_t	NumOfLinks;
 struct	NODE *	NodeLink[MAXLINKSPERNODE];
 struct	NODE *	NextNodeInGroup;
 } NODE,*LPNODE;
 
 typedef struct _NODENETWORKHEADER
 {
-	BOOL	State;
-	int32	NumOfNodes;
+	_Bool	State;
+	int32_t	NumOfNodes;
 	NODE *	FirstNode;
 } NODENETWORKHEADER,*LPNODENETWORKHEADER;
 
 
 void NodeRelease(void);
-BOOL Nodeload( char * Filename );
+_Bool Nodeload( char * Filename );
 
 void FindNearestNode( OBJECT * Object );
 void UpdateNearestNode( OBJECT * Object );
 void UpdateNearestNodeSpecial( OBJECT * Object );
-NODE * WhichNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo );
-NODE * WhichRetreatNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo );
+NODE * WhichNode( u_int32_t Network , NODE * NodeFrom , NODE * NodeTo );
+NODE * WhichRetreatNode( u_int32_t Network , NODE * NodeFrom , NODE * NodeTo );
 
-NODE * ChooseAlternateNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo );
+NODE * ChooseAlternateNode( u_int32_t Network , NODE * NodeFrom , NODE * NodeTo );
 
-NODE * FindSuitableSplineNode( uint32 Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 );
-NODE * FindSuitableSplineNodeRandom( uint32 Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 );
-float ReturnClosestNode( VECTOR * Pos, VECTOR * NearestNodePos, uint16 * Group, VECTOR * TopLeft, VECTOR * BottomRight );
+NODE * FindSuitableSplineNode( u_int32_t Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 );
+NODE * FindSuitableSplineNodeRandom( u_int32_t Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 );
+float ReturnClosestNode( VECTOR * Pos, VECTOR * NearestNodePos, u_int16_t * Group, VECTOR * TopLeft, VECTOR * BottomRight );
 
 #endif	// NODE_INCLUDED

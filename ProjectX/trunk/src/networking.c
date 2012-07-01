@@ -39,32 +39,32 @@
 
 BYTE WhoIAm = UNASSIGNED_SHIP;
 
-extern BOOL Debug;
+extern _Bool Debug;
 
 int	PacketGot[256];
 int	PacketSize[256];
 
-uint32 RecPacketSize				= 0;
-uint32 MaxRecPacketSize				= 0;
-uint32 BytesPerSecRec				= 0;
-uint32 BytesPerSecSent				= 0;
-uint32 CurrentBytesPerSecRec		= 0;
-uint32 CurrentBytesPerSecSent		= 0;
-uint32 MaxCurrentBytesPerSecRec		= 0;
-uint32 MaxCurrentBytesPerSecSent	= 0;
+u_int32_t RecPacketSize				= 0;
+u_int32_t MaxRecPacketSize				= 0;
+u_int32_t BytesPerSecRec				= 0;
+u_int32_t BytesPerSecSent				= 0;
+u_int32_t CurrentBytesPerSecRec		= 0;
+u_int32_t CurrentBytesPerSecSent		= 0;
+u_int32_t MaxCurrentBytesPerSecRec		= 0;
+u_int32_t MaxCurrentBytesPerSecSent	= 0;
 float BytesPerSecTimer				= 0.0F;
 
 extern MENU  * GetPlayerNumMenu;
 
 extern int FontHeight;
 
-extern	int16	PickupsGot[ MAXPICKUPTYPES ];
-extern	uint32	TeamFlagMask[ MAX_TEAMS ];
-extern	int8	TeamFlagPickup[ MAX_TEAMS ];
+extern	int16_t	PickupsGot[ MAXPICKUPTYPES ];
+extern	u_int32_t	TeamFlagMask[ MAX_TEAMS ];
+extern	int8_t	TeamFlagPickup[ MAX_TEAMS ];
 
-extern int16	NumPrimaryPickups;
+extern int16_t	NumPrimaryPickups;
 
-extern	BOOL	CountDownOn;
+extern	_Bool	CountDownOn;
 extern char LevelNames[MAXLEVELS][128];
 
 extern	SLIDER	MaxPlayersSlider;
@@ -74,14 +74,14 @@ extern SLIDER	GoalScoreSlider;
 extern LIST	LevelList;
 extern	SLIDER	TimeLimit;
 extern	int		GameType;
-extern	BOOL	MyBrightShips;
-extern BOOL BountyBonus;
+extern	_Bool	MyBrightShips;
+extern _Bool BountyBonus;
 
 extern float GetPlayerNumCount1;
 extern float GetPlayerNumCount2;
 extern int   GetPlayerNumCount;
 
-extern BOOL	PickupValid[ MAXPICKUPTYPES ];
+extern _Bool	PickupValid[ MAXPICKUPTYPES ];
 
 #define YourVersion "YOUR VERSION: " PXVersion
 
@@ -93,26 +93,26 @@ extern BOOL	PickupValid[ MAXPICKUPTYPES ];
 #define	SHORTANGLEMODIFIERUNPACK (45.0F / 32767.0F)
 
 extern char CTFMessage[];
-extern	BOOL IMustQuit;
+extern	_Bool IMustQuit;
 
-extern BOOL NeedFlagAtHome;
-extern BOOL OwnFlagTeleportsHome;
-extern BOOL CanCarryOwnFlag;
+extern _Bool NeedFlagAtHome;
+extern _Bool OwnFlagTeleportsHome;
+extern _Bool CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
-void SetTeamGoals( uint16 *TeamGoals );
+void SetTeamGoals( u_int16_t *TeamGoals );
 
-uint32 BuildShipFlags( BYTE Player );
-void UnPackShipFlags( BYTE Player , uint32 Flags );
+u_int32_t BuildShipFlags( BYTE Player );
+void UnPackShipFlags( BYTE Player , u_int32_t Flags );
 
 extern int FlagsToGenerate;
-extern  uint32  Host_Flags[ MAX_PLAYERS ];
+extern  u_int32_t  Host_Flags[ MAX_PLAYERS ];
 
-extern BOOL BountyHunt;
+extern _Bool BountyHunt;
 extern int BountyBonusInterval;
 
-extern BOOL	CTF;
-extern BOOL CaptureTheFlag;
+extern _Bool	CTF;
+extern _Bool CaptureTheFlag;
 extern int GoalScore;
 extern int GameCompleted;
 extern USERCONFIG	*player_config;
@@ -120,12 +120,12 @@ extern USERCONFIG	*player_config;
 extern char *TeamName[ MAX_TEAMS ];
 
 extern int	AllowedBike[ ALLOWED_BIKETYPES ];
-extern int32 ColPerspective;
-extern BOOL Panel;
+extern int32_t ColPerspective;
+extern _Bool Panel;
 
-extern BOOL	BrightShips;
-extern BOOL	BikeExhausts;
-extern	BOOL IllegalTime;
+extern _Bool	BrightShips;
+extern _Bool	BikeExhausts;
+extern	_Bool IllegalTime;
 extern	float	Countdown_Float;
 extern	SLIDER  PacketsSlider;
 
@@ -146,30 +146,30 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt );
 
 
 extern	SLIDER	MaxKillsSlider;
-int16	MaxKills = 0;
+int16_t	MaxKills = 0;
 
 #ifdef DEMO_SUPPORT
 extern	LONGLONG	DemoStartedTime;		// when the game started
 extern	LONGLONG	DemoEndedTime;		// when the game started
-extern	int32		DemoGameLoops;
+extern	int32_t		DemoGameLoops;
 extern	LONGLONG	TimeDiff;
 extern	LONGLONG	Freq;
 #endif
 
 extern	float	DemoAvgFps;
 extern	MENUITEM	NewJoinItem;
-extern	BOOL	Buffer1InUse;
+extern	_Bool	Buffer1InUse;
 extern	int		Buffer1Count;
 extern	DWORD	Buffer1Offset;
 extern	BYTE *	Buffer1Pnt;
 
-extern	BOOL	Buffer2InUse;
+extern	_Bool	Buffer2InUse;
 extern	int		Buffer2Count;
 extern	DWORD	Buffer2Offset;
 extern	BYTE *	Buffer2Pnt;
 
-extern	BOOL	RecordDemo;
-extern	BOOL	PlayDemo;
+extern	_Bool	RecordDemo;
+extern	_Bool	PlayDemo;
 extern	FILE	*	DemoFp;
 extern	FILE	*	DemoFpClean;
 extern	LIST	DemoList;
@@ -179,7 +179,7 @@ extern	LONGLONG	GameCurrentTime;		// How long the game has been going...
 #endif
 
 extern	char	ShortLevelNames[MAXLEVELS][32];
-extern BOOL	bSoundEnabled;
+extern _Bool	bSoundEnabled;
 
 extern float framelag;
 
@@ -189,7 +189,7 @@ extern	float	Start_Hull;
 void SpecialDestroyGame( void );
 void GetLevelName( char *buf, int bufsize, int level );
 
-BOOL	CanDoDamage[MAX_PLAYERS+1];
+_Bool	CanDoDamage[MAX_PLAYERS+1];
 
 extern	MATRIX			MATRIX_Identity;
 
@@ -199,15 +199,15 @@ extern	TEXT	MacroText3;
 extern	TEXT	MacroText4;
 extern  TEXT	QuickText;
 extern  TEXT	QuickTextWhisper;
-extern	int8	PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
-extern	int8	SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
+extern	int8_t	PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
+extern	int8_t	SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
 extern	float	GlobalFramelagAddition;
-extern	BOOL ResetKillsPerLevel;
+extern	_Bool ResetKillsPerLevel;
 
-BOOL		JustGenerated = FALSE;
-BOOL		JustPickedUpShield = FALSE;
+_Bool		JustGenerated = false;
+_Bool		JustPickedUpShield = false;
 
-int16	NextworkOldBikeNum = -1;
+int16_t	NextworkOldBikeNum = -1;
 
 float		Interval = 0.0F;
 
@@ -218,14 +218,14 @@ LONGLONG	TempTime;
 LONGLONG	DemoTimeSoFar = 0;
 #endif
 
-extern	uint16		Seed1;
-extern	uint16		Seed2;
-extern	uint16		CopyOfSeed1;
-extern	uint16		CopyOfSeed2;
-extern	BOOL		RandomPickups;
+extern	u_int16_t		Seed1;
+extern	u_int16_t		Seed2;
+extern	u_int16_t		CopyOfSeed1;
+extern	u_int16_t		CopyOfSeed2;
+extern	_Bool		RandomPickups;
 
 
-int16	BikeModels[ MAXBIKETYPES ] = {
+int16_t	BikeModels[ MAXBIKETYPES ] = {
 
 	MODEL_Borg,
 	MODEL_Beard,
@@ -250,7 +250,7 @@ int16	BikeModels[ MAXBIKETYPES ] = {
 char					MyName[ 32 ] = "Default game";
 char					NickName[ 32 ] = "Default game";
 char					tempstr[MAXTEXTMSG];
-int16					NamesAreLegal = 1;
+int16_t					NamesAreLegal = 1;
 SHORTNAMETYPE			Names;	// all the players short Names....
 BYTE					MyGameStatus = STATUS_Normal;//
 BYTE					PreDemoEndMyGameStatus = 0;
@@ -258,22 +258,22 @@ BYTE					OverallGameStatus = STATUS_Null;
 BYTE					GameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 														// this tells the drones what status the host thinks hes in..
 BYTE					OldGameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
-int16					Lives = 3;
-int16					StatsCount = -1;
+int16_t					Lives = 3;
+int16_t					StatsCount = -1;
 
 network_player_t * host_network_player = NULL;
 
-void SfxForCollectPickup( uint16 Owner, uint16 ID );
+void SfxForCollectPickup( u_int16_t Owner, u_int16_t ID );
 
-void CreateReGen( uint16 ship );
-BOOL InitLevels( char *levels_list );
+void CreateReGen( u_int16_t ship );
+_Bool InitLevels( char *levels_list );
 extern	MODEL	Models[MAXNUMOFMODELS];
 
-BOOL	HostDuties = FALSE;
-BOOL					IsHost = TRUE;
+_Bool	HostDuties = false;
+_Bool					IsHost = true;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
-BOOL					RemoteCameraActive = FALSE;
+_Bool					RemoteCameraActive = false;
 
 PRIMBULLPOSDIR				TempPrimBullPosDir;
 SECBULLPOSDIR				TempSecBullPosDir;
@@ -300,21 +300,21 @@ SHORTSHIPHIT					ShortTempShipHit;
 MISSEDPICKUPMSG			MissedPickups[ MAXMISSEDPICKUPS ];
 SHORTPICKUP					MissedInitPickups[ MAXMISSEDPICKUPS ];
 SHORTKILLPICKUP				MissedKillPickups[ MAXMISSEDPICKUPS ];
-int16								NumMissedPickups = 0;
-int16								NumMissedInitPickups = 0;
-int16								NumMissedKillPickups = 0;
+int16_t								NumMissedPickups = 0;
+int16_t								NumMissedInitPickups = 0;
+int16_t								NumMissedKillPickups = 0;
 
 MISSEDMINEMSG				MissedMines[ MAXMISSEDMINES ];
 SHORTMINE						MissedInitMines[ MAXMISSEDMINES ];
 SHORTKILLMINE				MissedKillMines[ MAXMISSEDMINES ];
-int16								NumMissedMines = 0;
-int16								NumMissedInitMines = 0;
-int16								NumMissedKillMines = 0;
+int16_t								NumMissedMines = 0;
+int16_t								NumMissedInitMines = 0;
+int16_t								NumMissedKillMines = 0;
 
-extern uint16	num_start_positions;
+extern u_int16_t	num_start_positions;
 
 GLOBALSHIP              Ships[MAX_PLAYERS+1];
-BOOL	DemoShipInit[MAX_PLAYERS+1];
+_Bool	DemoShipInit[MAX_PLAYERS+1];
 
 px_timer_t	LastPacketTime[MAX_PLAYERS+1];
 BYTE	CommBuff[MAX_BUFFER_SIZE];
@@ -329,21 +329,21 @@ extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
 extern	VECTOR			NullVector;
 extern	MLOADHEADER Mloadheader;
-extern	int16 LevelNum;
-extern	int16 NewLevelNum;
+extern	int16_t LevelNum;
+extern	int16_t NewLevelNum;
 extern	float PowerLevel;
 extern	SECONDARYWEAPONATTRIB SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ];
 extern	SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	SHIPCONTROL control;
 extern	char * Messages[];
-extern	int16	SelectedBike;
-extern	BOOL	GodMode;
+extern	int16_t	SelectedBike;
+extern	_Bool	GodMode;
 
-extern	BOOL	TeamGame;
+extern	_Bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
-extern	uint16	RandomStartPosModify;
+extern	u_int16_t	RandomStartPosModify;
 
-BOOL	ChAngleevel( void );
+_Bool	ChAngleevel( void );
 void	DebugPrintf( const char * format, ... );
 void AddTitleMessage(LPTEXTMSG LpTextMsg);
 
@@ -355,19 +355,19 @@ MATRIX	TempMatrix = {
 
 extern	char biker_name[256];
 
-extern	int16			NumRegenPoints;
+extern	int16_t			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
-BOOL	UseShortPackets;
-BOOL	MyUseShortPackets;
+_Bool	UseShortPackets;
+_Bool	MyUseShortPackets;
 
-extern	int16	NumOrbs;
+extern	int16_t	NumOrbs;
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
 extern	char *SecondaryDescription[MAXSECONDARYWEAPONS];
 extern	char *PrimaryDescription[];
-extern	int16	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
-extern	int16	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
+extern	int16_t	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
+extern	int16_t	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
 extern	float	Host_GeneralAmmo[ MAX_PLAYERS ];
 extern	float	Host_PyroliteAmmo[ MAX_PLAYERS ];
 extern	float	Host_SussGunAmmo[ MAX_PLAYERS ];
@@ -377,26 +377,26 @@ extern	float	Host_GeneralAmmoUsed; //[ MAX_PLAYERS ];
 extern	float	Host_PyroliteAmmoUsed;
 //extern	float	Host_SussGunAmmoUsed[ MAX_PLAYERS ];
 extern	float	Host_SussGunAmmoUsed;
-extern	int16	Host_SecondaryAmmo[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
-//extern	int16	Host_SecAmmoUsed[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
-extern	int16	Host_SecAmmoUsed[ MAXSECONDARYWEAPONS ];
-extern	int8	Host_SecWeaponsGot[ MAX_PLAYERS ][ MAXPICKUPS ];
+extern	int16_t	Host_SecondaryAmmo[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
+//extern	int16_t	Host_SecAmmoUsed[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
+extern	int16_t	Host_SecAmmoUsed[ MAXSECONDARYWEAPONS ];
+extern	int8_t	Host_SecWeaponsGot[ MAX_PLAYERS ][ MAXPICKUPS ];
 extern	float	Host_NitroFuel[ MAX_PLAYERS ];
 //extern	float	Host_NitroFuelUsed[ MAX_PLAYERS ];
 extern	float	Host_NitroFuelUsed;
-extern	int16	Host_PowerLevel[ MAX_PLAYERS ];
+extern	int16_t	Host_PowerLevel[ MAX_PLAYERS ];
 extern	float	Host_OrbAmmo[ MAX_PLAYERS ][ MAXMULTIPLES ];
 extern	BYTE	Host_NumOfOrbitals[ MAX_PLAYERS ];
 extern	BYTE	Host_CopyOfNumOfOrbitals[ MAX_PLAYERS ];
 extern	float	Host_CopyOfOrbAmmo[ MAX_PLAYERS ][ MAXMULTIPLES ];
-extern	int16	Host_CopyOfPowerLevel[ MAX_PLAYERS ];
+extern	int16_t	Host_CopyOfPowerLevel[ MAX_PLAYERS ];
 extern	float	Host_CopyOfNitroFuel[ MAX_PLAYERS ];
 extern	float	Host_CopyOfGeneralAmmo[ MAX_PLAYERS ];
 extern	float	Host_CopyOfSussGunAmmo[ MAX_PLAYERS ];
 extern	float	Host_CopyOfPyroliteAmmo[ MAX_PLAYERS ];
-extern	int16	Host_PickupsGot[ MAX_PLAYERS ][ MAXPICKUPTYPES ];
+extern	int16_t	Host_PickupsGot[ MAX_PLAYERS ][ MAXPICKUPTYPES ];
 extern	PICKUP	Pickups[ MAXPICKUPS ];
-extern	int16	SecondaryFromPickupTab[ MAXSECONDARYWEAPONS * 2 ];
+extern	int16_t	SecondaryFromPickupTab[ MAXSECONDARYWEAPONS * 2 ];
 
 // statistics (stats.c)
 extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
@@ -418,14 +418,14 @@ float FlagVolume;
 extern SLIDER WatchPlayerSelect;
 
 // calculates distance between you and a bike (Sfx.c)
-float ReturnDistanceVolumeVector( VECTOR *sfxpos, uint16 sfxgroup, VECTOR *listenerpos, uint16 listenergroup, long *vol, VECTOR *sfxvector );
+float ReturnDistanceVolumeVector( VECTOR *sfxpos, u_int16_t sfxgroup, VECTOR *listenerpos, u_int16_t listenergroup, long *vol, VECTOR *sfxvector );
 
 // stats used to send to other players if you are the host (stats.c)
-extern uint8	KillStats[MAX_PLAYERS][MAX_PLAYERS];	
-extern uint8	BonusStats[MAX_PLAYERS];
-extern uint8	KillCounter[MAX_PLAYERS];	
+extern u_int8_t	KillStats[MAX_PLAYERS][MAX_PLAYERS];	
+extern u_int8_t	BonusStats[MAX_PLAYERS];
+extern u_int8_t	KillCounter[MAX_PLAYERS];	
 
-BOOL msg_is_valid( int msg_type )
+_Bool msg_is_valid( int msg_type )
 {
 	switch( msg_type )
 	{
@@ -463,9 +463,9 @@ BOOL msg_is_valid( int msg_type )
 	case MSG_TEXTMSG:
 	case MSG_VERYSHORTINTERPOLATE:
 	case MSG_INTERPOLATE:
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 char* msg_to_str( int msg_type )
@@ -537,7 +537,7 @@ void SendANormalUpdate( void )
 		ShortGlobalShip.Status		= MyGameStatus;
 		ShortGlobalShip.Angle		= Ships[WhoIAm].Object.Angle;
 #ifdef	SHORTBANK
-		ShortGlobalShip.Bank			= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+		ShortGlobalShip.Bank			= (int16_t) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 #else
 		ShortGlobalShip.Bank = Ships[ WhoIAm ].Object.Bank;
 #endif
@@ -547,24 +547,24 @@ void SendANormalUpdate( void )
 	{
 		VeryShortGlobalShip.Flags = BuildShipFlags(WhoIAm);
 		VeryShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
-		VeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
-		VeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
-		VeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
+		VeryShortGlobalShip.Pos.x					= (int16_t) Ships[WhoIAm].Object.Pos.x;
+		VeryShortGlobalShip.Pos.y					= (int16_t) Ships[WhoIAm].Object.Pos.y;
+		VeryShortGlobalShip.Pos.z					= (int16_t) Ships[WhoIAm].Object.Pos.z;
 		Move_Off = Ships[WhoIAm].Move_Off;
 		NormaliseVector( &Move_Off );
-		VeryShortGlobalShip.Move_Off_Scalar	= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
-		VeryShortGlobalShip.Move_Off.x			= (int16) (Move_Off.x * 32767.0F);
-		VeryShortGlobalShip.Move_Off.y			= (int16) (Move_Off.y * 32767.0F);
-		VeryShortGlobalShip.Move_Off.z			= (int16) (Move_Off.z * 32767.0F);
-		VeryShortGlobalShip.Quat.w				= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-		VeryShortGlobalShip.Quat.x				= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-		VeryShortGlobalShip.Quat.y				= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-		VeryShortGlobalShip.Quat.z				= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
+		VeryShortGlobalShip.Move_Off_Scalar	= (u_int16_t) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
+		VeryShortGlobalShip.Move_Off.x			= (int16_t) (Move_Off.x * 32767.0F);
+		VeryShortGlobalShip.Move_Off.y			= (int16_t) (Move_Off.y * 32767.0F);
+		VeryShortGlobalShip.Move_Off.z			= (int16_t) (Move_Off.z * 32767.0F);
+		VeryShortGlobalShip.Quat.w				= (int16_t) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
+		VeryShortGlobalShip.Quat.x				= (int16_t) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
+		VeryShortGlobalShip.Quat.y				= (int16_t) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
+		VeryShortGlobalShip.Quat.z				= (int16_t) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
 		VeryShortGlobalShip.Status				= MyGameStatus;
-		VeryShortGlobalShip.Angle.x				= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
-		VeryShortGlobalShip.Angle.y				= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
-		VeryShortGlobalShip.Angle.z				= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
-		VeryShortGlobalShip.Bank					= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+		VeryShortGlobalShip.Angle.x				= (int16_t) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
+		VeryShortGlobalShip.Angle.y				= (int16_t) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
+		VeryShortGlobalShip.Angle.z				= (int16_t) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
+		VeryShortGlobalShip.Bank					= (int16_t) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 		SendGameMessage(MSG_VERYSHORTUPDATE, 0, 0, 0, 0);
 	}
 }
@@ -601,7 +601,7 @@ void NetworkGameUpdate()
 				FShortGlobalShip.PrimPowerLevel			= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
 				FShortGlobalShip.Angle					= Ships[ WhoIAm ].Object.Angle;
 #ifdef	SHORTBANK
-				FShortGlobalShip.Bank					= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+				FShortGlobalShip.Bank					= (int16_t) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 #else
 				FShortGlobalShip.Bank					= Ships[ WhoIAm ].Object.Bank;
 #endif
@@ -611,23 +611,23 @@ void NetworkGameUpdate()
 			{
 				FVeryShortGlobalShip.Flags				= BuildShipFlags(WhoIAm);
 				FVeryShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
-				FVeryShortGlobalShip.Pos.x				= (int16) Ships[WhoIAm].Object.Pos.x;
-				FVeryShortGlobalShip.Pos.y				= (int16) Ships[WhoIAm].Object.Pos.y;
-				FVeryShortGlobalShip.Pos.z				= (int16) Ships[WhoIAm].Object.Pos.z;
+				FVeryShortGlobalShip.Pos.x				= (int16_t) Ships[WhoIAm].Object.Pos.x;
+				FVeryShortGlobalShip.Pos.y				= (int16_t) Ships[WhoIAm].Object.Pos.y;
+				FVeryShortGlobalShip.Pos.z				= (int16_t) Ships[WhoIAm].Object.Pos.z;
 				Move_Off = Ships[WhoIAm].Move_Off;
 				NormaliseVector( &Move_Off );
-				FVeryShortGlobalShip.Move_Off_Scalar	= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
-				FVeryShortGlobalShip.Move_Off.x			= (int16) (Move_Off.x * 32767.0F);
-				FVeryShortGlobalShip.Move_Off.y			= (int16) (Move_Off.y * 32767.0F);
-				FVeryShortGlobalShip.Move_Off.z			= (int16) (Move_Off.z * 32767.0F);
-				FVeryShortGlobalShip.Quat.w				= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-				FVeryShortGlobalShip.Quat.x				= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-				FVeryShortGlobalShip.Quat.y				= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-				FVeryShortGlobalShip.Quat.z				= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
-				FVeryShortGlobalShip.Angle.x			= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
-				FVeryShortGlobalShip.Angle.y			= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
-				FVeryShortGlobalShip.Angle.z			= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
-				FVeryShortGlobalShip.Bank				= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+				FVeryShortGlobalShip.Move_Off_Scalar	= (u_int16_t) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
+				FVeryShortGlobalShip.Move_Off.x			= (int16_t) (Move_Off.x * 32767.0F);
+				FVeryShortGlobalShip.Move_Off.y			= (int16_t) (Move_Off.y * 32767.0F);
+				FVeryShortGlobalShip.Move_Off.z			= (int16_t) (Move_Off.z * 32767.0F);
+				FVeryShortGlobalShip.Quat.w				= (int16_t) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
+				FVeryShortGlobalShip.Quat.x				= (int16_t) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
+				FVeryShortGlobalShip.Quat.y				= (int16_t) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
+				FVeryShortGlobalShip.Quat.z				= (int16_t) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
+				FVeryShortGlobalShip.Angle.x			= (int16_t) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Angle.y			= (int16_t) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Angle.z			= (int16_t) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Bank				= (int16_t) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 				FVeryShortGlobalShip.Primary			= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
 				FVeryShortGlobalShip.Secondary			= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
 				FVeryShortGlobalShip.PrimPowerLevel		= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
@@ -653,9 +653,9 @@ void NetworkGameUpdate()
 		if( HostDutyTimer <= 0.0F )
 		{
 			HostDutyTimer = NetUpdateIntervalHostDuties;
-			HostDuties = FALSE;
+			HostDuties = false;
 			// If someone has joined or somebody requests it then send everyone a stats update
-			if( IsHost == TRUE )
+			if( IsHost == true )
 			{			
 				for( i = 0 ; i < MAX_PLAYERS ; i++ )
 				{
@@ -664,31 +664,31 @@ void NetworkGameUpdate()
 						if( Ships[i].RegenSlots != 0 )
 						{
 							SendGameMessage( MSG_SHORTREGENSLOT, 0, (BYTE) i, 0, 0 );
-							HostDuties = TRUE;
+							HostDuties = true;
 							Ships[i].RegenSlots = 0;
 						}
 						else if( Ships[i].Triggers != 0 ) 
 						{
 							SendGameMessage( MSG_SHORTTRIGGER, 0, (BYTE) i, 0, 0 );
-							HostDuties = TRUE;
+							HostDuties = true;
 							Ships[i].Triggers = 0;
 						}
 						else if( Ships[i].TrigVars != 0 )
 						{
 							SendGameMessage( MSG_SHORTTRIGVAR, 0, (BYTE) i, 0, 0 );
-							HostDuties = TRUE;
+							HostDuties = true;
 							Ships[i].TrigVars = 0;
 						}
 						else if( Ships[i].Mines != 0 )
 						{
 							SendGameMessage( MSG_SHORTMINE, 0, (BYTE) i, 0, 0 );
-							HostDuties = TRUE;
+							HostDuties = true;
 							Ships[i].Mines = 0;
 						}
 						else if(	Ships[i].Pickups != 0 )
 						{
 							SendGameMessage( MSG_SHORTPICKUP, 0, (BYTE) i, 0, 0 );
-							HostDuties = TRUE;
+							HostDuties = true;
 							Ships[i].Pickups = 0;
 						}
 						// reset them untill we get another request.....
@@ -735,9 +735,9 @@ void NetworkGameUpdate()
 }
 
 
-void PrimBullPosDirSend( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 Weapon,
-						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16 PowerLevel, float PLevel )
+void PrimBullPosDirSend( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
+						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
+						int16_t PowerLevel, float PLevel )
 {
 	TempPrimBullPosDir.OwnerType = OwnerType;
 	TempPrimBullPosDir.OwnerID = OwnerID;
@@ -753,9 +753,9 @@ void PrimBullPosDirSend( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8
 	SendGameMessage(MSG_PRIMBULLPOSDIR, 0, 0, 0, 0);
 }
 
-void SecBullPosDirSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Group,
+void SecBullPosDirSend( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * UpVector,
-						VECTOR * DropDir, int8 Weapon )
+						VECTOR * DropDir, int8_t Weapon )
 {
 	TempSecBullPosDir.OwnerType = OwnerType;
 	TempSecBullPosDir.Owner = Owner;
@@ -770,11 +770,11 @@ void SecBullPosDirSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 
 	SendGameMessage(MSG_SECBULLPOSDIR, 0, 0, 0, 0);
 }
 
-void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Group,
+void TitanBitsSend( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * UpVector,
-						VECTOR * DropDir, int8 Weapon, VECTOR * Directions )
+						VECTOR * DropDir, int8_t Weapon, VECTOR * Directions )
 {
-	int16	Count;
+	int16_t	Count;
 
 	TempTitanBits.OwnerType = OwnerType;
 	TempTitanBits.Owner		= Owner;
@@ -791,15 +791,15 @@ void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Grou
 	SendGameMessage(MSG_TITANBITS, 0, 0, 0, 0);
 }
 
-void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil )
+void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, _Bool FramelagRecoil )
 {
 	VECTOR	Recoil_Off;		
 	if( Ships[ you ].Object.Mode != LIMBO_MODE )
 	{
 		if( !UseShortPackets )
 		{
-			if( FramelagRecoil ) TempShipHit.OneOffExternalForce = TRUE;
-			else TempShipHit.OneOffExternalForce = FALSE;
+			if( FramelagRecoil ) TempShipHit.OneOffExternalForce = true;
+			else TempShipHit.OneOffExternalForce = false;
 			TempShipHit.Damage = Damage;
 			TempShipHit.Recoil = *Recoil;
 			TempShipHit.Point = *Point;
@@ -820,16 +820,16 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 
 			Recoil_Off = *Recoil;
 			NormaliseVector( &Recoil_Off );
-			ShortTempShipHit.Recoil_Scalar = (uint16) ( 256.0F * VectorLength( Recoil ) );
-			ShortTempShipHit.Recoil.x = (int16) (Recoil_Off.x * 32767.0F);
-			ShortTempShipHit.Recoil.y = (int16) (Recoil_Off.y * 32767.0F);
-			ShortTempShipHit.Recoil.z = (int16) (Recoil_Off.z * 32767.0F);
-			ShortTempShipHit.Point.x = (int16)(Point->x - Ships[ you ].Object.Pos.x);
-			ShortTempShipHit.Point.y = (int16)(Point->y - Ships[ you ].Object.Pos.y);
-			ShortTempShipHit.Point.z = (int16)(Point->z - Ships[ you ].Object.Pos.z);
-			ShortTempShipHit.Dir.x = (int16) (Dir->x * 32767.0F);
-			ShortTempShipHit.Dir.y = (int16) (Dir->y * 32767.0F);
-			ShortTempShipHit.Dir.z = (int16) (Dir->z * 32767.0F);
+			ShortTempShipHit.Recoil_Scalar = (u_int16_t) ( 256.0F * VectorLength( Recoil ) );
+			ShortTempShipHit.Recoil.x = (int16_t) (Recoil_Off.x * 32767.0F);
+			ShortTempShipHit.Recoil.y = (int16_t) (Recoil_Off.y * 32767.0F);
+			ShortTempShipHit.Recoil.z = (int16_t) (Recoil_Off.z * 32767.0F);
+			ShortTempShipHit.Point.x = (int16_t)(Point->x - Ships[ you ].Object.Pos.x);
+			ShortTempShipHit.Point.y = (int16_t)(Point->y - Ships[ you ].Object.Pos.y);
+			ShortTempShipHit.Point.z = (int16_t)(Point->z - Ships[ you ].Object.Pos.z);
+			ShortTempShipHit.Dir.x = (int16_t) (Dir->x * 32767.0F);
+			ShortTempShipHit.Dir.y = (int16_t) (Dir->y * 32767.0F);
+			ShortTempShipHit.Dir.z = (int16_t) (Dir->z * 32767.0F);
 			ShortTempShipHit.Force = Force;
 			ShortTempShipHit.WeaponType = WeaponType;
 			ShortTempShipHit.Weapon = Weapon;
@@ -840,7 +840,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 }
 
 
-void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 IDCount, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod )
+void	DropPickupSend( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t IDCount, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod )
 {
 	if( !UseShortPackets )
 	{
@@ -859,12 +859,12 @@ void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int1
 		VeryShortTempPickup.IDCount = IDCount;
 		VeryShortTempPickup.Type = (BYTE)Type;
 		VeryShortTempPickup.Group = (BYTE) Group;
-		VeryShortTempPickup.Pos.x = (int16) Pos->x;
-		VeryShortTempPickup.Pos.y = (int16) Pos->y;
-		VeryShortTempPickup.Pos.z = (int16) Pos->z;
-		VeryShortTempPickup.Dir.x = (int16) (Dir->x * 32767.0F);
-		VeryShortTempPickup.Dir.y = (int16) (Dir->y * 32767.0F);
-		VeryShortTempPickup.Dir.z = (int16) (Dir->z * 32767.0F);
+		VeryShortTempPickup.Pos.x = (int16_t) Pos->x;
+		VeryShortTempPickup.Pos.y = (int16_t) Pos->y;
+		VeryShortTempPickup.Pos.z = (int16_t) Pos->z;
+		VeryShortTempPickup.Dir.x = (int16_t) (Dir->x * 32767.0F);
+		VeryShortTempPickup.Dir.y = (int16_t) (Dir->y * 32767.0F);
+		VeryShortTempPickup.Dir.z = (int16_t) (Dir->z * 32767.0F);
 		VeryShortTempPickup.Speed = Speed;
 		VeryShortTempPickup.RegenSlot = (BYTE) RegenSlot;
 		VeryShortTempPickup.Sparkle = Sparkle;
@@ -874,7 +874,7 @@ void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int1
 	}
 }
 
-void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
+void	KillPickupSend( u_int16_t Owner, u_int16_t IDCount, int16_t Style )
 {
 	TempKillPickup.Owner = Owner;
 	TempKillPickup.IDCount = IDCount;
@@ -882,14 +882,14 @@ void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
 	SendGameMessage( MSG_KILLPICKUP, 0, 0, 0, 0 );
 }
 
-void	TeamGoalsSend( uint16 * TeamGoals )
+void	TeamGoalsSend( u_int16_t * TeamGoals )
 {
 	int i;
 	for( i = 0; i < MAX_TEAMS; i++ ) TempTeamGoals.TeamGoals[ i ] = TeamGoals[ i ];
 	SendGameMessage( MSG_TEAMGOALS, 0, 0, 0, 0 );
 }
 
-void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 Group, float ShockwaveSize, BYTE Weapon )
+void	CreateShockwaveSend( u_int16_t OwnerShip, u_int16_t Owner, VECTOR * Pos, u_int16_t Group, float ShockwaveSize, BYTE Weapon )
 {
 	float dist;
 	int i;
@@ -918,7 +918,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 	}
 }
 
-void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time )
+void	UpdateBGObjectSend( u_int16_t BGObject, int16_t State, float Time )
 {
 	TempBGOUpdate.BGObject = BGObject;
 	TempBGOUpdate.State = State;
@@ -949,7 +949,7 @@ extern void InitScoreSortTab(int Player);
 
 void SetupNetworkGame()
 {
-	int16 i,Count;
+	int16_t i,Count;
 
 	host_network_player = NULL;
 
@@ -1013,23 +1013,23 @@ void SetupNetworkGame()
 	memset(&Names,			0,				sizeof(SHORTNAMETYPE) );
 	memset(&GameStatus,		STATUS_Null,	sizeof(GameStatus) );
 
-	JustGenerated = TRUE;
+	JustGenerated = true;
 	
 	for(i=0; i<(MAX_PLAYERS+1); i++)
 	{
 		// everyone starts off normal....
 		GameStatus[i] = STATUS_Null;
-		CanDoDamage[i] = TRUE;
+		CanDoDamage[i] = true;
 		Ships[i].BikeNum = ( i % MAXBIKETYPES );
-		Ships[i].ModelNum = (uint16) -1;
+		Ships[i].ModelNum = (u_int16_t) -1;
 		Ships[i].Object.Type = OBJECT_TYPE_SHIP;
 		Ships[i].Object.Mode = NORMAL_MODE;
 		Ships[i].Object.Bank = 0.0F;
 		Ships[i].Object.Shield	= Start_Shield;
 		Ships[i].Object.Hull	= Start_Hull;
-		Ships[i].JustRecievedPacket = TRUE;
-		Ships[i].Object.light = (uint16) -1;
-		for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
+		Ships[i].JustRecievedPacket = true;
+		Ships[i].Object.light = (u_int16_t) -1;
+		for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (u_int16_t) -1;
 		Ships[i].NumMultiples = 0;
 		MakeQuat( 0.0F, 0.0F, 0.0F, &Ships[i].Object.Quat );
 		Ships[i].Object.Pos.x = 0.0F;;
@@ -1050,21 +1050,21 @@ void SetupNetworkGame()
 		Ships[i].Object.Autolevel = 0.0F;
 		Ships[i].Object.BobCount = 0.0F;
 
-		for( Count = 0; Count < 12; Count++ ) Ships[i].TempLines[ Count ] = (uint16) -1;
+		for( Count = 0; Count < 12; Count++ ) Ships[i].TempLines[ Count ] = (u_int16_t) -1;
 	
 		// (stats.c)
 		InitScoreSortTab((int) i);
 	}
 }
 
-void InitShipStructure( int i , BOOL ResetScore )
+void InitShipStructure( int i , _Bool ResetScore )
 {
-	int16 Count;
+	int16_t Count;
 
 
 //	memset(&Ships[i], 0, sizeof(GLOBALSHIP) );
 
-	CanDoDamage[i] = TRUE;
+	CanDoDamage[i] = true;
 
 	Ships[i].BikeNum = ( i % MAXBIKETYPES );
 	Ships[i].ShieldHullCount = 0;
@@ -1074,9 +1074,9 @@ void InitShipStructure( int i , BOOL ResetScore )
 	Ships[i].Object.Bank = 0.0F;
 	Ships[i].Object.Shield	= Start_Shield;
 	Ships[i].Object.Hull	= Start_Hull;
-	Ships[i].JustRecievedPacket = TRUE;
-	Ships[i].Object.light = (uint16) -1;
-	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
+	Ships[i].JustRecievedPacket = true;
+	Ships[i].Object.light = (u_int16_t) -1;
+	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (u_int16_t) -1;
 	Ships[i].NumMultiples = 0;
 	MakeQuat( 0.0F, 0.0F, 0.0F, &Ships[i].Object.Quat );
 	
@@ -1104,7 +1104,7 @@ void InitShipStructure( int i , BOOL ResetScore )
 	if( ResetScore )
 		ResetIndividualStats(i); // (stats.c)
 
-	for( Count = 0; Count < 12; Count++ ) Ships[i].TempLines[ Count ] = (uint16) -1;
+	for( Count = 0; Count < 12; Count++ ) Ships[i].TempLines[ Count ] = (u_int16_t) -1;
 
 	Ships[i].network_player = NULL;
 }
@@ -1124,7 +1124,7 @@ void DestroyGame( void )
 	
 	Ships[WhoIAm].enable = 0;
 	MyGameStatus = STATUS_Left;
-	IsHost = FALSE;
+	IsHost = false;
 
     if ( WhoIAm < MAX_PLAYERS )
     {
@@ -1151,10 +1151,10 @@ void DestroyGame( void )
 
 
 
-void initShip( uint16 i )
+void initShip( u_int16_t i )
 {
-	uint16	spos;
-	int16	Count;
+	u_int16_t	spos;
+	int16_t	Count;
 
 	Ships[i].Object.NodeNetwork = 0;
 	Ships[i].Object.NearestNode = NULL;
@@ -1168,9 +1168,9 @@ void initShip( uint16 i )
     Ships[i].TrigVars = ( ( NumOfTrigVars + ( MAXGENTRIGVARCOUNT - 1 ) ) / MAXGENTRIGVARCOUNT );
 
     Ships[i].NumMultiples = 0;
-	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
+	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (u_int16_t) -1;
 
-	if ( Mloadheader.state == TRUE)
+	if ( Mloadheader.state == true)
 	{
 		spos = (i+RandomStartPosModify) % num_start_positions;
 		InitShipStartPos( i, spos );
@@ -1182,10 +1182,10 @@ void initShip( uint16 i )
 
 	KillAllPickups();
 }
-void smallinitShip( uint16 i )
+void smallinitShip( u_int16_t i )
 {
-	uint16	spos;
-	int16	Count;
+	u_int16_t	spos;
+	int16_t	Count;
 
 	Ships[i].Object.NodeNetwork = 0;
 	Ships[i].Object.NearestNode = NULL;
@@ -1198,7 +1198,7 @@ void smallinitShip( uint16 i )
     Ships[i].Triggers = 0;
     Ships[i].TrigVars = 0;
     Ships[i].NumMultiples = 0;
-	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
+	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (u_int16_t) -1;
 
 	NumMissedPickups = 0;
 	NumMissedInitPickups = 0;
@@ -1208,7 +1208,7 @@ void smallinitShip( uint16 i )
 	NumMissedInitMines = 0;
 	NumMissedKillMines = 0;
 
-	if ( Mloadheader.state == TRUE)
+	if ( Mloadheader.state == true)
 	{
 		spos = (i+RandomStartPosModify) % num_start_positions;
 		InitShipStartPos( i, spos );
@@ -1267,16 +1267,16 @@ void network_event_player_left( network_player_t * player )
 	   				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 				}
 
-				if( Ships[i].Object.light != (uint16) -1  )
+				if( Ships[i].Object.light != (u_int16_t) -1  )
 				{
 					KillUsedXLight(Ships[i].Object.light);
-					Ships[i].Object.light = (uint16) -1;
+					Ships[i].Object.light = (u_int16_t) -1;
 				}
 
 				// Meth: Interesting seems that they toyd with idea of
 				//       blowing up the players mines and bullets when
 				//       they leave the game.
-				//KillOwnersSecBulls( (uint16) i );
+				//KillOwnersSecBulls( (u_int16_t) i );
 
 				Ships[i].enable = 0;
 
@@ -1286,7 +1286,7 @@ void network_event_player_left( network_player_t * player )
 				else if( GameStatus[i] != STATUS_Left )
 					GameStatus[i] = STATUS_LeftCrashed;
 
-				InitShipStructure(i , FALSE );
+				InitShipStructure(i , false );
 
 				memset(Names[i],0,sizeof(Names[i]));
 			}
@@ -1314,7 +1314,7 @@ void network_event_new_host( network_player_t * player )
 			AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
 		}
 
-		IsHost = TRUE;					// I have Become the host
+		IsHost = true;					// I have Become the host
 
 		PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -1531,7 +1531,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	int					i;
 	BYTE				OldMode;
 	BYTE				OldStatus;
-	int16				Count;
+	int16_t				Count;
     char				methodstr[256];
 	char				teamstr[256];
     LPSETTIMEMSG	lpSetTime;
@@ -1540,7 +1540,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	VECTOR	Recoil;
 	VECTOR	Dir;
 	float	Force;
-	uint16	Pickup;
+	u_int16_t	Pickup;
 
 	// check if it's a valid packet
 
@@ -1879,7 +1879,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		lpYouQuitMsg = (LPYOUQUITMSG)MsgPnt;
 		if( lpYouQuitMsg->You == WhoIAm )
 		{
-			IMustQuit = TRUE;
+			IMustQuit = true;
 			SetTitleNotify( KICKED_HOST );
 		}
 		return;
@@ -1895,7 +1895,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			CheckCharging( lpVeryShortFUpdate->WhoIAm, Ships[ lpVeryShortFUpdate->WhoIAm ].Object.Flags, lpVeryShortFUpdate->ShortGlobalShip.Flags );
 			if( !( Ships[lpVeryShortFUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpVeryShortFUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 			{
-				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpVeryShortFUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
+				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpVeryShortFUpdate->WhoIAm ].OrbModels[ Count ] = (u_int16_t) -1;
 				Ships[lpVeryShortFUpdate->WhoIAm].NumMultiples = (BYTE)((lpVeryShortFUpdate->ShortGlobalShip.Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 				CreateOrbitPulsar( lpVeryShortFUpdate->WhoIAm );
 			}
@@ -1915,7 +1915,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.x		= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.x * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
 			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.y		= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.y * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
 			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.z		= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.z * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 ); 
-			Ships[lpVeryShortFUpdate->WhoIAm].Object.Group	= (int16) lpVeryShortFUpdate->ShortGlobalShip.GroupImIn;
+			Ships[lpVeryShortFUpdate->WhoIAm].Object.Group	= (int16_t) lpVeryShortFUpdate->ShortGlobalShip.GroupImIn;
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Quat.w	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Quat.w * ONEOVER32767 );
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Quat.x	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Quat.x * ONEOVER32767 );
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Quat.y	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Quat.y * ONEOVER32767 );
@@ -1927,7 +1927,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			Ships[lpVeryShortFUpdate->WhoIAm].Primary			= lpVeryShortFUpdate->ShortGlobalShip.Primary;
 			Ships[lpVeryShortFUpdate->WhoIAm].Secondary		= lpVeryShortFUpdate->ShortGlobalShip.Secondary;
 			Ships[lpVeryShortFUpdate->WhoIAm].PrimPowerLevel = (float) lpVeryShortFUpdate->ShortGlobalShip.PrimPowerLevel;
-			Ships[lpVeryShortFUpdate->WhoIAm].JustRecievedPacket = TRUE;
+			Ships[lpVeryShortFUpdate->WhoIAm].JustRecievedPacket = true;
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Noise		= 1.0F;
 			
 
@@ -1951,7 +1951,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				StopTaunt();
 			}
 /* ------------------- */
-			DemoShipInit[ lpVeryShortFUpdate->WhoIAm ] = TRUE;
+			DemoShipInit[ lpVeryShortFUpdate->WhoIAm ] = true;
 			return;
 		}
 		else
@@ -1971,7 +1971,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 			if( !( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 			{
-				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
+				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].OrbModels[ Count ] = (u_int16_t) -1;
 				Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].NumMultiples = (BYTE)((lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 				CreateOrbitPulsar( lpGroupOnly_VeryShortFUpdate->WhoIAm );
 			}
@@ -1988,7 +1988,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.x		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.x;
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.y		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.y;
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.z		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.z;
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Group		= (int16) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.GroupImIn;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Group		= (int16_t) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.GroupImIn;
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.w	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.w * ONEOVER32767 );
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.x	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.x * ONEOVER32767 );
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.y	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.y * ONEOVER32767 );
@@ -2018,7 +2018,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				StopTaunt();
 			}
 
-			DemoShipInit[ lpGroupOnly_VeryShortFUpdate->WhoIAm ] = TRUE;
+			DemoShipInit[ lpGroupOnly_VeryShortFUpdate->WhoIAm ] = true;
 			return;
 		}
 		else
@@ -2054,7 +2054,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				Ships[lpVeryShortUpdate->WhoIAm].headlights = !!( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_Light );
 				if( !( Ships[lpVeryShortUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 				{
-					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpVeryShortUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
+					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpVeryShortUpdate->WhoIAm ].OrbModels[ Count ] = (u_int16_t) -1;
 					Ships[lpVeryShortUpdate->WhoIAm].NumMultiples = (BYTE)((lpVeryShortUpdate->ShortGlobalShip.Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 					CreateOrbitPulsar( lpVeryShortUpdate->WhoIAm );
 				}
@@ -2074,7 +2074,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.x		= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.x * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
 				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.y		= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.y * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
 				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.z		= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.z * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 ); 
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Group		= (int16) lpVeryShortUpdate->ShortGlobalShip.GroupImIn;
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Group		= (int16_t) lpVeryShortUpdate->ShortGlobalShip.GroupImIn;
 				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.w	= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.w * ONEOVER32767 );
 				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.x		= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.x * ONEOVER32767 );
 				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.y	= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.y * ONEOVER32767 );
@@ -2083,7 +2083,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.y		= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.y * SHORTANGLEMODIFIERUNPACK );
 				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.z		= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.z * SHORTANGLEMODIFIERUNPACK );
 				Ships[lpVeryShortUpdate->WhoIAm].Object.Bank		= (float) (lpVeryShortUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
-				Ships[lpVeryShortUpdate->WhoIAm].JustRecievedPacket = TRUE;
+				Ships[lpVeryShortUpdate->WhoIAm].JustRecievedPacket = true;
 				GameStatus[lpVeryShortUpdate->WhoIAm]				= lpVeryShortUpdate->ShortGlobalShip.Status;
 
 				if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
@@ -2122,7 +2122,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					CreateReGen( lpVeryShortUpdate->WhoIAm );
 				}
 
-				DemoShipInit[ lpVeryShortUpdate->WhoIAm ] = TRUE;				
+				DemoShipInit[ lpVeryShortUpdate->WhoIAm ] = true;				
 				return;
 			}
 			else
@@ -2157,7 +2157,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				Ships[lpUpdate->WhoIAm].headlights = !!( lpUpdate->ShortGlobalShip.Flags & SHIP_Light );
 				if( !( Ships[lpUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 				{
-					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
+					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpUpdate->WhoIAm ].OrbModels[ Count ] = (u_int16_t) -1;
 					Ships[lpUpdate->WhoIAm].NumMultiples = (BYTE)((lpUpdate->ShortGlobalShip.Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 					CreateOrbitPulsar( lpUpdate->WhoIAm );
 				}
@@ -2174,7 +2174,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				UnPackShipFlags( lpUpdate->WhoIAm , lpUpdate->ShortGlobalShip.Flags );
 				Ships[lpUpdate->WhoIAm].Object.Pos		= lpUpdate->ShortGlobalShip.Pos;
 				Ships[lpUpdate->WhoIAm].Move_Off		= lpUpdate->ShortGlobalShip.Move_Off;
-				Ships[lpUpdate->WhoIAm].Object.Group	= (int16) lpUpdate->ShortGlobalShip.GroupImIn;
+				Ships[lpUpdate->WhoIAm].Object.Group	= (int16_t) lpUpdate->ShortGlobalShip.GroupImIn;
 				Ships[lpUpdate->WhoIAm].Object.Quat	= lpUpdate->ShortGlobalShip.Quat;
 				Ships[lpUpdate->WhoIAm].LastAngle		= lpUpdate->ShortGlobalShip.Angle;
 #ifdef	SHORTBANK
@@ -2182,7 +2182,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 #else
 				Ships[lpUpdate->WhoIAm].Object.Bank	= lpUpdate->ShortGlobalShip.Bank;
 #endif
-				Ships[lpUpdate->WhoIAm].JustRecievedPacket = TRUE;
+				Ships[lpUpdate->WhoIAm].JustRecievedPacket = true;
 				GameStatus[lpUpdate->WhoIAm] = lpUpdate->ShortGlobalShip.Status;
 
 				if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
@@ -2221,7 +2221,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					CreateReGen( lpUpdate->WhoIAm );
 				}
 
-				DemoShipInit[ lpUpdate->WhoIAm ] = TRUE;				
+				DemoShipInit[ lpUpdate->WhoIAm ] = true;				
 				return;
 			}
 			else
@@ -2242,7 +2242,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 			if( !( Ships[lpFUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpFUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 			{
-				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpFUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
+				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpFUpdate->WhoIAm ].OrbModels[ Count ] = (u_int16_t) -1;
 				Ships[lpFUpdate->WhoIAm].NumMultiples = (BYTE)((lpFUpdate->ShortGlobalShip.Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 				CreateOrbitPulsar( lpFUpdate->WhoIAm );
 			}
@@ -2269,7 +2269,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 #else
 			Ships[lpFUpdate->WhoIAm].Object.Bank	= lpFUpdate->ShortGlobalShip.Bank;
 #endif
-			Ships[lpFUpdate->WhoIAm].JustRecievedPacket = TRUE;
+			Ships[lpFUpdate->WhoIAm].JustRecievedPacket = true;
 
 			// Need This for missiles to work....
 			SetShipBankAndMat( &Ships[lpFUpdate->WhoIAm].Object );
@@ -2291,7 +2291,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				StopTaunt();
 			}
 
-			DemoShipInit[ lpFUpdate->WhoIAm ] = TRUE;
+			DemoShipInit[ lpFUpdate->WhoIAm ] = true;
 			return;
 		}
 		else
@@ -2396,8 +2396,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		if ( TeamGame )	GetPlayerNumMenu = &MENU_NEW_WatchTeamSelect;
 		else			GetPlayerNumMenu = (MENU*) NewJoinItem.Value;
 
-		if( TimeLimit.value )	CountDownOn = TRUE;
-		else					CountDownOn	= FALSE;
+		if( TimeLimit.value )	CountDownOn = true;
+		else					CountDownOn	= false;
 
 		if ( CaptureTheFlag || CTF )
 			GoalScore = lpInit->GoalScore;
@@ -2407,29 +2407,29 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			switch ( lpInit->CTF_Type )
 			{
 			case CTF_STANDARD:
-				NeedFlagAtHome			= TRUE;
-				OwnFlagTeleportsHome	= TRUE;
-				CanCarryOwnFlag			= FALSE;
+				NeedFlagAtHome			= true;
+				OwnFlagTeleportsHome	= true;
+				CanCarryOwnFlag			= false;
 				break;
 			case CTF_MUST_CARRY:
-				NeedFlagAtHome			= TRUE;
-				OwnFlagTeleportsHome	= FALSE;
-				CanCarryOwnFlag			= TRUE;
+				NeedFlagAtHome			= true;
+				OwnFlagTeleportsHome	= false;
+				CanCarryOwnFlag			= true;
 				break;
 			case CTF_NO_RETURN:
-				NeedFlagAtHome			= FALSE;
-				OwnFlagTeleportsHome	= FALSE;
-				CanCarryOwnFlag			= FALSE;
+				NeedFlagAtHome			= false;
+				OwnFlagTeleportsHome	= false;
+				CanCarryOwnFlag			= false;
 				break;
 			case CTF_CAN_CARRY:
-				NeedFlagAtHome			= FALSE;
-				OwnFlagTeleportsHome	= FALSE;
-				CanCarryOwnFlag			= TRUE;
+				NeedFlagAtHome			= false;
+				OwnFlagTeleportsHome	= false;
+				CanCarryOwnFlag			= true;
 				break;
 			case CTF_ONE_TOUCH:
-				NeedFlagAtHome			= FALSE;
-				OwnFlagTeleportsHome	= TRUE;
-				CanCarryOwnFlag			= FALSE;
+				NeedFlagAtHome			= false;
+				OwnFlagTeleportsHome	= true;
+				CanCarryOwnFlag			= false;
 				break;
 			}
 		}
@@ -2453,7 +2453,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 		lpDropPickup = (LPDROPPICKUPMSG)MsgPnt;
 #if DEBUG_PICKUPS
-		if( lpDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ lpDropPickup->PickupInfo.Type ], &Names[ lpDropPickup->WhoIAm ][ 0 ], lpDropPickup->PickupInfo.IDCount );
+		if( lpDropPickup->WhoIAm != (u_int16_t) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ lpDropPickup->PickupInfo.Type ], &Names[ lpDropPickup->WhoIAm ][ 0 ], lpDropPickup->PickupInfo.IDCount );
 		else DebugPrintf( "PACKET OWNER '%s' : Init '%s', No Owner, ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ lpDropPickup->PickupInfo.Type ], lpDropPickup->PickupInfo.IDCount );
 #endif
 	 	Pickup = InitOnePickup( &lpDropPickup->PickupInfo.Pos, lpDropPickup->PickupInfo.Group,
@@ -2483,7 +2483,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		TempPickup.LifeCount = lpVeryShortDropPickup->PickupInfo.LifeCount;
 		TempPickup.TriggerMod = lpVeryShortDropPickup->PickupInfo.TriggerMod;
 #if DEBUG_PICKUPS
-		if( lpVeryShortDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], TempPickup.IDCount );
+		if( lpVeryShortDropPickup->WhoIAm != (u_int16_t) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], TempPickup.IDCount );
 		else DebugPrintf( "PACKET OWNER '%s' : Init '%s', No Owner, ID %d\n", &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], TempPickup.IDCount );
 #endif
 	 	Pickup = InitOnePickup( &TempPickup.Pos, TempPickup.Group,
@@ -2503,7 +2503,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			SfxForCollectPickup( lpKillPickup->KillPickupInfo.Owner, lpKillPickup->KillPickupInfo.IDCount );
 		}
 #if DEBUG_PICKUPS
-		if( lpKillPickup->KillPickupInfo.Owner != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Kill Pickup Owner '%s', ID %d\n", &Names[ lpKillPickup->WhoIAm ][ 0 ], &Names[ lpKillPickup->KillPickupInfo.Owner ][ 0 ], lpKillPickup->KillPickupInfo.IDCount );
+		if( lpKillPickup->KillPickupInfo.Owner != (u_int16_t) -1 ) DebugPrintf( "PACKET OWNER '%s' : Kill Pickup Owner '%s', ID %d\n", &Names[ lpKillPickup->WhoIAm ][ 0 ], &Names[ lpKillPickup->KillPickupInfo.Owner ][ 0 ], lpKillPickup->KillPickupInfo.IDCount );
 		else DebugPrintf( "PACKET OWNER '%s' : Kill Pickup No Owner, ID %d\n", &Names[ lpKillPickup->WhoIAm ][ 0 ], lpKillPickup->KillPickupInfo.IDCount );
 #endif
 		KillPickup( lpKillPickup->KillPickupInfo.Owner, lpKillPickup->KillPickupInfo.IDCount, lpKillPickup->KillPickupInfo.Style );
@@ -2543,7 +2543,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						&lpPrimBullPosDir->PrimBullPosDir.Dir,
 						&lpPrimBullPosDir->PrimBullPosDir.Up,
 						lpPrimBullPosDir->PrimBullPosDir.PowerLevel,
-						lpPrimBullPosDir->PrimBullPosDir.PLevel, FALSE );
+						lpPrimBullPosDir->PrimBullPosDir.PLevel, false );
    		return;
 
 
@@ -2559,7 +2559,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						&lpSecBullPosDir->SecBullPosDir.Dir,
 						&lpSecBullPosDir->SecBullPosDir.UpVector,
 						&lpSecBullPosDir->SecBullPosDir.DropDir,
-						lpSecBullPosDir->SecBullPosDir.Weapon, FALSE );
+						lpSecBullPosDir->SecBullPosDir.Weapon, false );
 		return;
 
 
@@ -2570,15 +2570,15 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		{
 			 i = InitOneSecBull( lpTitanBits->TitanBits.OwnerType,
 								lpTitanBits->TitanBits.Owner,
-								(uint16) ( Count + lpTitanBits->TitanBits.BulletID ),
+								(u_int16_t) ( Count + lpTitanBits->TitanBits.BulletID ),
 								lpTitanBits->TitanBits.Group,
 								&lpTitanBits->TitanBits.Pos,
 								&lpTitanBits->TitanBits.Offset,
 								&lpTitanBits->TitanBits.Directions[ Count ],
 								&lpTitanBits->TitanBits.UpVector,
 								&lpTitanBits->TitanBits.DropDir,
-								lpTitanBits->TitanBits.Weapon, FALSE );
-			 if( i != (uint16) -1 )
+								lpTitanBits->TitanBits.Weapon, false );
+			 if( i != (u_int16_t) -1 )
 				 SecBulls[i].FramelagAddition = GlobalFramelagAddition;
 		}
 		return;
@@ -2973,7 +2973,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						if( UseShortPackets != lpNetSettingsMsg->ShortPackets)
 						{
 							// short packets enabled
-							if( lpNetSettingsMsg->ShortPackets == TRUE)
+							if( lpNetSettingsMsg->ShortPackets == true)
 								AddColourMessageToQue(SystemMessageColour, "SHORT PACKETS ENABLED BY HOST");
 							// short packets disabled
 							else
@@ -3261,7 +3261,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 //		Ships[lpInterpolate->WhoIAm].OldTime = GameElapsedTime;
 		Ships[lpInterpolate->WhoIAm].OldTime = DemoTimeSoFar;
 		Ships[lpInterpolate->WhoIAm].NextTime = lpInterpolate->NextTime;
-		Ships[lpInterpolate->WhoIAm].DemoInterpolate = TRUE;
+		Ships[lpInterpolate->WhoIAm].DemoInterpolate = true;
 		return;
 
     case MSG_VERYSHORTINTERPOLATE:
@@ -3276,7 +3276,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.z	= (float)(lpVeryShortInterpolate->NextQuat.z * ONEOVER32767 );
 		Ships[lpVeryShortInterpolate->WhoIAm].NextBank		= (float) (lpVeryShortInterpolate->NextBank / SHORTBANKMODIFIER);
 		Ships[lpVeryShortInterpolate->WhoIAm].NextTime		= lpVeryShortInterpolate->NextTime;
-		Ships[lpVeryShortInterpolate->WhoIAm].DemoInterpolate = TRUE;
+		Ships[lpVeryShortInterpolate->WhoIAm].DemoInterpolate = true;
 		Ships[lpVeryShortInterpolate->WhoIAm].OldPos			= Ships[lpVeryShortInterpolate->WhoIAm].Object.Pos;
 		Ships[lpVeryShortInterpolate->WhoIAm].OldQuat		= Ships[lpVeryShortInterpolate->WhoIAm].Object.Quat;
 		Ships[lpVeryShortInterpolate->WhoIAm].OldBank		= Ships[lpVeryShortInterpolate->WhoIAm].Object.Bank;
@@ -3291,7 +3291,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		if( IllegalTime )
 		{
 			Countdown_Float = lpSetTime->TimeInfo.Time;
-			IllegalTime = FALSE;
+			IllegalTime = false;
 		}
 		return;
 
@@ -3316,11 +3316,11 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				Ships[lpBikeNumMsg->WhoIAm].BikeNum = player_config->bike;
 				break;
 			default:
-				Ships[lpBikeNumMsg->WhoIAm].BikeNum = (int16) lpBikeNumMsg->BikeNum;
+				Ships[lpBikeNumMsg->WhoIAm].BikeNum = (int16_t) lpBikeNumMsg->BikeNum;
 			}
 		}
 		else
-			Ships[lpBikeNumMsg->WhoIAm].BikeNum = (int16) lpBikeNumMsg->BikeNum;
+			Ships[lpBikeNumMsg->WhoIAm].BikeNum = (int16_t) lpBikeNumMsg->BikeNum;
 
 		return;
 	}
@@ -3535,7 +3535,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 			// setup the new player
 			//
 
-			InitShipStructure( new_player_id, TRUE );							// zero out player and the old score
+			InitShipStructure( new_player_id, true );							// zero out player and the old score
 			GameStatus[new_player_id]			= STATUS_GetPlayerNum;			// player now goes into "get player number" stage
 			TeamNumber[new_player_id]			= 0;							// starts off on team zero
 			Ships[new_player_id].network_player	= to;							// save network pointer
@@ -3548,11 +3548,11 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 			if(	MyGameStatus == STATUS_Normal ) // should this be here? maybe this info isn't ready unless in game already?
 			{
-				CopyPickups(	(uint16) new_player_id );					
-				CopyRegenSlots( (uint16) new_player_id );
-				CopyTriggers(	(uint16) new_player_id );
-				CopyTrigVars(	(uint16) new_player_id );
-				CopyMines(		(uint16) new_player_id );
+				CopyPickups(	(u_int16_t) new_player_id );					
+				CopyRegenSlots( (u_int16_t) new_player_id );
+				CopyTriggers(	(u_int16_t) new_player_id );
+				CopyTrigVars(	(u_int16_t) new_player_id );
+				CopyMines(		(u_int16_t) new_player_id );
 			}
 		}
 
@@ -4236,7 +4236,7 @@ void DemoClean( void )
     LPVERYSHORTFUPDATEMSG		lpVeryShortFUpdate;
 	INTERPOLATEMSG Interpolate;
 	VERYSHORTINTERPOLATEMSG VeryShortInterpolate;
-	BOOL		IsShortPackets = FALSE;
+	_Bool		IsShortPackets = false;
 	int			FoundOne;
 
 	while(1)
@@ -4294,12 +4294,12 @@ void DemoClean( void )
 			case MSG_VERYSHORTUPDATE:
 				lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) &CommBuff[0];
 				VeryShortInterpolate.WhoIAm = lpVeryShortUpdate->WhoIAm;
-				IsShortPackets = TRUE;
+				IsShortPackets = true;
 				break;
 			case MSG_VERYSHORTFUPDATE:
 				lpVeryShortFUpdate = (LPVERYSHORTFUPDATEMSG) &CommBuff[0];
 				VeryShortInterpolate.WhoIAm = lpVeryShortFUpdate->WhoIAm;
-				IsShortPackets = TRUE;
+				IsShortPackets = true;
 				break;
 			}
 			fgetpos( DemoFp , &Currentpos );	// store the current position..so we can go back to it..
@@ -4412,14 +4412,14 @@ void DemoClean( void )
 
 /*===================================================================
 	Procedure	:		Create a regen effect...
-	Input		:		uint16 ship....
+	Input		:		u_int16_t ship....
 	Output		:		nothing
 ===================================================================*/
 
 
-void CreateReGen( uint16 ship )
+void CreateReGen( u_int16_t ship )
 {
-	uint16	Model;
+	u_int16_t	Model;
 
 	if( ship == WhoIAm )
 	{
@@ -4432,14 +4432,14 @@ void CreateReGen( uint16 ship )
 	}
 
 	Model =	FindFreeModel();
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_SHIP;
 		Models[ Model ].Owner = ship;
 		Models[ Model ].ModelNum = MODEL_Sphere;
 		Models[ Model ].Type = MODTYPE_Field;
 		Models[ Model ].Flags = MODFLAG_Nothing;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = Ships[ship].Object.Pos;
 		Models[ Model ].Mat = MATRIX_Identity;
 		MatrixTranspose( &Models[ Model ].Mat, &Models[ Model ].InvMat );
@@ -4456,7 +4456,7 @@ void CreateReGen( uint16 ship )
 	Input		:		char * Name
 	Output		:		int -1 no level....
 ===================================================================*/
-extern	int16			NumLevels;
+extern	int16_t			NumLevels;
 int FindSameLevel( char * Name )
 {
 	int i;
@@ -4489,19 +4489,19 @@ void StopDemoRecording( void )
 	{
 		fclose( DemoFp );
 		DemoFp = NULL;
-		RecordDemo = FALSE;
-		PlayDemo = FALSE;
+		RecordDemo = false;
+		PlayDemo = false;
 	}
 }
 
 /*===================================================================
 	Procedure	:		Build Ship Flags...
 	Input		:		BYTE Player
-	Output		:		uint32 Flags
+	Output		:		u_int32_t Flags
 ===================================================================*/
-uint32 BuildShipFlags( BYTE Player )
+u_int32_t BuildShipFlags( BYTE Player )
 {
-	uint32 Flags;
+	u_int32_t Flags;
 
 	Flags = Ships[Player].Object.Flags;    // Flags
 
@@ -4520,7 +4520,7 @@ uint32 BuildShipFlags( BYTE Player )
 	{
 		Flags |= SHIP_HullBit1+SHIP_HullBit2;
 	}else{
-		Flags |= ( (uint32) ( Ships[Player].Object.Hull * (1.0F/16.0F) ) ) << SHIP_Hull_Bit1;
+		Flags |= ( (u_int32_t) ( Ships[Player].Object.Hull * (1.0F/16.0F) ) ) << SHIP_Hull_Bit1;
 	}
 	Flags |= (Ships[ Player ].NumMultiples&15) << SHIP_NumMultiples_Bit1;
 	if( Ships[Player].headlights ) Flags |= SHIP_Light;
@@ -4532,17 +4532,17 @@ uint32 BuildShipFlags( BYTE Player )
 /*===================================================================
 	Procedure	:		Build Ship Flags...
 	Input		:		BYTE Player
-	Output		:		uint32 Flags
+	Output		:		u_int32_t Flags
 ===================================================================*/
-void UnPackShipFlags( BYTE Player , uint32 Flags )
+void UnPackShipFlags( BYTE Player , u_int32_t Flags )
 {
 	Ships[ Player ].Object.Flags = Flags;
 	if( ( Flags & SHIP_Enable ) ) Ships[ Player ].enable = 1;
 	else Ships[ Player ].enable = 0;
-	if( ( Flags & SHIP_Invul ) ) Ships[ Player ].Invul = TRUE;
-	else Ships[ Player ].Invul = FALSE;
+	if( ( Flags & SHIP_Invul ) ) Ships[ Player ].Invul = true;
+	else Ships[ Player ].Invul = false;
 
-	Ships[Player].Object.PowerLevel = (int16)((Flags >> SHIP_PowerLevel_Bit1 ) & 3);
+	Ships[Player].Object.PowerLevel = (int16_t)((Flags >> SHIP_PowerLevel_Bit1 ) & 3);
 	Ships[Player].Object.Mode = (BYTE)((Flags >> SHIP_Mode_Bit1 ) & 3);
 
 	if( ( Flags & SHIP_Shield ) ) Ships[ Player ].Object.Shield = 1.0F;
@@ -4570,9 +4570,9 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt )
 /*===================================================================
 	Procedure	:		Update Ammo And Validate Message...
 	Input		:		void	*	Message
-	Output		:		BOOL		True/False ( Valid Message )
+	Output		:		_Bool		True/False ( Valid Message )
 ===================================================================*/
-BOOL UpdateAmmoAndValidateMessage( void * Message )
+_Bool UpdateAmmoAndValidateMessage( void * Message )
 {
 	BYTE					Weapon = 0;
 	BYTE					TempWeapon;
@@ -4586,9 +4586,9 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
     LPGROUPONLY_VERYSHORTFUPDATEMSG	lpGroupOnly_VeryShortFUpdate;
     LPPRIMBULLPOSDIRMSG		lpPrimBullPosDir;
     LPSECBULLPOSDIRMSG		lpSecBullPosDir;
-	int16					PowerLevel;
+	int16_t					PowerLevel;
 	float					Ammo;
-	int16					Count, Count2;
+	int16_t					Count, Count2;
 	float					TempFloat;
 	BYTE					NumMultiples;
 
@@ -4797,8 +4797,8 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 //																			Host_SecondaryWeaponsGot[ Player ][ TempWeapon ],
 //																			Host_SecondaryAmmo[ Player ][ TempWeapon ] );
 
-				if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( FALSE );
-				if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( FALSE );
+				if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( false );
+				if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( false );
 
 				switch( Weapon )
 				{
@@ -4840,7 +4840,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				Weapon = lpVeryShortFUpdate->ShortGlobalShip.Primary;
 
 				if( Weapon >= MAXPRIMARYWEAPONS ) break;
-				if( !Host_PrimaryWeaponsGot[ Player ][ Weapon ] ) return( FALSE );
+				if( !Host_PrimaryWeaponsGot[ Player ][ Weapon ] ) return( false );
 				Ammo = GetPrimaryAmmoUsage( Player, Weapon );
 
 				switch( Weapon )
@@ -4857,7 +4857,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_POWERLASER:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( false );
 							Host_GeneralAmmoUsed += Ammo;
 							Host_GeneralAmmo[ Player ] -= Ammo;
 							if( Host_GeneralAmmo[ Player ] < 0.0F ) Host_GeneralAmmo[ Player ] = 0.0F;
@@ -4872,7 +4872,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_TROJAX:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( false );
 						}
 
 //						AddMessageToQue( "Update:FirePrimary : %s, Got = %hd, Ammo = %f", PrimaryDescription[ Weapon ],
@@ -4884,7 +4884,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_PYROLITE:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( false );
 							Host_PyroliteAmmoUsed += Ammo;
 							Host_PyroliteAmmo[ Player ] -= Ammo;
 							if( Host_PyroliteAmmo[ Player ] < 0.0F ) Host_PyroliteAmmo[ Player ] = 0.0F;
@@ -4899,7 +4899,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_SUSS_GUN:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( false );
 							Host_SussGunAmmoUsed += Ammo;
 							Host_SussGunAmmo[ Player ] -= Ammo;
 							if( Host_SussGunAmmo[ Player ] < 0.0F ) Host_SussGunAmmo[ Player ] = 0.0F;
@@ -4987,8 +4987,8 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 //																			Host_SecondaryWeaponsGot[ Player ][ TempWeapon ],
 //																			Host_SecondaryAmmo[ Player ][ TempWeapon ] );
 
-				if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( FALSE );
-				if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( FALSE );
+				if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( false );
+				if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( false );
 
 				switch( Weapon )
 				{
@@ -5030,7 +5030,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				Weapon = lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Primary;
 
 				if( Weapon >= MAXPRIMARYWEAPONS ) break;
-				if( !Host_PrimaryWeaponsGot[ Player ][ Weapon ] ) return( FALSE );
+				if( !Host_PrimaryWeaponsGot[ Player ][ Weapon ] ) return( false );
 				Ammo = GetPrimaryAmmoUsage( Player, Weapon );
 
 				switch( Weapon )
@@ -5047,7 +5047,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_POWERLASER:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( false );
 							Host_GeneralAmmoUsed += Ammo;
 							Host_GeneralAmmo[ Player ] -= Ammo;
 							if( Host_GeneralAmmo[ Player ] < 0.0F ) Host_GeneralAmmo[ Player ] = 0.0F;
@@ -5062,7 +5062,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_TROJAX:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( false );
 						}
 
 //						AddMessageToQue( "Update:FirePrimary : %s, Got = %hd, Ammo = %f", PrimaryDescription[ Weapon ],
@@ -5074,7 +5074,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_PYROLITE:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( false );
 							Host_PyroliteAmmoUsed += Ammo;
 							Host_PyroliteAmmo[ Player ] -= Ammo;
 							if( Host_PyroliteAmmo[ Player ] < 0.0F ) Host_PyroliteAmmo[ Player ] = 0.0F;
@@ -5089,7 +5089,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_SUSS_GUN:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( false );
 							Host_SussGunAmmoUsed += Ammo;
 							Host_SussGunAmmo[ Player ] -= Ammo;
 							if( Host_SussGunAmmo[ Player ] < 0.0F ) Host_SussGunAmmo[ Player ] = 0.0F;
@@ -5173,8 +5173,8 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				Weapon		= lpFUpdate->ShortGlobalShip.Secondary;
 				TempWeapon	= ConvSecToNormWeapon( Weapon );
 
-				if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( FALSE );
-				if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( FALSE );
+				if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( false );
+				if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( false );
 
 //				AddMessageToQue( "Update:FireSecondary : %s, Got = %d, Ammo = %d", SecondaryDescription[ TempWeapon ],
 //																			Host_SecondaryWeaponsGot[ Player ][ TempWeapon ],
@@ -5220,7 +5220,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				Weapon = lpFUpdate->ShortGlobalShip.Primary;
 
 				if( Weapon >= MAXPRIMARYWEAPONS ) break;
-				if( !Host_PrimaryWeaponsGot[ Player ][ Weapon ] ) return( FALSE );
+				if( !Host_PrimaryWeaponsGot[ Player ][ Weapon ] ) return( false );
 
 				Ammo = GetPrimaryAmmoUsage( Player, Weapon );
 
@@ -5238,7 +5238,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_POWERLASER:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( false );
 							Host_GeneralAmmoUsed += Ammo;
 							Host_GeneralAmmo[ Player ] -= Ammo;
 							if( Host_GeneralAmmo[ Player ] < 0.0F ) Host_GeneralAmmo[ Player ] = 0.0F;
@@ -5261,7 +5261,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_PYROLITE:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( false );
 							Host_PyroliteAmmoUsed += Ammo;
 							Host_PyroliteAmmo[ Player ] -= Ammo;
 							if( Host_PyroliteAmmo[ Player ] < 0.0F ) Host_PyroliteAmmo[ Player ] = 0.0F;
@@ -5276,7 +5276,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_SUSS_GUN:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
-							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
+							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( false );
 							Host_SussGunAmmoUsed += Ammo;
 							Host_SussGunAmmo[ Player ] -= Ammo;
 							if( Host_SussGunAmmo[ Player ] < 0.0F ) Host_SussGunAmmo[ Player ] = 0.0F;
@@ -5321,7 +5321,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				case NME_POWERLASER:
 						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 					{
-						if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
+						if( Host_GeneralAmmo[ Player ] == 0.0F ) return( false );
 						Host_GeneralAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						Host_GeneralAmmo[ Player ] -= PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						if( Host_GeneralAmmo[ Player ] < 0.0F ) Host_GeneralAmmo[ Player ] = 0.0F;
@@ -5336,7 +5336,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				case NME_PYROLITE:
 					if( Ships[ Player ].SuperNashramTimer == 0.0F )
 					{
-						if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
+						if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( false );
 						Host_PyroliteAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						Host_PyroliteAmmo[ Player ] -= PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						if( Host_PyroliteAmmo[ Player ] < 0.0F ) Host_PyroliteAmmo[ Player ] = 0.0F;
@@ -5347,7 +5347,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				case NME_SUSS_GUN:
 					if( Ships[ Player ].SuperNashramTimer == 0.0F )
 					{
-						if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
+						if( Host_SussGunAmmo[ Player ] == 0.0F ) return( false );
 						Host_SussGunAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						Host_SussGunAmmo[ Player ] -= PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						if( Host_SussGunAmmo[ Player ] < 0.0F ) Host_SussGunAmmo[ Player ] = 0.0F;
@@ -5397,8 +5397,8 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				case PINEMINE:
 				case QUANTUMMINE:
 				case SPIDERMINE:
-					if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( FALSE );
-					if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( FALSE );
+					if( !Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] ) return( false );
+					if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) return( false );
 
 					Host_SecondaryAmmo[ Player ][ TempWeapon ]--;
 					if( !Host_SecondaryAmmo[ Player ][ TempWeapon ] ) Host_SecondaryWeaponsGot[ Player ][ TempWeapon ] = 0;
@@ -5416,7 +5416,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 			break;
 	}
 
-	return( TRUE );
+	return( true );
 }
 
 

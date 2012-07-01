@@ -171,13 +171,13 @@ typedef struct PRIMARYWEAPONKNOWLEDGE{
 typedef struct {
 
 	VECTOR			Pos;									// Initial search position
-	uint16			Group;									// Initial Search Group..
+	u_int16_t			Group;									// Initial Search Group..
 	float			PosDist;								// Distance of 'Pos' from targetting SHIP
 	float			Nearest;								// Distance to nearest target
-	uint32			Flags;								// Flags - see below
+	u_int32_t			Flags;								// Flags - see below
 	void	*		SObject;								// Pointer to targetting SHIP   
 	void	*		TObject;								// Pointer to target
-	uint32			TFlags;								// Flags - see below
+	u_int32_t			TFlags;								// Flags - see below
 } TARGETDATA;
 
 //--------------------------------------------------------------------------
@@ -185,7 +185,7 @@ typedef struct {
 //--------------------------------------------------------------------------
 
 typedef struct {
-	int32	Flags;								// Flags - Say wether to turn left right etc...
+	int32_t	Flags;								// Flags - Say wether to turn left right etc...
 	VECTOR	Angle;								// The difference in x y z...
 }AIMDATA;
 //--------------------------------------------------------------------------
@@ -218,7 +218,7 @@ typedef struct {
 
 #define 	BIGDISTANCE				(32000.0F)
 
-#define 	END_OF_TYPES			((int8) 255)
+#define 	END_OF_TYPES			((int8_t) 255)
 
 //--------------------------------------------------------------------------
 // External data
@@ -239,10 +239,10 @@ extern	PRIMARYWEAPONKNOWLEDGE PrimaryKnowledge[];
 // AILIB.C
 
 void AI_GetDistToNearestTarget( register ENEMY * Enemy );
-BOOL AI_InViewCone( VECTOR * Pos, MATRIX * Mat ,VECTOR * TPos, float ViewConeCos );
-BOOL AI_ClearLOS( VECTOR * SPos, uint16 Group , VECTOR * Pos );
-BOOL AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius );
-BOOL AI_ClearLOSNonZeroNonObject( VECTOR * SPos, uint16 Group , VECTOR * Pos , float radius );
+_Bool AI_InViewCone( VECTOR * Pos, MATRIX * Mat ,VECTOR * TPos, float ViewConeCos );
+_Bool AI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos );
+_Bool AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius );
+_Bool AI_ClearLOSNonZeroNonObject( VECTOR * SPos, u_int16_t Group , VECTOR * Pos , float radius );
 void AI_SetIDLE( register ENEMY * Enemy );
 void AI_SetSCAN( register ENEMY * Enemy );
 void AI_SetMOVETOTARGET( ENEMY * Enemy );
@@ -262,13 +262,13 @@ void AI_SetFORMATION( ENEMY * Enemy );
 void AI_AIR( ENEMY * Enemy );
 void AI_TURRET( ENEMY * Enemy );
 void AI_CRAWL( ENEMY * Enemy );
-void AI_THINK( register ENEMY * Enemy , BOOL OverideThinkTime , BOOL JustCheckPlayerRange );
+void AI_THINK( register ENEMY * Enemy , _Bool OverideThinkTime , _Bool JustCheckPlayerRange );
 void AI_AVOIDCHECK( register ENEMY * Enemy );
 void AI_SPLINE( ENEMY * Enemy );
 void AI_EXOGENON( ENEMY * Enemy );
 void AI_LITTLEGEEK( ENEMY * Enemy );
 void AI_FLESHMORPH( ENEMY * Enemy );
-BOOL Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy );
+_Bool Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy );
 
 // AIIDLE.C
 void AI_AIR_IDLE( ENEMY * Enemy );

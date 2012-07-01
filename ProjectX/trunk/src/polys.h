@@ -45,19 +45,19 @@
 ===================================================================*/
 typedef	struct POLY_RGB {
 
-	uint8	R;
-	uint8	G;
-	uint8	B;
+	u_int8_t	R;
+	u_int8_t	G;
+	u_int8_t	B;
 
 } POLY_RGB;
 
 typedef struct POLY {
 
-	uint16			Next;
-	uint16			Prev;
+	u_int16_t			Next;
+	u_int16_t			Prev;
 
-	uint16			NextInTPage;
-	uint16			PrevInTPage;
+	u_int16_t			NextInTPage;
+	u_int16_t			PrevInTPage;
 
 	VECTOR			Pos1;				// Position 1
 	VECTOR			Pos2;				// Position	2
@@ -67,21 +67,21 @@ typedef struct POLY {
 	POLY_RGB		Col2;				// Colour 2
 	POLY_RGB		Col3;				// Colour 3
 	POLY_RGB		Col4;				// Colour 4
-	uint8			Trans1;				// Amount of transparency 1
-	uint8			Trans2;				// Amount of transparency 2
-	uint8			Trans3;				// Amount of transparency 3
-	uint8			Trans4;				// Amount of transparency 4
-	int16			Flags;				// Flags
+	u_int8_t			Trans1;				// Amount of transparency 1
+	u_int8_t			Trans2;				// Amount of transparency 2
+	u_int8_t			Trans3;				// Amount of transparency 3
+	u_int8_t			Trans4;				// Amount of transparency 4
+	int16_t			Flags;				// Flags
 	float			Scale;				// Scale Factor
 	float			Frame;				// Animation Frame
 	float			AnimSpeed;			// Animation Speed
 	FRAME_INFO	**	Frm_Info;			// Offset Info
-	int16			SeqNum;				// Process Sequence
-	uint16			Group;				// Group
+	int16_t			SeqNum;				// Process Sequence
+	u_int16_t			Group;				// Group
 	float			TimeStep;			// Time step for interpolation
 	QUATLERP		Qlerp;				// Quaternion Interpolation 
 	QUAT			Quat;				// Quat
-	uint16			Ship;				// Ship
+	u_int16_t			Ship;				// Ship
 
 } POLY;
 
@@ -89,23 +89,23 @@ typedef struct POLY {
 	Prototypes
 ===================================================================*/
 void InitPolys( void );
-void KillUsedPoly( uint16 i );
-uint16 FindFreePoly( void );
+void KillUsedPoly( u_int16_t i );
+u_int16_t FindFreePoly( void );
 void ProcessPolys( void );
 void DoAfterBurnerEffects( void );
 void InitAfterBurners( void );
 void InitPolyTPages( void );
-void AddPolyToTPage( uint16 i, int16 TPage );
-void RemovePolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplayGroupClippedPolys( RENDEROBJECT *renderObject, uint16 Group );
-BOOL DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject );
-BOOL PolyDispGroupClipped( uint16 Group, RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
-BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
+void AddPolyToTPage( u_int16_t i, int16_t TPage );
+void RemovePolyFromTPage( u_int16_t i, int16_t TPage );
+_Bool DisplayGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group );
+_Bool DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject );
+_Bool PolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
+_Bool PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
 
-BOOL DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, uint16 Group );
-BOOL DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject );
-BOOL SolidPolyDispGroupClipped( uint16 Group, RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
-BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
+_Bool DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group );
+_Bool DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject );
+_Bool SolidPolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
+_Bool SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
 
 FILE * SavePolys( FILE * fp );
 FILE * LoadPolys( FILE * fp );

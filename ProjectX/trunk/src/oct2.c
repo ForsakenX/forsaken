@@ -66,15 +66,15 @@
 void SetCam(int ship, int Cam);
 
 extern int HUDColour;
-extern BOOL ShowWeaponsPossessedOnHUD;
-extern BOOL ShowClockOnHUD;
-extern BOOL ShowKPMOnHUD;
-extern BOOL ShowSpeedOnHUD;
-extern BOOL ShowTotalSpeedOnHUD;
+extern _Bool ShowWeaponsPossessedOnHUD;
+extern _Bool ShowClockOnHUD;
+extern _Bool ShowKPMOnHUD;
+extern _Bool ShowSpeedOnHUD;
+extern _Bool ShowTotalSpeedOnHUD;
 
 extern render_info_t render_info;
-extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
-extern BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
+extern _Bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
+extern _Bool Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;
 
 extern	render_viewport_t viewport;
@@ -85,45 +85,45 @@ extern int    FlagsInLevel;
 extern int    TeamFlagsInLevel[ MAX_TEAMS ];
 extern int    TeamFlagsInShips[ MAX_TEAMS ];
 
-extern void input_grab( BOOL clip );
-extern BOOL NeedFlagAtHome;
-extern BOOL OwnFlagTeleportsHome;
-extern BOOL CanCarryOwnFlag;
+extern void input_grab( _Bool clip );
+extern _Bool NeedFlagAtHome;
+extern _Bool OwnFlagTeleportsHome;
+extern _Bool CanCarryOwnFlag;
 
-BOOL OriginalLevels = FALSE;
-BOOL CheatsDisabled = FALSE;
-BOOL WaitingToQuit;
+_Bool OriginalLevels = false;
+_Bool CheatsDisabled = false;
+_Bool WaitingToQuit;
 
 void ConfigureSpaceorbAxis( int joystick );
 void DefaultJoystickSettings( USERCONFIG *u );
 
 extern const char last_compiled[];
 
-extern  uint32 RecPacketSize;
-extern  uint32 MaxRecPacketSize;
+extern  u_int32_t RecPacketSize;
+extern  u_int32_t MaxRecPacketSize;
 
-extern  uint32 CurrentBytesPerSecRec;
-extern  uint32 CurrentBytesPerSecSent;
-extern  uint32 MaxCurrentBytesPerSecRec;
-extern  uint32 MaxCurrentBytesPerSecSent;
+extern  u_int32_t CurrentBytesPerSecRec;
+extern  u_int32_t CurrentBytesPerSecSent;
+extern  u_int32_t MaxCurrentBytesPerSecRec;
+extern  u_int32_t MaxCurrentBytesPerSecSent;
 
 
 extern char *JoystickPOVDirections[];
 extern VECTOR BikePos;
 
-extern BOOL CTF;
+extern _Bool CTF;
 
-extern uint8 QuickStart;
+extern u_int8_t QuickStart;
 
 extern char *TeamName[ MAX_TEAMS ];
-extern int16 DummyTextureIndex;
+extern int16_t DummyTextureIndex;
 
-extern void Printint16( int16 num , int x , int y , int col );
+extern void Printint16_t( int16_t num , int x , int y , int col );
 
-extern void InitIndirectVisible( uint16 g );
+extern void InitIndirectVisible( u_int16_t g );
 
-extern void AddIndirectVisible( uint16 g );
-extern  BOOL  RearCameraDisable;
+extern void AddIndirectVisible( u_int16_t g );
+extern  _Bool  RearCameraDisable;
 extern  MODELNAME   SplashModelNames[MAXMODELHEADERS];
 extern USERCONFIG *player_config;
 extern char biker_config[];
@@ -134,8 +134,8 @@ extern float LevelTimeTaken;
 extern BYTE PreDemoEndMyGameStatus;
 extern  TEXT  DemoGameName;
 
-extern  BOOL FullRearView;
-extern  BOOL ShowStats;
+extern  _Bool FullRearView;
+extern  _Bool ShowStats;
 
 extern  int AckMsgsActiveMax;
 extern  int AckMsgsActive;
@@ -151,51 +151,51 @@ extern MENU MENU_NEW_WatchTeamSelect;
 
 extern float VDUoffsetX;
 extern float VDUoffsetY;
-extern  int16 NextworkOldBikeNum;
+extern  int16_t NextworkOldBikeNum;
 
 extern  size_t  MemUsed;
 
 #ifdef DEBUG_ON
-extern uint32 CurrentBikeCompSpeech;
+extern u_int32_t CurrentBikeCompSpeech;
 #endif
 
-BOOL Cheated = FALSE;
+_Bool Cheated = false;
 
 void InitSoundInfo( MLOADHEADER * Mloadheader );
 void InitShipSpeeds( void );
 
 #define SAVESCREEN_3DFX
 
-uint32        AnimOncePerFrame = 0;         // used for stuff that is displayed more than once in a single frame..
+u_int32_t        AnimOncePerFrame = 0;         // used for stuff that is displayed more than once in a single frame..
 
-extern BOOL bSoundEnabled;
+extern _Bool bSoundEnabled;
 
 extern int	TeamCol[ MAX_TEAMS ];
 extern int Num_StatsMessage_Parts;
 extern LIST BikeList;
 extern LIST LevelList;
 
-extern  BOOL ResetKillsPerLevel;
+extern  _Bool ResetKillsPerLevel;
 
 extern int  outside_map;
 
-extern  int16 NextNewModel;
+extern  int16_t NextNewModel;
 extern MENUSTATE MenuState;
-extern  BOOL  ShowEFZones;
-extern  BOOL  ShowTeleports;
-extern BOOL MenuFrozen;
-extern  int16 MaxKills;
-extern  int16 NumGoldBars;
-extern BOOL ReloadSfx;
+extern  _Bool  ShowEFZones;
+extern  _Bool  ShowTeleports;
+extern _Bool MenuFrozen;
+extern  int16_t MaxKills;
+extern  int16_t NumGoldBars;
+extern _Bool ReloadSfx;
 extern float ReloadSfxPause;
-extern  BOOL  IllegalTime;
+extern  _Bool  IllegalTime;
 extern  int   SinglePlayerTimeLimit;
-extern  BOOL  BilinearSolidScrPolys;
-extern  uint16  RandomStartPosModify;
+extern  _Bool  BilinearSolidScrPolys;
+extern  u_int16_t  RandomStartPosModify;
 extern  char * StatusTab[256];
 
-extern BOOL ShowMessages; // show long list of chat messages
-extern BOOL ShowStatistics; // show in-game statistics
+extern _Bool ShowMessages; // show long list of chat messages
+extern _Bool ShowStatistics; // show in-game statistics
 
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
@@ -229,17 +229,17 @@ char * AiModes[] = {
 
 extern  int EnemiesActive;
 void CheckTimeLimit( void );
-extern  int16 InGameLoadGameLevelNum;
+extern  int16_t InGameLoadGameLevelNum;
 
-BOOL  ScoreDisplaySfx = TRUE;
-BOOL  IMustQuit = FALSE;
+_Bool  ScoreDisplaySfx = true;
+_Bool  IMustQuit = false;
 // Capture The Flag Stuff
-BOOL  CaptureTheFlag	= FALSE;
-BOOL  IHaveAFlag			= FALSE;
+_Bool  CaptureTheFlag	= false;
+_Bool  IHaveAFlag			= false;
 // End of Capture The Flag
 
 // Bounty Hunt
-BOOL  BountyHunt = FALSE;
+_Bool  BountyHunt = false;
 
 extern int CameraStatus;  
 
@@ -273,7 +273,7 @@ extern  float MaxBankAngle;
 extern  float BankAccell;
 extern  float BankDecell;
 
-extern BOOL BrightShips;
+extern _Bool BrightShips;
 
 extern  float LastDistance[MAX_SFX];
 
@@ -286,14 +286,14 @@ extern  int   DifficultyLevel;
 
 extern int outside_group;
 
-extern  BOOL  ScreenSaving;
+extern  _Bool  ScreenSaving;
 extern  float WhiteOut;
 extern float mouse_dx;
 extern float mouse_dy;
 
 void	MessageQuePrintAll( void );
 
-BOOL  InsideResizeViewport = FALSE;
+_Bool  InsideResizeViewport = false;
 
 DWORD CurrentSrcBlend;
 DWORD CurrentDestBlend;
@@ -308,9 +308,9 @@ LONGLONG  TimeDiff;
 LONGLONG  Freq;
 #endif
 
-BOOL  JustExitedMenu =FALSE;
+_Bool  JustExitedMenu =false;
 
-BOOL  Inside;
+_Bool  Inside;
 int   Depth;
 
 void CalculateFramelag( void );
@@ -321,15 +321,15 @@ MENU  MENU_EditMacro3;
 
 extern  FILE  * DemoFp;
 extern  FILE  * DemoFpClean;
-extern  BOOL  PlayDemo;
-extern  BOOL  PauseDemo;
-extern  BOOL  RecordDemo;
+extern  _Bool  PlayDemo;
+extern  _Bool  PauseDemo;
+extern  _Bool  RecordDemo;
 extern  SLIDER  DemoSpeed;
 extern  SLIDER  DemoEyesSelect;
-extern  BOOL  ShowWeaponKills;
-extern  BOOL ShowStats; 
+extern  _Bool  ShowWeaponKills;
+extern  _Bool ShowStats; 
 
-extern  uint16  IsGroupVisible[MAXGROUPS];
+extern  u_int16_t  IsGroupVisible[MAXGROUPS];
 
 extern  MXLOADHEADER ModelHeaders[MAXMODELHEADERS];
 extern  MODELNAME TitleModelNames[MAXMODELHEADERS]; 
@@ -359,7 +359,7 @@ extern  MENU  *       GetPlayerNumMenu;
 LONGLONG  DemoStartedTime;    // when the game started
 LONGLONG  DemoEndedTime;      // when the game started
 float   DemoTotalTime = 0.0F; // total game time (in seconds)
-int32   DemoGameLoops = 0;
+int32_t   DemoGameLoops = 0;
 float DemoAvgFps = 0.0F;
 extern  LONGLONG  DemoTimeSoFar;
 #endif
@@ -371,12 +371,12 @@ extern  LONGLONG  DemoTimeSoFar;
 #define VIEWPORT_SHRINK   (1.0F/1.1F)
 
 extern  TLOADHEADER Tloadheader;
-extern  int16   SecondaryAmmo[ MAXSECONDARYWEAPONS ];
-BOOL LockOutWindows = TRUE;
+extern  int16_t   SecondaryAmmo[ MAXSECONDARYWEAPONS ];
+_Bool LockOutWindows = true;
 
-extern uint16 OnceOnly;
+extern u_int16_t OnceOnly;
 extern char         MyName[ 32 ];
-extern  BOOL                    IsHost;
+extern  _Bool                    IsHost;
 extern float  MessageTime[MAX_MESSAGES];
 extern  char MessageBank[MAX_MESSAGES][200];
 extern  int CurrentMessage;
@@ -393,7 +393,7 @@ extern  float SussGunAmmo;
 extern  float GeneralAmmo;
 extern  SHIPCONTROL control;
 extern  REGENPOINT  * RegenPoints;
-extern  int16     NumRegenPoints;
+extern  int16_t     NumRegenPoints;
 extern  float PowerLevel;
 extern  float LaserTemperature;
 extern  float NitroFuel;
@@ -401,42 +401,42 @@ extern  SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern  ENEMY * TestEnemy;
 
 extern  char  biker_name[256];
-extern  int16 SelectedBike;
+extern  int16_t SelectedBike;
 
 extern  float cral;
 extern  int   HullHit;
 extern  int   ShieldHit;
-extern  BOOL  TargetComputerOn;
+extern  _Bool  TargetComputerOn;
 
-extern  int16 NumPickupsPerGroup[ MAXGROUPS ];
+extern  int16_t NumPickupsPerGroup[ MAXGROUPS ];
 extern  PICKUP  Pickups[ MAXPICKUPS ];
 
-extern  BOOL  DebugInfo;
-extern  BOOL  GodMode;
-extern  BOOL  GodModeOnceOnly;
+extern  _Bool  DebugInfo;
+extern  _Bool  GodMode;
+extern  _Bool  GodModeOnceOnly;
 
-extern  BOOL  TeamGame;
+extern  _Bool  TeamGame;
 extern  BYTE  TeamNumber[MAX_PLAYERS];
 
 extern  int   no_collision;   // disables player ship-to-background collisions
 extern  SLIDER  TimeLimit;
-extern  BOOL  CountDownOn;
+extern  _Bool  CountDownOn;
 extern  REGENPOINT  * RegenSlotsCopy[ MAX_PLAYERS ];
 
-extern  BOOL  ShowTrigZones;
-extern  BOOL  ShowColZones;
-extern  BOOL  NodeCube;
-extern  BOOL  OldNodeCube;
+extern  _Bool  ShowTrigZones;
+extern  _Bool  ShowColZones;
+extern  _Bool  NodeCube;
+extern  _Bool  OldNodeCube;
 extern  MATRIX  MATRIX_Identity;
 
-extern  uint32  TotalFmPolysInUse;
-extern  uint32  TotalPolysInUse;
-extern  uint32  TotalScrPolysInUse;
+extern  u_int32_t  TotalFmPolysInUse;
+extern  u_int32_t  TotalPolysInUse;
+extern  u_int32_t  TotalScrPolysInUse;
 extern  MODELNAME ModelNames[MAXMODELHEADERS];
-extern  BOOL  quitting; 
-extern  BOOL  ShowBoundingBoxes;
+extern  _Bool  quitting; 
+extern  _Bool  ShowBoundingBoxes;
 
-BOOL InitViewport( void );
+_Bool InitViewport( void );
 
 
 BYTE  InitView_MyGameStatus;
@@ -455,24 +455,24 @@ px_timer_t framelag_timer;
 
 int i, j; // index counters
 
-BOOL RearCameraActive;
+_Bool RearCameraActive;
 int MissileCameraActive = 0;
-uint16  CameraMissile = (uint16) -1;
-extern BOOL MissileCameraEnable;
+u_int16_t  CameraMissile = (u_int16_t) -1;
+extern _Bool MissileCameraEnable;
 BYTE  TempMissileCam;
 
 extern  REMOTECAMERA * ActiveRemoteCamera;
 
-BOOL
+_Bool
 Our_CalculateFrameRate(void);
-BOOL VduFinished( MENU *Menu );
-BOOL WriteMessage(const char *format, ...); // printf-a-like for bottom line of window
+_Bool VduFinished( MENU *Menu );
+_Bool WriteMessage(const char *format, ...); // printf-a-like for bottom line of window
 
-BOOL ScoreDisplay();
-BOOL InitScoreDisplay();
-BOOL StatsDisplay();
-BOOL InitStatsDisplay();
-BOOL ScoreDisplayOrig(void);
+_Bool ScoreDisplay();
+_Bool InitScoreDisplay();
+_Bool StatsDisplay();
+_Bool InitStatsDisplay();
+_Bool ScoreDisplayOrig(void);
 
 typedef enum {
 	NO_BG,
@@ -480,7 +480,7 @@ typedef enum {
 	BOX_BG
 } stats_mode_t;
 
-void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BOOL DetailedStats);
+void ShowDetailedStats(int NumActivePlayers, _Bool TeamsGame, _Bool KillsBased, _Bool DetailedStats);
 void ShowBasicStats(int NumActivePlayers);
 void ShowInGameStats();
 void ShowDeathModeStats();
@@ -489,22 +489,22 @@ void ShowGameStats(stats_mode_t mode);
 int Secrets = 0;
 int TotalSecrets = 0;
 int CrystalsFound = 0;
-extern  int16   NumInitEnemies;
-extern  int16   NumKilledEnemies;
+extern  int16_t   NumInitEnemies;
+extern  int16_t   NumKilledEnemies;
 
-BOOL  ResizeViewport( void );
-BOOL  FullScreenViewport();
-BOOL  ClearBuffers( void );
-BOOL  ClearZBuffer( void );
+_Bool  ResizeViewport( void );
+_Bool  FullScreenViewport();
+_Bool  ClearBuffers( void );
+_Bool  ClearZBuffer( void );
 
-BOOL clear_black(void)
+_Bool clear_black(void)
 {
   if ( WhiteOut > 0.0f )
-    return TRUE;
+    return true;
 	return FSClearBlack();
 }
 
-BOOL RenderCurrentCamera( void );
+_Bool RenderCurrentCamera( void );
 
 void  PlotSimplePanel( void );
 
@@ -516,13 +516,13 @@ float hfov = START_FOV;
 float chosen_fov = START_FOV;
 float normal_fov = START_FOV;
 
-BOOL  DrawPanel = FALSE;
-BOOL  ReMakeSimplePanel = TRUE;
+_Bool  DrawPanel = false;
+_Bool  ReMakeSimplePanel = true;
 
-BOOL  OldDrawPanel = TRUE;
-BOOL  Panel = TRUE;
+_Bool  OldDrawPanel = true;
+_Bool  Panel = true;
 
-BOOL ChangeLevel( void );
+_Bool ChangeLevel( void );
 void SelectQuitCurrentGame( MENUITEM *Item );
 
 float pixel_aspect_ratio;
@@ -539,11 +539,11 @@ extern int FontSourceWidth;
 extern int FontSourceHeight;
 
 extern  int PlayerSort[MAX_PLAYERS];
-extern int16 NumOfActivePlayers;
+extern int16_t NumOfActivePlayers;
 
-int16   LevelNum = 0 ;
-int16   NewLevelNum = 0 ;
-int16   NumLevels = 0;
+int16_t   LevelNum = 0 ;
+int16_t   NewLevelNum = 0 ;
+int16_t   NumLevels = 0;
 char  ShortLevelNames[MAXLEVELS][32];
 char  LevelNames[MAXLEVELS][128];
 char  CollisionNames[MAXLEVELS][128];
@@ -561,37 +561,37 @@ char MissionTextNames[MAXLEVELS][128];
 char MissionTextPics[MAXLEVELS][128];
 char level_names[MAXLEVELS][128];
 
-int16 CameraRendering = CAMRENDERING_None;
+int16_t CameraRendering = CAMRENDERING_None;
 
-BOOL SeriousError = FALSE;
-BOOL DoClipping = TRUE;
-BOOL OnceOnlyChangeLevel = FALSE;
+_Bool SeriousError = false;
+_Bool DoClipping = true;
+_Bool OnceOnlyChangeLevel = false;
 
 //bjdLPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ] = { NULL, NULL };
 RENDEROBJECT RenderBufs[4];
 
 void InitRenderBufs(/*LPDIRECT3DDEVICE lpDev*/ ); // bjd
 void ReleaseRenderBufs( void );
-//BOOL ChangeBackgroundColour( float R, float G, float B );
-BOOL SetMatrixViewPort( void );
+//_Bool ChangeBackgroundColour( float R, float G, float B );
+_Bool SetMatrixViewPort( void );
 void PrintInitViewStatus( BYTE Status );
 
 void UpdateBGObjectsClipGroup( CAMERA * Camera );
 void UpdateEnemiesClipGroup( CAMERA * Camera  );
 void SpecialDestroyGame( void );
 
-extern  int16 PrimaryInLevel[ MAXPRIMARYWEAPONS ];
-extern  int16 SecondaryInLevel[ MAXSECONDARYWEAPONS ];
-extern  int16 PrimaryInPlayers[ MAXPRIMARYWEAPONS ];
-extern  int16 SecondaryInPlayers[ MAXSECONDARYWEAPONS ];
-extern  int16 PrimaryToGenerate[ MAXPRIMARYWEAPONS ];
-extern  int16 SecondaryToGenerate[ MAXSECONDARYWEAPONS ];
-extern  int16 MinesInLevel[ MAXSECONDARYWEAPONS ];
-extern  int16 OrbsInLevel;
-extern  int16 OrbsToGenerate;
-extern  int16 OrbsInPlayers;
+extern  int16_t PrimaryInLevel[ MAXPRIMARYWEAPONS ];
+extern  int16_t SecondaryInLevel[ MAXSECONDARYWEAPONS ];
+extern  int16_t PrimaryInPlayers[ MAXPRIMARYWEAPONS ];
+extern  int16_t SecondaryInPlayers[ MAXSECONDARYWEAPONS ];
+extern  int16_t PrimaryToGenerate[ MAXPRIMARYWEAPONS ];
+extern  int16_t SecondaryToGenerate[ MAXSECONDARYWEAPONS ];
+extern  int16_t MinesInLevel[ MAXSECONDARYWEAPONS ];
+extern  int16_t OrbsInLevel;
+extern  int16_t OrbsToGenerate;
+extern  int16_t OrbsInPlayers;
 
-extern int16 PrimaryWeaponsGot[ MAXPRIMARYWEAPONS ];
+extern int16_t PrimaryWeaponsGot[ MAXPRIMARYWEAPONS ];
 
 // if met max kill limit, sets flag to change level
 void CheckMetKillLimit();
@@ -602,7 +602,7 @@ extern int SystemMessageColour;
 extern int FlagMessageColour;
 
 // for HUD colour (text.c)
-extern uint8 Colourtrans[MAXFONTCOLOURS][3];
+extern u_int8_t Colourtrans[MAXFONTCOLOURS][3];
 
 // watch mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
@@ -658,24 +658,24 @@ MCLOADHEADER MCloadheadert0;        //  0 thickness collision map...
 
 //extern  LPDIRECT3DEXECUTEBUFFER Portal_lpD3DExBuf;
 
-extern  uint16      FirstFmPolyUsed;
-extern  uint16      FirstPolyUsed;
-extern  uint16      FirstLineUsed;
-extern  uint16      FirstScrPolyUsed;
+extern  u_int16_t      FirstFmPolyUsed;
+extern  u_int16_t      FirstPolyUsed;
+extern  u_int16_t      FirstLineUsed;
+extern  u_int16_t      FirstScrPolyUsed;
 extern  GLOBALSHIP    Ships[MAX_PLAYERS+1];
 extern  BYTE      WhoIAm;
 extern  BYTE      Current_Camera_View;    // which object is currently using the camera view....
-extern  BOOL      RemoteCameraActive;
+extern  _Bool      RemoteCameraActive;
 
-extern  int16     ShowPortal;
-extern  int16     ShowSkin;
-extern  int16         NamesAreLegal;
+extern  int16_t     ShowPortal;
+extern  int16_t     ShowSkin;
+extern  int16_t         NamesAreLegal;
 extern  SHORTNAMETYPE     Names;  // all the players short Names....
 
-BOOL MainGame(); // bjd
+_Bool MainGame(); // bjd
 
 void Build_View();
-BOOL DispTracker( void ); // bjd
+_Bool DispTracker( void ); // bjd
 
 
 /*===================================================================
@@ -745,7 +745,7 @@ RENDERMATRIX world = {
     RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0)
 };
 
-extern BOOL StereoEnabled;
+extern _Bool StereoEnabled;
 stereo_mode_t StereoMode;
 extern float StereoEyeSep;
 extern float StereoFocalDist;
@@ -778,7 +778,7 @@ void stereo_adjust( RENDERMATRIX *m )
 	m->_31 = (right+left)/(right-left);
 }
 
-BOOL SetFOV( float fov )
+_Bool SetFOV( float fov )
 {
 	float screen_width, screen_height;
 	float Scale, NewNear;
@@ -789,7 +789,7 @@ BOOL SetFOV( float fov )
 	if (!FSGetViewPort(&viewport))
 	{
 		Msg( "GetViewport failed.\n%s", render_error_description(0) );
-		return FALSE;
+		return false;
 	}
 
 	if ( render_info.fullscreen )
@@ -837,9 +837,9 @@ BOOL SetFOV( float fov )
 	hfov = fov;
 
 	if (!FSSetProjection(&proj))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -868,7 +868,7 @@ void SetViewportError( char *where, render_viewport_t *vp )
 void ProcessGameKeys( void )
 {
 
-  static int16 startpos = 0;
+  static int16_t startpos = 0;
 
   // if were not (!) in (normal,single,attract or demo) modes
   // then don't listen to keys...
@@ -916,7 +916,7 @@ void ProcessGameKeys( void )
 		}
 		else
 		{
-      JustExitedMenu = FALSE;
+      JustExitedMenu = false;
 		}
 	}
 
@@ -1045,14 +1045,14 @@ void ProcessGameKeys( void )
 		if ( input_buffer_find( SDLK_F3 ) )
 			if( !RemoteCameraActive )
 			{
-				RemoteCameraActive = TRUE;
+				RemoteCameraActive = true;
 				Ships[MAX_PLAYERS].Object.Pos = Ships[WhoIAm].Object.Pos;
 				Ships[MAX_PLAYERS].Object.Group = Ships[WhoIAm].Object.Group;
 				Ships[MAX_PLAYERS].Object.Mode = NORMAL_MODE;
 				Ships[MAX_PLAYERS].enable = 1;
 				Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
 			}else{
-				RemoteCameraActive = FALSE;
+				RemoteCameraActive = false;
 				Ships[MAX_PLAYERS].enable = 0;
 				Current_Camera_View = WhoIAm;   // which object is currently using the camera view....
 			}
@@ -1070,11 +1070,11 @@ void ProcessGameKeys( void )
 				// We need to make this a standard feature!!!
 				if( TargetComputerOn )
 				{
-					TargetComputerOn = FALSE;
+					TargetComputerOn = false;
 				}
 				else
 				{
-					TargetComputerOn = TRUE;
+					TargetComputerOn = true;
 				}
 			}
     }
@@ -1241,17 +1241,17 @@ void ProcessGameKeys( void )
   } // end normal keys
 } // ProcessGameKeys
 
-BOOL
+_Bool
 ResizeViewport( void )
 {
 	int left, top;
 	int width, height;
 	int maxwidth, maxheight;
-	BOOL  NewDrawPanel;
-	BOOL  NewDrawSimplePanel;
+	_Bool  NewDrawPanel;
+	_Bool  NewDrawSimplePanel;
 	float scale = 1.0F;
   
-	InsideResizeViewport = TRUE;
+	InsideResizeViewport = true;
 
 	/*
      * Setup the viewport for specified viewing area
@@ -1260,11 +1260,11 @@ ResizeViewport( void )
 	if (!FSGetViewPort(&viewport))
 	{
         Msg( "GetViewport failed.\n%s", render_error_description(0) );
-        return FALSE;
+        return false;
     }
 	maxwidth = render_info.window_size.cx;
 
-	NewDrawSimplePanel = FALSE;
+	NewDrawSimplePanel = false;
   
 	maxheight = render_info.window_size.cy;
 
@@ -1278,7 +1278,7 @@ ResizeViewport( void )
 		}
 		height = (int) floor( maxheight * scale );
 
-		NewDrawPanel = FALSE;
+		NewDrawPanel = false;
 
 		left = ( ( maxwidth - width ) >> 1 ) & ~1;
 		top = ( ( maxheight - height ) >> 1 ) & ~1;
@@ -1289,12 +1289,12 @@ ResizeViewport( void )
 		height = maxheight;
 		if ( scale > 1.11F )
 		{
-			NewDrawPanel = TRUE;
+			NewDrawPanel = true;
 			scale = 1.2F;
 		}
 		else
 		{
-			NewDrawPanel = FALSE;
+			NewDrawPanel = false;
 		}
 		left = 0;
 		top = 0;
@@ -1317,17 +1317,17 @@ ResizeViewport( void )
 #else
         Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-        return FALSE;
+        return false;
     }
   
 	SetFOV( hfov );
 
 	clear_black();
 
-	return TRUE;
+	return true;
 }
 
-BOOL FullScreenViewport()
+_Bool FullScreenViewport()
 {
 	int left, top;
 	int width, height;
@@ -1336,7 +1336,7 @@ BOOL FullScreenViewport()
 	if (!FSGetViewPort(&viewport))
 	{
         Msg( "GetViewport failed.\n%s", render_error_description(0) );
-        return FALSE;
+        return false;
     }
 
 	maxwidth = render_info.window_size.cx;
@@ -1366,14 +1366,14 @@ BOOL FullScreenViewport()
 #else
         Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-        return FALSE;
+        return false;
     }
 	SetFOV( hfov );
 	clear_black();
-	return TRUE;
+	return true;
 }
 
-BOOL InitLevels( char * levels_list )
+_Bool InitLevels( char * levels_list )
 {
 
   FILE *f;
@@ -1388,7 +1388,7 @@ BOOL InitLevels( char * levels_list )
   
   // set some globals
   CurrentLevelsList = levels_list;
-  OriginalLevels = TRUE;
+  OriginalLevels = true;
 
   /////
   // Read Levels From File
@@ -1396,7 +1396,7 @@ BOOL InitLevels( char * levels_list )
 
   f = file_open( levels_file, "r" );
   if (!f )
-    return FALSE;
+    return false;
 
   // scan each level name into ShortLevelNames[j]
   j=0;
@@ -1437,7 +1437,7 @@ BOOL InitLevels( char * levels_list )
   // this should never happen
   // unless you delete all the level directories
   // or the level file doesn't exist
-  if( !NumLevels ) return FALSE;
+  if( !NumLevels ) return false;
 
   // select default level
   LevelList.items = 0;
@@ -1457,16 +1457,16 @@ BOOL InitLevels( char * levels_list )
   LoadLevelText( NULL );
 
   // success !
-  return TRUE;
+  return true;
 
 }
 
 
-BOOL SetMatrixViewPort( void )
+_Bool SetMatrixViewPort( void )
 {
 /* TODO - what did this function do in d3d6 ?
 	if (lpView->lpVtbl->SetBackground(lpView, hBmat) != D3D_OK) {
-		return FALSE;
+		return false;
 	}
 */
 
@@ -1492,16 +1492,16 @@ BOOL SetMatrixViewPort( void )
       initfov = 1;
     }
 
-    if( InsideResizeViewport == FALSE )
+    if( InsideResizeViewport == false )
     {
 		InitViewport();
     }
 	else
 	{
-		InsideResizeViewport = FALSE;
+		InsideResizeViewport = false;
 	}
 
-  return TRUE;
+  return true;
 }
 
 int GetCurPrimAmmo( void )
@@ -1520,10 +1520,10 @@ void DrawSimplePanel()
 	int right = render_info.window_size.cx - FontWidth*5;
 	int top   = render_info.window_size.cy - FontHeight*30;
 	int energy;
-	uint8 Count; uint8 pos = 0;
- 	uint8 r = Colourtrans[HUDColour][0];
-	uint8 g = Colourtrans[HUDColour][1];
-	uint8 b = Colourtrans[HUDColour][2];
+	u_int8_t Count; u_int8_t pos = 0;
+ 	u_int8_t r = Colourtrans[HUDColour][0];
+	u_int8_t g = Colourtrans[HUDColour][1];
+	u_int8_t b = Colourtrans[HUDColour][2];
     char MessageBuff[150];
 
   if( WhoIAm == Current_Camera_View )
@@ -1531,7 +1531,7 @@ void DrawSimplePanel()
 		// Add Crosshair Polygon..
 		if(!CurrentMenu)
 			AddScreenPolyText( 
-				(uint16) 63 , 
+				(u_int16_t) 63 , 
 				(float) (viewport.X + (viewport.Width>>1)) , 
 				(float) (viewport.Y + (viewport.Height>>1)) , 
 				r, g, b, 255 );
@@ -1589,7 +1589,7 @@ void DrawSimplePanel()
 					{
 						Print4x5Text( PrimaryNames[ Count ], left, top, HUDColour );	
 						if( Count == PULSAR )
-							Printuint16( GeneralAmmo, right, top, HUDColour );	
+							Printu_int16_t( GeneralAmmo, right, top, HUDColour );	
 					}	
 					top += FontHeight;
 				}
@@ -1599,7 +1599,7 @@ void DrawSimplePanel()
 				if( current || PrimaryWeaponsGot[ PYROLITE_RIFLE ] > 0 )
 				{
 					Print4x5Text( PrimaryNames[ PYROLITE_RIFLE ], left, top, HUDColour );	
-					Printuint16( PyroliteAmmo, right, top, HUDColour );	
+					Printu_int16_t( PyroliteAmmo, right, top, HUDColour );	
 				}	
 				top += FontHeight;
 
@@ -1608,7 +1608,7 @@ void DrawSimplePanel()
 				if( current || PrimaryWeaponsGot[ SUSS_GUN ] > 0 )
 				{
 					Print4x5Text( PrimaryNames[ SUSS_GUN ], left, top, HUDColour );	
-					Printuint16( SussGunAmmo, right, top, HUDColour );	
+					Printu_int16_t( SussGunAmmo, right, top, HUDColour );	
 				}
 				top += FontHeight*2;
 
@@ -1617,10 +1617,10 @@ void DrawSimplePanel()
 				{
 					current = ( Count == Ships[WhoIAm].Secondary || GetBestMine() == Count );
 					if(Count == 7) top += FontHeight; // add space for mines
-					if( current || (uint16) SecondaryAmmo[ Count ] > 0 )
+					if( current || (u_int16_t) SecondaryAmmo[ Count ] > 0 )
 					{
 						Print4x5Text( SecondaryNames[Count], left, top, HUDColour );	
-						Printuint16( (uint16) SecondaryAmmo[ Count ] , right, top, HUDColour );	
+						Printu_int16_t( (u_int16_t) SecondaryAmmo[ Count ] , right, top, HUDColour );	
 					}	
 					top += FontHeight;
 				}
@@ -1635,7 +1635,7 @@ void DrawSimplePanel()
 			{
 				int left = render_info.window_size.cx;
 				Print4x5Text( SecondaryNames[mine], left-FontWidth*10, top, HUDColour );
-				Printuint16( (uint16) SecondaryAmmo[mine], left-FontWidth*2, top, HUDColour );
+				Printu_int16_t( (u_int16_t) SecondaryAmmo[mine], left-FontWidth*2, top, HUDColour );
 			}
 	
 			// bottom right
@@ -1645,7 +1645,7 @@ void DrawSimplePanel()
 			if( Ships[WhoIAm].Invul )
 			{
 				Print4x5Text( "Chaos" , left, top, HUDColour );
-				Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , right, top, HUDColour );
+				Printu_int16_t( (u_int16_t) (Ships[WhoIAm].InvulTimer / 60.0F) , right, top, HUDColour );
 			}
 			top += FontHeight;
 
@@ -1653,7 +1653,7 @@ void DrawSimplePanel()
 			if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
 			{
 				Print4x5Text( "GPP" , left, top, HUDColour );
-				Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , right, top, HUDColour );
+				Printu_int16_t( (u_int16_t) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , right, top, HUDColour );
 			}
 			top += FontHeight;
 
@@ -1661,23 +1661,23 @@ void DrawSimplePanel()
 			if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
 			{
 				Print4x5Text(	"Stealth" , left, top, HUDColour );
-				Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , right, top, HUDColour );
+				Printu_int16_t( (u_int16_t) (Ships[WhoIAm].StealthTime / 60.0F) , right, top, HUDColour );
 			}
 			top += FontHeight;
 	    
 			// power pods
 			Print4x5Text( "Power", left+FontWidth*3, top, HUDColour );
-			Printuint16( (uint16) Ships[WhoIAm].Object.PowerLevel+1, right, top, HUDColour );	
+			Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.PowerLevel+1, right, top, HUDColour );	
 			top += FontHeight;
 
 			// primary
 			Print4x5Text( PrimaryNames[Ships[WhoIAm].Primary], left, top, HUDColour );
-			Printuint16( (uint16) GetCurPrimAmmo() , right, top, HUDColour );
+			Printu_int16_t( (u_int16_t) GetCurPrimAmmo() , right, top, HUDColour );
 			top += FontHeight;
 
 			// secondary
 			Print4x5Text( SecondaryNames[Ships[WhoIAm].Secondary], left, top, HUDColour );
-			Printuint16( (uint16) GetCurSecAmmo(), right, top, HUDColour );
+			Printu_int16_t( (u_int16_t) GetCurSecAmmo(), right, top, HUDColour );
             top += FontHeight;
 
 			// bottom left
@@ -1717,8 +1717,8 @@ void DrawSimplePanel()
             }
 /*
 			{
-				int red = (uint8)(r+(ShieldHit * (192/24) ));
-				int green = (uint8)(g-(ShieldHit * (192/24) ));
+				int red = (u_int8_t)(r+(ShieldHit * (192/24) ));
+				int green = (u_int8_t)(g-(ShieldHit * (192/24) ));
 				int scale_x = (float) ( ( ( 1.0F / 256.0F ) * 
 						( Ships[WhoIAm].Object.Shield *0.25F ) ) *
 						( (32.0F-0.125F) + 0.125F ) );
@@ -1726,7 +1726,7 @@ void DrawSimplePanel()
 			}
 */
 
-			Printuint16( (uint16) Ships[WhoIAm].Object.Shield, right, top, HUDColour );
+			Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.Shield, right, top, HUDColour );
 			top += FontHeight;
 
 			if( ShieldHit )
@@ -1738,8 +1738,8 @@ void DrawSimplePanel()
 
 /*
 			{
-				int red = (uint8)(r+(ShieldHit * (192/24) ));
-				int green = (uint8)(g-(ShieldHit * (192/24) ));
+				int red = (u_int8_t)(r+(ShieldHit * (192/24) ));
+				int green = (u_int8_t)(g-(ShieldHit * (192/24) ));
 				int scale_x = (float) ( ( ( 1.0F / 256.0F ) * 
 						( Ships[WhoIAm].Object.Hull *0.25F ) ) *
 						( (32.0F-0.125F) + 0.125F ) );
@@ -1747,7 +1747,7 @@ void DrawSimplePanel()
 			}
 */
 
-			Printuint16( Ships[WhoIAm].Object.Hull , right, top, HUDColour );
+			Printu_int16_t( Ships[WhoIAm].Object.Hull , right, top, HUDColour );
 			top += FontHeight;
 
 			if( HullHit )
@@ -1799,7 +1799,7 @@ void DrawSimplePanel()
 
 			// display cross-hair
 			AddScreenPolyText(
-					(uint16) 63 ,
+					(u_int16_t) 63 ,
 					(float) (viewport.X + (viewport.Width>>1)) , 
 					(float) (viewport.Y + (viewport.Height>>1)) ,
 					64, 255, 64, 255 );
@@ -1890,7 +1890,7 @@ void ReleaseLevel(void)
 void
 ReleaseScene(void)
 {
-  int16 Count;
+  int16_t Count;
 
   if( RegenPoints != NULL )
   {
@@ -1975,7 +1975,7 @@ void ReleaseView(void)
   }
 }
 
-BOOL
+_Bool
 InitScene(void)
 {
   int i;
@@ -2003,7 +2003,7 @@ InitScene(void)
 
   for( i = 0 ; i < MAX_PLAYERS ; i++ )
   {
-    Ships[i].ModelNum = (uint16) -1;
+    Ships[i].ModelNum = (u_int16_t) -1;
   }
 
   switch( MyGameStatus )
@@ -2016,25 +2016,25 @@ InitScene(void)
   case  STATUS_GetPlayerNum:
     if (!LoadTitleModels())
     { Msg( "LoadTitleModels failed.\n" );
-      return FALSE;
+      return false;
     }
     break;
   }
   
-  return TRUE;
+  return true;
 
 }
 
 /*===================================================================
   Procedure :   Init the view...This might be title or score or main game....
-  Output    :   BOOL TRUE/FLASE
+  Output    :   _Bool true/FLASE
 ===================================================================*/
 
-BOOL InitView( void )
+_Bool InitView( void )
 {
 	DebugPrintf("InitView Starting...\n");
 
-	CheatsDisabled = FALSE;
+	CheatsDisabled = false;
 
 	input_buffer_reset();
 
@@ -2048,10 +2048,10 @@ BOOL InitView( void )
 		case  STATUS_TitleLoadGameStartingSinglePlayer:
 		case  STATUS_StartingMultiplayer:
 		case  STATUS_GetPlayerNum:
-		if( InitTitle() != TRUE ) // bjd
+		if( InitTitle() != true ) // bjd
 		{
-			SeriousError = TRUE;
-			return FALSE;
+			SeriousError = true;
+			return false;
 		}
 
 		if ( !bSoundEnabled )
@@ -2068,53 +2068,53 @@ BOOL InitView( void )
 	    
 		if( !SetMatrixViewPort() )
 		{
-		  SeriousError = TRUE;
+		  SeriousError = true;
 		  Msg( "SetMatrixViewPort() Failed\n" );
-		  return FALSE;
+		  return false;
 		}
 		// Init the Texture Handler
 		InitTload( &Tloadheader );
 
 		if( !Load_All_Off_Files( &Title_OffsetFiles[ 0 ] ) )
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 	    
 		if( !PreLoadFlyGirl() )
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 	    
 
 		if( !PreInitModel( TitleModelSet ) ) // bjd
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 	    
 		//  Load in And if nescessary ReScale Textures...
 		if( !Tload( &Tloadheader ) )
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 
 		if( !InitModel( TitleModelSet ) ) // bjd
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 	      
 		if ( !AllocateCompFlyGirl() )
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 		else
 		{
-		  UpdateFlyGirl( &BikePos, &MATRIX_Identity, FALSE );
+		  UpdateFlyGirl( &BikePos, &MATRIX_Identity, false );
 		}
 
 		DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.bmp" );
@@ -2122,7 +2122,7 @@ BOOL InitView( void )
 		{
 			if(!Tloadheader.PlaceHolderFile[ DummyTextureIndex ])
 				Tloadheader.PlaceHolderFile[ DummyTextureIndex ] = ( char * )malloc( sizeof( char ) * 256 );
-			Tloadheader.PlaceHolder[ DummyTextureIndex ] = TRUE;
+			Tloadheader.PlaceHolder[ DummyTextureIndex ] = true;
 		}
 
 		if ( !CurrentMenu )
@@ -2141,14 +2141,14 @@ BOOL InitView( void )
 
 		if( !Load_All_Off_Files( &Title_OffsetFiles[ 0 ] ) )
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 
 		if( !Tload( &Tloadheader ) )
 		{
-		  SeriousError = TRUE;
-		  return FALSE;
+		  SeriousError = true;
+		  return false;
 		}
 
 		MakeViewMatrix(&View, &Look, &Up, &CurrentCamera.Mat);
@@ -2186,7 +2186,7 @@ BOOL InitView( void )
   }
 
 
-  return TRUE;
+  return true;
 }
 
 /*===================================================================
@@ -2237,10 +2237,10 @@ char TriggerName[256];
   Input   :   nothing...
   Output    :   nothing
 ===================================================================*/
-BOOL ChangeLevel( void )
+_Bool ChangeLevel( void )
 {
 	//if( NewLevelNum != LevelNum )
-	//  return TRUE;
+	//  return true;
 
 	LevelNum = NewLevelNum;
 
@@ -2255,25 +2255,25 @@ BOOL ChangeLevel( void )
 
 	ActiveRemoteCamera = NULL;
 	MissileCameraActive = 0;
-	CameraMissile = (uint16) -1;
+	CameraMissile = (u_int16_t) -1;
 
 	InitScene();
 	InitTextMessages();
 	InitMultiSfxHandle();
 
-	OnceOnlyChangeLevel = TRUE;
+	OnceOnlyChangeLevel = true;
 	ChangeLevel_MyGameStatus = MyGameStatus;
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &TriggerName[ 0 ], ".TRG" );
 	if( !Triggerload( TriggerName ) )
 	{
-	  SeriousError = TRUE;
-	  return( FALSE );
+	  SeriousError = true;
+	  return( false );
 	}
 
 	MyGameStatus = STATUS_ChangeLevelPostInitView;
 	InitView();
 
-	return( TRUE );
+	return( true );
 }
 
 void GetLevelName( char *buf, int bufsize, int level )
@@ -2328,19 +2328,19 @@ char NodeName[256];
   Output    :   nothing
 ===================================================================*/
 extern void ReleaseView(void);
-BOOL RenderScene( void )
+_Bool RenderScene( void )
 {
-  uint16  i,e;
+  u_int16_t  i,e;
   char  buf[256];
   //struct _stat stat_buf;
   //int result;
   static int WaitFrames = 2;
-  BOOL done;
+  _Bool done;
 
   //DebugPrintf("RenderScene Started\n");
 
   if ( SeriousError )
-    return FALSE;
+    return false;
 
   // This is where in game we are getting input data read
   ReadInput();
@@ -2361,16 +2361,16 @@ BOOL RenderScene( void )
 
   case STATUS_QuittingFromTitles:
 	DebugState("STATUS_QuittingFromTitles\n");
-    quitting = TRUE;
+    quitting = true;
     break;
 
   case STATUS_WaitingToStartSinglePlayer:
 	DebugState("STATUS_WaitingToStartSinglePlayer\n");
 
-    if( DisplayTitle() != TRUE )
+    if( DisplayTitle() != true )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
     
     done = VduFinished( &MENU_NEW_BetweenLevels );
@@ -2388,20 +2388,20 @@ BOOL RenderScene( void )
 
   case STATUS_WaitingToStartDemo:
 	DebugState("STATUS_WaitingToStartDemo\n");
-    if( DisplayTitle() != TRUE )
+    if( DisplayTitle() != true )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
     break;
 
 
   case STATUS_WaitingToStartEndGameSequence:
 	DebugState("STATUS_WaitingToStartEndGameSequence\n");
-    if( DisplayTitle() != TRUE )
+    if( DisplayTitle() != true )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
     done = VduFinished( &MENU_NEW_GeneralLoading );
       
@@ -2427,10 +2427,10 @@ BOOL RenderScene( void )
     }
     ReceiveGameMessages();
 
-    if( DisplayTitle() != TRUE )
+    if( DisplayTitle() != true )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
     if ( VduFinished( NULL ) )
       WaitFrames--;
@@ -2454,10 +2454,10 @@ BOOL RenderScene( void )
     }
     ReceiveGameMessages();
 
-    if( DisplayTitle() != TRUE )
+    if( DisplayTitle() != true )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
     if ( VduFinished( NULL ) )
       WaitFrames--;
@@ -2472,7 +2472,7 @@ BOOL RenderScene( void )
 
       MyGameStatus = STATUS_PreStartingMultiplayerSynch;
       if( !ChangeLevel() ) 
-        return( FALSE );
+        return( false );
     }
     break;
 
@@ -2488,10 +2488,10 @@ BOOL RenderScene( void )
     }
     ReceiveGameMessages();
 
-    if( DisplayTitle() != TRUE )
+    if( DisplayTitle() != true )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
 
     if ( VduFinished( NULL ) )
@@ -2519,10 +2519,10 @@ BOOL RenderScene( void )
 	if(MyGameStatus != STATUS_Title)
 		DebugState("STATUS_BetweenLevels\n");
 
-    if( DisplayTitle() != TRUE )
+    if( DisplayTitle() != true )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
     break;
 
@@ -2536,8 +2536,8 @@ BOOL RenderScene( void )
     if( IMustQuit )
       SpecialDestroyGame();
 
-    if( MainGame() != TRUE ) // bjd
-      return FALSE;
+    if( MainGame() != true ) // bjd
+      return false;
 
     if ( bSoundEnabled )
     {
@@ -2686,24 +2686,24 @@ BOOL RenderScene( void )
 		if (!FSBeginScene())
 		{
 			Msg( "DisplayTitle() : BeginScene failed\n" );
-			return FALSE;
+			return false;
 		}
 
-		if (ClearBuffers() != TRUE )
+		if (ClearBuffers() != true )
 		{
 			Msg( "DisplayTitle() : ClearBuffers failed\n" );
-			return FALSE;
+			return false;
 		}
 
 		ScoreDisplay();
 
 		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
-			return FALSE;
+			return false;
 
 		if (!FSEndScene())
 		{
 			Msg( "DisplayTitle() : EndScene failed\n" );
-			return FALSE;
+			return false;
 		}
 
 		ScreenPolyProcess(); // only needed for flashing text
@@ -2723,7 +2723,7 @@ BOOL RenderScene( void )
           GameStatus[WhoIAm] = MyGameStatus;
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
           if( !ChangeLevel() )
-			  return( FALSE );
+			  return( false );
       }
 	  else
 	  {
@@ -2732,7 +2732,7 @@ BOOL RenderScene( void )
           MyGameStatus = STATUS_WaitingAfterScore;
           GameStatus[WhoIAm] = MyGameStatus;
           if( !ChangeLevel() )
-			  return( FALSE );
+			  return( false );
       }
     }
     break;
@@ -2746,7 +2746,7 @@ BOOL RenderScene( void )
 
     if( IsHost )
     {
-      Printuint16( (uint16) (HostMultiPlayerTimeout / 60.0F) , 0 , 0 , 2 );
+      Printu_int16_t( (u_int16_t) (HostMultiPlayerTimeout / 60.0F) , 0 , 0 , 2 );
       HostMultiPlayerTimeout -= framelag;
     }
 
@@ -2809,7 +2809,7 @@ BOOL RenderScene( void )
       if( CountDownOn )
       {
         CreateCountdownDigits();
-        StartCountDown( (int16) TimeLimit.value, 0 );
+        StartCountDown( (int16_t) TimeLimit.value, 0 );
       }
 
       //DebugPrintf("STATUS_WaitingAfterScore setting MyGameStatus to STATUS_Normal\n");
@@ -2823,7 +2823,7 @@ BOOL RenderScene( void )
         if( CountDownOn )
         {
           CreateCountdownDigits();
-          StartCountDown( (int16) TimeLimit.value, 0 );
+          StartCountDown( (int16_t) TimeLimit.value, 0 );
         }
         // tell the host that I am now in the same state as him....
         MyGameStatus = OverallGameStatus;
@@ -2859,19 +2859,19 @@ BOOL RenderScene( void )
 
 
     CenterPrint4x5Text( "Pickups Left   " , (render_info.window_size.cy>>1)-(FontHeight<<2), GRAY );
-    Printuint16( (uint16) Ships[WhoIAm].Pickups , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<2), 2 );
+    Printu_int16_t( (u_int16_t) Ships[WhoIAm].Pickups , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<2), 2 );
 
     CenterPrint4x5Text( "RegenSlots Left" , (render_info.window_size.cy>>1)-(FontHeight<<1), GRAY );
-    Printuint16( (uint16) Ships[WhoIAm].RegenSlots , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<1), 2 );
+    Printu_int16_t( (u_int16_t) Ships[WhoIAm].RegenSlots , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<1), 2 );
 
     CenterPrint4x5Text( "Mines Left     " , (render_info.window_size.cy>>1), GRAY );
-    Printuint16( (uint16) Ships[WhoIAm].Mines , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1), 2 );
+    Printu_int16_t( (u_int16_t) Ships[WhoIAm].Mines , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1), 2 );
 
     CenterPrint4x5Text( "Triggers Left  " , (render_info.window_size.cy>>1)+(FontHeight<<1), GRAY );
-    Printuint16( (uint16) Ships[WhoIAm].Triggers , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<1), 2 );
+    Printu_int16_t( (u_int16_t) Ships[WhoIAm].Triggers , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<1), 2 );
 
     CenterPrint4x5Text( "TrigVars Left  " , (render_info.window_size.cy>>1)+(FontHeight<<2), GRAY );
-    Printuint16( (uint16) Ships[WhoIAm].TrigVars , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<2), 2 );
+    Printu_int16_t( (u_int16_t) Ships[WhoIAm].TrigVars , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<2), 2 );
  
 
 	DisplayNonSolidScrPolys(&ro);
@@ -2890,7 +2890,7 @@ BOOL RenderScene( void )
         SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_JoiningTeamGame, 0);
 
       MyGameStatus = OverallGameStatus;
-			input_grab( TRUE );
+			input_grab( true );
 	  
 #ifdef DEMO_SUPPORT
       QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
@@ -2904,8 +2904,8 @@ BOOL RenderScene( void )
       if( CountDownOn )
       {
         CreateCountdownDigits();
-        StartCountDown( (int16) TimeLimit.value, 0 );
-        IllegalTime = TRUE;
+        StartCountDown( (int16_t) TimeLimit.value, 0 );
+        IllegalTime = true;
       }
     }
     break;
@@ -2935,8 +2935,8 @@ BOOL RenderScene( void )
     
     if( ( CurrentMenu ) && ( CurrentMenuItem ) )
     {
-      if( DisplayTitle() != TRUE )
-        return FALSE;
+      if( DisplayTitle() != true )
+        return false;
     }
 
     // if status has been changed from titles, should exit this state straight away
@@ -2953,7 +2953,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
       LevelNum = -1;
-      if( !ChangeLevel() ) return( FALSE );
+      if( !ChangeLevel() ) return( false );
       HostMultiPlayerTimeout = 60.0F * 15.0F;
     }
     else
@@ -3046,13 +3046,13 @@ BOOL RenderScene( void )
     if( CountDownOn )
     {
       CreateCountdownDigits();
-      StartCountDown( (int16) TimeLimit.value, 0 );
-      IllegalTime = FALSE;
+      StartCountDown( (int16_t) TimeLimit.value, 0 );
+      IllegalTime = false;
     }
 
     if( IsHost )
     {
-      Printuint16( (uint16) (HostMultiPlayerTimeout / 60.0F) , 0 , 0 , 2 );
+      Printu_int16_t( (u_int16_t) (HostMultiPlayerTimeout / 60.0F) , 0 , 0 , 2 );
       HostMultiPlayerTimeout -= framelag;
 
       // have all the enabled players switched over to STATUS_StartingMultiplayer??
@@ -3078,7 +3078,7 @@ BOOL RenderScene( void )
 	  // $$$
       NextworkOldBikeNum = -1;
 
-			input_grab( TRUE );
+			input_grab( true );
 
     }
 	else
@@ -3207,8 +3207,8 @@ BOOL RenderScene( void )
       framelag *= Demoframelag;
     }
 
-    if( MainGame() != TRUE ) // bjd
-      return FALSE;
+    if( MainGame() != true ) // bjd
+      return false;
 
     break;
 #endif
@@ -3227,19 +3227,19 @@ BOOL RenderScene( void )
 
     clear_black();
 
-    MenuFrozen = FALSE; // ensure that menus are OK to use once in game
-    JustExitedMenu = FALSE; 
+    MenuFrozen = false; // ensure that menus are OK to use once in game
+    JustExitedMenu = false; 
 
     QuickStart = QUICKSTART_None;
-    WaitingToQuit = FALSE;
+    WaitingToQuit = false;
   
     ReceiveGameMessages();
   
     if( !SetMatrixViewPort() )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "SetMatrixViewPort() failed\n" );
-      return FALSE;
+      return false;
     }
     
     InitFont();
@@ -3266,7 +3266,7 @@ BOOL RenderScene( void )
     ReceiveGameMessages();
 */
 
-    ReMakeSimplePanel = TRUE;
+    ReMakeSimplePanel = true;
     
 		// InitVisiExecList( lpDev );
     InitSkinExecs();
@@ -3276,16 +3276,16 @@ BOOL RenderScene( void )
     // Init the Texture Handler
     if( !InitTload( &Tloadheader ) )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "InitTLoad failed\n" );
-      return FALSE;
+      return false;
     }
   
     //  Prep the Texture Handler.....
     if( !PreMload( (char*) &LevelNames[LevelNum][0] , &Mloadheader ) )
     {
-      SeriousError = TRUE;
-      return FALSE; // the model and visipoly data
+      SeriousError = true;
+      return false; // the model and visipoly data
     }
 
     // Can Cope with no .Wat file!!!
@@ -3293,29 +3293,29 @@ BOOL RenderScene( void )
     
     if( OnceOnlyChangeLevel )
     {
-      OnceOnlyChangeLevel = FALSE;
+      OnceOnlyChangeLevel = false;
 
       if( !PreLoadShips() )
       {
-        SeriousError = TRUE;
-        return FALSE;
+        SeriousError = true;
+        return false;
       }
 
       if( !PreLoadBGOFiles() )
       {
-        SeriousError = TRUE;
-        return FALSE;
+        SeriousError = true;
+        return false;
       }
 
       if( !PreLoadRestartPoints() )
       {
-        SeriousError = TRUE;
-        return FALSE;
+        SeriousError = true;
+        return false;
       }
       if( !PreLoadEnemies() )
       {
-        SeriousError = TRUE;
-        return FALSE;
+        SeriousError = true;
+        return false;
       }
     }
 
@@ -3323,21 +3323,21 @@ BOOL RenderScene( void )
 
 		if( !PreInitModel( /*lpDev,*/ &ModelNames[0] ) ) // bjd
 		{
-			SeriousError = TRUE;
-			return FALSE;
+			SeriousError = true;
+			return false;
 		}
 
 		if( !Load_All_Off_Files( &OffsetFiles[ 0 ] ) )
 		{
-			SeriousError = TRUE;
-			return FALSE;
+			SeriousError = true;
+			return false;
 		}
 
     //  Load in And if nescessary ReScale Textures... 
     if( !Tload( &Tloadheader ) )
     {
-      SeriousError = TRUE;
-      return FALSE;
+      SeriousError = true;
+      return false;
     }
 
 /*
@@ -3386,8 +3386,8 @@ BOOL RenderScene( void )
 
     if( !InitModel( &ModelNames[0] ) )
     {
-       SeriousError = TRUE;
-       return FALSE;               // all 3d models....
+       SeriousError = true;
+       return false;               // all 3d models....
     }
 
 /*
@@ -3415,8 +3415,8 @@ BOOL RenderScene( void )
 
     if( !Mload( (char*) &LevelNames[LevelNum][0] , &Mloadheader ) )
     {
-      SeriousError = TRUE;
-      return FALSE; // the model and visipoly data
+      SeriousError = true;
+      return false; // the model and visipoly data
     }
 
     InitVisiStats( &Mloadheader );
@@ -3451,20 +3451,20 @@ BOOL RenderScene( void )
 #ifdef BSP_ONLY
     if ( !Bspload( (char*) &BspNames[LevelNum][0], &Bsp_Header[ 0 ] ) )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "Bspload failed\n" );
-      return FALSE;   // the collision data
+      return false;   // the collision data
     }
 #else
     Bspload( (char*) &BspNames[LevelNum][0], &Bsp_Header[ 0 ] ); // load .BSP file into 0 skin
 #endif
-    Bsp_Header[ 1 ].State = FALSE; // no non-zero .BSP any more
+    Bsp_Header[ 1 ].State = false; // no non-zero .BSP any more
 #endif
 	//    if ( !Bsp_Duplicate( &Bsp_Header[ 0 ], &Bsp_Original ) )
 	//    {
-	//		    SeriousError = TRUE;
+	//		    SeriousError = true;
 	//		    Msg( "Bsp_Duplicate failed\n" );
-	//		    return FALSE;
+	//		    return false;
 	//    }
     
     // might not be any water...
@@ -3476,15 +3476,15 @@ BOOL RenderScene( void )
     
     if( !MCload( (char*) &CollisionNames[LevelNum][0] , &MCloadheader ) )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "MCload non zero failed\n" );
-      return FALSE;   // the collision data
+      return false;   // the collision data
     }
     if( !MCload( (char*) &CollisionZNames[LevelNum][0] , &MCloadheadert0 ) )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "MCload zero failed\n" );
-      return FALSE; // the collision data skin thickness 0
+      return false; // the collision data skin thickness 0
     }
   
     SetUpShips();
@@ -3566,7 +3566,7 @@ BOOL RenderScene( void )
 
 /*
 		//
-		input_grab( TRUE );
+		input_grab( true );
 */
 
     break;
@@ -3578,48 +3578,48 @@ BOOL RenderScene( void )
     Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NodeName[ 0 ], ".NOD" );
     if( !Nodeload( NodeName ) )
     {
-      SeriousError = TRUE;
-      return( FALSE );
+      SeriousError = true;
+      return( false );
     }
 
     if( !LoadBGOFiles() )
     {
-      SeriousError = TRUE;
-      return( FALSE );
+      SeriousError = true;
+      return( false );
     }
 
     if( !LoadEnemies() )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "LoadEnemies() failed\n" );
-      return( FALSE );
+      return( false );
     }
 
     if( !LoadSpotFX() )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "LoadSpotFX() failed\n" );
-      return( FALSE );
+      return( false );
     }
 
     if( !LoadStartPoints() )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "LoadStartPoints() failed\n" );
-      return( FALSE );
+      return( false );
     }
 
     if( !LoadRestartPoints() )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "LoadRestartPoints() failed\n" );
-      return( FALSE );
+      return( false );
     }
 
       if ( !InitializeSound( DESTROYSOUND_All ))
       {
         Msg("InitializeSound() failed\n");
-        return FALSE;
+        return false;
       }
 
 
@@ -3627,8 +3627,8 @@ BOOL RenderScene( void )
 
     if( !Cameraload( NodeName ) )
     {
-      SeriousError = TRUE;
-      return( FALSE );
+      SeriousError = true;
+      return( false );
     }
 
     // might not be any real-time lights
@@ -3648,9 +3648,9 @@ BOOL RenderScene( void )
 
     if( !LoadPickupsPositions() )
     {
-      SeriousError = TRUE;
+      SeriousError = true;
       Msg( "LoadPickupsPositions() failed\n" );
-      return( FALSE );
+      return( false );
     }
 
     // might not be any External Forces...
@@ -3672,7 +3672,7 @@ BOOL RenderScene( void )
       if( CountDownOn )
       {
         CreateCountdownDigits();
-        StartCountDown( (int16) SinglePlayerTimeLimit, 0 );
+        StartCountDown( (int16_t) SinglePlayerTimeLimit, 0 );
       }
       else
       {
@@ -3680,7 +3680,7 @@ BOOL RenderScene( void )
       }
     }
 
-    GodModeOnceOnly = TRUE;
+    GodModeOnceOnly = true;
 
     MyGameStatus = ChangeLevel_MyGameStatus;
 
@@ -3696,7 +3696,7 @@ BOOL RenderScene( void )
     WhoIAm = MAX_PLAYERS;
     Ships[WhoIAm].Object.Mode = DEMO_MODE;
     Ships[WhoIAm].enable = 1;
-    IsHost = TRUE;
+    IsHost = true;
     Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
   
     for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -3743,7 +3743,7 @@ BOOL RenderScene( void )
       CrystalsFound = 0;
     }
     GameCompleted = GAMECOMPLETE_NotComplete;
-    if( !ChangeLevel() ) return( FALSE );
+    if( !ChangeLevel() ) return( false );
     break;
 
 
@@ -3754,7 +3754,7 @@ BOOL RenderScene( void )
 	//    if( CountDownOn )
 	//    {
 	//      CreateCountdownDigits();
-	//      StartCountDown( (int16) TimeLimit.value, 0 );
+	//      StartCountDown( (int16_t) TimeLimit.value, 0 );
 	//    }
     
 #ifdef DEMO_SUPPORT
@@ -3766,7 +3766,7 @@ BOOL RenderScene( void )
     LevelTimeTaken = 0.0F;
     timer_run( &level_time );
 
-		input_grab( TRUE );
+		input_grab( true );
 
     break;
 
@@ -3774,8 +3774,8 @@ BOOL RenderScene( void )
   case STATUS_SinglePlayer:
 	DebugState("STATUS_SinglePlayer\n");
 
-    if( MainGame() != TRUE ) // bjd
-      return FALSE;
+    if( MainGame() != true ) // bjd
+      return false;
 
     if ( bSoundEnabled && !CurrentMenu )
     {
@@ -3785,7 +3785,7 @@ BOOL RenderScene( void )
 
     LevelTimeTaken += timer_run( &level_timer );
 
-    //sprintf( buf, "time so far %d", ((uint32)LevelTimeTaken) / 100 );
+    //sprintf( buf, "time so far %d", ((u_int32_t)LevelTimeTaken) / 100 );
     //Print4x5Text( buf, 10, 30, 2 );
 
     // if player is quiting nothing should stop him.....
@@ -3838,7 +3838,7 @@ BOOL RenderScene( void )
     NumGoldBars = 0;
     CrystalsFound = 0;
     GameCompleted = GAMECOMPLETE_NotComplete;
-    if( !ChangeLevel() ) return( FALSE );
+    if( !ChangeLevel() ) return( false );
     break;
 
 
@@ -3857,7 +3857,7 @@ BOOL RenderScene( void )
     NumGoldBars = 0;
     CrystalsFound = 0;
     GameCompleted = GAMECOMPLETE_NotComplete;
-    if( !ChangeLevel() ) return( FALSE );
+    if( !ChangeLevel() ) return( false );
     break;
 
 
@@ -3885,7 +3885,7 @@ BOOL RenderScene( void )
 
  // DebugPrintf("RenderScene Ended\n");
 
-  return TRUE;
+  return true;
 }
 
 
@@ -3938,7 +3938,7 @@ void MainRoutines( void )
   ProcessShips();
 
 #ifdef SHADOWTEST
-//  CreateSpotLight( (uint16) WhoIAm, SHIP_RADIUS, &Mloadheader );
+//  CreateSpotLight( (u_int16_t) WhoIAm, SHIP_RADIUS, &Mloadheader );
 //  CreateShadowsForShips();
 #endif
 
@@ -3950,7 +3950,7 @@ void MainRoutines( void )
   ProcessSecondaryBullets();
   if( !PlayDemo ) RegeneratePickups();
   ProcessPickups();
-  ProcessBGObjects( TRUE );
+  ProcessBGObjects( true );
   ProcessRestartPoints();
   ProcessModels();
   ProcessPolys();
@@ -4053,8 +4053,8 @@ void CheckLevelEnd ( void )
   Input   :   nothing...
   Output    :   nothing
 ===================================================================*/
-BOOL RenderMainCamera2dPolys(void);
-BOOL MainGame( void ) // bjd
+_Bool RenderMainCamera2dPolys(void);
+_Bool MainGame( void ) // bjd
 {
   int i;
   static float fov_inc = 0.0F;
@@ -4094,14 +4094,14 @@ BOOL MainGame( void ) // bjd
   InitIndirectVisible( Ships[Current_Camera_View].Object.Group );
 
   if( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) )
-    AddIndirectVisible( (uint16) ( ( ActiveRemoteCamera ) ? ActiveRemoteCamera->Group : SecBulls[ CameraMissile ].GroupImIn ) );
+    AddIndirectVisible( (u_int16_t) ( ( ActiveRemoteCamera ) ? ActiveRemoteCamera->Group : SecBulls[ CameraMissile ].GroupImIn ) );
 
   MainRoutines();
 
   if( MyGameStatus == STATUS_QuitCurrentGame )
-    return TRUE;
+    return true;
 
-  memset( (void*) &IsGroupVisible[0] , 0 , MAXGROUPS * sizeof(uint16) );
+  memset( (void*) &IsGroupVisible[0] , 0 , MAXGROUPS * sizeof(u_int16_t) );
   cral += (framelag*2.0F);
 
   for( i = 0 ; i < MAX_SFX ; i++ )
@@ -4112,7 +4112,7 @@ BOOL MainGame( void ) // bjd
 ===================================================================*/
 
 	if (!FSBeginScene())
-		return FALSE;
+		return false;
 
 	// show the stats screen
 	if(ShowStats)
@@ -4136,7 +4136,7 @@ BOOL MainGame( void ) // bjd
 
       HUDNames();
 
-      CurrentCamera.UseLowestLOD = FALSE;
+      CurrentCamera.UseLowestLOD = false;
 
       if( StereoEnabled )
       {
@@ -4153,7 +4153,7 @@ BOOL MainGame( void ) // bjd
         CurrentCamera.Pos.z -= cam_offset.z;
         render_set_filter( 1, 0, 0 );
         if( !RenderCurrentCamera() )
-          return FALSE;
+          return false;
         StereoMode = ST_RIGHT;
         SetFOV( hfov );
         FSSetProjection( &proj );
@@ -4173,7 +4173,7 @@ BOOL MainGame( void ) // bjd
           break;
         }
         if( !RenderCurrentCamera() )
-          return FALSE;
+          return false;
         StereoMode = ST_CENTER;
         SetFOV( hfov );
         FSSetProjection( &proj );
@@ -4186,8 +4186,8 @@ BOOL MainGame( void ) // bjd
 	  	// non stereo - normal rendering
       else
 	  	{
-				if( RenderCurrentCamera() != TRUE ) // bjd
-					return FALSE;
+				if( RenderCurrentCamera() != true ) // bjd
+					return false;
 	  	}
   
       if( RearCameraActive && !RearCameraDisable )
@@ -4195,7 +4195,7 @@ BOOL MainGame( void ) // bjd
         CameraRendering = CAMRENDERING_Rear;
 
         CurrentCamera.enable = 1;
-        CurrentCamera.UseLowestLOD = TRUE;
+        CurrentCamera.UseLowestLOD = true;
         CurrentCamera.GroupImIn = Ships[Current_Camera_View].Object.Group;  
         CurrentCamera.Mat = Ships[Current_Camera_View].Object.FinalMat; 
         CurrentCamera.InvMat = Ships[Current_Camera_View].Object.FinalInvMat; 
@@ -4227,10 +4227,10 @@ BOOL MainGame( void ) // bjd
         CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwHeight),
                            RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */        
-        CurrentCamera.UseLowestLOD = TRUE;
+        CurrentCamera.UseLowestLOD = true;
 
-        if( RenderCurrentCamera() != TRUE ) // bjd
-            return FALSE;
+        if( RenderCurrentCamera() != true ) // bjd
+            return false;
       }
 
       if( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) )
@@ -4276,10 +4276,10 @@ BOOL MainGame( void ) // bjd
                            RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */        
         
-        CurrentCamera.UseLowestLOD = TRUE;
+        CurrentCamera.UseLowestLOD = true;
 
-        if( RenderCurrentCamera() != TRUE ) // bjd
-            return FALSE;
+        if( RenderCurrentCamera() != true ) // bjd
+            return false;
        
         Current_Camera_View=TempMissileCam;
         SetFOV( main_fov );
@@ -4299,7 +4299,7 @@ BOOL MainGame( void ) // bjd
         CurrentCamera.Viewport.Height = viewport.Height / (float)2.0;
         CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
         CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
-        CurrentCamera.UseLowestLOD = TRUE;
+        CurrentCamera.UseLowestLOD = true;
         main_fov = hfov;
         SetFOV( normal_fov );
         CurrentCamera.Proj = proj;  
@@ -4347,16 +4347,16 @@ BOOL MainGame( void ) // bjd
       CurrentCamera.Mat._11 *= -1.0F;
       CurrentCamera.Mat._21 *= -1.0F;
       CurrentCamera.Mat._31 *= -1.0F;
-      CurrentCamera.UseLowestLOD = FALSE;
+      CurrentCamera.UseLowestLOD = false;
 
-      if( RenderCurrentCamera() != TRUE ) // bjd
-          return FALSE;
+      if( RenderCurrentCamera() != true ) // bjd
+          return false;
     }
 
 		// screen polys like text and lense flair
     CameraRendering = CAMRENDERING_Main;
     CurrentCamera = MainCamera;
-    CurrentCamera.UseLowestLOD = FALSE;
+    CurrentCamera.UseLowestLOD = false;
 		RenderMainCamera2dPolys();
 
  /* done with rendering camera stuff */
@@ -4369,7 +4369,7 @@ BOOL MainGame( void ) // bjd
   }
 
   if (!FSEndScene())
-        return FALSE;
+        return false;
 
   ScreenPolyProcess();
   DispHUDNames();
@@ -4379,8 +4379,8 @@ BOOL MainGame( void ) // bjd
   Inside = PointInsideSkin( &Ships[WhoIAm].Object.Pos, Ships[WhoIAm].Object.Group );
 #endif
 
-  if( Our_CalculateFrameRate() != TRUE)
-      return FALSE;
+  if( Our_CalculateFrameRate() != true)
+      return false;
 
 /* Secondary routines called after rendering */
     
@@ -4415,7 +4415,7 @@ BOOL MainGame( void ) // bjd
       MenuItemDrawCursor( CurrentMenuItem );
 	  DrawSimplePanel();
 	  // Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
-      JustExitedMenu = TRUE;
+      JustExitedMenu = true;
 	  // menu keys are processed here
       MenuProcess();
     }
@@ -4429,7 +4429,7 @@ BOOL MainGame( void ) // bjd
 
   CheckLevelEnd();
 
-  return TRUE;
+  return true;
 }
 
 /*===================================================================
@@ -4473,8 +4473,8 @@ void SetCam(int ship, int Cam)
 								break;
 				}
 
-        if( RenderCurrentCamera() != TRUE )
-            return FALSE;
+        if( RenderCurrentCamera() != true )
+            return false;
 }
 
 
@@ -4502,7 +4502,7 @@ void PaintBackground( rect_t * box ) // pass NULL to black out all of the screen
 	/* would simply blit the area defined by box on the backbuffer to black */
 }
 
-BOOL StatsNamePulse( void )
+_Bool StatsNamePulse( void )
 {
 	static float pulse = 0.0F;
 	pulse += real_framelag;
@@ -4511,9 +4511,9 @@ BOOL StatsNamePulse( void )
 		pulse -= (float) floor( (double) pulse );
 
 	if (pulse <= 0.5F)
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 }
 
 extern int GetPlayerByRank( int rank );
@@ -4622,7 +4622,7 @@ void ShowGameStats( stats_mode_t mode )
 			for (j = 0; j < active_players; j++)
 			{
 				int color = player_left(GetPlayerByRank(i)) ? DARKGRAY : ((i==j) ? RED : GRAY);
-				Printint16( GetKillStats(GetPlayerByRank(i),GetPlayerByRank(j)), xpos, top_offset, color ); // suacides are red
+				Printint16_t( GetKillStats(GetPlayerByRank(i),GetPlayerByRank(j)), xpos, top_offset, color ); // suacides are red
 				xpos+=col_width; // next col
 			}
 
@@ -4689,7 +4689,7 @@ void ShowGameStats( stats_mode_t mode )
 		for (i = 0; i < active_players; i++)
 		{
 			// ping
-			uint16 ping = 0;
+			u_int16_t ping = 0;
 
 			// start of line
 			int xpos = left_offset;
@@ -4706,7 +4706,7 @@ void ShowGameStats( stats_mode_t mode )
 
 			// get the ping
 			if( Ships[GetPlayerByRank(i)].network_player )
-				ping = (uint16) Ships[GetPlayerByRank(i)].network_player->ping;
+				ping = (u_int16_t) Ships[GetPlayerByRank(i)].network_player->ping;
 
 			//
 			// print line
@@ -4724,13 +4724,13 @@ void ShowGameStats( stats_mode_t mode )
 			xpos += col_width;
 
 				if( GetPlayerByRank(i) != WhoIAm && GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
-			Printint16( ping,								xpos,				top_offset, (left) ? DARKGRAY : GRAY	);	// ping
-			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : CYAN	);	// positives / (positives - negatives)
+			Printint16_t( ping,								xpos,				top_offset, (left) ? DARKGRAY : GRAY	);	// ping
+			Printint16_t( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : CYAN	);	// positives / (positives - negatives)
 				if(TeamGame)
-			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
-			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : GRAY	);	// points + kills - suacides - friendly - deaths
-			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : GREEN	);	// kills - suacides - friendly
-			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : RED		);	// suacides + deaths
+			Printint16_t( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
+			Printint16_t( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : GRAY	);	// points + kills - suacides - friendly - deaths
+			Printint16_t( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : GREEN	);	// kills - suacides - friendly
+			Printint16_t( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : RED		);	// suacides + deaths
 
 			// go to next row
 			top_offset += row_height;
@@ -4744,23 +4744,23 @@ void ShowGameStats( stats_mode_t mode )
 /*===================================================================
   Procedure :   Score Display...
   Input   :   nothing...
-  Output    :   BOOL TRUE/FALSE
+  Output    :   _Bool true/false
 ===================================================================*/
 /* Display the Statistics */
-BOOL ScoreDisplay()
+_Bool ScoreDisplay()
 {
 	ShowGameStats( FULL_BG ); // use BLT background
 	CenterPrint4x5Text( "Press Space to continue" , render_info.window_size.cy - (FontHeight*2) , 0 );	
-	return TRUE;
+	return true;
 }
 
 
 /*===================================================================
   Procedure :   Init Score Display Stuff...
   Input   :   nothing...
-  Output    :   BOOL TRUE/FALSE
+  Output    :   _Bool true/false
 ===================================================================*/
-BOOL  InitScoreDisplay()
+_Bool  InitScoreDisplay()
 {
 #ifdef SCROLLING_MESSAGES
   int i;
@@ -4780,18 +4780,18 @@ BOOL  InitScoreDisplay()
 #endif
   // process scores...
   ScoreSort();
-  ScoreDisplaySfx = TRUE;
+  ScoreDisplaySfx = true;
 
-  return TRUE;
+  return true;
 }
 
 // Clears the target(back) and zbuffer for the current camera
-BOOL ClearBuffers( void )
+_Bool ClearBuffers( void )
 {
 	XYRECT dummy;
 
 	if (!render_info.ok_to_render)
-		return FALSE;
+		return false;
 
 	dummy.x1 = CurrentCamera.Viewport.X;
 	dummy.y1 = CurrentCamera.Viewport.Y;
@@ -4801,19 +4801,19 @@ BOOL ClearBuffers( void )
   if ( WhiteOut > 0.0f )
   {
     FSClearDepth(&dummy);
-    return TRUE;
+    return true;
   }
 
 	return FSClear(&dummy);
 }
 
 // Clear the Zbuffer
-BOOL ClearZBuffer()
+_Bool ClearZBuffer()
 {
 	XYRECT dummy;
 
 	if (!render_info.ok_to_render)
-		return FALSE;
+		return false;
 
 	dummy.x1 = CurrentCamera.Viewport.X;
 	dummy.y1 = CurrentCamera.Viewport.Y;
@@ -4849,13 +4849,13 @@ void ReleaseRenderBufs( void )
 }
 
 
-BOOL RenderMainCamera2dPolys( void)
+_Bool RenderMainCamera2dPolys( void)
 {
 	Build_View();
 	CurrentCamera.View = view;
 
 	if (!FSSetView(&view))
-		return FALSE;
+		return false;
 
   if (!FSSetViewPort(&CurrentCamera.Viewport)) 
 	{
@@ -4864,7 +4864,7 @@ BOOL RenderMainCamera2dPolys( void)
 #else
     Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-    return FALSE;
+    return false;
   }
 
   set_alpha_states();
@@ -4873,12 +4873,12 @@ BOOL RenderMainCamera2dPolys( void)
   DoAllSecBullLensflare();
 
   if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
-    return FALSE;
+    return false;
 
 	set_normal_states();
 
   if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
-    return FALSE;
+    return false;
 
   if (!FSSetViewPort(&viewport)) 
 	{
@@ -4887,22 +4887,22 @@ BOOL RenderMainCamera2dPolys( void)
 #else
     Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-    return FALSE;
+    return false;
   }
 
-  return TRUE;
+  return true;
 }
 
 /*===================================================================
   Procedure :  Render 1 Frame Using CurrentCamera...
   Input   :
-  Output    : BOOL TRUE/FALSE
+  Output    : _Bool true/false
 ===================================================================*/
-BOOL RenderCurrentCamera( void )
+_Bool RenderCurrentCamera( void )
 {
-	int16 Count;
+	int16_t Count;
 	VISGROUP  *g;
-	uint16  group;
+	u_int16_t  group;
 //	float R, G, B;
 	NumOfTransExe = 0;
 
@@ -4910,7 +4910,7 @@ BOOL RenderCurrentCamera( void )
 	CurrentCamera.View = view;
 
 	if (!FSSetView(&view))
-		return FALSE;
+		return false;
 
     if (!FSSetViewPort(&CurrentCamera.Viewport)) {
 #ifdef DEBUG_VIEWPORT
@@ -4918,7 +4918,7 @@ BOOL RenderCurrentCamera( void )
 #else
         Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-        return FALSE;
+        return false;
     }
 
   // Ship Model Enable/Disable
@@ -4933,7 +4933,7 @@ BOOL RenderCurrentCamera( void )
   UpdateEnemiesClipGroup( &CurrentCamera );
 
   /*
-  if( CurrentCamera.GroupImIn != (uint16) -1 )
+  if( CurrentCamera.GroupImIn != (u_int16_t) -1 )
   {
     for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
     {
@@ -4952,8 +4952,8 @@ BOOL RenderCurrentCamera( void )
   }
   */
 
-  if (ClearBuffers() != TRUE )
-    return FALSE;
+  if (ClearBuffers() != true )
+    return false;
 
 	// reset all the normal execute status flags...
 	set_normal_states();
@@ -4966,7 +4966,7 @@ BOOL RenderCurrentCamera( void )
 
 	// display background
 	if ( !DisplayBackground( &Mloadheader, &CurrentCamera ) )
-		return FALSE;
+		return false;
 
 	// reset all the normal execute status flags...
 	if( WhiteOut == 0.0F)
@@ -4978,11 +4978,11 @@ BOOL RenderCurrentCamera( void )
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
     if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
-        return FALSE;
+        return false;
 
 #ifdef SHADOWTEST
     if( !DisplaySolidGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )
-        return FALSE;
+        return false;
 #endif
   
   // display clipped opaque objects
@@ -5004,17 +5004,17 @@ BOOL RenderCurrentCamera( void )
     ClipGroup( &CurrentCamera, group );
 
       if( !ModelDisp( group, /*lpDev,*/ &ModelNames[0] ) ) // bjd
-        return FALSE;
+        return false;
 
 /*===================================================================
   Display Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
   if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], group ) ) // bjd
-    return FALSE;
+    return false;
 #ifdef SHADOWTEST
   if( !DisplaySolidGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
-    return FALSE;
+    return false;
 #endif
 
   }
@@ -5039,7 +5039,7 @@ BOOL RenderCurrentCamera( void )
 		{
 			if (!draw_object(&Skin_Execs[ Count ]))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -5071,11 +5071,11 @@ BOOL RenderCurrentCamera( void )
 ===================================================================*/
 
   if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], group ) ) // bjd
-    return FALSE;
+    return false;
 
 #ifdef SHADOWTEST
   if( !DisplayGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
-    return FALSE;
+    return false;
 #endif
 
 /*===================================================================
@@ -5083,7 +5083,7 @@ Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
   if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], group ) ) // bjd
-      return FALSE;
+      return false;
 
   ExecuteTransExe( group );
 
@@ -5098,16 +5098,16 @@ Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
     if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
-        return FALSE;
+        return false;
 
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
     if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
-        return FALSE;
+        return false;
 #ifdef SHADOWTEST
     if( !DisplayGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )
-      return FALSE;
+      return false;
 #endif
   
   // display unclipped translucencies
@@ -5129,7 +5129,7 @@ Display Group Clipped Faceme Transluecent Polys
 		{
 			if (!draw_object(&Portal_Execs[ Count ]))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -5143,10 +5143,10 @@ Display Group Clipped Faceme Transluecent Polys
 #else
         Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-        return FALSE;
+        return false;
     }
 
-  return TRUE;
+  return true;
 }
   
 
@@ -5156,17 +5156,17 @@ extern  int   NumOfVertsTouched;
 /*===================================================================
   Procedure :  Our Calculate frame rate...
   Input   :
-  Output    : BOOL TRUE/FALSE
+  Output    : _Bool true/false
 ===================================================================*/
 
 px_timer_t our_timer;
 float our_count = 0;
-extern BOOL ShowFrameRate;
-extern BOOL ShowInfo;
-extern	uint16		NumGroupsVisible;
-extern uint16	GroupImIn;
+extern _Bool ShowFrameRate;
+extern _Bool ShowInfo;
+extern	u_int16_t		NumGroupsVisible;
+extern u_int16_t	GroupImIn;
 
-BOOL Our_CalculateFrameRate(void)
+_Bool Our_CalculateFrameRate(void)
 {
 	char buf[256];
 	static int avg_time_per_frame = 0;
@@ -5204,7 +5204,7 @@ BOOL Our_CalculateFrameRate(void)
 
 		// group information
 		sprintf(&buf[0], "Groups Visible %d - Current Group %s", (int) NumGroupsVisible,
-			(GroupImIn == (uint16) -1) ? "(outside)" : Mloadheader.Group[GroupImIn].name );
+			(GroupImIn == (u_int16_t) -1) ? "(outside)" : Mloadheader.Group[GroupImIn].name );
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*3, 2 );
 
 		// memory information
@@ -5240,7 +5240,7 @@ BOOL Our_CalculateFrameRate(void)
 				// display primary weapon name
 				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display primary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printu_int16_t( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 
 			// show all secondary weapon kills
@@ -5249,7 +5249,7 @@ BOOL Our_CalculateFrameRate(void)
 				// display secondary weapon name
 				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(render_info.window_size.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display secondary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (render_info.window_size.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printu_int16_t( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (render_info.window_size.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 		}
 
@@ -5267,7 +5267,7 @@ BOOL Our_CalculateFrameRate(void)
 	}
 #endif
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -5275,7 +5275,7 @@ BOOL Our_CalculateFrameRate(void)
   Input   : Nothing
   Output    : Nothing
 ===================================================================*/
-BOOL
+_Bool
 InitViewport( void )
 {
 	int left, top;
@@ -5290,7 +5290,7 @@ InitViewport( void )
 	if (!FSGetViewPort(&viewport))
 	{
 		Msg( "GetViewport failed.\n%s", render_error_description(0) );
-		return FALSE;
+		return false;
 	}
 
 	maxwidth = render_info.window_size.cx;
@@ -5300,12 +5300,12 @@ InitViewport( void )
 	height = maxheight;
 	if ( scale > 1.11F )
 	{
-		DrawPanel = TRUE;
+		DrawPanel = true;
 		scale = 1.2F;
 	}
 	else
 	{
-		DrawPanel = FALSE;
+		DrawPanel = false;
 	}
 	left = 0;
 	top = 0;
@@ -5324,14 +5324,14 @@ InitViewport( void )
 #else
 		Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-		return FALSE;
+		return false;
 	}
 	
 	SetFOV( hfov );
 
 	clear_black();
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -5341,12 +5341,12 @@ InitViewport( void )
 ===================================================================*/
 void SpecialDestroyGame( void )
 {
-	IMustQuit = FALSE;
+	IMustQuit = false;
 
 	DebugPrintf("SpecialDestroyGame()\n");
 
 	if ( PlayDemo )
-		PlayDemo = FALSE;
+		PlayDemo = false;
 
 	switch( MyGameStatus )
 	{
@@ -5453,11 +5453,11 @@ void CalculateFramelag( void )
 
 /*===================================================================
   Procedure : Disp Tracker
-  Output    : BOOL        TRUE/FALSE
+  Output    : _Bool        true/false
 ===================================================================*/
-BOOL DispTracker( void ) // bjd
+_Bool DispTracker( void ) // bjd
 {
-	uint16      i;
+	u_int16_t      i;
 	XYRECT     dummy;
 	render_viewport_t newviewport;
 	float       screen_width, screen_height;
@@ -5482,7 +5482,7 @@ BOOL DispTracker( void ) // bjd
     newviewport.X = 0;	
 	newviewport.Y = 0;
     newviewport.Width = ( render_info.window_size.cx / 3 ) & -2;
-    newviewport.Height = (uint32) ( (float) newviewport.Width * pixel_aspect_ratio );
+    newviewport.Height = (u_int32_t) ( (float) newviewport.Width * pixel_aspect_ratio );
     newviewport.ScaleX = newviewport.Width / (float)2.0;
     newviewport.ScaleY = newviewport.Height / (float)2.0;
 
@@ -5494,7 +5494,7 @@ BOOL DispTracker( void ) // bjd
 */
 
 	if (!FSSetViewPort(&newviewport))
-		return FALSE;
+		return false;
 
 	viewplane_distance = (float) ( newviewport.Width / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
@@ -5502,7 +5502,7 @@ BOOL DispTracker( void ) // bjd
 
 	if (!FSSetProjection(&panelproj))
 	{
-		return FALSE;
+		return false;
 	}
 
 	dummy.x1 = newviewport.X;
@@ -5511,7 +5511,7 @@ BOOL DispTracker( void ) // bjd
 	dummy.y2 = newviewport.Y + newviewport.Height;
 
 	if (FSClearDepth(&dummy))
-		return FALSE;
+		return false;
 
 	MatrixTranspose( &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );
 	ShadeModel( MODEL_Tracker, &TempMatrix, ( 40.0F * GLOBAL_SCALE ), ( 220.0F * GLOBAL_SCALE ) );
@@ -5543,10 +5543,10 @@ BOOL DispTracker( void ) // bjd
 	view._44 = 1.0F;
 
 	if (!FSSetView(&view))
-		return FALSE;
+		return false;
 
-	if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Tracker], (uint16) -1 ) != TRUE )
-		return FALSE;
+	if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Tracker], (u_int16_t) -1 ) != true )
+		return false;
 
 #if 0
   i = FindClosestPickup();
@@ -5554,7 +5554,7 @@ BOOL DispTracker( void ) // bjd
   i = FindClosestShip();
 #endif
   
-  if( i != (uint16) -1 )
+  if( i != (u_int16_t) -1 )
   {
     Red = 255.0F;
     Green = 255.0F;
@@ -5609,21 +5609,21 @@ BOOL DispTracker( void ) // bjd
     view._44 = 1.0F;
 
 	if (!FSSetView(&view))
-		return FALSE;
+		return false;
 
-    if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Ping], (uint16) -1 ) != TRUE )
-      return FALSE;
+    if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Ping], (u_int16_t) -1 ) != true )
+      return false;
   }
 
 	if (!FSSetViewPort(&viewport))
-		return FALSE;
+		return false;
 
 	if (!FSSetProjection(&proj))
 	{
-		return FALSE;
+		return false;
 	}
 
-  return TRUE;
+  return true;
 }
 
 
@@ -5632,13 +5632,13 @@ BOOL DispTracker( void ) // bjd
   Input   : float R ( 0.0F - 1.0F )
         : float G ( 0.0F - 1.0F )
         : float B ( 0.0F - 1.0F )
-  Output    : BOOL  TRUE/FALSE
+  Output    : _Bool  true/false
 ===================================================================*/
 // TODO - might want this
 /*
-BOOL ChangeBackgroundColour( float R, float G, float B )
+_Bool ChangeBackgroundColour( float R, float G, float B )
 {
-	return TRUE;
+	return true;
 }
 */
 
@@ -5669,9 +5669,9 @@ void PrintInitViewStatus( BYTE Status )
 /*===================================================================
   Procedure :   Init Stats Display Stuff...
   Input   :   nothing...
-  Output    :   BOOL TRUE/FALSE
+  Output    :   _Bool true/false
 ===================================================================*/
-BOOL  InitStatsDisplay()
+_Bool  InitStatsDisplay()
 {
   // Create the offscreen surface, by loading our bitmap.
 
@@ -5680,15 +5680,15 @@ BOOL  InitStatsDisplay()
 
   HowManySecrets( &TotalSecrets , &Secrets );
 
-  return TRUE;
+  return true;
 }
 
 /*===================================================================
   Procedure :   Stats Display...
   Input   :   nothing...
-  Output    :   BOOL TRUE/FALSE
+  Output    :   _Bool true/false
 ===================================================================*/
-BOOL StatsDisplay()
+_Bool StatsDisplay()
 {
   rect_t    src;
   rect_t    dest;
@@ -5751,7 +5751,7 @@ BOOL StatsDisplay()
 //  Our_CalculateFrameRate();
 
 
-  return TRUE;
+  return true;
 }
 
 // ModeScaleX use to have hard coded spacing value and such for fonts etc...
@@ -5766,12 +5766,12 @@ void InitModeCase(void)
 /*===================================================================
   Procedure :   Get Bit Shift required to make first bit of
         :   mask bit 0
-  Input   :   int32 Mask
-  Output    :   int16 Shift Value
+  Input   :   int32_t Mask
+  Output    :   int16_t Shift Value
 ===================================================================*/
-int16 GetBitShift( int32 Mask )
+int16_t GetBitShift( int32_t Mask )
 {
-  int16 Count;
+  int16_t Count;
 
   if( Mask )
   {
@@ -5804,7 +5804,7 @@ void RenderSnapshot( void )
 //bjd  lpDev->lpVtbl->BeginScene(lpDev);
 
   CurrentCamera.enable = 1;
-  CurrentCamera.UseLowestLOD = TRUE;
+  CurrentCamera.UseLowestLOD = true;
   CurrentCamera.GroupImIn = Ships[Current_Camera_View].Object.Group;  
   CurrentCamera.Mat = Ships[Current_Camera_View].Object.FinalMat; 
   CurrentCamera.InvMat = Ships[Current_Camera_View].Object.FinalInvMat; 
@@ -5826,8 +5826,8 @@ void RenderSnapshot( void )
                      RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
 
-  CurrentCamera.UseLowestLOD = TRUE;
-  if( RenderCurrentCamera() != TRUE ) // bjd
+  CurrentCamera.UseLowestLOD = true;
+  if( RenderCurrentCamera() != true ) // bjd
     return;
 #endif
 //bjd  lpDev->lpVtbl->EndScene(lpDev);
@@ -5835,33 +5835,33 @@ void RenderSnapshot( void )
 
 /*===================================================================
   Procedure :   Save PPM Bitmap
-  Input   :   int8  * Filename
-        :   int8  * Screen Pointer
-        :   uint32    Width
-        :   uint32    Height
-        :   uint32    Bytes Per Pixel
-        :   uint32    LineSize
-        :   uint32    RedMask
-        :   uint32    GreenMask
-        :   uint32    BlueMask
-        :   uint32    x1, y1, x2 ,y2 ( Portion of Screen )
-  Output    :   BOOL    True/False
+  Input   :   int8_t  * Filename
+        :   int8_t  * Screen Pointer
+        :   u_int32_t    Width
+        :   u_int32_t    Height
+        :   u_int32_t    Bytes Per Pixel
+        :   u_int32_t    LineSize
+        :   u_int32_t    RedMask
+        :   u_int32_t    GreenMask
+        :   u_int32_t    BlueMask
+        :   u_int32_t    x1, y1, x2 ,y2 ( Portion of Screen )
+  Output    :   _Bool    True/False
 ===================================================================*/
-BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, uint32 BytesPerPixel,
-        uint32 LineSize, uint32 RedMask, uint32 GreenMask, uint32 BlueMask,
-        uint32 x1, uint32 y1, uint32 x2, uint32 y2 )
+_Bool SavePPM( u_int8_t * Filename, u_int8_t * ScreenPtr, u_int32_t Width, u_int32_t Height, u_int32_t BytesPerPixel,
+        u_int32_t LineSize, u_int32_t RedMask, u_int32_t GreenMask, u_int32_t BlueMask,
+        u_int32_t x1, u_int32_t y1, u_int32_t x2, u_int32_t y2 )
 {
-  uint32    XCount, YCount;
-  uint32    RedMul, GreenMul, BlueMul;
-  uint8   Red, Green, Blue;
-  int16   RedShift, GreenShift, BlueShift;
-  uint8 * LinePtr;
-  int8    Header[ 256 ];
+  u_int32_t    XCount, YCount;
+  u_int32_t    RedMul, GreenMul, BlueMul;
+  u_int8_t   Red, Green, Blue;
+  int16_t   RedShift, GreenShift, BlueShift;
+  u_int8_t * LinePtr;
+  int8_t    Header[ 256 ];
   FILE  * fp;
-  int16   i;
-  uint32    Val;
-  uint32    Xoff, Yoff;
-  uint32    Xsize, Ysize;
+  int16_t   i;
+  u_int32_t    Val;
+  u_int32_t    Xoff, Yoff;
+  u_int32_t    Xsize, Ysize;
 
   if( ( x1 == x2 ) && ( y1 == y2 ) )
   {
@@ -5885,7 +5885,7 @@ BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, 
     i = 0;
     while( Header[ i ] )
     {
-      fwrite( &Header[ i ], sizeof( int8 ), 1, fp );
+      fwrite( &Header[ i ], sizeof( int8_t ), 1, fp );
       i++;
     }
 
@@ -5910,23 +5910,23 @@ BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, 
         switch( BytesPerPixel )
         {
           case 1:
-            Val = (uint32) LinePtr[0];
+            Val = (u_int32_t) LinePtr[0];
             break;
           case 2:
-            Val = (uint32) ( (uint32) LinePtr[0] ) |
-                   ( ( (uint32) LinePtr[1] ) << 8 );
+            Val = (u_int32_t) ( (u_int32_t) LinePtr[0] ) |
+                   ( ( (u_int32_t) LinePtr[1] ) << 8 );
             break;
           case 3:
-            Val = (uint32) ( (uint32) LinePtr[0] ) |
-                   ( ( (uint32) LinePtr[1] ) << 8 ) |
-                   ( ( (uint32) LinePtr[2] ) << 16 );
+            Val = (u_int32_t) ( (u_int32_t) LinePtr[0] ) |
+                   ( ( (u_int32_t) LinePtr[1] ) << 8 ) |
+                   ( ( (u_int32_t) LinePtr[2] ) << 16 );
             break;
         }
         LinePtr += BytesPerPixel;
 
-        Red   = (uint8) ( ( ( Val & RedMask ) >> RedShift ) * RedMul );
-        Green = (uint8) ( ( ( Val & GreenMask ) >> GreenShift ) * GreenMul );
-        Blue  = (uint8) ( ( ( Val & BlueMask ) >> BlueShift ) * BlueMul );
+        Red   = (u_int8_t) ( ( ( Val & RedMask ) >> RedShift ) * RedMul );
+        Green = (u_int8_t) ( ( ( Val & GreenMask ) >> GreenShift ) * GreenMul );
+        Blue  = (u_int8_t) ( ( ( Val & BlueMask ) >> BlueShift ) * BlueMul );
 
         fwrite( &Red, sizeof( Red ), 1, fp );
         fwrite( &Green, sizeof( Green ), 1, fp );
@@ -5941,20 +5941,20 @@ BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, 
   else
   {
     DebugPrintf( "Failed to create %s\n", Filename );
-    return( FALSE );
+    return( false );
   }
 
-  return( TRUE );
+  return( true );
 }
 
 /*===================================================================
   Procedure :   Save SnapShot screen for saved game
-  Input   :   int8  * Filename
-  Output    :   BOOL    True/False
+  Input   :   int8_t  * Filename
+  Output    :   _Bool    True/False
 ===================================================================*/
-BOOL SaveSnapShot( int8 * Filename )
+_Bool SaveSnapShot( int8_t * Filename )
 {
-	return TRUE;
+	return true;
 #if 0 // bjd
   HRESULT     hr;
   DDSURFACEDESC SurfaceDesc;
@@ -5996,7 +5996,7 @@ BOOL SaveSnapShot( int8 * Filename )
         DebugPrintf( "Error Locking Surface ( Was Still Drawing )\n" );
         break;
     }
-    return( FALSE );
+    return( false );
   }
 
   SavePPM( Filename, SurfaceDesc.lpSurface, SurfaceDesc.dwWidth, SurfaceDesc.dwHeight,
@@ -6008,22 +6008,22 @@ BOOL SaveSnapShot( int8 * Filename )
   if ( hr != DD_OK )
   {
     DebugPrintf( "Error Unlocking Surface\n" );
-    return( FALSE );
+    return( false );
   }
 
   if( CurrentMenu ) MenuDraw( CurrentMenu );
   MainGame( /*render_info.lpD3DDevice,*/ render_info.lpD3DViewport ); // bjd
 
-  return( TRUE );
+  return( true );
 #endif
 }
 
 // if we met the max kills limit then set flag to change level
 void CheckMetKillLimit()
 {
-	BOOL	KillsReached = FALSE;
-	BOOL teamOK[MAX_TEAMS];
-	BOOL teamleft[MAX_TEAMS];
+	_Bool	KillsReached = false;
+	_Bool teamOK[MAX_TEAMS];
+	_Bool teamleft[MAX_TEAMS];
 
 	// i'm the host so i should check if we have met the level kill threshold if there is one
 	if(IsHost && MaxKills && (MyGameStatus == STATUS_Normal) )
@@ -6039,7 +6039,7 @@ void CheckMetKillLimit()
 				{
 					// if they scored more than the kills threshold then flag we finished it
 					if( GetScoreStats(GetPlayerByRank(i)) >= MaxKills && LevelNum != -1 )
-						KillsReached = TRUE;
+						KillsReached = true;
 				}
 			}
 		}
@@ -6049,15 +6049,15 @@ void CheckMetKillLimit()
 			// identify which teams are active
 			for (i = 0; i < MAX_TEAMS; i++)
 			{	
-				teamOK[i] = FALSE;
-				teamleft[i] = TRUE;
+				teamOK[i] = false;
+				teamleft[i] = true;
 			}
 
 			// if any of the active teams scored more than the kills threshold then flag we finished it
 			for( i = 0 ; i < MAX_TEAMS ; i++ )
 			{
 				if( GetTeamScore(i) >= MaxKills && !teamleft[i] && teamOK[i])
-					KillsReached = TRUE;
+					KillsReached = true;
 			}
 		}
 

@@ -25,10 +25,10 @@ float closest_intersection(float *x, float x_num);
 float intersect(VECTOR * sphere_pos, float radius , VECTOR * ray_org, VECTOR * ray_dir);
 void  SphereNormal( VECTOR * Pos , VECTOR * Point , float radius , NORMAL * Normal );
 float RaytoSphere(VECTOR * sphere_pos, float radius , VECTOR * ray_org, VECTOR * ray_dir);
-BOOL RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 );
-int16 RaytoSphere3( VECTOR * SphereCenter, float Radius, VECTOR * RayStart,
+_Bool RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 );
+int16_t RaytoSphere3( VECTOR * SphereCenter, float Radius, VECTOR * RayStart,
 				    VECTOR * RayEnd, VECTOR * IntPoint );
-BOOL RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, float rlength );
+_Bool RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, float rlength );
 
 //	vec3 normalAt(vec3& p);
 #endif	//SPHERE_INCLUDED

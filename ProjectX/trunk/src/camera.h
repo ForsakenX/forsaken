@@ -50,11 +50,11 @@ typedef struct
 
 
 typedef struct CAMERA{
-	BOOL	enable;
-	BOOL	UseLowestLOD;
+	_Bool	enable;
+	_Bool	UseLowestLOD;
 	int		Type;
-	uint16	TypeNum;
-	int16	GroupImIn;
+	u_int16_t	TypeNum;
+	int16_t	GroupImIn;
 	VECTOR	Pos;
 	MATRIX	Mat;
 	MATRIX	InvMat;
@@ -66,8 +66,8 @@ typedef struct CAMERA{
 }CAMERA;
 
 typedef struct _REMOTECAMERA{
-	BOOL	enable;
-	int16	Group;
+	_Bool	enable;
+	int16_t	Group;
 	VECTOR	Pos;
 	VECTOR	Dir;
 	VECTOR	Up;
@@ -84,9 +84,9 @@ typedef struct _REMOTECAMERA{
  * fn prototypes
  */
 void CameraRelease( void);
-BOOL Cameraload( char * Filename );
-void EnableRemoteCamera( uint16 * Data );
-void DisableRemoteCamera( uint16 * Data );
+_Bool Cameraload( char * Filename );
+void EnableRemoteCamera( u_int16_t * Data );
+void DisableRemoteCamera( u_int16_t * Data );
 FILE * SaveRemoteCameras( FILE * fp );
 FILE * LoadRemoteCameras( FILE * fp );
 

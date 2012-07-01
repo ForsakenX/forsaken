@@ -32,7 +32,7 @@ CAMERA	MainCamera;			// the main viewing screen...
 
 
 
-int32	NumOfCams = 0;
+int32_t	NumOfCams = 0;
 REMOTECAMERA * ActiveRemoteCamera = NULL;
 REMOTECAMERA * RemoteCameras = NULL;
 
@@ -42,20 +42,20 @@ REMOTECAMERA * RemoteCameras = NULL;
 	Input		:		char	*	Filename 
 	Output		:		Nothing
 ===================================================================*/
-BOOL Cameraload( char * Filename )
+_Bool Cameraload( char * Filename )
 {
 	char		*	Buffer;
 	char		*	OrgBuffer;
-	int32		*	int32Pnt;
-	uint32		*	uint32Pnt;
-	int16		*	int16Pnt;
+	int32_t		*	int32Pnt;
+	u_int32_t		*	u_int32Pnt;
+	int16_t		*	int16Pnt;
 	float		*	FloatPnt;
 	int			e;
 	long			File_Size;
 	long			Read_Size;
 	REMOTECAMERA	*	CamPnt;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 	VECTOR	Tempv;
 
 	ActiveRemoteCamera = NULL;
@@ -67,48 +67,48 @@ BOOL Cameraload( char * Filename )
 	if( !File_Size )
 	{
 		// Doesnt Matter.....
-		return TRUE;
+		return true;
 	}
 	Buffer = calloc( 1, File_Size );
 	OrgBuffer = Buffer;
 	if( !Buffer )
 	{
 		Msg( "Camload failed to Allocate buffer for %s failed\n", Filename );
-		return FALSE;
+		return false;
 	}
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 	if( Read_Size != File_Size )
 	{
 		Msg( "Camload Error reading file %s\n", Filename );
-		return FALSE;
+		return false;
 	}
-	uint32Pnt = (uint32 *) Buffer;
-	MagicNumber = *uint32Pnt++;
-	VersionNumber = *uint32Pnt++;
-	Buffer = (char *) uint32Pnt;
+	u_int32Pnt = (u_int32_t *) Buffer;
+	MagicNumber = *u_int32Pnt++;
+	VersionNumber = *u_int32Pnt++;
+	Buffer = (char *) u_int32Pnt;
 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != CAM_VERSION_NUMBER  ) )
 	{
 		Msg( "CamLoad() Incompatible .CAM file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	int32Pnt = (int32*) Buffer;
+	int32Pnt = (int32_t*) Buffer;
 	NumOfCams = *int32Pnt++;
  	RemoteCameras = (REMOTECAMERA*) calloc( NumOfCams, sizeof(REMOTECAMERA) );
  	CamPnt = RemoteCameras;
 	if( !CamPnt )
 	{
 		Msg( "Camload failed allocate Cam Pointer in %s \n", Filename );
-		return FALSE;
+		return false;
 	}
 	Buffer = (char*) int32Pnt;
 	
 	for( e = 0 ; e < NumOfCams ; e++ )
 	{
-		CamPnt->enable = FALSE;
+		CamPnt->enable = false;
 
-		int16Pnt = (int16*) Buffer;
+		int16Pnt = (int16_t*) Buffer;
 		CamPnt->Group = *int16Pnt++;
 		FloatPnt = (float*) int16Pnt;
 		
@@ -131,7 +131,7 @@ BOOL Cameraload( char * Filename )
 	}
 	// All Cameras Networks have been loaded...
 	free(OrgBuffer);
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -152,10 +152,10 @@ void CameraRelease( void)
 
 /*===================================================================
  	Procedure	:		Enable Remote Camera
-	Input		:		uint16	* Data
+	Input		:		u_int16_t	* Data
 	Output		:		Nothing
 ===================================================================*/
-void EnableRemoteCamera( uint16 * Data )
+void EnableRemoteCamera( u_int16_t * Data )
 {
 	REMOTECAMERA * CamPnt;
 
@@ -163,15 +163,15 @@ void EnableRemoteCamera( uint16 * Data )
 	if( !CamPnt )
 		return;
 	CamPnt += *Data;
-	CamPnt->enable = TRUE;
+	CamPnt->enable = true;
 	ActiveRemoteCamera = CamPnt;
 }
 /*===================================================================
  	Procedure	:		Disable Remote Camera
-	Input		:		uint16	* Data
+	Input		:		u_int16_t	* Data
 	Output		:		Nothing
 ===================================================================*/
-void DisableRemoteCamera( uint16 * Data )
+void DisableRemoteCamera( u_int16_t * Data )
 {
 	REMOTECAMERA * CamPnt;
 
@@ -179,7 +179,7 @@ void DisableRemoteCamera( uint16 * Data )
 	if( !CamPnt )
 		return;
 	CamPnt += *Data;
-	CamPnt->enable = FALSE;
+	CamPnt->enable = false;
 	if( ActiveRemoteCamera == CamPnt )
 		ActiveRemoteCamera = NULL;
 }
@@ -191,13 +191,13 @@ void DisableRemoteCamera( uint16 * Data )
 ===================================================================*/
 FILE * SaveRemoteCameras( FILE * fp )
 {
-	uint16	TempIndex;
+	u_int16_t	TempIndex;
 
 	if( fp )
 	{
-		if( ActiveRemoteCamera ) TempIndex = (uint16) ( ActiveRemoteCamera - RemoteCameras );
-		else TempIndex = (uint16) -1;
-		fwrite( &TempIndex, sizeof( uint16 ), 1, fp );
+		if( ActiveRemoteCamera ) TempIndex = (u_int16_t) ( ActiveRemoteCamera - RemoteCameras );
+		else TempIndex = (u_int16_t) -1;
+		fwrite( &TempIndex, sizeof( u_int16_t ), 1, fp );
 	}
 
 	return( fp );
@@ -210,25 +210,25 @@ FILE * SaveRemoteCameras( FILE * fp )
 ===================================================================*/
 FILE * LoadRemoteCameras( FILE * fp )
 {
-	uint16	i;
-	uint16	TempIndex;
+	u_int16_t	i;
+	u_int16_t	TempIndex;
 	REMOTECAMERA	*	CamPnt;
 
  	CamPnt = RemoteCameras;
 
 	for( i = 0; i < NumOfCams ; i++ )
 	{
-		CamPnt->enable = FALSE;
+		CamPnt->enable = false;
 		CamPnt++;
 	}
 
 	if( fp )
 	{
-		fread( &TempIndex, sizeof( uint16 ), 1, fp );
-		if( TempIndex != (uint16) -1 )
+		fread( &TempIndex, sizeof( u_int16_t ), 1, fp );
+		if( TempIndex != (u_int16_t) -1 )
 		{
 			ActiveRemoteCamera = ( RemoteCameras + TempIndex );
-			ActiveRemoteCamera->enable = TRUE;
+			ActiveRemoteCamera->enable = true;
 		}
 		else
 		{

@@ -49,60 +49,60 @@ typedef struct MXAVERT {
 	COLOR specular;
 	float tu;
 	float tv;
-	int32 flags;
+	int32_t flags;
 } MXAVERT;
 
 
 typedef struct COLOR_RGBA {
-	uint8 b;
-	uint8 g;
-	uint8 r;
-	uint8 a;
+	u_int8_t b;
+	u_int8_t g;
+	u_int8_t r;
+	u_int8_t a;
 } COLOR_RGBA;
 
 typedef struct MXAGROUP{
-	uint16	num_execbufs;
-	uint16	exec_type[MAXEXECBUFSPERGROUP];
-	uint16	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
-	uint16	num_polys_per_execbuf[MAXEXECBUFSPERGROUP];
-	uint16	num_texture_groups[MAXMXATEXTUREGROUPSPER];
+	u_int16_t	num_execbufs;
+	u_int16_t	exec_type[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_polys_per_execbuf[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_texture_groups[MAXMXATEXTUREGROUPSPER];
 	RENDEROBJECT renderObject[MAXEXECBUFSPERGROUP];
 	LPLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 	LPTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
-	uint32	texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];
+	u_int32_t	texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];
 	char	name[16];
 }MXAGROUP;
 
 
-typedef uint16 MXAVERTCOUNT[MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
+typedef u_int16_t MXAVERTCOUNT[MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
 typedef	MXAVERT	*MXAVERTFRAME[MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
 
 typedef struct MXALOADHEADER{
 
-	int					state;								// FALSE if not loaded properly...
+	int					state;								// false if not loaded properly...
 	int					CurrentFrame;
 	int					WantedFrame;
 	float				Interp;								// how close to the wanted frame....
 	float				Time;
 	char		*		OrgAddr;
 	char		*		Buffer;
-	uint16				num_texture_files;
-	uint16				num_groups;
+	u_int16_t				num_texture_files;
+	u_int16_t				num_groups;
 	MXAGROUP			Group[MAX_MXAGROUPS];
-	int16				TloadIndex[MAXTPAGESPERMXALOAD];		// which texture in the Tloadheader....
+	int16_t				TloadIndex[MAXTPAGESPERMXALOAD];		// which texture in the Tloadheader....
     char                ImageFile[MAXTPAGESPERMXALOAD][32];	// Texture Files....
-	uint16				num_frames;
+	u_int16_t				num_frames;
 #if 1
 	MXAVERTCOUNT *		num_anim_vertices;// points to the begining of each set of verts...	
 	MXAVERTFRAME *		frame_pnts;		  // points to the begining of each set of verts...	
 #else
-	uint16				num_anim_vertices[MAX_ANIM_FRAMES][MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
+	u_int16_t				num_anim_vertices[MAX_ANIM_FRAMES][MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
 	MXAVERT		*		frame_pnts[MAX_ANIM_FRAMES][MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
 #endif
 	int					AllocateTPage;
-	uint16				NumFirePoints;							// Number of FirePoints
+	u_int16_t				NumFirePoints;							// Number of FirePoints
 	PVFIREPOINT	*		FirePoints;								// FirePoints
-	uint16				NumSpotFX;								// Number of SpotFX
+	u_int16_t				NumSpotFX;								// Number of SpotFX
 	PVSPOTFX	*		SpotFX;									// SpotFX
 	VECTOR				Center;									// Center Pos
 	VECTOR				Sizes;									// X,Y,Z Sizes
@@ -112,15 +112,15 @@ typedef struct MXALOADHEADER{
 /*===================================================================
 	Prototypes
 ===================================================================*/
-BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, BOOL LevelSpecific );
-BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangles  );
-BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 group );
+_Bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, _Bool LevelSpecific );
+_Bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, _Bool StoreTriangles  );
+_Bool ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t group );
 void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader );
-BOOL ExecuteSingleGroupMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 group  );
-BOOL PreInitMxaModels( char * NamePnt);
-BOOL InitMxaModels( char * NamePnt);
-BOOL ReleaseMxaModels();
-BOOL InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp );
+_Bool ExecuteSingleGroupMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t group  );
+_Bool PreInitMxaModels( char * NamePnt);
+_Bool InitMxaModels( char * NamePnt);
+_Bool ReleaseMxaModels();
+_Bool InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp );
 
 #endif
 

@@ -40,17 +40,17 @@ extern	VECTOR Forward;
 extern	VECTOR SlideUp;
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	float framelag;
-extern	BOOL	Entry;
-extern	BOOL	Exit;
-extern	BOOL	In;
-extern	BOOL	ShowTeleports;
-BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , uint16 StartNumSides );
-void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, uint16 Group );
+extern	_Bool	Entry;
+extern	_Bool	Exit;
+extern	_Bool	In;
+extern	_Bool	ShowTeleports;
+_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
+void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, u_int16_t Group );
 
 /*===================================================================
 		Globals ...
 ===================================================================*/
-int16	NumOfTeleports = 0;
+int16_t	NumOfTeleports = 0;
 
 TELEPORT * TeleportsGroupLink[MAXGROUPS];
 
@@ -59,22 +59,22 @@ TELEPORT * Teleports = NULL;
 /*===================================================================
 	Procedure	:	Teleports load...
 	Input		:	char * filename....
-	Output		:	BOOL
+	Output		:	_Bool
 ===================================================================*/
-BOOL TeleportsLoad( char * Filename )
+_Bool TeleportsLoad( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
 	char		*	OrgBuffer;
-	uint16		*	Uint16Pnt;
+	u_int16_t		*	Uint16Pnt;
 	TELEPORT * TPpnt;
 	float * floatpnt;
 	int i,j,e;
 	TRIGGER_ZONE * ZonePnt;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
-	uint32		*	uint32Pnt;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
+	u_int32_t		*	u_int32Pnt;
 
 
 	NumOfTeleports = 0;
@@ -88,7 +88,7 @@ BOOL TeleportsLoad( char * Filename )
 	if( !File_Size )
 	{
 		// dont need Teleports..
-		return TRUE;
+		return true;
 	}
 	Buffer = malloc( File_Size );
 	OrgBuffer = Buffer;
@@ -96,30 +96,30 @@ BOOL TeleportsLoad( char * Filename )
 	if( !Buffer )
 	{
 		Msg( "Teleports Load : Unable to allocate file buffer %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 	if( Read_Size != File_Size )
 	{
 		Msg( "Teleports Load Error reading %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 
-	uint32Pnt = (uint32 *) Buffer;
-	MagicNumber = *uint32Pnt++;
-	VersionNumber = *uint32Pnt++;
-	Buffer = (char *) uint32Pnt;
+	u_int32Pnt = (u_int32_t *) Buffer;
+	MagicNumber = *u_int32Pnt++;
+	VersionNumber = *u_int32Pnt++;
+	Buffer = (char *) u_int32Pnt;
 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != TELEPORTS_VERSION_NUMBER  ) )
 	{
 		Msg( "Teleportload() Incompatible Teleports( .tel ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	
 	
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 	NumOfTeleports = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;
 
@@ -128,12 +128,12 @@ BOOL TeleportsLoad( char * Filename )
 	if( !TPpnt )
 	{
 		Msg( "Teleports : cant allocate buffer %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	for( i = 0 ; i < NumOfTeleports ; i++ )
 	{
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		TPpnt->Group = *Uint16Pnt++;
 		TPpnt->Status = *Uint16Pnt++;
 //		TPpnt->Type = *Uint16Pnt++;
@@ -150,7 +150,7 @@ BOOL TeleportsLoad( char * Filename )
 		if( TPpnt->num_links > MAXTELEPORTLINKS )
 		{
 			Msg( "Teleports : To many Links in %s\n", Filename );
-			return( FALSE );
+			return( false );
 		}
 
 		for( e = 0 ; e < TPpnt->num_links ; e++ )
@@ -180,14 +180,14 @@ BOOL TeleportsLoad( char * Filename )
 		TPpnt->half_size.z = *floatpnt++;
 		Buffer = (char *) floatpnt;
   
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		TPpnt->zone_type = *Uint16Pnt++;
 		Buffer = (char *) Uint16Pnt;
 		
 		if( TPpnt->zone_type != ZONE_Sphere )
 		{
 			// convex hull...
-			Uint16Pnt = (uint16 *) Buffer;
+			Uint16Pnt = (u_int16_t *) Buffer;
 			TPpnt->num_sides = *Uint16Pnt++;
 			Buffer = (char *) Uint16Pnt;
 			
@@ -197,7 +197,7 @@ BOOL TeleportsLoad( char * Filename )
 			if( !ZonePnt )
 			{
 				Msg( "Teleport maloc Error with %s\n", Filename );
-				return( FALSE );
+				return( false );
 			}
 			floatpnt = (float * ) Buffer;
 			for( j = 0 ; j < TPpnt->num_sides ; j++ )
@@ -219,7 +219,7 @@ BOOL TeleportsLoad( char * Filename )
 	}
 	free(OrgBuffer);
 
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:	Release Forces load...
@@ -253,9 +253,9 @@ void ReleaseTeleports( void )
 /*===================================================================
 	Procedure	:	Check if im in an Active Teleport....
 	Input		:	void
-	Output		:	TRUE/FALSE
+	Output		:	true/false
 ===================================================================*/
-BOOL TeleportsAreaCheck( VECTOR * NewPos , VECTOR * OldPos ,uint16 Group, OBJECT *obj )
+_Bool TeleportsAreaCheck( VECTOR * NewPos , VECTOR * OldPos ,u_int16_t Group, OBJECT *obj )
 {
 	TELEPORT * TPpnt;
 	TELEPORT * newTPpnt;
@@ -284,20 +284,20 @@ BOOL TeleportsAreaCheck( VECTOR * NewPos , VECTOR * OldPos ,uint16 Group, OBJECT
 				QuatFromDirAndUp( &newTPpnt->Dir, &newTPpnt->Up, &obj->Quat);
 				QuatToMatrix( &obj->Quat, &obj->Mat );
 #endif
-				return TRUE;
+				return true;
 			}
 		}
 		TPpnt = TPpnt->NextInGroup;
 	}
-	return FALSE;
+	return false;
 }
 
 /*===================================================================
 	Procedure	:	Display Teleports in group
-	Input		:	uint16	Group
+	Input		:	u_int16_t	Group
 	Output		:	Nothing
 ===================================================================*/
-void DisplayTeleportsInGroup( uint16 Group )
+void DisplayTeleportsInGroup( u_int16_t Group )
 {
 	TELEPORT * TPpnt;
 
@@ -344,21 +344,21 @@ void DisplayTeleportsInGroup( uint16 Group )
 void TeleportsZoneCheck( VECTOR * OldPos , VECTOR * NewPos , TELEPORT * TPpnt )
 {
 
-	BOOL	OldIn;
-	BOOL	NewIn;
-	Entry = FALSE;
-	Exit = FALSE;
-	In = FALSE;
+	_Bool	OldIn;
+	_Bool	NewIn;
+	Entry = false;
+	Exit = false;
+	In = false;
 	if( TPpnt->zone_type == ZONE_Sphere )
 	{
    		OldIn = DistanceVector2Vector( &TPpnt->Pos , OldPos ) <= TPpnt->half_size.x;
    		NewIn = DistanceVector2Vector( &TPpnt->Pos , NewPos ) <= TPpnt->half_size.x;
    		if( !OldIn && NewIn )
-   			Entry = TRUE;
+   			Entry = true;
    		if( OldIn && !NewIn )
-   			Exit = TRUE;
+   			Exit = true;
    		if( OldIn && NewIn )
-   			In = TRUE;
+   			In = true;
    	}else{
    		RayToHull( TPpnt->Zone , OldPos , NewPos , TPpnt->num_sides );
    	}
@@ -370,7 +370,7 @@ void TeleportsZoneCheck( VECTOR * OldPos , VECTOR * NewPos , TELEPORT * TPpnt )
 	Input		:	void
 	Output		:	void
 ===================================================================*/
-void StartTeleport( uint16 * Data )
+void StartTeleport( u_int16_t * Data )
 {
 	TELEPORT * TPpnt;
 	TPpnt = Teleports;
@@ -384,7 +384,7 @@ void StartTeleport( uint16 * Data )
 	Input		:	void
 	Output		:	void
 ===================================================================*/
-void StopTeleport( uint16 * Data )
+void StopTeleport( u_int16_t * Data )
 {
 	TELEPORT * TPpnt;
 	TPpnt = Teleports;
@@ -407,13 +407,13 @@ FILE * SaveTeleports( FILE * fp )
 
 	if( fp )
 	{
-		fwrite( &NumOfTeleports, sizeof( int16 ), 1, fp );
+		fwrite( &NumOfTeleports, sizeof( int16_t ), 1, fp );
 
 		TeleportPtr = Teleports;
 
 		for( i = 0; i < NumOfTeleports; i++ )
 		{
-			fwrite( &TeleportPtr->Status, sizeof( uint16 ), 1, fp );
+			fwrite( &TeleportPtr->Status, sizeof( u_int16_t ), 1, fp );
 			TeleportPtr++;
 		}
 	}
@@ -430,11 +430,11 @@ FILE * LoadTeleports( FILE * fp )
 {
 	int				i;
 	TELEPORT	*	TeleportPtr;
-	int16			NumTeleports;
+	int16_t			NumTeleports;
 
 	if( fp )
 	{
-		fread( &NumTeleports, sizeof( int16 ), 1, fp );
+		fread( &NumTeleports, sizeof( int16_t ), 1, fp );
 
 		if( NumTeleports != NumOfTeleports )
 		{
@@ -446,7 +446,7 @@ FILE * LoadTeleports( FILE * fp )
 
 		for( i = 0; i < NumOfTeleports; i++ )
 		{
-			fread( &TeleportPtr->Status, sizeof( uint16 ), 1, fp );
+			fread( &TeleportPtr->Status, sizeof( u_int16_t ), 1, fp );
 			TeleportPtr++;
 		}
 	}

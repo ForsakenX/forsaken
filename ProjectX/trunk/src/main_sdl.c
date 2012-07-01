@@ -8,9 +8,9 @@
 #endif
 
 extern render_info_t render_info;
-extern BOOL render_init( render_info_t * info );
+extern _Bool render_init( render_info_t * info );
 
-BOOL sdl_init( void )
+_Bool sdl_init( void )
 {
 	SDL_version ver;
 	SDL_VERSION(&ver);
@@ -21,10 +21,10 @@ BOOL sdl_init( void )
 	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 || !SDL_GetVideoInfo() )
 	{
 		Msg("Failed to initialize sdl: %s\n",SDL_GetError());
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /////////////////////////
@@ -64,7 +64,7 @@ render_display_mode_t video_modes[NUMBER_MODES] = {
 {1920,1200} 
 };
 
-static void init_video_modes( Uint32 flags )
+static void init_video_modes( u_int32_t flags )
 {
 	int i;
 	render_info.Mode               = video_modes;
@@ -105,7 +105,7 @@ static void set_window_icon( void )
 	if(icon)
 	{
 		// remove black pixels
-		Uint32 colorkey = SDL_MapRGB(icon->format, 0, 0, 0);
+		u_int32_t colorkey = SDL_MapRGB(icon->format, 0, 0, 0);
 		SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);        
 		SDL_WM_SetIcon(icon, NULL);
 		SDL_FreeSurface(icon);
@@ -158,9 +158,9 @@ static void print_info( void )
 		DebugPrintf("main_sdl: failed to obtain the video driver name.\n");
 }
 
-static Uint32 create_video_flags( void )
+static u_int32_t create_video_flags( void )
 {
-	Uint32 flags = SDL_ANYFORMAT;	
+	u_int32_t flags = SDL_ANYFORMAT;	
 
 #ifdef OPENGL
 	flags |= SDL_OPENGL;
@@ -172,7 +172,7 @@ static Uint32 create_video_flags( void )
 	return flags;
 }
 
-static BOOL create_video_surface( Uint32 flags )
+static _Bool create_video_surface( u_int32_t flags )
 {
 #ifndef RENDER_DISABLED
 	render_info.screen = SDL_SetVideoMode(
@@ -185,13 +185,13 @@ static BOOL create_video_surface( Uint32 flags )
 	if(!render_info.screen)
 	{
 		Msg("main_sdl: failed to create video surface: %s\n",SDL_GetError());
-		return FALSE;
+		return false;
 	}
 	
 	print_info();
 #endif
 
-	return TRUE;
+	return true;
 }
 
 static void set_window_title( void )
@@ -207,9 +207,9 @@ static void set_aspect_ratio( void )
 	DebugPrintf("aspect ratio: %d:%d\n",render_info.ThisMode.w,render_info.ThisMode.h);
 }
 
-BOOL sdl_init_video( void )
+_Bool sdl_init_video( void )
 {
-	Uint32 flags = create_video_flags();
+	u_int32_t flags = create_video_flags();
 
 	set_window_icon();
 
@@ -220,7 +220,7 @@ BOOL sdl_init_video( void )
 	set_aspect_ratio();
 
 	if(!create_video_surface( flags ))
-		return FALSE;
+		return false;
 
 #ifdef WIN32
 	// on windows the 2nd time you try to set video mode
@@ -233,8 +233,8 @@ BOOL sdl_init_video( void )
 	set_window_title();
 
 	if (!render_init( &render_info ))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 

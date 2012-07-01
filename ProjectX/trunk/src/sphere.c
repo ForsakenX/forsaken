@@ -193,10 +193,10 @@ float RaytoSphere(VECTOR * sphere_pos, float radius , VECTOR * ray_org, VECTOR *
  *		VECTOR *	inter	-	Intersection Back
  *
  * Output:
- *		BOOL		hit		-	Collision True/False
+ *		_Bool		hit		-	Collision True/False
  *
  *-------------------------------------------------------------------------------------------------------------------------*/
-BOOL RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 )
+_Bool RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 )
 {
 	float		v;
 	float		disc;
@@ -209,13 +209,13 @@ BOOL RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rd
 	EO.y = (rorigin->y - sorigin->y);
 	EO.z = (rorigin->z - sorigin->z);
 
-	if( VectorLength( &EO ) <= radius ) return FALSE; // Vector Started inside Sphere!
+	if( VectorLength( &EO ) <= radius ) return false; // Vector Started inside Sphere!
 
 	v = ( ( EO.x * rdir->x ) + ( EO.y * rdir->y ) + ( EO.z * rdir->z ) );
 
 	disc = ( ( radius * radius ) - ( ( ( EO.x * EO.x ) + ( EO.y * EO.y ) + ( EO.z * EO.z ) ) - ( v * v ) ) );
 
-	if ( disc < 0.0F ) return FALSE;
+	if ( disc < 0.0F ) return false;
 
 	d  = (float) sqrt( disc );
 	d0 = d - v;
@@ -224,7 +224,7 @@ BOOL RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rd
 	d  = (d0 < d1) ? d0 : d1;
 	d2  = (d0 > d1) ? d0 : d1;
 
-	if ( d < 0.0F )	return FALSE;
+	if ( d < 0.0F )	return false;
 
 	inter->x = rorigin->x + (rdir->x * d);
 	inter->y = rorigin->y + (rdir->y * d);
@@ -234,7 +234,7 @@ BOOL RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rd
 	inter2->y = rorigin->y + (rdir->y * d2);
 	inter2->z = rorigin->z + (rdir->z * d2);
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -244,9 +244,9 @@ BOOL RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rd
 				:	VECTOR *	RayStart
 				:	VECTOR *	RayEnd
 				:	VECTOR *	IntPoint
-	Output		:	int16		Type Collision
+	Output		:	int16_t		Type Collision
 ===================================================================*/
-int16 RaytoSphere3( VECTOR * SphereCenter, float Radius, VECTOR * RayStart,
+int16_t RaytoSphere3( VECTOR * SphereCenter, float Radius, VECTOR * RayStart,
 				    VECTOR * RayEnd, VECTOR * IntPoint )
 {
 	VECTOR		EO;
@@ -295,9 +295,9 @@ int16 RaytoSphere3( VECTOR * SphereCenter, float Radius, VECTOR * RayStart,
 				:	VECTOR *	RayStart
 				:	VECTOR *	RayDirection
 				:	float		RayLength
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, float rlength )
+_Bool RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, float rlength )
 {
 	float		v;
 	float		disc;
@@ -311,13 +311,13 @@ BOOL RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR 
 
 	EO_LS = ( EO.x * EO.x ) + ( EO.y * EO.y ) + ( EO.z * EO.z );
 
-	if( EO_LS <= ( radius * radius ) ) return( TRUE ); // Started inside?
+	if( EO_LS <= ( radius * radius ) ) return( true ); // Started inside?
 
 	v = ( ( EO.x * rdir->x ) + ( EO.y * rdir->y ) + ( EO.z * rdir->z ) );
 
 	disc = ( ( radius * radius ) - ( EO_LS - ( v * v ) ) );
 
-	if( disc < 0.0F ) return( FALSE );				// Ray does not hit sphere
+	if( disc < 0.0F ) return( false );				// Ray does not hit sphere
 
 	d  = (float) sqrt( disc );
 	d0 = d - v;
@@ -325,10 +325,10 @@ BOOL RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR 
 
 	d  = (d0 < d1) ? d0 : d1;
 
-	if ( d < 0.0F )	return( FALSE );				// Ray Opposit Dir
-	if( d > rlength ) return( FALSE );				// Ray was Short!
+	if ( d < 0.0F )	return( false );				// Ray Opposit Dir
+	if( d > rlength ) return( false );				// Ray was Short!
 
-	return TRUE;
+	return true;
 }
 
 #ifdef OPT_ON

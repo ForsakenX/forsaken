@@ -164,36 +164,36 @@ typedef struct PRIMARYWEAPONATTRIB {
 
 	float		Speed[ MAXPOWERLEVELS ];		// how fast do I move
 	float		LifeCount;						// how long can I last..
-	uint16		FireDelay[ MAXPOWERLEVELS ];	// how fast can I fire
+	u_int16_t		FireDelay[ MAXPOWERLEVELS ];	// how fast can I fire
 	float		AmmoUsage[ MAXPOWERLEVELS ];	// how much ammo do i use per shot...
 	float		Damage[ MAXPOWERLEVELS ];		// how much damage can i inflict...
 	float		ColRadius[ MAXPOWERLEVELS ];	// Collision Radius...
-	uint16		ColType;						// Collision Type...
+	u_int16_t		ColType;						// Collision Type...
 	float		lightsize;						// how big is the light
 	float		r[ MAXPOWERLEVELS ];			// what color does it emit....
 	float		g[ MAXPOWERLEVELS ];			// what color does it emit....
 	float		b[ MAXPOWERLEVELS ];			// what color does it emit....
-	int16		FmSeq;							// Faceme Sequence
+	int16_t		FmSeq;							// Faceme Sequence
 	FRAME_INFO ** FmFrmInfo;					// Faceme FrameInfo
 
 } PRIMARYWEAPONATTRIB;
 
 typedef struct PRIMARYWEAPONBULLET {
-	BOOL		Used;
-	uint16		Next;							// link list.....	
-	uint16		Prev;							// link list.....
-	uint16		Type;							// which type of bullet am I
-	uint16		OwnerType;						// who fired me...
-	uint16		Owner;							// who fired me...
+	_Bool		Used;
+	u_int16_t		Next;							// link list.....	
+	u_int16_t		Prev;							// link list.....
+	u_int16_t		Type;							// which type of bullet am I
+	u_int16_t		OwnerType;						// who fired me...
+	u_int16_t		Owner;							// who fired me...
 	void *		EnemyGun;						// Only used by enemies.
-	uint16		ID;								// Id from that ship..
-	int8		Weapon;							// Weapon type that fired me..
-	int16		PowerLevel;						// Power level the weapon has..
+	u_int16_t		ID;								// Id from that ship..
+	int8_t		Weapon;							// Weapon type that fired me..
+	int16_t		PowerLevel;						// Power level the weapon has..
 	float		TrojPower;						// Trojax Power
 	float		LifeCount;						// how long do I live.....
 	float		Speed;							// how fast do I move
 	float		ColRadius;						// how big is my collide sphere
-	uint16		ColType;						// what type of collision
+	u_int16_t		ColType;						// what type of collision
 	VECTOR		Offset;							// offset relative to ship that fired me...
 	VECTOR		Pos;							// where am I
 	VECTOR		Dir;							// where am i going
@@ -201,27 +201,27 @@ typedef struct PRIMARYWEAPONBULLET {
 	VECTOR		UpVector;						// UpVector
 	VECTOR		ColStart;						// where I was when started going straight.
 	float		ColDist;						// Length from Collision to ColStart.
-	uint16		ColFlag;						// have I checked if im going to collide with something
+	u_int16_t		ColFlag;						// have I checked if im going to collide with something
 	VERT		ColPoint;						// where am I going to collide
 	NORMAL		ColPointNormal;					// if I reflect use this when I do
-	uint16		ColGroup;						// where am I going to collide
-	uint16		GroupImIn;						// which group am I in...
+	u_int16_t		ColGroup;						// where am I going to collide
+	u_int16_t		GroupImIn;						// which group am I in...
 	MATRIX		Mat;							// and a Matrix for when Im displayed...
-	uint16		line;							// attached line
-	uint16		fmpoly;							// if Im 2D then I need a Face Me Poly..
-	int16		numfmpolys;						// Number of linked fmpolys
-	uint16		poly;							// first attached poly
-	int16		numpolys;						// Number of attached polys
-	uint16		light;							// if I produce Light then I Need A Light
+	u_int16_t		line;							// attached line
+	u_int16_t		fmpoly;							// if Im 2D then I need a Face Me Poly..
+	int16_t		numfmpolys;						// Number of linked fmpolys
+	u_int16_t		poly;							// first attached poly
+	int16_t		numpolys;						// Number of attached polys
+	u_int16_t		light;							// if I produce Light then I Need A Light
 	float		lightsize;						// how big is the light
 	float		r;								// what color does it emit....
 	float		g;								// what color does it emit....
 	float		b;								// what color does it emit....
-	uint16		Bounces;						// Number of bounces
+	u_int16_t		Bounces;						// Number of bounces
 	float		TimeInterval;
 	float		TimeCount;
-	int16		FirePoint;						// gun...
-	int16		SpotFX;
+	int16_t		FirePoint;						// gun...
+	int16_t		SpotFX;
 	float		FramelagAddition;
 
 } PRIMARYWEAPONBULLET;							// sizes and colours of 2d polys and Lights are set up depoending on type...
@@ -231,81 +231,81 @@ typedef struct PRIMARYWEAPONBULLET {
 	Prototypes
 ===================================================================*/
 void	InitPrimBulls(void);
-uint16	FindFreePrimBull(void);
-void	KillUsedPrimBull( uint16 i );
+u_int16_t	FindFreePrimBull(void);
+void	KillUsedPrimBull( u_int16_t i );
 void	FirePrimary(void);
 void	ProcessPrimaryBullets( void );
-void	CleanUpPrimBull( uint16 i, BOOL LightFlag  );
-uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 Weapon,
-						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16 PowerLevel, float PLevel, BOOL NetFlag );
-void	CreateTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, uint16 FmPoly, int16 Type, uint16 Group );
-void	CreateNmeTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, uint16 FmPoly, int16 Type, uint16 Group );
-void	CreatePulsarExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateNmePulsarExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateNmeShrapnelExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateShrapnelExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateFireExplosion( VECTOR * Pos, uint16 Group );
-void	CreateNmeArcExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateArcExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateNmeLaserPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Group, uint16 EndGroup );
-void	CreateNmePowerLaserPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Group, uint16 EndGroup );
-void	CreateNmeLightningPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Group, uint16 EndGroup );
-void	CreateLaserPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Group, uint16 EndGroup );
-void	CreateTransTrail( uint16 i );
+void	CleanUpPrimBull( u_int16_t i, _Bool LightFlag  );
+u_int16_t InitOnePrimBull( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
+						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
+						int16_t PowerLevel, float PLevel, _Bool NetFlag );
+void	CreateTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t FmPoly, int16_t Type, u_int16_t Group );
+void	CreateNmeTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t FmPoly, int16_t Type, u_int16_t Group );
+void	CreatePulsarExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateNmePulsarExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateNmeShrapnelExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateShrapnelExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateFireExplosion( VECTOR * Pos, u_int16_t Group );
+void	CreateNmeArcExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateArcExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateNmeLaserPulse( u_int16_t i, float Distance, VECTOR * Dir, u_int16_t Group, u_int16_t EndGroup );
+void	CreateNmePowerLaserPulse( u_int16_t i, float Distance, VECTOR * Dir, u_int16_t Group, u_int16_t EndGroup );
+void	CreateNmeLightningPulse( u_int16_t i, float Distance, VECTOR * Dir, u_int16_t Group, u_int16_t EndGroup );
+void	CreateLaserPulse( u_int16_t i, float Distance, VECTOR * Dir, u_int16_t Group, u_int16_t EndGroup );
+void	CreateTransTrail( u_int16_t i );
 void	DispPowerLevel( void );
 void	RestoreAmmo( void );
 void	RestoreWeapons( void );
 void	InitAmmoUsed( void );
-void	CreateShieldEffect( VECTOR * Pos, VECTOR * IntPos, VECTOR * IntPos2, uint16 ShipHit, int16 Num,
-							 uint8 Red, uint8 Green, uint8 Blue );
-uint16	CheckHitShip( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point, VECTOR * Int_Point2, float * Dist, float WeaponRadius, uint16 ColType );
-uint16	CheckHitSecondary( VECTOR * Pos, uint16 Group, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point, VECTOR * Int_Point2, float * Dist, float WeaponRadius, uint16 ColType );
+void	CreateShieldEffect( VECTOR * Pos, VECTOR * IntPos, VECTOR * IntPos2, u_int16_t ShipHit, int16_t Num,
+							 u_int8_t Red, u_int8_t Green, u_int8_t Blue );
+u_int16_t	CheckHitShip( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, u_int16_t Group, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point, VECTOR * Int_Point2, float * Dist, float WeaponRadius, u_int16_t ColType );
+u_int16_t	CheckHitSecondary( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point, VECTOR * Int_Point2, float * Dist, float WeaponRadius, u_int16_t ColType );
 void	PrimarySelectControl( void );
-void	CreateDebugLine( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uint8 Green, uint8 Blue );
-void	FirePrimaryWeapons( uint8 Ship );
-void	CreateColSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateSmallColSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CheckCharging( uint16 Ship, uint32 OldFlags, uint32 NewFlags );
+void	CreateDebugLine( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int8_t Red, u_int8_t Green, u_int8_t Blue );
+void	FirePrimaryWeapons( u_int8_t Ship );
+void	CreateColSparks( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateSmallColSparks( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CheckCharging( u_int16_t Ship, u_int32_t OldFlags, u_int32_t NewFlags );
 void	GivemeAllWeapons( void );
 void	LoseAllWeapons( void );
 void	DropPrimary( void );
 void	GetDeathString( BYTE WeaponType, BYTE Weapon, char * DstString );
 void	DropShield( void );
 void	DropAmmo( void );
-BOOL ChangeTranspulseDir( uint16 i, VECTOR * Pos, VECTOR * MoveOffset, VECTOR * Dir );
-void	ChangePulsarDir( uint16 i, VECTOR * Dir );
-void	ChangeTrojaxDir( uint16 i, VECTOR * Dir );
-void	ChangeSussgunDir( uint16 i, VECTOR * Dir );
-void	ChangeOrbitPulsarDir( uint16 i, VECTOR * Dir );
-void	ReflectLaser( uint16 i, VECTOR * Dir );
+_Bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTOR * Dir );
+void	ChangePulsarDir( u_int16_t i, VECTOR * Dir );
+void	ChangeTrojaxDir( u_int16_t i, VECTOR * Dir );
+void	ChangeSussgunDir( u_int16_t i, VECTOR * Dir );
+void	ChangeOrbitPulsarDir( u_int16_t i, VECTOR * Dir );
+void	ReflectLaser( u_int16_t i, VECTOR * Dir );
 void	GivemeSuperNashram( void );
 void	LoseSuperNashram( void );
-void	CreateInvEffect( uint16 ShipHit, int16 Num, uint8 Red, uint8 Green, uint8 Blue );
-void	CreateSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateMushroomExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateNewExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateSteam( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-uint16	EnemyFirePrimary( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 Weapon,
-						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16 PowerLevel, float PLevel, BOOL NetFlag, void * Gun );
-void CreatePowerLaserSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uint8 Green, uint8 Blue );
-void GetLaserLocalVector( uint16 i, VECTOR * LocalVector );
-void CreateScaleExplosion( VECTOR * Pos, uint16 Group, float GlobalScale );
-BOOL ValidGroupCollision( VECTOR * StartPos, uint16 StartGroup, VECTOR * IntPoint, VECTOR * ObjPos, uint16 ObjGroup );
-int16 GetAmmoPickupToGen( void );
+void	CreateInvEffect( u_int16_t ShipHit, int16_t Num, u_int8_t Red, u_int8_t Green, u_int8_t Blue );
+void	CreateSparks( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateMushroomExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateNewExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateSteam( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+u_int16_t	EnemyFirePrimary( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
+						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
+						int16_t PowerLevel, float PLevel, _Bool NetFlag, void * Gun );
+void CreatePowerLaserSparks( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int8_t Red, u_int8_t Green, u_int8_t Blue );
+void GetLaserLocalVector( u_int16_t i, VECTOR * LocalVector );
+void CreateScaleExplosion( VECTOR * Pos, u_int16_t Group, float GlobalScale );
+_Bool ValidGroupCollision( VECTOR * StartPos, u_int16_t StartGroup, VECTOR * IntPoint, VECTOR * ObjPos, u_int16_t ObjGroup );
+int16_t GetAmmoPickupToGen( void );
 FILE * SavePrimBulls( FILE * fp );
 FILE * LoadPrimBulls( FILE * fp );
-uint8 GetNextValidPrimaryWeapon( void );
-uint8 GetPrevValidPrimaryWeapon( void );
-int8 ConvPrimToNormWeapon( int8 Primary );
-void TogglePrimaryWeapons( int8 Primary );
-void KillPrimBullsByOwner(  uint16 OwnerType, uint16 Owner );
-void HostGivemeSuperNashram( uint16 Player );
-void HostLoseSuperNashram( uint16 Player );
-void HostRestoreWeapons( int16 Player );
-void HostRestoreAmmo( int16 Player );
-float GetPrimaryAmmoUsage( int16 Ship, int8 Weapon );
+u_int8_t GetNextValidPrimaryWeapon( void );
+u_int8_t GetPrevValidPrimaryWeapon( void );
+int8_t ConvPrimToNormWeapon( int8_t Primary );
+void TogglePrimaryWeapons( int8_t Primary );
+void KillPrimBullsByOwner(  u_int16_t OwnerType, u_int16_t Owner );
+void HostGivemeSuperNashram( u_int16_t Player );
+void HostLoseSuperNashram( u_int16_t Player );
+void HostRestoreWeapons( int16_t Player );
+void HostRestoreAmmo( int16_t Player );
+float GetPrimaryAmmoUsage( int16_t Ship, int8_t Weapon );
 
 #endif // PRIMARY_INCLUDED
 

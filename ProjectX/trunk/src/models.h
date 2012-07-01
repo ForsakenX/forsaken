@@ -474,17 +474,17 @@ enum {
  * structures
  */
 typedef struct MODEL{
-	uint16		Next;
-	uint16		Prev;
-	int16		Type;
-	uint16		Flags;
+	u_int16_t		Next;
+	u_int16_t		Prev;
+	int16_t		Type;
+	u_int16_t		Flags;
 	BYTE		SecWeapon;
-	BOOL		Visible;
-	uint16		ModelNum;
-	uint16		Group;
-	uint16		OwnerType;
-	uint16		Owner;
-	int16		Func;
+	_Bool		Visible;
+	u_int16_t		ModelNum;
+	u_int16_t		Group;
+	u_int16_t		OwnerType;
+	u_int16_t		Owner;
+	int16_t		Func;
 	float		Scale;
 	float		Xscale;
 	float		Yscale;
@@ -496,13 +496,13 @@ typedef struct MODEL{
 	float		TimeInterval;
 	float		TimeCount;
 
-	int16		Frame;			// Current Frame
-	int16		InterpFrame;	// Wanted Frame
+	int16_t		Frame;			// Current Frame
+	int16_t		InterpFrame;	// Wanted Frame
 	float		InterpTime;		// Interpolation Time
 
 	QUATLERP	Qlerp;
 	QUAT		Quat;
-	uint16		Ship;
+	u_int16_t		Ship;
 	VECTOR		Pos;
 	VECTOR		OldPos;
 	VECTOR		Dir;
@@ -516,16 +516,16 @@ typedef struct MODEL{
 	int			Green;
 	int			Blue;
 
-	uint16		SpotFXFlags[ MAXMODELSPOTFX ];
-	uint16		SpotFXState[ MAXMODELSPOTFX ];
+	u_int16_t		SpotFXFlags[ MAXMODELSPOTFX ];
+	u_int16_t		SpotFXState[ MAXMODELSPOTFX ];
 	float		SpotFXDelay[ MAXMODELSPOTFX ];
 	float		SpotFXTimeInterval[ MAXMODELSPOTFX ];
 	float		SpotFXTimeCount[ MAXMODELSPOTFX ];
-	uint32		SpotFXSFX_ID[ MAXMODELSPOTFX ];
+	u_int32_t		SpotFXSFX_ID[ MAXMODELSPOTFX ];
 
-	int16		StealthOffset;
-	uint16		ClipGroup;
-	uint16		TempLines[ 12 ];
+	int16_t		StealthOffset;
+	u_int16_t		ClipGroup;
+	u_int16_t		TempLines[ 12 ];
 
 	PLANE		IntersectionPlane;
 
@@ -536,13 +536,13 @@ typedef struct MODEL{
 typedef struct MODELNAME{
 	char		Name[128];			// Name of the Model...
 	int			LOD;				// How many of the following Model are Levels Of Detail..
-	BOOL		Panel;
-	BOOL		DoIMorph;			// Morphing (MXA?) TRUE/FALSE
-	uint16		ModelIndex;			// MXA or MX Header index
-	BOOL		StoreTriangles;		// retain triangle info?
+	_Bool		Panel;
+	_Bool		DoIMorph;			// Morphing (MXA?) true/false
+	u_int16_t		ModelIndex;			// MXA or MX Header index
+	_Bool		StoreTriangles;		// retain triangle info?
 	int			AllocateTpage;		// do we want to allocate space for a T-Page?
-	BOOL		LevelSpecific;		// Level Specific?
-	BOOL		LoadEnable;			// LoadEnable?
+	_Bool		LevelSpecific;		// Level Specific?
+	_Bool		LoadEnable;			// LoadEnable?
 
 }MODELNAME;
 
@@ -551,65 +551,65 @@ typedef struct MODELNAME{
  */
 
 void OnceOnlyInitModel( void );
-BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * ModelNames ); // bjd
-BOOL InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * ModelNames); // bjd
-BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ); // bjd
+_Bool PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * ModelNames ); // bjd
+_Bool InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * ModelNames); // bjd
+_Bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ); // bjd
 void ProcessModels( void );
 
 
-void	KillUsedModel( uint16 i );
-uint16	FindFreeModel();
+void	KillUsedModel( u_int16_t i );
+u_int16_t	FindFreeModel();
 
-BOOL ReleaseModels( );
-BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8 R, int8 G, int8 B );
-BOOL ProcessModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject, int16 NumVerts, float Scale, float MaxScale, int8 R, int8 G, int8 B );
-BOOL LightModel( uint16 Model, VECTOR * Pos );
-BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, float TF );
-BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, float TF );
-void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, float Center_Damage, uint16 Group, BYTE Weapon, uint16 model );
-void GravityWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Grav, uint16 Group );
-void ExplodeBody( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void ThrowOutRider( uint16 Ship );
-void CreateBodyPart( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 ModelNum );
-void CreateTomCruise( VECTOR * Pos, uint16 Group );
-void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Damage, uint16 Group, BYTE Weapon );
-void CreateOrbitPulsar( uint16 Ship );
-BOOL LightModel2( uint16 Model, VECTOR * Pos );
-BOOL CheckForGravgons( VECTOR * Pos );
-BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF );
-BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range );
-void CreateExplosionDonut( VECTOR * Pos, VECTOR * Up, uint16 Group );
-BOOL ReleaseTitleModels( );
-BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF, float TF );
-BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float r , float g , float b);
-BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp);
-void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, uint8 Weapon );
-BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8 R, int8 G, int8 B );
+_Bool ReleaseModels( );
+_Bool ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B );
+_Bool ProcessModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject, int16_t NumVerts, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B );
+_Bool LightModel( u_int16_t Model, VECTOR * Pos );
+_Bool LightMxModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF );
+_Bool LightMxaModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF );
+void ShockWave( VECTOR * Pos, float Radius, u_int16_t OwnerType, u_int16_t Owner, float Center_Damage, u_int16_t Group, BYTE Weapon, u_int16_t model );
+void GravityWave( VECTOR * Pos, float Radius, u_int16_t Owner, float Center_Grav, u_int16_t Group );
+void ExplodeBody( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void ThrowOutRider( u_int16_t Ship );
+void CreateBodyPart( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t ModelNum );
+void CreateTomCruise( VECTOR * Pos, u_int16_t Group );
+void MissileShockWave( VECTOR * Pos, float Radius, u_int16_t Owner, float Center_Damage, u_int16_t Group, BYTE Weapon );
+void CreateOrbitPulsar( u_int16_t Ship );
+_Bool LightModel2( u_int16_t Model, VECTOR * Pos );
+_Bool CheckForGravgons( VECTOR * Pos );
+_Bool TintModel( u_int16_t Model, float RF, float GF, float BF, float TF );
+_Bool ShadeModel( u_int16_t Model, MATRIX * Matrix, float ZTrans, float Range );
+void CreateExplosionDonut( VECTOR * Pos, VECTOR * Up, u_int16_t Group );
+_Bool ReleaseTitleModels( );
+_Bool TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF, float TF );
+_Bool AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float r , float g , float b);
+_Bool AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp);
+void HitMe( u_int16_t OwnerType, u_int16_t OwnerID, float Damage, u_int8_t WeaponType, u_int8_t Weapon );
+_Bool ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B );
 
-uint16 CreateLine( float x1, float y1, float z1, float x2, float y2, float z2, uint16 Group );
-BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+u_int16_t CreateLine( float x1, float y1, float z1, float x2, float y2, float z2, u_int16_t Group );
+_Bool GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					   VECTOR * BottomRight );
-BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+_Bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					    VECTOR * BottomRight );
-BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, uint16 * LineArray, uint16 Group );
-BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, uint16 * LineArray, uint16 Group );
-BOOL ProcessSphereZoneModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject, int16 NumVerts, uint8 R, uint8 G, uint8 B );
-void SetupModelSpotFX( uint16 i );
+_Bool CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group );
+_Bool CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group );
+_Bool ProcessSphereZoneModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject, int16_t NumVerts, u_int8_t R, u_int8_t G, u_int8_t B );
+void SetupModelSpotFX( u_int16_t i );
 void CreateModelSpotFXFirePrimary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
-							    uint16 Group, uint8 Weapon, uint16 ModelIndex, uint16 SpotFXIndex );
-void UpdateShipModel( uint16 Ship );
+							    u_int16_t Group, u_int8_t Weapon, u_int16_t ModelIndex, u_int16_t SpotFXIndex );
+void UpdateShipModel( u_int16_t Ship );
 void UpdateObjectAmbientColour( OBJECT * Object );
-BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader );
-uint32 EngineCode( uint16 OwnerType, uint16 OwnerID, uint32 SoundFX_ID, float Speed );
-void KillAttachedSoundFX( uint16 i );
+_Bool UpdateMxaModel( MXALOADHEADER * MXAloadheader );
+u_int32_t EngineCode( u_int16_t OwnerType, u_int16_t OwnerID, u_int32_t SoundFX_ID, float Speed );
+void KillAttachedSoundFX( u_int16_t i );
 FILE * SaveModels( FILE * fp );
 FILE * LoadModels( FILE * fp );
-BOOL ReinitSpotFXSFX( uint16 i );
+_Bool ReinitSpotFXSFX( u_int16_t i );
 void SetShipsVisibleFlag( void );
 void EnableRelavantModels( MODELNAME * ModelNamesPtr );
-void KillAttachedSpotFX( uint16 i );
+void KillAttachedSpotFX( u_int16_t i );
 void KillAllBikeEngines( void );
-BOOL EngineEnabled( uint16 OwnerType, uint16 Owner );
+_Bool EngineEnabled( u_int16_t OwnerType, u_int16_t Owner );
 
 #endif // MODELS_INCLUDED
 

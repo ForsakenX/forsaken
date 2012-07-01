@@ -34,7 +34,7 @@ float timer_run( px_timer_t* stats )
 {
 
   // current counter value
-  Uint32 time_now;
+  u_int32_t time_now;
 
   // if there is no count_before then we know this is the first run
   if(!stats->last)

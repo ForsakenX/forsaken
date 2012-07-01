@@ -69,7 +69,7 @@ void AI_TURRET_FIREATTARGET( register ENEMY * Enemy )
 	
 	
 	
-	AI_THINK( Enemy , TRUE , TRUE );
+	AI_THINK( Enemy , true , true );
 
 
 	// Is it time to validate target ?
@@ -82,7 +82,7 @@ void AI_TURRET_FIREATTARGET( register ENEMY * Enemy )
 			AI_SetSCAN( Enemy );
 			return;
 		}
-		Enemy->Timer  =	RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
+		Enemy->Timer  =	RESET_VALIDATE_TIME + (float) Random_Range( (u_int16_t) RESET_VALIDATE_TIME );
 
 	}else{
 		Enemy->Timer -= framelag;
@@ -112,7 +112,7 @@ void AI_UPDATEGUNS( register ENEMY * Enemy )
 	VECTOR		FireOffset;
 	FIREPOS *	FirePosPnt;
 	VECTOR		AimOffset;
-	uint16		i;
+	u_int16_t		i;
 	BYTE		Weapon;
 
 	TObject = (OBJECT*) Enemy->TShip;
@@ -187,15 +187,15 @@ void AI_UPDATEGUNS( register ENEMY * Enemy )
 						{
 							InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 								&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-								&TempOffset, GunTypes[GObject->Type].WeaponType, FALSE );
+								&TempOffset, GunTypes[GObject->Type].WeaponType, false );
 							
 						}else{
 							Weapon = BodgePrimaryWeapon( GunTypes[GObject->Type].WeaponType, Enemy->PickupHeld );
 
 							i = EnemyFirePrimary( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Weapon,
 										Enemy->Object.Group, &Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-										GunTypes[GObject->Type].PowerLevel, (GunTypes[GObject->Type].PowerLevel +1) * 33.0F, FALSE, GObject );
-							if( i != (uint16) -1 )
+										GunTypes[GObject->Type].PowerLevel, (GunTypes[GObject->Type].PowerLevel +1) * 33.0F, false, GObject );
+							if( i != (u_int16_t) -1 )
 							{
 								PrimBulls[i].FirePoint = GObject->FirePosCount;
 							}
@@ -246,15 +246,15 @@ void AI_UPDATEGUNS( register ENEMY * Enemy )
 						{
 							InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 								&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-								&TempOffset, GunTypes[GObject->Type].WeaponType, FALSE );
+								&TempOffset, GunTypes[GObject->Type].WeaponType, false );
 							
 						}else{
 							Weapon = BodgePrimaryWeapon( GunTypes[GObject->Type].WeaponType, Enemy->PickupHeld );
 
 							i = EnemyFirePrimary( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Weapon,
 										Enemy->Object.Group, &Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-										GunTypes[GObject->Type].PowerLevel, (GunTypes[GObject->Type].PowerLevel +1) * 33.0F, FALSE, GObject );
-							if( i != (uint16) -1 )
+										GunTypes[GObject->Type].PowerLevel, (GunTypes[GObject->Type].PowerLevel +1) * 33.0F, false, GObject );
+							if( i != (u_int16_t) -1 )
 							{
 								PrimBulls[i].FirePoint = GObject->FirePosCount;
 							}

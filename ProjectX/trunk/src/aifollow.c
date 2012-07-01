@@ -43,11 +43,11 @@ void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 	VECTOR	TempVector = { 0.0F , 0.0F , 0.0F };
 	VECTOR	TempUpVector;
 	VECTOR	TempForwardVector;
-	uint16	MineIndex;
+	u_int16_t	MineIndex;
 
 	SObject = &Enemy->Object;
 
-	AI_THINK( Enemy , FALSE , FALSE );
+	AI_THINK( Enemy , false , false );
 
 	if( !(Enemy->AIFlags & AI_ANYPLAYERINRANGE) )
 		return;
@@ -158,7 +158,7 @@ void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 				
 				if( (Enemy->SecondaryFireTimer == 0.0F) )
 				{
-					Enemy->SecondaryFireTimer = EnemyTypes[Enemy->Type].SecondaryFireRate + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].SecondaryFireRate );
+					Enemy->SecondaryFireTimer = EnemyTypes[Enemy->Type].SecondaryFireRate + (float) Random_Range( (u_int16_t) EnemyTypes[Enemy->Type].SecondaryFireRate );
 					//This is where we Lay Mines....
 					
 					ApplyMatrix( &Enemy->Object.Mat, &Forward, &TempForwardVector );
@@ -166,9 +166,9 @@ void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 					
 					MineIndex = InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 								&Enemy->Object.Pos, &TempVector, &TempForwardVector, &TempUpVector,
-								&TempVector, EnemyTypes[Enemy->Type].SecondaryWeaponType, FALSE );
+								&TempVector, EnemyTypes[Enemy->Type].SecondaryWeaponType, false );
 
-					if( MineIndex != (uint16) -1 )
+					if( MineIndex != (u_int16_t) -1 )
 					{
 						SecBulls[MineIndex].LifeSpan = 10.0F * 60.0F;
 					}
@@ -192,7 +192,7 @@ void AI_CRAWL_FOLLOWPATH( register ENEMY * Enemy )
 
 	SObject = &Enemy->Object;
 
-	AI_THINK( Enemy , FALSE , FALSE);
+	AI_THINK( Enemy , false , false);
 
 	if( !(Enemy->AIFlags & AI_ANYPLAYERINRANGE) )
 		return;
@@ -211,7 +211,7 @@ void AI_CRAWL_FOLLOWPATH( register ENEMY * Enemy )
 				AI_DO_SCAN( Enemy );
 			}
 		}
-		Enemy->Timer  =	RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
+		Enemy->Timer  =	RESET_VALIDATE_TIME + (float) Random_Range( (u_int16_t) RESET_VALIDATE_TIME );
 	}
 	
 	AI_UPDATEGUNS( Enemy );
@@ -247,7 +247,7 @@ void AI_CRAWL_FOLLOWPATH( register ENEMY * Enemy )
 
 		if(Enemy->PickNewNodeNow)
 		{
-			Enemy->PickNewNodeNow = FALSE;
+			Enemy->PickNewNodeNow = false;
 
 			Enemy->LastTNode = TNode;
 

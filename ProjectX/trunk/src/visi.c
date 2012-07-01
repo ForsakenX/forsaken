@@ -35,15 +35,15 @@ extern void SetViewportError( char *where, render_viewport_t *vp );
 
 extern float hfov;
 extern int outside_map;
-extern	BOOL	DoClipping;
+extern	_Bool	DoClipping;
 extern	CAMERA	CurrentCamera;
 
 /*===================================================================
 		Externals...	
 ===================================================================*/
 
-extern	BOOL			CTF;
-extern	BOOL			CaptureTheFlag;
+extern	_Bool			CTF;
+extern	_Bool			CaptureTheFlag;
 
 extern	MATRIX			ProjMatrix;
 extern	TLOADHEADER		Tloadheader;
@@ -57,7 +57,7 @@ extern	DWORD			CurrentTextureBlend;
 
 extern	BSP_NODE *	OldCollideNode;
 
-extern	uint16			GroupTris[ MAXGROUPS ];
+extern	u_int16_t			GroupTris[ MAXGROUPS ];
 extern	LINE			Lines[ MAXLINES ];
 extern	char			LevelNames[MAXLEVELS][128];                        
 extern	MLOADHEADER		Mloadheader;
@@ -75,11 +75,11 @@ static int GTabRowSize;
 #define GROUP2GROUP_OFFSET( G1, G2 )	( ( (G2) >> 5 ) + ( (G1) * GTabRowSize ) )
 #define GROUP2GROUP_MASK( G1, G2 )		( 1 << ( (G2) & 31 ) )
 
-#define DIV_CEIL( N, D ) ( (int32) ( (N) + (D) - 1 ) / (D) )
+#define DIV_CEIL( N, D ) ( (int32_t) ( (N) + (D) - 1 ) / (D) )
 
 typedef struct _GROUPRELATION
 {
-	uint32 *table;
+	u_int32_t *table;
 	GROUPLIST list[ MAXGROUPS ];
 } GROUPRELATION;
 
@@ -88,18 +88,18 @@ static GROUPRELATION ConnectedGroup;
 static GROUPRELATION VisibleGroup;
 static GROUPRELATION IndirectVisibleGroup;
 
-static BOOL InitConnections = FALSE;
+static _Bool InitConnections = false;
 
 
-uint16 Num_IndirectVisible = 0;
-uint16 IndirectVisible[ MAXGROUPS ];
+u_int16_t Num_IndirectVisible = 0;
+u_int16_t IndirectVisible[ MAXGROUPS ];
 
 static VECTOR clip_top, clip_bottom, clip_left, clip_right; // clipping planes
 
 int		NumOfVertsConsidered= 0;
 int		NumOfVertsTouched= 0;
 
-uint16	GroupImIn;
+u_int16_t	GroupImIn;
 /* bjd - CHECK
 D3DTRANSFORMDATA Data;
 */
@@ -107,47 +107,47 @@ DWORD VertexCount = 0;
 DWORD Offscreen = 0;
 VERT TestVerts[MAXPORTVERTS];
 VISPOLVERTEX	VisVerts[MAXPORTVERTS];
-uint16	CurrentGroupVisible;						// the real group thats visible
-uint16	GroupInVisibleList;							// where it is in the visibility list
-uint16	NumGroupsVisible;
-uint16	GroupsVisible[MAXGROUPS];
+u_int16_t	CurrentGroupVisible;						// the real group thats visible
+u_int16_t	GroupInVisibleList;							// where it is in the visibility list
+u_int16_t	NumGroupsVisible;
+u_int16_t	GroupsVisible[MAXGROUPS];
 XYRECT	GroupVisibleExtents[MAXGROUPS];
-uint16	NumPortalsVisible;
-uint16	PortalsVisible[MAXPORTALSPERGROUP];
+u_int16_t	NumPortalsVisible;
+u_int16_t	PortalsVisible[MAXPORTALSPERGROUP];
 XYRECT	PortalExtents[MAXGROUPS];
 MATRIX	VisPolyMatrix = {
 				1.0F, 0.0F, 0.0F, 0.0F,
 				0.0F, 1.0F, 0.0F, 0.0F,
 				0.0F, 0.0F, 1.0F, 0.0F,
 				0.0F, 0.0F, 0.0F, 1.0F };
-uint16	IsGroupVisible[MAXGROUPS];
+u_int16_t	IsGroupVisible[MAXGROUPS];
 
 struct
 {
-	uint32 tsum;
-	uint32 tmax;
-	uint32 tmin;
-	uint32 visits;
+	u_int32_t tsum;
+	u_int32_t tmax;
+	u_int32_t tmin;
+	u_int32_t visits;
 } VisiStats[ MAXGROUPS ];
 
 
 typedef struct
 {
-	uint16 group;
+	u_int16_t group;
 	struct
 	{
 		double x, y, z;
 	} from, to;
 } DebugRay;
 
-extern int16 LevelNum;
+extern int16_t LevelNum;
 static void InitDebugRays( void )
 {
 #if 1
 	char fname[ 256 ];
 	FILE *rf;
 	DebugRay ray;
-	uint16 line;
+	u_int16_t line;
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], fname, ".ray" );
 	rf = file_open( fname, "rb" );
@@ -160,7 +160,7 @@ static void InitDebugRays( void )
 		if ( !fread( &ray.to, sizeof( double ), 3, rf ) )
 			break;
 		line = FindFreeLine();
-		if ( line != (uint16) -1 )
+		if ( line != (u_int16_t) -1 )
 		{
 			Lines[ line ].StartPos.x = (float) ray.from.x;
 			Lines[ line ].StartPos.y = (float) ray.from.y;
@@ -211,7 +211,7 @@ void InitVisiStats( MLOADHEADER *m )
 }
 
 
-BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
+_Bool OutputVisiStats( MLOADHEADER *m, char *lname )
 {
 	FILE *f;
 	char fname[ 256 ];
@@ -220,14 +220,14 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 	if ( strlen(lname) == 0 )
 	{
 		DebugPrintf("Passed empty level name to OutputVisiStats!\n");
-		return FALSE;
+		return false;
 	}
 
 	Change_Ext( lname, fname, ".vis" );
 
 	f = file_open( fname, "w" );
 	if ( !f )
-		return FALSE;
+		return false;
 
 	fprintf( f, "Group     TMAX      TAVG      TMIN      Visits    Name\n" );
 	for ( j = 0; j < m->num_groups; j++ )
@@ -267,13 +267,13 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 
 	fclose( f );
 
-	return TRUE;
+	return true;
 }
 
 
-static void RelateGroups( GROUPRELATION *rel, uint16 g1, uint16 g2 )
+static void RelateGroups( GROUPRELATION *rel, u_int16_t g1, u_int16_t g2 )
 {
-	uint32 *t, mask;
+	u_int32_t *t, mask;
 
 	t = rel->table + GROUP2GROUP_OFFSET( g1, g2 );
 	mask = GROUP2GROUP_MASK( g1, g2 );
@@ -285,20 +285,20 @@ static void RelateGroups( GROUPRELATION *rel, uint16 g1, uint16 g2 )
 }
 
 
-static BOOL AreGroupsRelated( GROUPRELATION *rel, uint16 g1, uint16 g2 )
+static _Bool AreGroupsRelated( GROUPRELATION *rel, u_int16_t g1, u_int16_t g2 )
 {
-	uint32 *t, mask;
+	u_int32_t *t, mask;
 
 	t = rel->table + GROUP2GROUP_OFFSET( g1, g2 );
 	mask = GROUP2GROUP_MASK( g1, g2 );
 	if ( *t & mask )
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 
-static void FindGroupsVisible( GROUPRELATION *vis, uint16 from_group, VISTREE *visible )
+static void FindGroupsVisible( GROUPRELATION *vis, u_int16_t from_group, VISTREE *visible )
 {
 	int j;
 
@@ -310,19 +310,19 @@ static void FindGroupsVisible( GROUPRELATION *vis, uint16 from_group, VISTREE *v
 }
 
 
-BOOL GroupsAreConnected( uint16 g1, uint16 g2 )
+_Bool GroupsAreConnected( u_int16_t g1, u_int16_t g2 )
 {
 	return AreGroupsRelated( &ConnectedGroup, g1, g2 );
 }
 
 
-BOOL GroupsAreVisible( uint16 g1, uint16 g2 )
+_Bool GroupsAreVisible( u_int16_t g1, u_int16_t g2 )
 {
 	return AreGroupsRelated( &VisibleGroup, g1, g2 );
 }
 
 
-BOOL GroupsAreIndirectVisible( uint16 g1, uint16 g2 )
+_Bool GroupsAreIndirectVisible( u_int16_t g1, u_int16_t g2 )
 {
 	if ( IndirectVisibleGroup.table )
 		return AreGroupsRelated( &IndirectVisibleGroup, g1, g2 );
@@ -332,17 +332,17 @@ BOOL GroupsAreIndirectVisible( uint16 g1, uint16 g2 )
 
 		if ( !failed++ )
 			Msg( "No IndirectVisible table loaded\n" );
-		return FALSE;
+		return false;
 	}
 }
 
 
-BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf )
+_Bool ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 {
-	uint32 tabsize;
-	uint16 g;
+	u_int32_t tabsize;
+	u_int16_t g;
 	char *buf;
-	uint16 *buf16;
+	u_int16_t *buf16;
 
 	// initialise data structures to reasonable defaults
 	for ( g = 0; g < MAXGROUPS; g++ )
@@ -355,36 +355,36 @@ BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 		IndirectVisibleGroup.list[ g ].group = NULL;
 	}
 
-	InitConnections = TRUE;
+	InitConnections = true;
 
 	// allocate tables
 	GTabRowSize = DIV_CEIL( MAXGROUPS, 32 );
-	tabsize = m->num_groups * GTabRowSize * sizeof( uint32 );
+	tabsize = m->num_groups * GTabRowSize * sizeof( u_int32_t );
 	if ( !ConnectedGroup.table )
 	{
-		ConnectedGroup.table = (uint32 *) malloc( tabsize );
+		ConnectedGroup.table = (u_int32_t *) malloc( tabsize );
 		if ( !ConnectedGroup.table )
 		{
 			Msg( "ReadGroupConnections: failed malloc for ConnectedGroup.table\n" );
-			return FALSE;
+			return false;
 		}
 	}
 	if ( !VisibleGroup.table )
 	{
-		VisibleGroup.table = (uint32 *) malloc( tabsize );
+		VisibleGroup.table = (u_int32_t *) malloc( tabsize );
 		if ( !VisibleGroup.table )
 		{
 			Msg( "ReadGroupConnections: failed malloc for VisibleGroup.table\n" );
-			return FALSE;
+			return false;
 		}
 	}
 	if ( !IndirectVisibleGroup.table )
 	{
-		IndirectVisibleGroup.table = (uint32 *) malloc( tabsize );
+		IndirectVisibleGroup.table = (u_int32_t *) malloc( tabsize );
 		if ( !IndirectVisibleGroup.table )
 		{
 			Msg( "ReadGroupConnections: failed malloc for IndirectVisibleGroup.table\n" );
-			return FALSE;
+			return false;
 		}
 	}
 	memset( ConnectedGroup.table, 0, tabsize );
@@ -397,19 +397,19 @@ BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 	memmove( ConnectedGroup.table, buf, tabsize );
 	buf += tabsize;
 
-	buf16 = (uint16 *) buf;
+	buf16 = (u_int16_t *) buf;
 	for ( g = 0; g < m->num_groups; g++ )
 	{
 		ConnectedGroup.list[ g ].groups = *buf16++;
 		if ( ConnectedGroup.list[ g ].groups )
 		{
-			ConnectedGroup.list[ g ].group = (uint16 *) calloc( ConnectedGroup.list[ g ].groups, sizeof( uint16 ) );
+			ConnectedGroup.list[ g ].group = (u_int16_t *) calloc( ConnectedGroup.list[ g ].groups, sizeof( u_int16_t ) );
 			if ( !ConnectedGroup.list[ g ].group )
 			{
 				Msg( "ReadGroupConnections: failed X_calloc for ConnectedGroup.list[ %d ]\n", g );
-				return FALSE;
+				return false;
 			}
-			memmove( ConnectedGroup.list[ g ].group, buf16, ConnectedGroup.list[ g ].groups * sizeof( uint16 ) );
+			memmove( ConnectedGroup.list[ g ].group, buf16, ConnectedGroup.list[ g ].groups * sizeof( u_int16_t ) );
 			buf16 += ConnectedGroup.list[ g ].groups;
 		}
 	}
@@ -419,19 +419,19 @@ BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 	memmove( VisibleGroup.table, buf, tabsize );
 	buf += tabsize;
 
-	buf16 = (uint16 *) buf;
+	buf16 = (u_int16_t *) buf;
 	for ( g = 0; g < m->num_groups; g++ )
 	{
 		VisibleGroup.list[ g ].groups = *buf16++;
 		if ( VisibleGroup.list[ g ].groups )
 		{
-			VisibleGroup.list[ g ].group = (uint16 *) calloc( VisibleGroup.list[ g ].groups, sizeof( uint16 ) );
+			VisibleGroup.list[ g ].group = (u_int16_t *) calloc( VisibleGroup.list[ g ].groups, sizeof( u_int16_t ) );
 			if ( !VisibleGroup.list[ g ].group )
 			{
 				Msg( "ReadGroupConnections: failed X_calloc for VisibleGroup.list[ %d ]\n", g );
-				return FALSE;
+				return false;
 			}
-			memmove( VisibleGroup.list[ g ].group, buf16, VisibleGroup.list[ g ].groups * sizeof( uint16 ) );
+			memmove( VisibleGroup.list[ g ].group, buf16, VisibleGroup.list[ g ].groups * sizeof( u_int16_t ) );
 			buf16 += VisibleGroup.list[ g ].groups;
 		}
 	}
@@ -441,19 +441,19 @@ BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 	memmove( IndirectVisibleGroup.table, buf, tabsize );
 	buf += tabsize;
 
-	buf16 = (uint16 *) buf;
+	buf16 = (u_int16_t *) buf;
 	for ( g = 0; g < m->num_groups; g++ )
 	{
 		IndirectVisibleGroup.list[ g ].groups = *buf16++;
 		if ( IndirectVisibleGroup.list[ g ].groups )
 		{
-			IndirectVisibleGroup.list[ g ].group = (uint16 *) calloc( IndirectVisibleGroup.list[ g ].groups, sizeof( uint16 ) );
+			IndirectVisibleGroup.list[ g ].group = (u_int16_t *) calloc( IndirectVisibleGroup.list[ g ].groups, sizeof( u_int16_t ) );
 			if ( !IndirectVisibleGroup.list[ g ].group )
 			{
 				Msg( "ReadGroupConnections: failed X_calloc for IndirectVisibleGroup.list[ %d ]\n", g );
-				return FALSE;
+				return false;
 			}
-			memmove( IndirectVisibleGroup.list[ g ].group, buf16, IndirectVisibleGroup.list[ g ].groups * sizeof( uint16 ) );
+			memmove( IndirectVisibleGroup.list[ g ].group, buf16, IndirectVisibleGroup.list[ g ].groups * sizeof( u_int16_t ) );
 			buf16 += IndirectVisibleGroup.list[ g ].groups;
 		}
 	}
@@ -461,18 +461,18 @@ BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 
 	*pbuf = buf;
 
-	return TRUE;
+	return true;
 }
 
 
 
-BOOL FindGroupConnections( MLOADHEADER *m )
+_Bool FindGroupConnections( MLOADHEADER *m )
 {
-	uint32 tabsize;
-	uint16 g, p, g2;
+	u_int32_t tabsize;
+	u_int16_t g, p, g2;
 	LVLGROUP *group;
 	PORTAL *portal;
-	uint16 gnum;
+	u_int16_t gnum;
 
 	for ( g = 0; g < MAXGROUPS; g++ )
 	{
@@ -484,26 +484,26 @@ BOOL FindGroupConnections( MLOADHEADER *m )
 		IndirectVisibleGroup.list[ g ].group = NULL;
 	}
 
-	InitConnections = TRUE;
+	InitConnections = true;
 
 	GTabRowSize = (int)ceil(MAXGROUPS/32.0F);
-	tabsize = MAXGROUPS * GTabRowSize * sizeof( uint32 );
+	tabsize = MAXGROUPS * GTabRowSize * sizeof( u_int32_t );
 	if ( !ConnectedGroup.table )
 	{
-		ConnectedGroup.table = (uint32 *) malloc( tabsize );
+		ConnectedGroup.table = (u_int32_t *) malloc( tabsize );
 		if ( !ConnectedGroup.table )
 		{
 			Msg( "FindGroupConnections: failed malloc for ConnectedGroup.table\n" );
-			return FALSE;
+			return false;
 		}
 	}
 	if ( !VisibleGroup.table )
 	{
-		VisibleGroup.table = (uint32 *) malloc( tabsize );
+		VisibleGroup.table = (u_int32_t *) malloc( tabsize );
 		if ( !VisibleGroup.table )
 		{
 			Msg( "FindGroupConnections: failed malloc for VisibleGroup.table\n" );
-			return FALSE;
+			return false;
 		}
 	}
 	IndirectVisibleGroup.table = NULL;
@@ -527,11 +527,11 @@ BOOL FindGroupConnections( MLOADHEADER *m )
 		}
 		if ( ConnectedGroup.list[ g ].groups )
 		{
-			ConnectedGroup.list[ g ].group = (uint16 *) calloc( ConnectedGroup.list[ g ].groups, sizeof( uint16 ) );
+			ConnectedGroup.list[ g ].group = (u_int16_t *) calloc( ConnectedGroup.list[ g ].groups, sizeof( u_int16_t ) );
 			if ( !ConnectedGroup.list[ g ].group )
 			{
 				Msg( "FindGroupConnections: failed X_calloc for ConnectedGroup.list[ %d ]\n", g );
-				return FALSE;
+				return false;
 			}
 			gnum = 0;
 			for ( g2 = 0; g2 < m->num_groups; g2++ )
@@ -548,11 +548,11 @@ BOOL FindGroupConnections( MLOADHEADER *m )
 		}
 		if ( VisibleGroup.list[ g ].groups )
 		{
-			VisibleGroup.list[ g ].group = (uint16 *) calloc( VisibleGroup.list[ g ].groups, sizeof( uint16 ) );
+			VisibleGroup.list[ g ].group = (u_int16_t *) calloc( VisibleGroup.list[ g ].groups, sizeof( u_int16_t ) );
 			if ( !VisibleGroup.list[ g ].group )
 			{
 				Msg( "FindGroupConnections: failed X_calloc for VisibleGroup.list[ %d ]\n", g );
-				return FALSE;
+				return false;
 			}
 			gnum = 0;
 			for ( g2 = 0; g2 < m->num_groups; g2++ )
@@ -569,7 +569,7 @@ BOOL FindGroupConnections( MLOADHEADER *m )
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -620,7 +620,7 @@ void FreeGroupConnections( void )
 
 
 
-GROUPLIST *ConnectedGroups( uint16 g )
+GROUPLIST *ConnectedGroups( u_int16_t g )
 {
 	return &ConnectedGroup.list[ g ];
 }
@@ -628,7 +628,7 @@ GROUPLIST *ConnectedGroups( uint16 g )
 
 
 
-GROUPLIST *VisibleGroups( uint16 g )
+GROUPLIST *VisibleGroups( u_int16_t g )
 {
 	if( g >= Mloadheader.num_groups )
 		Msg( "VisibleGroups() Group %d out of range", g );
@@ -643,16 +643,16 @@ GROUPLIST *VisibleGroups( uint16 g )
 }
 
 
-GROUPLIST *IndirectVisibleGroups( uint16 g )
+GROUPLIST *IndirectVisibleGroups( u_int16_t g )
 {
 	return &IndirectVisibleGroup.list[ g ];
 }
 
 
 
-int VisibleOverlap( uint16 g1, uint16 g2, uint16 *overlapping_group )
+int VisibleOverlap( u_int16_t g1, u_int16_t g2, u_int16_t *overlapping_group )
 {
-	uint32 *t1, *t2, overlap;
+	u_int32_t *t1, *t2, overlap;
 	int j;
 	int gnum;
 	GROUPLIST *l1, *l2;
@@ -697,7 +697,7 @@ int VisibleOverlap( uint16 g1, uint16 g2, uint16 *overlapping_group )
 }
 
 
-void InitIndirectVisible( uint16 g )
+void InitIndirectVisible( u_int16_t g )
 {
 	GROUPLIST *list;
 	int j;
@@ -711,9 +711,9 @@ void InitIndirectVisible( uint16 g )
 }
 
 
-void AddIndirectVisible( uint16 g )
+void AddIndirectVisible( u_int16_t g )
 {
-	static uint16 AddedVisible[ MAXGROUPS ];
+	static u_int16_t AddedVisible[ MAXGROUPS ];
 	int current, next;
 	int added;
 	GROUPLIST *add;
@@ -1148,7 +1148,7 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	}
 }
 
-int ClipGroup( CAMERA *cam, uint16 group )
+int ClipGroup( CAMERA *cam, u_int16_t group )
 {
 	VISGROUP *g;
 
@@ -1160,9 +1160,9 @@ int ClipGroup( CAMERA *cam, uint16 group )
 		g = &cam->visible.group[ cam->visible.first_visible->group ];
 
 	if (!FSSetProjection(&g->projection))
-		return FALSE;
+		return false;
 	if (!FSSetView(&cam->View))
-		return FALSE;
+		return false;
 
     if (!FSSetViewPort(&g->viewport)) {
 #ifdef DEBUG_VIEWPORT
@@ -1170,7 +1170,7 @@ int ClipGroup( CAMERA *cam, uint16 group )
 #else
         Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-        return FALSE;
+        return false;
     }
 	
 	return 1;
@@ -1180,19 +1180,19 @@ int ClipGroup( CAMERA *cam, uint16 group )
 		Disp Visipoly Model
 ===================================================================*/
 extern	float	WhiteOut;
-extern	uint16	GroupWaterInfo[MAXGROUPS];
+extern	u_int16_t	GroupWaterInfo[MAXGROUPS];
 extern	float	GroupWaterLevel[MAXGROUPS];
 extern	float	GroupWaterIntensity_Red[MAXGROUPS];
 extern	float	GroupWaterIntensity_Green[MAXGROUPS];
 extern	float	GroupWaterIntensity_Blue[MAXGROUPS];
-BOOL
+_Bool
 DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam ) 
 {
 	RENDERMATRIX	Tempproj;
 	RENDERMATRIX	Tempview;
 	VISGROUP *g;
 	int	i, group;
-	uint32 t;
+	u_int32_t t;
 	render_viewport_t OldViewPort;
 
 	Tempproj = proj;
@@ -1205,7 +1205,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	GroupImIn = CurrentCamera.GroupImIn;
 
-	if ( GroupImIn != (uint16) -1 )
+	if ( GroupImIn != (u_int16_t) -1 )
 	{
 		DisplayBSPNode( OldCollideNode );
 
@@ -1219,23 +1219,23 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 		t = 0;
 		for ( g = cam->visible.first_visible, i = 0; g; g = g->next_visible, i++ )
 		{
-		 	ClipGroup( &CurrentCamera, (uint16) g->group );
+		 	ClipGroup( &CurrentCamera, (u_int16_t) g->group );
 		  CurrentGroupVisible = GroupsVisible[i];
 			GroupInVisibleList = i;
 			group = GroupsVisible[i];
 
-			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
-				return FALSE;
+			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != true  )
+				return false;
 
- 			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (uint16) g->group ) != TRUE  )
-				return FALSE;
+ 			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (u_int16_t) g->group ) != true  )
+				return false;
 
 			render_reset_lighting_variables();
 
-			DispGroupTriggerAreas( (uint16) g->group );
+			DispGroupTriggerAreas( (u_int16_t) g->group );
 			if ( CaptureTheFlag || CTF )
-				DisplayGoal( (uint16) g->group );
-//			ShowAllColZones( (uint16) g->group );
+				DisplayGoal( (u_int16_t) g->group );
+//			ShowAllColZones( (u_int16_t) g->group );
 
 			t += GroupTris[ g->group ];
 		}
@@ -1249,8 +1249,8 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	}
 	else
 	{
-		if ( ExecuteMloadHeader ( Mloadheader ) != TRUE)
-			return FALSE;
+		if ( ExecuteMloadHeader ( Mloadheader ) != true)
+			return false;
 	}
 
     if (!FSSetViewPort(&OldViewPort)) 
@@ -1260,28 +1260,28 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 #else
         Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
-        return FALSE;
+        return false;
     }
 
 	proj = Tempproj;
 	view = Tempview;
 
 	if (!FSSetProjection(&proj))
-		return FALSE;
+		return false;
 	if (!FSSetView(&view))
-		return FALSE;
+		return false;
 	
-	return TRUE;
+	return true;
 }
 
 
-uint16
+u_int16_t
 FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max )
 {
-	uint16 group;
+	u_int16_t group;
 	VISGROUP *vg;
 	LVLGROUP *mg;
-	uint16 in_groups;
+	u_int16_t in_groups;
 	EXTENT extent, *e=NULL; ZEROMEM(extent);
 	float extent_size, min_extent_size;
 
@@ -1331,17 +1331,17 @@ FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max )
 		}
 	}
 	else // object not overlapping any visible groups
-		group = (uint16) -1;
+		group = (u_int16_t) -1;
 
 	return group;
 }
 
 
-uint16 FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max, uint16 * group )
+u_int16_t FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max, u_int16_t * group )
 {
 	VISGROUP *vg;
 	LVLGROUP *mg;
-	uint16 in_groups;
+	u_int16_t in_groups;
 
 	if ( outside_map )
 		return 0;
@@ -1371,10 +1371,10 @@ uint16 FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, V
 	Procedure	:	Is point inside bounding box of group
 	Input		:	MLOADHEADER	*	Mloadheader
 				:	VECTOR		*	Pos
-				:	uint16			Group
-	Output		:	FALSE/TRUE
+				:	u_int16_t			Group
+	Output		:	false/true
 ===================================================================*/
-BOOL PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, uint16 group )
+_Bool PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, u_int16_t group )
 {
 	VECTOR	Temp;
 
@@ -1388,9 +1388,9 @@ BOOL PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, uint16 gr
 		 (Temp.y <= ( Mloadheader->Group[group].half_size.y ) ) &&
 		 (Temp.z <= ( Mloadheader->Group[group].half_size.z ) ) )
 	{
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 #ifdef OPT_ON

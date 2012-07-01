@@ -60,7 +60,7 @@ void AI_AIR_DOGFIGHT( register ENEMY * Enemy )
 
 	// Is it time to think???
 
-	AI_THINK( Enemy , FALSE , FALSE);
+	AI_THINK( Enemy , false , false);
 
 	TObject = (OBJECT*) Enemy->TShip;
 
@@ -104,13 +104,13 @@ void AI_AIR_DOGFIGHT( register ENEMY * Enemy )
 			
 			if( (Enemy->PrimaryFireTimer == 0.0F) && ( EnemyTypes[Enemy->Type].PrimaryWeaponType != NO_PRIMARY )  )
 			{
-				Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].PrimaryFireRate );
+				Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (u_int16_t) EnemyTypes[Enemy->Type].PrimaryFireRate );
 				
 				Weapon = BodgePrimaryWeapon( EnemyTypes[Enemy->Type].PrimaryWeaponType, Enemy->PickupHeld );
 				
 				EnemyFirePrimary( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Weapon,
 					Enemy->Object.Group, &Enemy->Object.Pos, &TempOffset, &TempVector, &TempUpVector,
-					EnemyTypes[Enemy->Type].PowerLevel, (EnemyTypes[Enemy->Type].PowerLevel +1) * 33.0F, FALSE, NULL );
+					EnemyTypes[Enemy->Type].PowerLevel, (EnemyTypes[Enemy->Type].PowerLevel +1) * 33.0F, false, NULL );
 			}
 
 			if( (Enemy->SecondaryFireTimer == 0.0F) &&
@@ -120,7 +120,7 @@ void AI_AIR_DOGFIGHT( register ENEMY * Enemy )
 
 				if( ( Enemy->Type != ENEMY_Boss_BigGeek ) || ( AimData.Angle.y < 45.0F && AimData.Angle.y > -45.0F ) )
 				{
-					Enemy->SecondaryFireTimer = EnemyTypes[Enemy->Type].SecondaryFireRate + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].SecondaryFireRate );
+					Enemy->SecondaryFireTimer = EnemyTypes[Enemy->Type].SecondaryFireRate + (float) Random_Range( (u_int16_t) EnemyTypes[Enemy->Type].SecondaryFireRate );
 					
 					FirePosPnt = EnemyTypes[Enemy->Type].FirePoints;
 					ApplyMatrix( &Enemy->Object.Mat, &SlideUp, &TempUpVector );
@@ -132,7 +132,7 @@ void AI_AIR_DOGFIGHT( register ENEMY * Enemy )
 						ApplyMatrix( &Enemy->Object.Mat , &FirePosPnt->Points[i] , &FireOffset );
 						InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 							&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-							&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, FALSE );
+							&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, false );
 					}else{
 						for( i = 0 ; i < FirePosPnt->NumPoints ; i++ )
 						{
@@ -141,7 +141,7 @@ void AI_AIR_DOGFIGHT( register ENEMY * Enemy )
 							
 							InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 								&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-								&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, FALSE );
+								&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, false );
 						}
 					}
 				}else{
@@ -160,7 +160,7 @@ void AI_AIR_DOGFIGHT( register ENEMY * Enemy )
 					ApplyMatrix( &Enemy->Object.Mat , &FirePosPnt->Points[i] , &FireOffset );
 					InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 						&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-						&TempOffset, ENEMYDEPTHCHARGE, FALSE );
+						&TempOffset, ENEMYDEPTHCHARGE, false );
 				
 				}
 			}

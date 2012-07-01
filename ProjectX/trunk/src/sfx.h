@@ -269,43 +269,43 @@ enum {
 #define DESTROYSOUND_All 0
 
 // functions
-BOOL InitializeSound( int flags );
+_Bool InitializeSound( int flags );
 void    DestroySound( int flags );
-uint32	PlaySfx( int16 Sfx, float Dist );
-uint32	PlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
-uint32 ForcePlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
-BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat );
+u_int32_t	PlaySfx( int16_t Sfx, float Dist );
+u_int32_t	PlayPannedSfx(int16_t Sfx, u_int16_t Group , VECTOR * SfxPos, float Freq );
+u_int32_t ForcePlayPannedSfx(int16_t Sfx, u_int16_t Group , VECTOR * SfxPos, float Freq );
+_Bool SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat );
 void CheckSBufferList( void );
-int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float Freq, float Volume, int type, int SfxHolderIndex, uint16 Effects, uint32 uid );
+int InitLoopingSfx( int16_t Sfx, int variant, u_int16_t *Group, VECTOR *SfxPos, float Freq, float Volume, int type, int SfxHolderIndex, u_int16_t Effects, u_int32_t uid );
 void StopLoopingSfx( int index );
-void ModifyLoopingSfx( uint32 uid, float Freq, float Volume );
+void ModifyLoopingSfx( u_int32_t uid, float Freq, float Volume );
 void ProcessLoopingSfx( void );
-int16 ReturnSFXIndex( char *file );
-uint32 PlaySpotSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, float Vol, uint16 Effects );
-BOOL StopSfx( uint32 uid );
-uint32 PlaySfxWithTrigger( int16 Sfx, int16 TriggeredSfx );
-uint32 PlayFixedSpotSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq, float Vol, uint16 Effects );
+int16_t ReturnSFXIndex( char *file );
+u_int32_t PlaySpotSfx(int16_t Sfx, u_int16_t *Group , VECTOR * SfxPos, float Freq, float Vol, u_int16_t Effects );
+_Bool StopSfx( u_int32_t uid );
+u_int32_t PlaySfxWithTrigger( int16_t Sfx, int16_t TriggeredSfx );
+u_int32_t PlayFixedSpotSfx(int16_t Sfx, u_int16_t Group , VECTOR * SfxPos, float Freq, float Vol, u_int16_t Effects );
 void KillCompoundSfxBuffer( int buffer );
 FILE *SaveAllSfx( FILE *fp );
 FILE *LoadAllSfx( FILE *fp );
 void PauseAllSfx( void );
 void ReTriggerSfx( void );
 void GetFullSfxPath( char *fullpath, int sfxnum, int variant, int total_variants );
-BOOL RestoreSfxData( uint32 id, VECTOR *pos, uint16 *group );
-void RequestSfx( int16 sfxnum );
+_Bool RestoreSfxData( u_int32_t id, VECTOR *pos, u_int16_t *group );
+void RequestSfx( int16_t sfxnum );
 void RequestMainSfx( void );
 void RequestTitleSfx( void );
 void PreInitSfx( void );
-void UpdateSfxForBiker( uint16 biker );
-void UpdateSfxForBikeComputer( uint16 bikecomp );
-void PlaySpecificBikerSpeech( int16 sfx, uint16 Group, VECTOR *SfxPos, float Freq, int biker, char variant, BOOL update );
+void UpdateSfxForBiker( u_int16_t biker );
+void UpdateSfxForBikeComputer( u_int16_t bikecomp );
+void PlaySpecificBikerSpeech( int16_t sfx, u_int16_t Group, VECTOR *SfxPos, float Freq, int biker, char variant, _Bool update );
 void PlayRecievedSpeechTaunt( BYTE player, char variant );
-BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos );
+_Bool UpdateTaunt( u_int32_t uid, u_int16_t Group, VECTOR *SfxPos );
 void ProcessTaunt( void );
 void StopTaunt( void );
 void StopEnemyBikerTaunt( ENEMY *Enemy );
 void PlayEnemyBikerTaunt( ENEMY *Enemy );
 void ProcessEnemyBikerTaunt( void );
-uint32 PlayPannedSfxWithVolModify(int16 Sfx, uint16 Group, VECTOR * SfxPos, float Freq, float Vol );
+u_int32_t PlayPannedSfxWithVolModify(int16_t Sfx, u_int16_t Group, VECTOR * SfxPos, float Freq, float Vol );
 
 #endif

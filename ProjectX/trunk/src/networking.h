@@ -13,7 +13,7 @@
 // game tracker
 char tracker_server[256];
 int tracker_port;
-BOOL tracker_enabled;
+_Bool tracker_enabled;
 
 // my ship number
 #define	UNASSIGNED_SHIP 0xff // WhoIAm before host gives me number
@@ -59,12 +59,12 @@ char host_address[256];
 #define MAXMULTIPLES							8
 #define MAX_PICKUPFLAGS					2
 #define MAX_BUFFER_SIZE					1024
-#define FRAMELAGED_RECOIL					TRUE
-#define ONEOFF_RECOIL						FALSE
+#define FRAMELAGED_RECOIL					true
+#define ONEOFF_RECOIL						false
 #define MAX_TEAMS								4
 #define NUMTITANBITS							10 
 
-BOOL PlayerReady[MAX_PLAYERS];
+_Bool PlayerReady[MAX_PLAYERS];
 extern BYTE GameStatus[];
 
 /*
@@ -75,16 +75,16 @@ extern BYTE GameStatus[];
 ===================================================================*/
 typedef struct SHORTMINE{
 
-	uint16	OwnerType;
-	uint16	Owner;
-	uint16	BulletID;
-	uint16	Group;
+	u_int16_t	OwnerType;
+	u_int16_t	Owner;
+	u_int16_t	BulletID;
+	u_int16_t	Group;
 	VECTOR	Pos;
 	VECTOR	Offset;
 	VECTOR	Dir;
 	VECTOR	UpVector;
 	VECTOR	DropDir;
-	uint16	Weapon;
+	u_int16_t	Weapon;
 	float	LifeCount;
 
 }SHORTMINE;
@@ -93,9 +93,9 @@ typedef struct SHORTMINE{
 	Bodge Structures
 ===================================================================*/
 typedef struct SHORTKILLMINE{
-	uint16	OwnerType;			// Owner ID
-	uint16	Owner;				// Owner ID
-	uint16	ID;					// ID
+	u_int16_t	OwnerType;			// Owner ID
+	u_int16_t	Owner;				// Owner ID
+	u_int16_t	ID;					// ID
 	float	ShockwaveSize;		// Size
 }SHORTKILLMINE;
 /*===================================================================
@@ -103,7 +103,7 @@ typedef struct SHORTKILLMINE{
 ===================================================================*/
 
 typedef struct MISSEDMINEMSG{
- 	int16	Type;
+ 	int16_t	Type;
 	void *	Struct;
 }MISSEDMINEMSG;
 
@@ -111,17 +111,17 @@ typedef struct MISSEDMINEMSG{
 	Bodge Structures
 ===================================================================*/
 typedef struct SHORTPICKUP{
- 	int16	Type;
-	int16	Group;
-	uint16	Owner;				// Owner ID
-	uint16	ID;					// ID
+ 	int16_t	Type;
+	int16_t	Group;
+	u_int16_t	Owner;				// Owner ID
+	u_int16_t	ID;					// ID
 	VECTOR	Pos;
 	VECTOR	Dir;
-	int16	RegenSlot;
+	int16_t	RegenSlot;
 	float	Speed;
-	BOOL	Sparkle;
+	_Bool	Sparkle;
 	float	LifeCount;
-	uint16	TriggerMod;
+	u_int16_t	TriggerMod;
 }SHORTPICKUP;
 
 typedef struct SHORTTRIGVAR{
@@ -137,18 +137,18 @@ typedef struct SHORTTRIGGER{
 ===================================================================*/
 typedef struct SHORTREGENSLOT{
 
-	uint16	GenType;			// Generation Type
-	uint16	RegenType;			// Regeneration Type
+	u_int16_t	GenType;			// Generation Type
+	u_int16_t	RegenType;			// Regeneration Type
 	float	GenDelay;			// Generation Delay ( 60hz )
 	float	Lifespan;			// Lifespan of pickup ( 60hz )
 	float	Wait;				// Global count
-	int16	Status;				// Status of slot
-	int16	Group;				// Group to generate pickup
+	int16_t	Status;				// Status of slot
+	int16_t	Group;				// Group to generate pickup
 	VECTOR	Pos;				// Position to generate pickup
-	uint16	Type;				// Type of pickup
-	uint16	TriggerMod;			// Trigger Mod Index
-	uint16	PickupIndex;		// Pickup Index
-	uint16	PickupID;			// Pickup ID
+	u_int16_t	Type;				// Type of pickup
+	u_int16_t	TriggerMod;			// Trigger Mod Index
+	u_int16_t	PickupIndex;		// Pickup Index
+	u_int16_t	PickupID;			// Pickup ID
 
 }SHORTREGENSLOT;
 
@@ -156,9 +156,9 @@ typedef struct SHORTREGENSLOT{
 	Bodge Structures
 ===================================================================*/
 typedef struct SHORTKILLPICKUP{
-	uint16	Owner;				// Owner ID
-	uint16	ID;					// ID
-	int16	Style;				// Style
+	u_int16_t	Owner;				// Owner ID
+	u_int16_t	ID;					// ID
+	int16_t	Style;				// Style
 }SHORTKILLPICKUP;
 
 /*===================================================================
@@ -176,7 +176,7 @@ typedef struct _PLAYERINFO
 ===================================================================*/
 
 typedef struct MISSEDPICKUPMSG{
- 	int16	Type;
+ 	int16_t	Type;
 	void *	Struct;
 }MISSEDPICKUPMSG;
 
@@ -192,21 +192,21 @@ typedef struct _SHIPDIEDINFO
 
 typedef struct _PICKUPINFO
 {
-	uint16		IDCount;
-	int16		Type;
-	uint16		Group;
+	u_int16_t		IDCount;
+	int16_t		Type;
+	u_int16_t		Group;
 	VECTOR		Pos;
 	VECTOR		Dir;
 	float		Speed;
-	int16		RegenSlot;
-	BOOL		Sparkle;
+	int16_t		RegenSlot;
+	_Bool		Sparkle;
 	float		LifeCount;
-	uint16		TriggerMod;
+	u_int16_t		TriggerMod;
 }PICKUPINFO; // 46
 
 typedef struct _VERYSHORTPICKUPINFO
 {
-	uint16		IDCount;
+	u_int16_t		IDCount;
 	BYTE		Type;
 	BYTE		Group;
 	BYTE		RegenSlot;
@@ -215,40 +215,40 @@ typedef struct _VERYSHORTPICKUPINFO
 	SHORTVECTOR	Dir;
 	float		Speed;
 	float		LifeCount;
-	uint16		TriggerMod;
+	u_int16_t		TriggerMod;
 }VERYSHORTPICKUPINFO; // 28
 
 
 
 typedef struct _KILLPICKUPINFO
 {
-	uint16		Owner;
-	uint16		IDCount;
-	int16		Style;
+	u_int16_t		Owner;
+	u_int16_t		IDCount;
+	int16_t		Style;
 }KILLPICKUPINFO;
 
 
 typedef struct _EXPSECONDARYINFO
 {
-	uint16		OwnerType;
-	uint16		Owner;
-	uint16		IDCount;
+	u_int16_t		OwnerType;
+	u_int16_t		Owner;
+	u_int16_t		IDCount;
 	float		ShockwaveSize;
 	VECTOR		Pos;
-	uint16		Group;
+	u_int16_t		Group;
 
 }EXPSECONDARYINFO;
 
 typedef struct _TEAMGOALSINFO
 {
-	uint16		TeamGoals[ MAX_TEAMS ];
+	u_int16_t		TeamGoals[ MAX_TEAMS ];
 
 }TEAMGOALSINFO;
 
 typedef struct _SHOCKWAVEINFO
 {
-	uint16		Owner;
-	uint16		Group;
+	u_int16_t		Owner;
+	u_int16_t		Group;
 	VECTOR		Pos;
 	BYTE		Weapon;
 	float		ShockwaveSize;
@@ -256,54 +256,54 @@ typedef struct _SHOCKWAVEINFO
 
 typedef struct _BGOUPDATEINFO
 {
-	uint16		BGObject;
-	int16		State;
+	u_int16_t		BGObject;
+	int16_t		State;
 	float		Time;
 }BGOUPDATEINFO;
 
 typedef struct _PRIMBULLPOSDIR
 {
-	uint16		OwnerType;
-	uint16		OwnerID;
-	uint16		BulletID;
-	int8		Weapon;
-	uint16		Group;
+	u_int16_t		OwnerType;
+	u_int16_t		OwnerID;
+	u_int16_t		BulletID;
+	int8_t		Weapon;
+	u_int16_t		Group;
 	VECTOR		Pos;
 	VECTOR		Offset;
 	VECTOR		Dir;
 	VECTOR		Up;
-	int16		PowerLevel;
+	int16_t		PowerLevel;
 	float		PLevel;
 
 }PRIMBULLPOSDIR;
 
 typedef struct _SECBULLPOSDIR
 {
-	uint16		OwnerType;
-	uint16		Owner;
-	uint16		BulletID;
-	uint16		Group;
+	u_int16_t		OwnerType;
+	u_int16_t		Owner;
+	u_int16_t		BulletID;
+	u_int16_t		Group;
 	VECTOR		Pos;
 	VECTOR		Offset;
 	VECTOR		Dir;
 	VECTOR		UpVector;
 	VECTOR		DropDir;
-	int8		Weapon;
+	int8_t		Weapon;
 
 }SECBULLPOSDIR;
 
 typedef struct _TITANBITS
 {
-	uint16		OwnerType;
-	uint16		Owner;
-	uint16		BulletID;
-	uint16		Group;
+	u_int16_t		OwnerType;
+	u_int16_t		Owner;
+	u_int16_t		BulletID;
+	u_int16_t		Group;
 	VECTOR		Pos;
 	VECTOR		Offset;
 	VECTOR		UpVector;
 	VECTOR		DropDir;
 	VECTOR		Directions[ NUMTITANBITS ];
-	int8		Weapon;
+	int8_t		Weapon;
 
 }TITANBITS;
 
@@ -316,7 +316,7 @@ typedef struct _SHIPHIT
 	BYTE		WeaponType;
 	BYTE		Weapon;
 	float		Force;
-	BOOL		OneOffExternalForce;
+	_Bool		OneOffExternalForce;
 
 }SHIPHIT;
 
@@ -330,8 +330,8 @@ typedef struct _SHORTSHIPHIT
 	SHORTVECTOR	Dir;
 	BYTE		WeaponType;
 	BYTE		Weapon;
-	uint16		OneOffExternalForce;
-	uint16		Recoil_Scalar;
+	u_int16_t		OneOffExternalForce;
+	u_int16_t		Recoil_Scalar;
 }SHORTSHIPHIT;
 
 
@@ -353,35 +353,35 @@ typedef struct _GLOBALSHIP
 	float				StealthTime;				// Stealth Mode Time Limit
 	float				Timer;						// General Purpose Mode Timer....How Long to stay dead ...etc..
 	float				InvulTimer;					// HowLong am I Invulnerable
-	BOOL				Invul;						// Am I Invulnerable...
+	_Bool				Invul;						// Am I Invulnerable...
 	VECTOR				LastAngle;					// what my last Step Turn Angles Were...
-	uint16				PrimBullIdCount;			// Id count for every bullet I fire....
-	uint16				SecBullIdCount;				// Id count for every bullet I fire....
-	uint16				PickupIdCount;				// Id count for every pickup I generate.....
+	u_int16_t				PrimBullIdCount;			// Id count for every bullet I fire....
+	u_int16_t				SecBullIdCount;				// Id count for every bullet I fire....
+	u_int16_t				PickupIdCount;				// Id count for every pickup I generate.....
 	float				Damage;						// how much Damege I Have Taken...
 	BYTE				Primary;					// which weapon is my primary....
 	BYTE				Secondary;					// which wepaon is my secondary....
-	uint16				ModelNum;					// which model to display for them...
-	int16				BikeNum;					// which model to display for them...
+	u_int16_t				ModelNum;					// which model to display for them...
+	int16_t				BikeNum;					// which model to display for them...
 	BYTE				Pickups;
 	BYTE				RegenSlots;
 	BYTE				Triggers;
 	BYTE				TrigVars;
 	BYTE				Mines;
-	BOOL				JustRecievedPacket;			//
+	_Bool				JustRecievedPacket;			//
 	VECTOR				LastMove;					// last movement vector (framelagged)
 	VECTOR				Move_Off;					// Last MoveMent...x , y , z
 	network_player_t *  network_player;
-	uint16				OrbModels[ MAXMULTIPLES ];	// Orbit Pulsar Model
+	u_int16_t				OrbModels[ MAXMULTIPLES ];	// Orbit Pulsar Model
 	float				OrbAmmo[ MAXMULTIPLES ];	// Orbit Pulsar Ammo
 
 	float				PrimPowerLevel;				// Trojax Powerlevel
-	uint16				PrimID;						// Bullet ID
-	uint16				SecID;						// Missile ID
+	u_int16_t				PrimID;						// Bullet ID
+	u_int16_t				SecID;						// Missile ID
 	BYTE				SecWeapon;					// Weapon
-	BOOL	headlights; // are my headlights on?
+	_Bool	headlights; // are my headlights on?
 
-	BOOL				DemoInterpolate;
+	_Bool				DemoInterpolate;
 
 	VECTOR		OldPos;								//
 	VECTOR		NextPos;							// what my next position will be
@@ -396,7 +396,7 @@ typedef struct _GLOBALSHIP
 #endif
 
 	float		SuperNashramTimer;					// HowLong have i left with the super nashram?
-	uint16		TempLines[ 12 ];
+	u_int16_t		TempLines[ 12 ];
 
 	float		ShakeTimer;
 	float		ShakeDirTimer;
@@ -404,10 +404,10 @@ typedef struct _GLOBALSHIP
 
 	float		PacketDelay;
 
-	uint8		ShieldHullCount;
+	u_int8_t		ShieldHullCount;
 
 	VECTOR		RealPos;
-	uint16		RealGroup;
+	u_int16_t		RealGroup;
 
 } GLOBALSHIP, *LPGLOBALSHIP;
 
@@ -416,7 +416,7 @@ typedef struct _GLOBALSHIP
 /*		this is all that really needs to be sent	*/
 typedef struct _SHORTGLOBALSHIP
 {
-	uint32				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
+	u_int32_t				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 	BYTE				Status;			// tells us constantly what this ship is doing...
 	BYTE				GroupImIn;		// Group Im In
 
@@ -424,7 +424,7 @@ typedef struct _SHORTGLOBALSHIP
 	VECTOR				Move_Off;		// Last MoveMent...x , y , z
 	VECTOR				Angle;			// Last Rotation..
 #ifdef	SHORTBANK
-	int16				Bank;			// How much Am I banked....
+	int16_t				Bank;			// How much Am I banked....
 #else
 	float				Bank;			// How much Am I banked....
 #endif
@@ -433,21 +433,21 @@ typedef struct _SHORTGLOBALSHIP
 
 typedef struct _VERYSHORTGLOBALSHIP
 {
-	uint32				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
+	u_int32_t				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 	BYTE				Status;			// tells us constantly what this ship is doing...
 	BYTE				GroupImIn;		// Group Im In
 	SHORTVECTOR			Pos;			// x , y , z position
 	SHORTVECTOR			Move_Off;		// Last MoveMent...x , y , z
 	SHORTVECTOR			Angle;			// Last Rotation..
-	int16				Bank;			// How much Am I banked....
-	uint16				Move_Off_Scalar;
+	int16_t				Bank;			// How much Am I banked....
+	u_int16_t				Move_Off_Scalar;
 	SHORTQUAT			Quat;			// Final Quat...
 } VERYSHORTGLOBALSHIP, *LPVERYSHORTGLOBALSHIP;
 
 
 typedef struct _FSHORTGLOBALSHIP
 {
-	uint32				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
+	u_int32_t				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 	BYTE				Primary;		// Primary weapon
 	BYTE				Secondary;		// Secondary weapon
 	BYTE				GroupImIn;		// Group Im In
@@ -456,7 +456,7 @@ typedef struct _FSHORTGLOBALSHIP
 	VECTOR				Move_Off;		// Last MoveMent...x , y , z
 	VECTOR				Angle;			// Last Rotation..
 #ifdef	SHORTBANK
-	int16				Bank;		// How much Am I banked....
+	int16_t				Bank;		// How much Am I banked....
 #else
 	float				Bank;		// How much Am I banked....
 #endif
@@ -465,7 +465,7 @@ typedef struct _FSHORTGLOBALSHIP
 
 typedef struct _FVERYSHORTGLOBALSHIP
 {
-	uint32				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
+	u_int32_t				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 	BYTE				Primary;		// Primary weapon
 	BYTE				Secondary;		// Secondary weapon
 	BYTE				GroupImIn;		// Group Im In
@@ -473,25 +473,25 @@ typedef struct _FVERYSHORTGLOBALSHIP
 	SHORTVECTOR			Pos;			// x , y , z position
 	SHORTVECTOR			Move_Off;		// Last MoveMent...x , y , z
 	SHORTVECTOR			Angle;			// Last Rotation..
-	int16				Bank;		// How much Am I banked....
-	uint16				Move_Off_Scalar;
+	int16_t				Bank;		// How much Am I banked....
+	u_int16_t				Move_Off_Scalar;
 	SHORTQUAT			Quat;		// Final Quat...
 } FVERYSHORTGLOBALSHIP, *LPFVERYSHORTGLOBALSHIP;
 
 typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 {
-	uint32				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
+	u_int32_t				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 	BYTE				Primary;		// Primary weapon
 	BYTE				Secondary;		// Secondary weapon
 	BYTE				GroupImIn;		// Group Im In
 	BYTE				PrimPowerLevel;	// Trojax Powerlevel
 	SHORTVECTOR			Pos;			// x , y , z position
 	SHORTQUAT			Quat;		// Final Quat...
-	int16				Bank;		// How much Am I banked....
+	int16_t				Bank;		// How much Am I banked....
 } GROUPONLY_FVERYSHORTGLOBALSHIP, *LPGROUPONLY_FVERYSHORTGLOBALSHIP;
 
 //----------------------------------------------------------
-// Mask Defines for .Flags uint32
+// Mask Defines for .Flags u_int32_t
 //----------------------------------------------------------
 
 #define	SHIP_Light_Bit			30
@@ -720,13 +720,13 @@ typedef struct _HEREIAMMSG
 // later we should probably shove these all into a bit stream
 // all the code is hidden away in the repo in the session description functions (search: dwUser)
 // for now this is much simplar and this message is only sent once to new players
-// converting all the BOOL's to BYTE's (even with all the new added fields) saved 72 bits...
+// converting all the _Bool's to BYTE's (even with all the new added fields) saved 72 bits...
 
 typedef struct _INITMSG
 {
     BYTE	MsgCode;
 
-	// BOOLEANS
+	// _BoolEANS
 
 	BYTE	PlayerReady[MAX_PLAYERS];
 	BYTE	RandomPickups;
@@ -753,14 +753,14 @@ typedef struct _INITMSG
 	BYTE	BonusStats[MAX_PLAYERS];
 	BYTE	KillCounter[MAX_PLAYERS];
 
-	uint16	RandomStartPosModify;
-	uint16	Seed1;
-	uint16	Seed2;
+	u_int16_t	RandomStartPosModify;
+	u_int16_t	Seed1;
+	u_int16_t	Seed2;
 
-	int16	GoalScore;
-	int16	BountyBonusInterval;
+	int16_t	GoalScore;
+	int16_t	BountyBonusInterval;
 
-	uint32	PickupFlags[MAX_PICKUPFLAGS];
+	u_int32_t	PickupFlags[MAX_PICKUPFLAGS];
 
 	float	NetUpdateInterval;
 
@@ -867,7 +867,7 @@ typedef struct _TITANBITSMSG
 	TITANBITS	TitanBits;
 } TITANBITSMSG, *LPTITANBITSMSG;
 
-typedef	int16		SHORTSTATSTYPE[MAX_PLAYERS];
+typedef	int16_t		SHORTSTATSTYPE[MAX_PLAYERS];
 
 typedef struct _SHORTSTATSMSG
 {
@@ -881,10 +881,10 @@ typedef struct _STATUSMSG
 {
     BYTE     MsgCode;
     BYTE     WhoIAm;
-	BOOL		IsHost;			// from host ???
+	_Bool		IsHost;			// from host ???
 	BYTE		Status;
 	BYTE		TeamNumber;
-	BOOL		IAmReady;		// used for team game - game cannot start until everyone is ready
+	_Bool		IAmReady;		// used for team game - game cannot start until everyone is ready
 	BYTE		Pickups;			// tells how much of the pickup list I have recieved..
 	BYTE		RegenSlots;		// tells how much of the pickup regen slots list I have recieved..
 	BYTE		Mines;			// tells how much of the mine list I have recieved..
@@ -896,10 +896,10 @@ typedef struct _NETSETTINGSMSG
 {
 	BYTE		MsgCode;
 	BYTE		WhoIAm;
-	BOOL		IsHost;
+	_Bool		IsHost;
 	float		PacketsPerSecond;
-	BOOL		CollisionPerspective;
-	BOOL		ShortPackets;	
+	_Bool		CollisionPerspective;
+	_Bool		ShortPackets;	
 } NETSETTINGSMSG, *LPNETSETTINGSMSG;
 
 typedef struct _LONGSTATUSMSG
@@ -908,7 +908,7 @@ typedef struct _LONGSTATUSMSG
     BYTE        WhoIAm;
 	STATUSMSG	Status;
 	char		LevelName[32];
-	uint16		RandomStartPosModify;
+	u_int16_t		RandomStartPosModify;
 } LONGSTATUSMSG, *LPLONGSTATUSMSG;
 
 enum{
@@ -956,7 +956,7 @@ typedef struct _VERYSHORTINTERPOLATEMSG
     BYTE        WhoIAm;
 	SHORTVECTOR	NextPos;			// what my next position will be
 	SHORTQUAT	NextQuat;			// what my next view angle will be
-	int16		NextBank;			// what my next bank angle will be..
+	int16_t		NextBank;			// what my next bank angle will be..
 	LONGLONG	NextTime;			// how long before I am at thos positions
 } VERYSHORTINTERPOLATEMSG, *LPVERYSHORTINTERPOLATEMSG;
 #endif
@@ -989,25 +989,25 @@ void	DestroyGame( void );
 void	SendGameMessage( BYTE msg, network_player_t * to, BYTE row, BYTE col, BYTE mask );
 void	EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt );
 void	ReceiveGameMessages( void );
-void	initShip( uint16 i );
+void	initShip( u_int16_t i );
 void	NetworkGameUpdate();
 void	SetupNetworkGame();
-void	PrimBullPosDirSend( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 Weapon,
-						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16 PowerLevel, float PLevel );
-void SecBullPosDirSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Group,
+void	PrimBullPosDirSend( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
+						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
+						int16_t PowerLevel, float PLevel );
+void SecBullPosDirSend( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * UpVector,
-						VECTOR * DropDir, int8 Weapon );
-void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Group,
+						VECTOR * DropDir, int8_t Weapon );
+void TitanBitsSend( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * UpVector,
-						VECTOR * DropDir, int8 Weapon, VECTOR * Directions );
-void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 IDCount, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod);
-void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style );
-void	CreateShockwaveSend( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group, float ShockwaveSize, BYTE Weapon );
-void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil );
+						VECTOR * DropDir, int8_t Weapon, VECTOR * Directions );
+void	DropPickupSend( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t IDCount, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod);
+void	KillPickupSend( u_int16_t Owner, u_int16_t IDCount, int16_t Style );
+void	CreateShockwaveSend( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, u_int16_t Group, float ShockwaveSize, BYTE Weapon );
+void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, _Bool FramelagRecoil );
 void	ShipDiedSend( BYTE WeaponType, BYTE Weapon );
-void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time );
-void	smallinitShip( uint16 i );
+void	UpdateBGObjectSend( u_int16_t BGObject, int16_t State, float Time );
+void	smallinitShip( u_int16_t i );
 void DemoPlayingNetworkGameUpdate(void);
 void DemoClean( void );
 int FindSameLevel( char * Name );
@@ -1015,8 +1015,8 @@ void	RequestTime( void  );
 void	SetTime( float Time );
 void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream );
 void StopDemoRecording( void );
-BOOL UpdateAmmoAndValidateMessage( void * Message );
-BOOL AutoJoinSession( void );
+_Bool UpdateAmmoAndValidateMessage( void * Message );
+_Bool AutoJoinSession( void );
 void AllocatePseudoHost( void );
 
 void set_my_player_name( void );

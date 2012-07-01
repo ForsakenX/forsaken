@@ -33,7 +33,7 @@ extern	VECTOR	SlideUp;
 extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	MLOADHEADER Mloadheader;
-void CreateSpotFXBurning( VECTOR * Pos, VECTOR * Dir, uint16 Group );
+void CreateSpotFXBurning( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
 
 /*===================================================================
 	Procedure	:	AIR Crash and burn...

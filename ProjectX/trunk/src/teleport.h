@@ -15,19 +15,19 @@
  * Structures
  */
 typedef struct TELEPORT{
-		uint16	Status;
-		uint16	Group;
-		uint16	Type;					// what stuff can teleport
-		uint16	zone_type;				// sphere / box / convex hull
+		u_int16_t	Status;
+		u_int16_t	Group;
+		u_int16_t	Type;					// what stuff can teleport
+		u_int16_t	zone_type;				// sphere / box / convex hull
 		VECTOR	Pos;
 		VECTOR	Dir;
 		VECTOR	Up;
 		VECTOR	half_size;
 		TRIGGER_ZONE	*Zone;
-		uint16	num_sides;
+		u_int16_t	num_sides;
 
-		uint16	num_links;
-		uint16	Links[MAXTELEPORTLINKS];
+		u_int16_t	num_links;
+		u_int16_t	Links[MAXTELEPORTLINKS];
 struct	TELEPORT * NextInGroup;
 }TELEPORT;
 
@@ -35,12 +35,12 @@ struct	TELEPORT * NextInGroup;
  * fn prototypes
  */
 void ReleaseTeleports( void );
-BOOL TeleportsLoad( char * Filename );
+_Bool TeleportsLoad( char * Filename );
 void TeleportsZoneCheck( VECTOR * OldPos , VECTOR * NewPos , TELEPORT * Tport );
-BOOL TeleportsAreaCheck( VECTOR * OldPos , VECTOR * NewPos ,uint16 Group, OBJECT *obj );
-void StartTeleport( uint16 * Data );
-void StopTeleport( uint16 * Data );
-void DisplayTeleportsInGroup( uint16 Group );
+_Bool TeleportsAreaCheck( VECTOR * OldPos , VECTOR * NewPos ,u_int16_t Group, OBJECT *obj );
+void StartTeleport( u_int16_t * Data );
+void StopTeleport( u_int16_t * Data );
+void DisplayTeleportsInGroup( u_int16_t Group );
 FILE * SaveTeleports( FILE * fp );
 FILE * LoadTeleports( FILE * fp );
 

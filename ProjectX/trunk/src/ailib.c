@@ -44,8 +44,8 @@ extern	MCLOADHEADER	MCloadheadert0;
 extern	LINE			Lines[ MAXLINES ];
 extern	NODENETWORKHEADER	NodeNetworkHeader;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
-extern	uint16		FirstSecBullUsed;
-BOOL WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
+extern	u_int16_t		FirstSecBullUsed;
+_Bool WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
 
 //--------------------------------------------------------------------------
 // Global Data
@@ -64,11 +64,11 @@ AIMDATA			AimData;
 ===================================================================*/
 void AI_GetNearestMINETarget( void )
 {
-	uint16	i;
+	u_int16_t	i;
 	float	dist;
 
 	i = FirstSecBullUsed;
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		if( SecBulls[ i ].SecType == SEC_MINE )
 		{
@@ -194,7 +194,7 @@ void AI_GetNearestNODETarget( OBJECT * Object )
 	float TempAngle;
 	NODE * Node;
 	NODE * NodeLink;
-	BOOL	FoundOne = FALSE;
+	_Bool	FoundOne = false;
 
 	if( !NodeNetworkHeader.State )
 		return;
@@ -213,7 +213,7 @@ void AI_GetNearestNODETarget( OBJECT * Object )
 			
 			if( !FoundOne || ( (TempAngle < Angle) && ( Random_Range(2) || !(NodeLink->Flags&NODE_DECISION) ) ) )
 			{
-				FoundOne = TRUE;
+				FoundOne = true;
 				Angle = TempAngle;
 				Tinfo->TObject = (void*) NodeLink;
 				
@@ -292,16 +292,16 @@ void AI_AimAtTarget( MATRIX * InvMat , VECTOR * SPos, VECTOR * TPos )
 				:	MATRIX *	Mat
 				:	VECTOR *	TargetPos
 				:	float		View Cone Cosine
-	Output		:	BOOL TRUE/FALSE
+	Output		:	_Bool true/false
 ===================================================================*/
-BOOL AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeCos )
+_Bool AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeCos )
 {
 	float	Cos;
 	VECTOR	NormVector;
 	VECTOR	Dir;
 
 	if( ViewConeCos == 1.0F )
-		return TRUE;
+		return true;
 	
 	Dir.x = ( TPos->x - Pos->x );
 	Dir.y = ( TPos->y - Pos->y );
@@ -315,22 +315,22 @@ BOOL AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeCo
 	
 	if( Cos > ViewConeCos )
 	{
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 /*===================================================================
 	Procedure	:	Is a VECTOR * Pos in Clear LOS
 	Input		:	VECTOR * Pos
-				:	uint16 Group
+				:	u_int16_t Group
 				:	VECTOR * TargetPos
-	Output		:	BOOL TRUE/FALSE
+	Output		:	_Bool true/false
 ===================================================================*/
-BOOL AI_ClearLOS( VECTOR * SPos, uint16 Group , VECTOR * Pos )
+_Bool AI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos )
 {
 	VECTOR	Dir;
 	VECTOR	Int_Point;
-	uint16	Int_Group;
+	u_int16_t	Int_Group;
 	NORMAL	Int_Normal;
 	VECTOR	TempVector;
 
@@ -339,12 +339,12 @@ BOOL AI_ClearLOS( VECTOR * SPos, uint16 Group , VECTOR * Pos )
 	Dir.z = ( Pos->z - SPos->z );
 	
 	if( BackgroundCollide( &MCloadheadert0, &Mloadheader, SPos, Group, &Dir,
-						&Int_Point, &Int_Group, &Int_Normal, &TempVector, TRUE, NULL ) )
+						&Int_Point, &Int_Group, &Int_Normal, &TempVector, true, NULL ) )
 	{
-		return FALSE;
+		return false;
 	}
 	
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:	Is a VECTOR * Pos in Clear LOS And will the SPos
@@ -352,9 +352,9 @@ BOOL AI_ClearLOS( VECTOR * SPos, uint16 Group , VECTOR * Pos )
 	Input		:	OBJECT * SObject
 				:	VECTOR * TargetPos
 				:	float radius
-	Output		:	BOOL TRUE/FALSE
+	Output		:	_Bool true/false
 ===================================================================*/
-BOOL AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
+_Bool AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 {
 	VECTOR	Dir;
 	BGOBJECT * BGObject;
@@ -365,9 +365,9 @@ BOOL AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 
 	if( WouldObjectCollide( SObject, &Dir, radius, &BGObject ) )
 	{
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:	Is a VECTOR * Pos in Clear LOS And will the SPos
@@ -375,13 +375,13 @@ BOOL AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 	Input		:	OBJECT * SObject
 				:	VECTOR * TargetPos
 				:	float radius
-	Output		:	BOOL TRUE/FALSE
+	Output		:	_Bool true/false
 ===================================================================*/
-BOOL AI_ClearLOSNonZeroNonObject( VECTOR * SPos, uint16 Group , VECTOR * Pos , float radius )
+_Bool AI_ClearLOSNonZeroNonObject( VECTOR * SPos, u_int16_t Group , VECTOR * Pos , float radius )
 {
 	VECTOR	Dir;
 	VECTOR Impact_Point;
-	uint16 Impact_Group;
+	u_int16_t Impact_Group;
 	NORMAL Impact_Normal;
 
 	Dir.x = ( Pos->x - SPos->x );
@@ -396,7 +396,7 @@ BOOL AI_ClearLOSNonZeroNonObject( VECTOR * SPos, uint16 Group , VECTOR * Pos , f
 ===================================================================*/
 void AI_GetDistToNearestTarget( register ENEMY * Enemy )
 {
-	register uint16	group = Enemy->Object.Group;
+	register u_int16_t	group = Enemy->Object.Group;
 	OBJECT * TObject;
 	   
 	// Initialise
@@ -478,7 +478,7 @@ void AI_SetMOVETOTARGET( ENEMY * Enemy )
 void AI_SetMOVEFOLLOWPATH( ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_FOLLOWPATH;
-	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
+	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (u_int16_t) RESET_VALIDATE_TIME );
 }
 /*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
@@ -489,7 +489,7 @@ void AI_SetDOGFIGHT( ENEMY * Enemy )
 {
 	Enemy->TNode = NULL;
 	Enemy->Object.AI_Mode = AIMODE_DOGFIGHT;
-	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
+	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (u_int16_t) RESET_VALIDATE_TIME );
 }
 /*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
@@ -499,7 +499,7 @@ void AI_SetDOGFIGHT( ENEMY * Enemy )
 void AI_SetFORMATION( ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_FORMATION;
-	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
+	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (u_int16_t) RESET_VALIDATE_TIME );
 }
 /*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
@@ -509,7 +509,7 @@ void AI_SetFORMATION( ENEMY * Enemy )
 void AI_SetKILLMINE( ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_KILLMINE;
-	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
+	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (u_int16_t) RESET_VALIDATE_TIME );
 }
 /*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
@@ -520,7 +520,7 @@ void AI_SetIDLE( register ENEMY * Enemy )
 {
 	Enemy->TShip = NULL;
 	Enemy->Object.AI_Mode = AIMODE_IDLE;
-	Enemy->Timer  = EnemyTypes[Enemy->Type].Behave.IdleTime + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].Behave.IdleTime);
+	Enemy->Timer  = EnemyTypes[Enemy->Type].Behave.IdleTime + (float) Random_Range( (u_int16_t) EnemyTypes[Enemy->Type].Behave.IdleTime);
 }
 /*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
@@ -531,7 +531,7 @@ void AI_SetSCAN( register ENEMY * Enemy )
 {
 	Enemy->TShip = NULL;
 	Enemy->Object.AI_Mode = AIMODE_SCAN;
-	Enemy->Timer  = RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
+	Enemy->Timer  = RESET_SCAN_TIME + (float) Random_Range( (u_int16_t) RESET_SCAN_TIME );
 }
 /*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
@@ -542,7 +542,7 @@ void AI_SetFOLLOWPATH( register ENEMY * Enemy )
 {
 	Enemy->TShip = NULL;
 	Enemy->Object.AI_Mode = AIMODE_FOLLOWPATH;
-	Enemy->Timer  = RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
+	Enemy->Timer  = RESET_SCAN_TIME + (float) Random_Range( (u_int16_t) RESET_SCAN_TIME );
 }
 /*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
@@ -552,7 +552,7 @@ void AI_SetFOLLOWPATH( register ENEMY * Enemy )
 void AI_SetFIREATTARGET( register ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_FIRE;
-	Enemy->Timer  = RESET_FIRE_TIME + (float) Random_Range( (uint16) RESET_FIRE_TIME );
+	Enemy->Timer  = RESET_FIRE_TIME + (float) Random_Range( (u_int16_t) RESET_FIRE_TIME );
 }
 #ifdef OPT_ON
 #pragma optimize( "", off )

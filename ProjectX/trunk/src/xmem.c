@@ -7,7 +7,7 @@ size_t	MemUsed = 0;
 
 #define	MAXBLOCKS 16384
 
-BOOL	BlockUsed[MAXBLOCKS];
+_Bool	BlockUsed[MAXBLOCKS];
 void *	BlockPnts[MAXBLOCKS];
 size_t	BlockSize[MAXBLOCKS];
 char *	BlockInFile[MAXBLOCKS];
@@ -21,7 +21,7 @@ void XMem_Init( void )
 	MemUsed =0;
 	for( i = 0 ; i < MAXBLOCKS ; i++ )
 	{
-		BlockUsed[i] = FALSE;
+		BlockUsed[i] = false;
 		BlockPnts[i] = NULL;
 		BlockSize[i] = 0;
 	}
@@ -73,7 +73,7 @@ void * X_strdup( char *str, char *in_file, int in_line )
 
 	int size = strlen(str)+1;
 
-	BlockUsed[i] = TRUE;
+	BlockUsed[i] = true;
 	BlockPnts[i] = Pnt;
 	BlockSize[i] = size;
 	BlockInFile[i] = in_file;
@@ -100,7 +100,7 @@ void * X_malloc( size_t size, char *in_file, int in_line )
 	if( !Pnt )
 		return Pnt;
 
-	BlockUsed[i] = TRUE;
+	BlockUsed[i] = true;
 	BlockPnts[i] = Pnt;
 	BlockSize[i] = size;
 	BlockInFile[i] = in_file;
@@ -128,7 +128,7 @@ void * X_calloc( size_t num,size_t size, char *in_file, int in_line )
 	if( !Pnt )
 		return Pnt;
 
-	BlockUsed[i] = TRUE;
+	BlockUsed[i] = true;
 	BlockPnts[i] = Pnt;
 	BlockSize[i] = num * size;
 	BlockInFile[i] = in_file;
@@ -163,7 +163,7 @@ void X_free( void * Pnt, char *in_file, int in_line )
 		return;
 	}
 	free(Pnt);
-	BlockUsed[i] = FALSE;
+	BlockUsed[i] = false;
 	BlockPnts[i] = NULL;
 	BlockInFile[ i ] = NULL;
 	BlockInLine[ i ] = 0;
@@ -190,7 +190,7 @@ void * X_realloc( void * Pnt , size_t size, char *in_file, int in_line )
 	if( !Pnt )
 		return Pnt;
 
-	BlockUsed[i] = TRUE;
+	BlockUsed[i] = true;
 	BlockPnts[i] = Pnt;
 	BlockInFile[i] = in_file;
 	BlockInLine[i] = in_line;

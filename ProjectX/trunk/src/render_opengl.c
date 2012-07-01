@@ -50,20 +50,20 @@ void render_mode_fill(void)
 }
 
 // unused in opengl
-BOOL FSBeginScene(){ return TRUE; }
-BOOL FSEndScene(){ return TRUE; }
+_Bool FSBeginScene(){ return true; }
+_Bool FSEndScene(){ return true; }
 
 // prototypes
 void reset_trans( void );
 
 // TODO	- should get this from gl caps ?
-BOOL bSquareOnly = TRUE;
+_Bool bSquareOnly = true;
 
 //
 // Texture Routines
 //
 
-uchar_t gamma_table[256];
+u_int8_t gamma_table[256];
 
 void build_gamma_table( double gamma )
 {
@@ -81,7 +81,7 @@ void build_gamma_table( double gamma )
 	
 	for (i = 0; i <= 255; i++)
 	{
-		gamma_table[i] = (uchar_t)(k*(pow((double)i, 1.0/gamma)));
+		gamma_table[i] = (u_int8_t)(k*(pow((double)i, 1.0/gamma)));
 		if( i && !gamma_table[i] )
 			gamma_table[i] = 1;
 	}
@@ -95,7 +95,7 @@ void release_texture( LPTEXTURE texture ){
 	texture = NULL;
 }
 
-BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey)
+_Bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey)
 {
 	GLuint * id = NULL;
 	texture_image_t image;
@@ -104,19 +104,19 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 	if( ! File_Exists( (char*) image.path ) )
 	{
 		DebugPrintf("Could not find texture file: %s\n",path);
-		return TRUE;
+		return true;
 	}
 
 	if(load_image( &image, numMips )!=0)
 	{
 		DebugPrintf("couldn't load image\n");
-		return FALSE;
+		return false;
 	}
 
 	// return values
-	*width  = (uint16) image.w;
-	*height = (uint16) image.h;
-	(*colorkey) = (BOOL) image.colorkey;
+	*width  = (u_int16_t) image.w;
+	*height = (u_int16_t) image.h;
+	(*colorkey) = (_Bool) image.colorkey;
 
 	// employ colour key and gamma correction
 	{
@@ -133,10 +133,10 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 				DWORD index = (y*pitch)+(x*size);
 
 				// image.data is packed in rgba
-				image.data[index]   = (char) gamma_table[ (uchar_t) image.data[index]];	   // red
-				image.data[index+1] = (char) gamma_table[ (uchar_t) image.data[index+1]];  // green
-				image.data[index+2] = (char) gamma_table[ (uchar_t) image.data[index+2]];  // blue
-				image.data[index+3] = (char) gamma_table[ (uchar_t) image.data[index+3]];  // alpha
+				image.data[index]   = (char) gamma_table[ (u_int8_t) image.data[index]];	   // red
+				image.data[index+1] = (char) gamma_table[ (u_int8_t) image.data[index+1]];  // green
+				image.data[index+2] = (char) gamma_table[ (u_int8_t) image.data[index+2]];  // blue
+				image.data[index+3] = (char) gamma_table[ (u_int8_t) image.data[index+3]];  // alpha
 
 				// colour key
 				if( image.colorkey && (image.data[index] + image.data[index+1] + image.data[index+2]) == 0 )
@@ -180,7 +180,7 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 	if(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image.w, image.h, GL_RGBA, GL_UNSIGNED_BYTE, image.data) != 0)
 	{
 	   render_error_description(0);
-	   return FALSE;
+	   return false;
 	}
 
 	DebugPrintf( "Created texture: file=%s, width=%d, height=%d, colorkey=%s\n", 
@@ -188,16 +188,16 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 
 	destroy_image( &image );
 
-	return TRUE;
+	return true;
 }
 
-BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colorkey)
+_Bool update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey)
 {
 	create_texture(&dstTexture, fileName, width, height, numMips, colorkey);
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+_Bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colourkey)
 {	
 	return create_texture(texture, fileName, width, height, numMips, colourkey);
 }
@@ -268,7 +268,7 @@ static void bind_gl_funcs(void)
 #endif // WIN32
 */
 
-BOOL render_init( render_info_t * info )
+_Bool render_init( render_info_t * info )
 {
 /*
 #ifdef WIN32
@@ -281,53 +281,53 @@ BOOL render_init( render_info_t * info )
 	resize_viewport(info->ThisMode.w, info->ThisMode.h);
 	if(info->wireframe)
 		render_mode_wireframe();
-	info->ok_to_render = TRUE;
-	return TRUE;
+	info->ok_to_render = true;
+	return true;
 }
 
 void render_cleanup( render_info_t * info )
 {
-	info->ok_to_render = FALSE;
+	info->ok_to_render = false;
 	// ???
 }
 
-extern BOOL sdl_init_video( void );
-BOOL render_mode_select( render_info_t * info )
+extern _Bool sdl_init_video( void );
+_Bool render_mode_select( render_info_t * info )
 {
 	render_cleanup( info );
 	if(!sdl_init_video())
-		return FALSE;
+		return false;
 	//if(!render_init( info ))
-	//	return FALSE;
-	return TRUE;
+	//	return false;
+	return true;
 }
 
 // TODO - in d3d9 render_flip would detect a lost device
 //		lost as in alt+tab (etc) which caused video memory to dump
-//		at this point we should set needs_reset = TRUE
+//		at this point we should set needs_reset = true
 
-static BOOL needs_reset = FALSE;
+static _Bool needs_reset = false;
 
-BOOL render_reset( render_info_t * info )
+_Bool render_reset( render_info_t * info )
 {
 	if(!needs_reset)
-		return FALSE;
+		return false;
 	if(!render_mode_select( info ))
-		return FALSE;
-	needs_reset = FALSE;
-	return TRUE;
+		return false;
+	needs_reset = false;
+	return true;
 }
 
-void render_set_filter( BOOL red, BOOL green, BOOL blue )
+void render_set_filter( _Bool red, _Bool green, _Bool blue )
 {
 	glColorMask(red?1:0, green?1:0, blue?1:0, 1);
 }
 
-BOOL render_flip( render_info_t * info )
+_Bool render_flip( render_info_t * info )
 {
 	SDL_GL_SwapBuffers();
 	render_error_description(0);
-	return TRUE;
+	return true;
 }
 
 void reset_trans( void )
@@ -438,7 +438,7 @@ void set_whiteout_state( void )
 //        perhaps we can automate and remove need for rect arg ?
 
 // clears color/zbuff same time to opaque black
-BOOL FSClear(XYRECT * rect)
+_Bool FSClear(XYRECT * rect)
 {
 	int width, height, x, y;
 	width = rect->x2 - rect->x1;
@@ -455,24 +455,24 @@ BOOL FSClear(XYRECT * rect)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	//
 	glDisable(GL_SCISSOR_TEST);
-	return TRUE;
+	return true;
 }
 
-BOOL FSClearBlack(void)
+_Bool FSClearBlack(void)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	return TRUE;
+	return true;
 }
 
-BOOL FSClearDepth(XYRECT * rect)
+_Bool FSClearDepth(XYRECT * rect)
 {
 	glClearDepth(1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	return TRUE;
+	return true;
 }
 
-BOOL FSGetViewPort(render_viewport_t *view)
+_Bool FSGetViewPort(render_viewport_t *view)
 {
 	GLint i[4];
 	GLfloat f[2];
@@ -487,13 +487,13 @@ BOOL FSGetViewPort(render_viewport_t *view)
 	glGetFloatv( GL_DEPTH_RANGE, f );
 	view->MinZ = f[0];
 	view->MaxZ = f[1];
-	return TRUE;
+	return true;
 }
 
 // TODO - we can probably use glScalef and glTranslatef
 //        to invert the viewport dimentions
 
-BOOL FSSetViewPort(render_viewport_t *view)
+_Bool FSSetViewPort(render_viewport_t *view)
 {
 	// render_viewport_t x/y starts top/left
 	// but glViewport starts from bottom/left
@@ -517,16 +517,16 @@ BOOL FSSetViewPort(render_viewport_t *view)
 	// from testing d3d9 passes the values along untouched
 	// probably need some testing here to see how d3d6 worked
 	// forsaken still uses these values so we need them
-	return TRUE;
+	return true;
 }
 
 GLfloat proj_matrix[4][4];
-BOOL FSSetProjection( RENDERMATRIX *matrix )
+_Bool FSSetProjection( RENDERMATRIX *matrix )
 {
 	memmove(&proj_matrix,&matrix->m,sizeof(proj_matrix));//memcpy
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf((GLfloat*)&matrix->m);
-	return TRUE;
+	return true;
 }
 
 //
@@ -552,24 +552,24 @@ static void reset_modelview( void )
 	glLoadMatrixf((GLfloat*)&mv_matrix);
 }
 
-BOOL FSSetView( RENDERMATRIX *matrix )
+_Bool FSSetView( RENDERMATRIX *matrix )
 {
 	memmove(&view_matrix,&matrix->m,sizeof(view_matrix));//memcpy
 	reset_modelview();
-	return TRUE;
+	return true;
 }
 
-BOOL FSSetWorld( RENDERMATRIX *matrix )
+_Bool FSSetWorld( RENDERMATRIX *matrix )
 {	
 	memmove(&world_matrix,&matrix->m,sizeof(world_matrix));//memcpy
 	reset_modelview();
-	return TRUE;
+	return true;
 }
 
-BOOL FSGetWorld(RENDERMATRIX *matrix)
+_Bool FSGetWorld(RENDERMATRIX *matrix)
 {
 	memmove(&matrix->m,&world_matrix,sizeof(matrix->m));//memcpy
-	return TRUE;
+	return true;
 }
 
 //
@@ -582,47 +582,47 @@ BOOL FSGetWorld(RENDERMATRIX *matrix)
 // so we can render the static objects as display lists
 //
 
-BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(LVERTEX) );
-	return TRUE;
+	return true;
 }
-BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
-{FSCreateVertexBuffer(renderObject, numVertices); return TRUE;}
+_Bool FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+{FSCreateVertexBuffer(renderObject, numVertices); return true;}
 
-BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
-{ renderObject->lpNormalBuffer = malloc( numNormals * sizeof(NORMAL) ); return TRUE; }
+_Bool FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{ renderObject->lpNormalBuffer = malloc( numNormals * sizeof(NORMAL) ); return true; }
 
-BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
-{FSCreateNormalBuffer(renderObject, numNormals); return TRUE;}
+_Bool FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{FSCreateNormalBuffer(renderObject, numNormals); return true;}
 
-BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+_Bool FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	renderObject->lpIndexBuffer = malloc( numIndices * 3 * sizeof(WORD) );
-	return TRUE;
+	return true;
 }
-BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+_Bool FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {return FSCreateIndexBuffer(renderObject,numIndices);}
 
-BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
-{(*indices) = renderObject->lpIndexBuffer; return TRUE;}
+_Bool FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+{(*indices) = renderObject->lpIndexBuffer; return true;}
 
-BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
-{(*verts) = renderObject->lpVertexBuffer; return TRUE;}
-BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
-BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+_Bool FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
+{(*verts) = renderObject->lpVertexBuffer; return true;}
+_Bool FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return true;}
+_Bool FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return true;}
 
-BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
-{(*normals) = renderObject->lpNormalBuffer; return TRUE;}
-BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return TRUE;}
+_Bool FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
+{(*normals) = renderObject->lpNormalBuffer; return true;}
+_Bool FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return true;}
 
-BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(TLVERTEX) ); 
-	return TRUE;
+	return true;
 }
-BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
-{*verts = (void*)renderObject->lpVertexBuffer; return TRUE;}
+_Bool FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
+{*verts = (void*)renderObject->lpVertexBuffer; return true;}
 
 static void set_color( COLOR c )
 {
@@ -672,9 +672,9 @@ void render_reset_lighting_variables( void )
 	render_lighting_env_whiteout = 0;
 }
 
-void do_water_effect( VECTOR * pos, uchar_t * color )
+void do_water_effect( VECTOR * pos, u_int8_t * color )
 {
-	uint32 r,g,b;
+	u_int32_t r,g,b;
 	int x,y,z;
 	float intensity, seconds;
 	static float speed = 71.0f;
@@ -700,9 +700,9 @@ void do_water_effect( VECTOR * pos, uchar_t * color )
 	if(r > 255) r = 255;
 	if(g > 255) g = 255;
 	if(b > 255) b = 255;
-	color[2] = (uchar_t) r;
-	color[1] = (uchar_t) g;
-	color[0] = (uchar_t) b;
+	color[2] = (u_int8_t) r;
+	color[1] = (u_int8_t) g;
+	color[0] = (u_int8_t) b;
 }
 
 void do_whiteout_effect( VECTOR * pos, COLOR * color )
@@ -840,7 +840,7 @@ NEXT_LIGHT:
 	ADD( COLOR, LIGHT );\
 	MINUS( COLOR, BLEND )
 
-void light_vert( LVERTEX * vert, uchar_t * color ) 
+void light_vert( LVERTEX * vert, u_int8_t * color ) 
 {
 	int tmp;
 	float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
@@ -879,7 +879,7 @@ void light_vert( LVERTEX * vert, uchar_t * color )
 	}
 }
 
-static void draw_vert( void * _vert, BOOL orthographic )
+static void draw_vert( void * _vert, _Bool orthographic )
 {
 	LVERTEX * vert = (LVERTEX*) _vert;
 	TLVERTEX * tlvert = (TLVERTEX*) _vert;
@@ -903,7 +903,7 @@ static void draw_vert( void * _vert, BOOL orthographic )
 	}
 }
 
-static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, BOOL orthographic )
+static _Bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, _Bool orthographic )
 {
 	int group;
 	LVERTEX * verts = (LVERTEX*) renderObject->lpVertexBuffer;
@@ -985,12 +985,12 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 		glPopMatrix();
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,FALSE);}
-BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,TRUE);}
-BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,FALSE);}
+_Bool draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,false);}
+_Bool draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,true);}
+_Bool draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,false);}
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {

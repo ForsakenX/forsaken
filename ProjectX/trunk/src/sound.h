@@ -9,7 +9,7 @@
 //
 
 // this will eventually be removed but is required right now
-BOOL Sound3D;
+_Bool Sound3D;
 
 // the game appears to need this probably wont in openAL
 int sound_minimum_volume;
@@ -18,16 +18,16 @@ int sound_minimum_volume;
 // Generic Functions
 //
 
-BOOL sound_init( void );
+_Bool sound_init( void );
 void sound_destroy( void );
 
 //
 // Listener
 //
 
-BOOL sound_listener_position( float x, float y, float z );
-BOOL sound_listener_velocity( float x, float y, float z );
-BOOL sound_listener_orientation( 
+_Bool sound_listener_position( float x, float y, float z );
+_Bool sound_listener_velocity( float x, float y, float z );
+_Bool sound_listener_orientation( 
 	float fx, float fy, float fz, // forward vector
 	float ux, float uy, float uz  // up vector
 );
@@ -49,7 +49,7 @@ sound_source_t * sound_source( sound_buffer_t * buffer );
 
 void sound_play( sound_source_t * s );
 void sound_play_looping( sound_source_t * s );
-BOOL sound_is_playing( sound_source_t * s );
+_Bool sound_is_playing( sound_source_t * s );
 void sound_stop( sound_source_t * s );
 void sound_release_source( sound_source_t * s );
 void sound_release_buffer( sound_buffer_t * s );

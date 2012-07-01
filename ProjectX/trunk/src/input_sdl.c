@@ -4,15 +4,15 @@
 #include "render.h"
 #include <SDL.h>
 
-extern BOOL RenderModeReset( void );
+extern _Bool RenderModeReset( void );
 extern void SetGamePrefs( void );
 extern void FadeHoloLight(float Brightness);
 extern float HoloLightBrightness;
 extern float RoomDarkness;
 extern void DarkenRoom2(float darkness);
 extern void ProcessVduItems( MENU * Menu );
-extern BOOL InitialTexturesSet;
-extern BOOL cursor_clipped;
+extern _Bool InitialTexturesSet;
+extern _Bool cursor_clipped;
 extern BYTE MyGameStatus;
 extern render_info_t render_info;
 extern void CleanUpAndPostQuit(void);
@@ -23,14 +23,14 @@ int Num_Joysticks = 0;
 // Generic Routines
 //////////////////////////////////////////////
 
-void input_grab( BOOL grab )
+void input_grab( _Bool grab )
 {
 	// 1. always acquire and hide mouse if in fullscreen
 	// 2. took this out cause a player asked... if there is issues add it back...
 	// 3. don't remember who asked or why ? need to enable again.
 	if( render_info.fullscreen )
 	{
-		input_grabbed = TRUE;
+		input_grabbed = true;
 		SDL_WM_GrabInput( SDL_GRAB_ON );
 		SDL_ShowCursor( SDL_DISABLE );
 		return;
@@ -77,23 +77,23 @@ void app_active( SDL_ActiveEvent active )
 
 	// lost focus so release inputs
 	if( ! active.gain )
-		input_grab( FALSE );
+		input_grab( false );
 
 	// gained focus
 	else
 	{
 		// fullscreen always has exclusive inputs
 		if( render_info.fullscreen )
-			input_grab(TRUE);
+			input_grab(true);
 
 		// window mode
 		else
 		{
 			// only grab inputs if we are playing and not in menu
 			if( !CurrentMenu && MyGameStatus == STATUS_Normal )
-				input_grab(TRUE);
+				input_grab(true);
 			else
-				input_grab(FALSE);
+				input_grab(false);
 		}
 	}
 
@@ -117,7 +117,7 @@ void app_active( SDL_ActiveEvent active )
 // TODO
 //	when this is ready then pass SDL_RESIZABLE to SDL_SetVideoMode
 //  need to resize video with SDL_SetVideoMode
-BOOL bIgnoreWM_SIZE = FALSE; // ignores resize events
+_Bool bIgnoreWM_SIZE = false; // ignores resize events
 void app_resize( SDL_ResizeEvent resize )
 {
 	DebugPrintf("Window size changed.\n");
@@ -144,7 +144,7 @@ void app_resize( SDL_ResizeEvent resize )
 		FadeHoloLight(HoloLightBrightness);
 		DarkenRoom2(RoomDarkness);
 		ProcessVduItems( CurrentMenu );
-		InitialTexturesSet = FALSE;
+		InitialTexturesSet = false;
 	}
 
 	SetGamePrefs();
@@ -157,7 +157,7 @@ void app_quit( void )
 	render_flip(&render_info);
 
 	// release mouse so they can interact with message box
-	input_grab( FALSE );
+	input_grab( false );
 
 	// ask them to confirm clossing
 	if(Msg("Are you sure you want to exit?") )
@@ -171,7 +171,7 @@ void app_quit( void )
 
 	// let them click to get focus again
 	if( ! render_info.fullscreen )
-		input_grab( TRUE );
+		input_grab( true );
 }
 
 //////////////////////////////////////////////
@@ -188,7 +188,7 @@ void app_keyboard( SDL_KeyboardEvent key )
 		}
 		else if( key.keysym.sym == SDLK_RSHIFT || key.keysym.sym == SDLK_LSHIFT )
 		{
-				Uint8 *keystate = SDL_GetKeyState(NULL);
+				u_int8_t *keystate = SDL_GetKeyState(NULL);
 				if ( keystate[SDLK_F12] )
 					MenuGoFullScreen( NULL );
 		}
@@ -449,7 +449,7 @@ void app_joy_hat( SDL_JoyHatEvent hat )
 }
 
 #ifndef DINPUTJOY
-BOOL joysticks_init(void)
+_Bool joysticks_init(void)
 {
 	int i, j, k;
 
@@ -481,8 +481,8 @@ BOOL joysticks_init(void)
 
 		// setup defaults
 		JoystickInfo[i].sdl_joy 	= joy;
-		JoystickInfo[i].assigned	= FALSE;
-		JoystickInfo[i].connected	= TRUE;
+		JoystickInfo[i].assigned	= false;
+		JoystickInfo[i].connected	= true;
 		JoystickInfo[i].NumAxis		= SDL_JoystickNumAxes(joy);
 		JoystickInfo[i].NumButtons	= SDL_JoystickNumButtons(joy);
 		JoystickInfo[i].NumPOVs		= SDL_JoystickNumHats(joy);
@@ -501,10 +501,10 @@ BOOL joysticks_init(void)
 		for (j = 0; j < JoystickInfo[i].NumAxis; j++)
 		{	
 			JoystickInfo[i].Axis[j].action		= SHIPACTION_Nothing;
-			JoystickInfo[i].Axis[j].inverted	= FALSE;
+			JoystickInfo[i].Axis[j].inverted	= false;
 			JoystickInfo[i].Axis[j].deadzone	= 20;
-			JoystickInfo[i].Axis[j].fine		= TRUE;
-			JoystickInfo[i].Axis[j].exists		= TRUE;
+			JoystickInfo[i].Axis[j].fine		= true;
+			JoystickInfo[i].Axis[j].exists		= true;
 
 			JoystickInfo[i].Axis[j].name =
 				(char*) malloc (MAX_JOYNAME+1);
@@ -559,10 +559,10 @@ BOOL joysticks_init(void)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL joysticks_cleanup( void )
+_Bool joysticks_cleanup( void )
 {
 	int i, j, k;
 	for (i = 0; i < MAX_JOYSTICKS; i++)
@@ -570,8 +570,8 @@ BOOL joysticks_cleanup( void )
 		DebugPrintf("cleaning up joystick: %s %d\n",
 			JoystickInfo[i].Name, i);
 
-		JoystickInfo[i].assigned = FALSE;
-		JoystickInfo[i].connected = FALSE;
+		JoystickInfo[i].assigned = false;
+		JoystickInfo[i].connected = false;
 		JoystickInfo[i].NumButtons = 0;
 		JoystickInfo[i].NumPOVs = 0;
 		JoystickInfo[i].NumAxis = 0;
@@ -627,15 +627,15 @@ BOOL joysticks_cleanup( void )
 				free(JoystickInfo[i].Axis[j].name);
 			}
 			JoystickInfo[i].Axis[j].name = NULL;
-			JoystickInfo[i].Axis[j].exists = FALSE;
+			JoystickInfo[i].Axis[j].exists = false;
 			JoystickInfo[i].Axis[j].action = SHIPACTION_Nothing;
 			JoystickInfo[i].Axis[j].sensitivity = 0.0f;
 			JoystickInfo[i].Axis[j].deadzone = 0;
-			JoystickInfo[i].Axis[j].inverted = FALSE;
-			JoystickInfo[i].Axis[j].fine = FALSE;
+			JoystickInfo[i].Axis[j].inverted = false;
+			JoystickInfo[i].Axis[j].fine = false;
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 #endif // ! DINPUTJOY
@@ -650,7 +650,7 @@ void reset_events( void )
 	input_buffer_reset();
 }
 
-BOOL handle_events( void )
+_Bool handle_events( void )
 {
 	SDL_Event _event;
 
@@ -732,10 +732,10 @@ BOOL handle_events( void )
 	if ( quitting )
 	{
 		DebugPrintf("about to CleanUpAndPostQuit ( from WindowProc )\n");
-		quitting = FALSE;
+		quitting = false;
 		CleanUpAndPostQuit();
 	}
 
-	return TRUE;
+	return true;
 }
 

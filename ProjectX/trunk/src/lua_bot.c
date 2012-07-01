@@ -178,7 +178,7 @@ extern float NitroFuel;
 	Type == PICKUP_* (ex: PICKUP_Trojax)
 	Mode == PICKUPMODE_Normal
 
- BOOL PickupsGot[ MAXPICKUPSTYPES ] 
+ _Bool PickupsGot[ MAXPICKUPSTYPES ] 
 	PICKUP_* (ex: PICKUP_Trojax)
 
  Mloadheader // level

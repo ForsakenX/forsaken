@@ -51,8 +51,8 @@
 #define TEXANIM_LOOPEND		(0x8004) // loop var, start of loop
 #define TEXANIM_END			(0xFFFF) // (end of animation)
 
-#define	LEVEL_SPECIFIC			TRUE
-#define	NOT_LEVEL_SPECIFIC		FALSE
+#define	LEVEL_SPECIFIC			true
+#define	NOT_LEVEL_SPECIFIC		false
 
 /*
  * structures
@@ -65,7 +65,7 @@ typedef struct  {
 
 
 typedef struct MCFACE {
-	uint32 type;
+	u_int32_t type;
 	float nx;
 	float ny;
 	float nz;
@@ -75,8 +75,8 @@ typedef struct MCFACE {
 
 
 typedef struct VERTEXCELL{
-	uint16	num_verts_in_cell;
-	uint16	start_vert_in_cell;
+	u_int16_t	num_verts_in_cell;
+	u_int16_t	start_vert_in_cell;
 }VERTEXCELL;
 
 
@@ -84,20 +84,20 @@ typedef struct STARTPOS{
 	VECTOR	Pos;
 	VECTOR	Dir;
 	VECTOR	Up;
-	uint16	Group;
+	u_int16_t	Group;
 }STARTPOS;
 
 typedef struct _GAMESTARTPOS{
 	VECTOR	Pos;
 	VECTOR	Dir;
 	VECTOR	Up;
-	uint16	Group;
-	uint16	NextInGroup;
+	u_int16_t	Group;
+	u_int16_t	NextInGroup;
 }GAMESTARTPOS;
 
 typedef struct PORTALPOLY
 {
-	uint16 num_vertices_in_poly;
+	u_int16_t num_vertices_in_poly;
 	VERT   Verts[MAXVERTSPERPORTALPOLY];
 }PORTALPOLY;
 
@@ -110,17 +110,17 @@ typedef struct PORTAL PORTAL;
 struct VISTREE
 {
 	PORTAL *portal;
-	uint16 group;
-	uint16 num_visible;
+	u_int16_t group;
+	u_int16_t num_visible;
 	VISTREE *visible;
 };
 
 
 
 struct PORTAL{
-	uint16 num_vertices_in_portal;
+	u_int16_t num_vertices_in_portal;
 	VERT   Verts[MAXVERTSPERPORTAL];
-	uint16 num_polys_in_portal;
+	u_int16_t num_polys_in_portal;
 	MCFACE Poly[MAXPOLYSPERPORTAL];
 	VISTREE visible;
 	VERT centroid;
@@ -133,82 +133,82 @@ typedef struct  {
 
 
 typedef struct  {
-	uint16	State;
-	uint16	animation;
+	u_int16_t	State;
+	u_int16_t	animation;
 	float	CurrentTime;
 	float	MasterTime;
-	uint16	CurrentOffset;
-	uint16	currentframe;	// what we are displaying now...
-	uint16	newframe;		// what we want ti display..
-	uint16	frames;			// number of frames
-	uint16	vertices;		// number of verts...
-	uint16	loopstack[MAXANIMLOOPSTACK];
+	u_int16_t	CurrentOffset;
+	u_int16_t	currentframe;	// what we are displaying now...
+	u_int16_t	newframe;		// what we want ti display..
+	u_int16_t	frames;			// number of frames
+	u_int16_t	vertices;		// number of verts...
+	u_int16_t	loopstack[MAXANIMLOOPSTACK];
 	int	*	vert;
 	TANIMUV	* UVs;
 	char	Tag[32];
-	int16	WhenStoppedTriggerMod;
+	int16_t	WhenStoppedTriggerMod;
 } POLYANIM;
 
 typedef struct _TEXTUREANIMINFOINDEX{
-	uint16	Group;
-	uint16	Execbuf;
-	uint16	PolyAnim;
-	uint16	InitState;
+	u_int16_t	Group;
+	u_int16_t	Execbuf;
+	u_int16_t	PolyAnim;
+	u_int16_t	InitState;
 }TEXTUREANIMINFOINDEX;
 
 
 typedef struct  {
-	uint16	num_animating_polys;
+	u_int16_t	num_animating_polys;
 TEXTUREANIMINFOINDEX * TAnimInfoIndex;
-	uint16	num_animations;
-	uint16 * AnimSeq[MAXANIMSEQS];
+	u_int16_t	num_animations;
+	u_int16_t * AnimSeq[MAXANIMSEQS];
 }ANIMDATA;
 
 
 typedef struct LVLGROUP{
-	uint16	num_execbufs;
-	uint16	exec_type[MAXEXECBUFSPERGROUP];
-	uint16	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_execbufs;
+	u_int16_t	exec_type[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
 	LEVELRENDEROBJECT			renderObject[MAXEXECBUFSPERGROUP];
 	LPLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 	char	name[32];
 	VERT	center;
 	VERT	half_size;
 	VECTOR	up;
-	uint16	num_portals;
+	u_int16_t	num_portals;
 	PORTAL  * Portal;
-	int16	BGClear_Flag;
+	int16_t	BGClear_Flag;
 	float	BGClear_Red;
 	float	BGClear_Green;
 	float	BGClear_Blue;
 
 	VECTOR	cell_origin[MAXEXECBUFSPERGROUP];
-	uint16	xcells[MAXEXECBUFSPERGROUP];
-	uint16	ycells[MAXEXECBUFSPERGROUP];
-	uint16	zcells[MAXEXECBUFSPERGROUP];
-	uint16	numofcells[MAXEXECBUFSPERGROUP];
-	uint16	num_vertex_indices[MAXEXECBUFSPERGROUP];
-	uint16 * vertex_index_pnt[MAXEXECBUFSPERGROUP];
+	u_int16_t	xcells[MAXEXECBUFSPERGROUP];
+	u_int16_t	ycells[MAXEXECBUFSPERGROUP];
+	u_int16_t	zcells[MAXEXECBUFSPERGROUP];
+	u_int16_t	numofcells[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_vertex_indices[MAXEXECBUFSPERGROUP];
+	u_int16_t * vertex_index_pnt[MAXEXECBUFSPERGROUP];
 	VERTEXCELL * vertex_cell_pnt[MAXEXECBUFSPERGROUP];
 	COLOR * colour_cell_pnt[MAXEXECBUFSPERGROUP];
 
-	uint16	num_animating_polys[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_animating_polys[MAXEXECBUFSPERGROUP];
 
 	POLYANIM *polyanim[MAXEXECBUFSPERGROUP];
-	uint16	StartPosInThisGroup;
-	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
+	u_int16_t	StartPosInThisGroup;
+	u_int32_t				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 }LVLGROUP;
 
 
 typedef struct MLOADHEADER{
-	int					state;								// FALSE if not loaded properly...
+	int					state;								// false if not loaded properly...
 	char		*		OrgAddr;
 	char		*		Buffer;
 	char		*		testBuffer;
-	uint16				num_texture_files;
-	uint16				num_groups;
+	u_int16_t				num_texture_files;
+	u_int16_t				num_groups;
 	LVLGROUP				Group[MAXGROUPS];
-	int16				TloadIndex[MAXTPAGESPERMLOAD];		// which texture in the Tloadheader....
+	int16_t				TloadIndex[MAXTPAGESPERMLOAD];		// which texture in the Tloadheader....
     char                ImageFile[MAXTPAGESPERMLOAD][32];	// Texture Files....
 	float				CellSize;
 	ANIMDATA			AnimData;
@@ -228,10 +228,10 @@ typedef struct MVERT {
 } MVERT;
 
 typedef struct MFACE {
-	uint16 v1;
-	uint16 v2;
-	uint16 v3;
-	uint16 pad;
+	u_int16_t v1;
+	u_int16_t v2;
+	u_int16_t v3;
+	u_int16_t pad;
 	float nx;
 	float ny;
 	float nz;
@@ -250,17 +250,17 @@ typedef struct VISPOLVERTEX {
 /*
  * fn prototypes
  */
-BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  );
-BOOL Mload( char * Filename, MLOADHEADER * Mloadheader );
-BOOL ExecuteMloadHeader( MLOADHEADER * Mloadheader  );
+_Bool PreMload( char * Filename, MLOADHEADER * Mloadheader  );
+_Bool Mload( char * Filename, MLOADHEADER * Mloadheader );
+_Bool ExecuteMloadHeader( MLOADHEADER * Mloadheader  );
 void ReleaseMloadheader( MLOADHEADER * Mloadheader );
 
-BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  );
-void BackGroundTextureAnimation( MLOADHEADER * Mloadheader , uint16 group );
-uint16 * HandleAnimCommands( POLYANIM * PolyAnim , uint16 * AnimData , uint16 * OrgAnimAdr);
+_Bool ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, u_int16_t group  );
+void BackGroundTextureAnimation( MLOADHEADER * Mloadheader , u_int16_t group );
+u_int16_t * HandleAnimCommands( POLYANIM * PolyAnim , u_int16_t * AnimData , u_int16_t * OrgAnimAdr);
 
-void TriggerBackgroundAnimationGo( uint16 * Data );
-void TriggerBackgroundAnimationStop( uint16 * Data );
+void TriggerBackgroundAnimationGo( u_int16_t * Data );
+void TriggerBackgroundAnimationStop( u_int16_t * Data );
 
 extern FILE *LoadTextureAnimations( FILE *f );
 extern FILE *SaveTextureAnimations( FILE *f );

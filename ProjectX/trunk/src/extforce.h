@@ -17,9 +17,9 @@
  * Structures
  */
 typedef struct EXTERNALFORCE{
-		uint16	Status;
-		uint16	ForceType;
-		uint16	Group;
+		u_int16_t	Status;
+		u_int16_t	ForceType;
+		u_int16_t	Group;
 		VECTOR	Origin;
 		VECTOR	Pos;
 		VECTOR	Dir;
@@ -29,10 +29,10 @@ typedef struct EXTERNALFORCE{
 		float	Width;
 		float	Height;
 		float	Range;
-		uint16	Type;				// sphere / box / convex hull
+		u_int16_t	Type;				// sphere / box / convex hull
 		VECTOR	half_size;
 		TRIGGER_ZONE	*Zone;
-		uint16	num_sides;
+		u_int16_t	num_sides;
 struct	EXTERNALFORCE * NextInGroup;
 }EXTERNALFORCE;
 
@@ -40,12 +40,12 @@ struct	EXTERNALFORCE * NextInGroup;
  * fn prototypes
  */
 void ReleaseExternalForces( void );
-BOOL ExternalForcesLoad( char * Filename );
+_Bool ExternalForcesLoad( char * Filename );
 void ExternalForcesZoneCheck( VECTOR * OldPos , VECTOR * NewPos , EXTERNALFORCE * EFpnt );
-BOOL ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Group , VECTOR * ExtForce , float * Shield);
-void StartExternalForce( uint16 * Data );
-void StopExternalForce( uint16 * Data );
-void DisplayExternalForcesInGroup( uint16 Group );
+_Bool ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group , VECTOR * ExtForce , float * Shield);
+void StartExternalForce( u_int16_t * Data );
+void StopExternalForce( u_int16_t * Data );
+void DisplayExternalForcesInGroup( u_int16_t Group );
 FILE * LoadExternalForces( FILE * fp );
 FILE * SaveExternalForces( FILE * fp );
 

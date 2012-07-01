@@ -81,24 +81,24 @@
 #define MAX_SAVEGAME_FILENAME		128
 
 
-BOOL SaveSnapShot( int8 * Filename );
+_Bool SaveSnapShot( int8_t * Filename );
 																   
 /*===================================================================
 		Externals ...
 ===================================================================*/
-extern BOOL Cheated;
+extern _Bool Cheated;
 extern	char biker_name[];
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	float framelag;
 extern	int CrystalsFound;
-extern	int16 Lives;
-extern	int16		LevelNum;
-extern	int16		NewLevelNum;
+extern	int16_t Lives;
+extern	int16_t		LevelNum;
+extern	int16_t		NewLevelNum;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	char		MissionTextNames[MAXLEVELS][128];
 extern	float		LevelTimeTaken;
-extern	int16		NumInitEnemies;
-extern	int16		NumKilledEnemies;
+extern	int16_t		NumInitEnemies;
+extern	int16_t		NumKilledEnemies;
 extern	LIST		LoadSavedGameList;
 
 /*===================================================================
@@ -130,16 +130,16 @@ char *SaveGamePicFileName( int slot )
 	Input		:	MENUITEM * MenuItem
 	Output		:	nothing
 ===================================================================*/
-int8	LoadGameFilename[ 256 ];
-extern	int16			NumLevels;
+int8_t	LoadGameFilename[ 256 ];
+extern	int16_t			NumLevels;
 
-BOOL PreInGameLoad( MENUITEM * MenuItem )
+_Bool PreInGameLoad( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
-	int16		i;
-	int8		buf[ 256 ];
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	int16_t		i;
+	int8_t		buf[ 256 ];
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 
 #ifdef SAVEGAME_SLOTS
 	fp = file_open( SaveGameFileName( LoadSavedGameList.selected_item ), "rb" );
@@ -150,8 +150,8 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 
 	if( fp != NULL )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
 			Msg("Save file is in an old format.\nYou will most likely crash...\n");
@@ -163,7 +163,7 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 #else
 			Msg( "PreInGameLoad() Incompatible save game file %s", &LoadGameFilename[ 0 ] );
 #endif
-			return( FALSE );
+			return( false );
 		}
 */
 
@@ -187,12 +187,12 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 		if( ( NewLevelNum == -1 ) || ( i == 256 ) )
 		{
 			fclose( fp );
-			return FALSE;
+			return false;
 		}
 		fclose( fp );
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 /*===================================================================
@@ -204,13 +204,13 @@ extern px_timer_t countdown_timer;
 void InGameLoad( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
-	int8		buf[ 256 ];
-	int8		biker[ 256 ];
-	int16		i;
-	int16		Hours, Minutes, Seconds;
-	int16		KilledEnemiesNum, InitEnemiesNum;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	int8_t		buf[ 256 ];
+	int8_t		biker[ 256 ];
+	int16_t		i;
+	int16_t		Hours, Minutes, Seconds;
+	int16_t		KilledEnemiesNum, InitEnemiesNum;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 
 #ifdef SAVEGAME_SLOTS
 	fp = file_open( SaveGameFileName( LoadSavedGameList.selected_item ), "rb" );
@@ -220,8 +220,8 @@ void InGameLoad( MENUITEM * MenuItem )
 
 	if( fp != NULL )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
 			Msg("Save file is in an old format.\nYou will most likely crash...\n");
@@ -367,7 +367,7 @@ void InGameLoad( MENUITEM * MenuItem )
 		fp = LoadAllText( fp );
 		if( !fp ) return;
 
-		fread( &Cheated, sizeof( BOOL ), 1, fp );
+		fread( &Cheated, sizeof( _Bool ), 1, fp );
 
 		DebugPrintf( "Loaded OK\n" );
 		fclose( fp );
@@ -381,7 +381,7 @@ char *GetMissionName( char *levelname )
 {
 	static char RealLevelName[ 256 ];
 	FILE *f;
-	int16 i;
+	int16_t i;
 
 	for (i = 0; i < NumLevels; i++)
 	{
@@ -421,20 +421,20 @@ char *GetMissionName( char *levelname )
 /*===================================================================
 	Procedure	:	InGame Save
 	Input		:	MENUITEM * MenuItem
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL InGameSave( MENUITEM * MenuItem )
+_Bool InGameSave( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
 	FILE	*	f;
-	int16		i;
-	int8		RealLevelName[ 128 + 1 ];
-	int8		Filename[ 256 ];
-	int8		SFilename[ 256 ];
-	int16		Hours, Minutes, Seconds;
-	int8		sep = 0;
-	uint32		MagicNumber = MAGIC_NUMBER;
-	uint32		VersionNumber = LOADSAVE_VERSION_NUMBER;
+	int16_t		i;
+	int8_t		RealLevelName[ 128 + 1 ];
+	int8_t		Filename[ 256 ];
+	int8_t		SFilename[ 256 ];
+	int16_t		Hours, Minutes, Seconds;
+	int8_t		sep = 0;
+	u_int32_t		MagicNumber = MAGIC_NUMBER;
+	u_int32_t		VersionNumber = LOADSAVE_VERSION_NUMBER;
 
 	f = file_open( MissionTextNames[ NewLevelNum ], "r" );
 
@@ -455,10 +455,10 @@ BOOL InGameSave( MENUITEM * MenuItem )
 
 		fclose( f );
 
-		Minutes = ( uint16 ) ( LevelTimeTaken / 60 );
-		Seconds = ( uint16 ) LevelTimeTaken;
-		Hours = ( uint16 ) ( Minutes / 60 );
-		Minutes = ( uint16 ) ( Minutes % 60 );
+		Minutes = ( u_int16_t ) ( LevelTimeTaken / 60 );
+		Seconds = ( u_int16_t ) LevelTimeTaken;
+		Hours = ( u_int16_t ) ( Minutes / 60 );
+		Minutes = ( u_int16_t ) ( Minutes % 60 );
 
 #ifdef SAVEGAME_SLOTS
 		strcpy( Filename, SaveGameFileName( LoadSavedGameList.selected_item ) );
@@ -472,25 +472,25 @@ BOOL InGameSave( MENUITEM * MenuItem )
 	}
 	else
 	{
-		return FALSE;
+		return false;
 	}
 
 	if ( !folder_exists( SAVEGAME_FOLDER ) )
 	{
-		return FALSE;
+		return false;
 	}
 
 	if( !SaveSnapShot( &SFilename[ 0 ] ) )
 	{
-		return FALSE;
+		return false;
 	}
 
 	fp = file_open( &Filename[ 0 ], "wb" );
 
 	if( fp != NULL )
 	{
-		fwrite( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fwrite( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fwrite( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fwrite( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		i = 0;
 		do
@@ -509,56 +509,56 @@ BOOL InGameSave( MENUITEM * MenuItem )
 		fwrite( &Lives, sizeof( Lives ), 1, fp );
 
 		fp = SaveShips( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		if( !Enemy_Save( fp ) )
-			return FALSE;
+			return false;
 		fp = SaveAllSfx( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveTextureAnimations( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveStartRestartPoints( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveRemoteCameras( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveScreenPolys( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveTriggerAreas( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveExternalForces( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveTeleports( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveRealTimeLights( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveXLights( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveAllTriggers( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveBGObjects( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveAllPickups( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SavePrimBulls( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveSecBulls( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveModels( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SavePolys( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveFmPolys( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveAllSpotFX( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		fp = SaveAllText( fp );
-		if( !fp ) return FALSE;
+		if( !fp ) return false;
 		
-		fwrite( &Cheated, sizeof( BOOL ), 1, fp );
+		fwrite( &Cheated, sizeof( _Bool ), 1, fp );
 
 		fclose( fp );
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -566,22 +566,22 @@ char *SavedGameInfo( int slot )
 {
 	static char info[ 256 ];
 	FILE	*	fp;
-	int8		buf[ 256 ];
-	int8		biker[ 256 ];
-	int16		i;
-	int16		Hours, Minutes, Seconds;
-	int16		KilledEnemiesNum, InitEnemiesNum;
-	int16		Lives;
+	int8_t		buf[ 256 ];
+	int8_t		biker[ 256 ];
+	int16_t		i;
+	int16_t		Hours, Minutes, Seconds;
+	int16_t		KilledEnemiesNum, InitEnemiesNum;
+	int16_t		Lives;
 	char	*	LevelName;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 
 	fp = file_open( SaveGameFileName( slot ), "rb" );
 
 	if( fp != NULL )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
 			Msg("Save file is in an old format.\nYou will most likely crash...\n");
@@ -636,29 +636,29 @@ char *SavedGameInfo( int slot )
 }
 
 
-BOOL SaveGameSlotUsed( int slot )
+_Bool SaveGameSlotUsed( int slot )
 {
 	FILE	*	fp;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 
 	fp = file_open( SaveGameFileName( slot ), "rb" );
 	if ( fp )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
 			Msg("Save file is in an old format.\nYou will most likely crash...\n");
 		/*
 		{
 			fclose( fp );
-			return FALSE;
+			return false;
 		}
 		*/
 
 		fclose( fp );
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }

@@ -99,55 +99,55 @@ typedef	struct OLDPOS {
 
 	VECTOR		Pos;			// Old Position
 	VECTOR		Dir;			// Old Direction
-	uint8		R;				// Red
-	uint8		G;				// Green
-	uint8		B;				// Blue
+	u_int8_t		R;				// Red
+	u_int8_t		G;				// Green
+	u_int8_t		B;				// Blue
 
 } OLDPOS;
 
 typedef struct SECONDARYWEAPONATTRIB {
 
-	uint16	SecType;			// Missile/Mine
-	uint16	State;				// Starting State
-	uint16	MoveType;			// Movement Type ( Straight/Homeing )
+	u_int16_t	SecType;			// Missile/Mine
+	u_int16_t	State;				// Starting State
+	u_int16_t	MoveType;			// Movement Type ( Straight/Homeing )
 	float	StartSpeed;			// how fast do I move to start with
 	float	SpeedInc;			// how fast do I Accelerate
 	float	Speed;				// how fast do I move
 	float	Size;				// how big is my collide sphere
 	float	TurnSpeed;			// how quickly can I turn
-	uint16	FireDelay;			// how fast can I fire
-	uint16	ViewCone;			// how wide is my view
-	uint16	ModelNum;			// if 3D model which one....
+	u_int16_t	FireDelay;			// how fast can I fire
+	u_int16_t	ViewCone;			// how wide is my view
+	u_int16_t	ModelNum;			// if 3D model which one....
 	float	lightsize;			// how big is the light
 	float	r;					// what color does it emit....
 	float	g;					// what color does it emit....
 	float	b;					// what color does it emit....
 	float	Shield;				// How much shield do I have....
 	float	Damage;				// How much Damage do I do.....
-	BOOL	Lensflare;			// Lensflare......
+	_Bool	Lensflare;			// Lensflare......
 	float	ColRadius;			// how big is my collide sphere
-	uint16	Flags;				// Various Flags;
+	u_int16_t	Flags;				// Various Flags;
 
 } SECONDARYWEAPONATTRIB;
 
 typedef struct SECONDARYWEAPONBULLET {
-	BOOL	Used;
+	_Bool	Used;
 
-	uint16	Next;				// link list.....	
-	uint16	Prev;				// link list.....
+	u_int16_t	Next;				// link list.....	
+	u_int16_t	Prev;				// link list.....
 	struct SECONDARYWEAPONBULLET * NextInGroup;// Next in same group ....
 	struct SECONDARYWEAPONBULLET * PrevInGroup;// Previous in same group ....
-	uint16	Flags;				// Flags
-	uint16	Index;				// Index
-	uint16	SecType;			// Missile/Mine
-	uint16	Type;				// which type of bullet am I
-	uint16	MoveType;			// Movement Type ( Straight/Homeing )
-	uint16	State;				// which State of bullet am I
-	uint16	OwnerType;			// Owner Type
-	uint16	Owner;				// who fired me...
-	uint16	ID;					// Id from that ship..
-	int8	Weapon;				// Weapon that fired me..
-	BOOL	Lensflare;			// Do Lensflare
+	u_int16_t	Flags;				// Flags
+	u_int16_t	Index;				// Index
+	u_int16_t	SecType;			// Missile/Mine
+	u_int16_t	Type;				// which type of bullet am I
+	u_int16_t	MoveType;			// Movement Type ( Straight/Homeing )
+	u_int16_t	State;				// which State of bullet am I
+	u_int16_t	OwnerType;			// Owner Type
+	u_int16_t	Owner;				// who fired me...
+	u_int16_t	ID;					// Id from that ship..
+	int8_t	Weapon;				// Weapon that fired me..
+	_Bool	Lensflare;			// Do Lensflare
 	float	LifeCount;			// how long have i lived.....
 	float	LifeSpan;			// how long can i live
 	float	SpeedInc;			// how fast do I accelerate...
@@ -163,37 +163,37 @@ typedef struct SECONDARYWEAPONBULLET {
 	MATRIX	StartMat;		
 	VECTOR	ColStart;			// where I was when started going straight.
 	float	ColDist;			// Length from Collision to ColStart.
-	uint16	ColFlag;			// have I checked if im going to collide with something
-	uint16	ColGroup;			// Collision Group
+	u_int16_t	ColFlag;			// have I checked if im going to collide with something
+	u_int16_t	ColGroup;			// Collision Group
 	VERT	ColPoint;			// where am I going to collide
 	NORMAL	ColPointNormal;		// if I reflect use this when I do
-	uint16	GroupImIn;			// which group am I in...
-	uint16	ModelNum;			// if Im a 3D model then I need a model description...
-	uint16	ModelIndex;			// if Im a 3D model then I need a model description...
+	u_int16_t	GroupImIn;			// which group am I in...
+	u_int16_t	ModelNum;			// if Im a 3D model then I need a model description...
+	u_int16_t	ModelIndex;			// if Im a 3D model then I need a model description...
 	MATRIX	Mat;				// and a Matrix for when Im displayed...
-	uint16	fmpoly;				// if Im 2D then I need a Face Me Poly..
-	int16	numfmpolys;			// Number of attached fmpolys
-	uint16	poly;				// first attached poly
-	int16	numpolys;			// Number of attached polys
+	u_int16_t	fmpoly;				// if Im 2D then I need a Face Me Poly..
+	int16_t	numfmpolys;			// Number of attached fmpolys
+	u_int16_t	poly;				// first attached poly
+	int16_t	numpolys;			// Number of attached polys
 	float	xsize;				// x size..
 	float	ysize;				// y size..
-	uint16	light;				// if I produce Light then I Need A Light
+	u_int16_t	light;				// if I produce Light then I Need A Light
 	float	lightsize;			// how big is the light
 	float	r;					// what color does it emit....
 	float	g;					// what color does it emit....
 	float	b;					// what color does it emit....
 	float	TurnSpeed;			// how quickly can I turn
 	float	ViewCone;			// Visibility cone
-	uint16	TargetType;			// Ship i'm going for
-	uint16	Target;				// Ship i'm going for
+	u_int16_t	TargetType;			// Ship i'm going for
+	u_int16_t	Target;				// Ship i'm going for
 	QUAT	DirQuat;			// Direction Quaternion
 	VECTOR	DirVector;			// Forward Vector
 	VECTOR	UpVector;			// Up Vector
 	float	Shield;				// Shield
 	float	Damage;				// Damage to do.
-	uint16	Ammo;				// Ammo
-	int16	NumBounces;			// Bounce Count
-	int16	NumOldPos;			// Number of old positions stored.
+	u_int16_t	Ammo;				// Ammo
+	int16_t	NumBounces;			// Bounce Count
+	int16_t	NumOldPos;			// Number of old positions stored.
 	float	RetractPos;			// retract pos
 	float	ColRadius;			// how big is my collide sphere
 	float	Interval;			// Scatter Capture Interval/smoke trail interval
@@ -214,90 +214,90 @@ typedef	struct ENTRY {
 	Prototypes
 ===================================================================*/
 void	InitSecBulls(void);
-uint16	FindFreeSecBull(void);
-void	KillUsedSecBull( uint16 i );
+u_int16_t	FindFreeSecBull(void);
+void	KillUsedSecBull( u_int16_t i );
 void	FireSecondary(void);
 void	ProcessSecondaryBullets( void );
-void	CleanUpSecBull( uint16 i );
-uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Group,
+void	CleanUpSecBull( u_int16_t i );
+u_int16_t	InitOneSecBull( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * UpVector,
-						VECTOR * DropDir, int8 Weapon, BOOL NetFlag );
-BOOL	PointToSphere(	VERT * TargPos, float TargRadius, VERT * BulPos );
-void	CreateExplosion( VECTOR * Pos, uint16 Group );
-void	CreateSmallExplosion( VECTOR * Pos, uint16 Group );
-void	CreateSingleExplosion( VECTOR * Pos, uint16 Group );
-void	CreateShipExplosion( VECTOR * Pos, uint16 Group );
-void	CreateTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateBloodTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateBloodSplat( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateGravgonTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateSolarisTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateNewTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group );
+						VECTOR * DropDir, int8_t Weapon, _Bool NetFlag );
+_Bool	PointToSphere(	VERT * TargPos, float TargRadius, VERT * BulPos );
+void	CreateExplosion( VECTOR * Pos, u_int16_t Group );
+void	CreateSmallExplosion( VECTOR * Pos, u_int16_t Group );
+void	CreateSingleExplosion( VECTOR * Pos, u_int16_t Group );
+void	CreateShipExplosion( VECTOR * Pos, u_int16_t Group );
+void	CreateTrail( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateBloodTrail( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateBloodSplat( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateGravgonTrail( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateSolarisTrail( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateNewTrail( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
 void	InitLinkList( void );
 ENTRY *	FindFreeLink( void );
 void	FreeLink( ENTRY * Entry );
 void	DispSecAmmoLevels( void );
-void	CreateGravgonField( uint16 i );
-void	CreateShockwave( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group, float ShockwaveSize, BYTE Weapon );
-void	ExplodeSecondary( VECTOR * Pos, uint16 Group, uint16 OwnerType, uint16 Owner, uint16 ID, float ShockwaveSize );
-BOOL	ProcessMines( uint16 i );
-BOOL	ProcessMissiles( uint16 i, uint16 * NextMissile );
-void	KillOwnersSecBulls( uint16 Owner );
-void	ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed );
-int16	GenerateSecondaryPickups( int16 NumAllowed );
-int16	GetCurSecAmmo( void );
+void	CreateGravgonField( u_int16_t i );
+void	CreateShockwave( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, u_int16_t Group, float ShockwaveSize, BYTE Weapon );
+void	ExplodeSecondary( VECTOR * Pos, u_int16_t Group, u_int16_t OwnerType, u_int16_t Owner, u_int16_t ID, float ShockwaveSize );
+_Bool	ProcessMines( u_int16_t i );
+_Bool	ProcessMissiles( u_int16_t i, u_int16_t * NextMissile );
+void	KillOwnersSecBulls( u_int16_t Owner );
+void	ScatterWeapons( VECTOR * Dir, int16_t MaxPickupsAllowed );
+int16_t	GenerateSecondaryPickups( int16_t NumAllowed );
+int16_t	GetCurSecAmmo( void );
 void	SecondarySelectControl( void );
-uint16	GetBestMine( void );
+u_int16_t	GetBestMine( void );
 void	DropMine( void );
-uint16	TargetClosestShip( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 MeType, uint16 Me, float ViewConeCos, float * ClosestCos );
-BOOL	StillGotTarget( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 TargetType, uint16 Target, float ViewConeCos );
-void	CreateScatterTrail( uint16 i );
-void	CreateBigFlash( VECTOR * Pos, uint16 Group, float Size );
-void	CreateMuzzleFlash( VECTOR * Pos, uint16 Group, float Size );
-void	FireSecondaryWeapons( uint8 Ship );
-void	DestroySecondary( uint16 i, VECTOR * Int_Point );
-void	GenMineList( uint16 Ship, SHORTMINE * MineSlots, BYTE * NumMines, BYTE Section );
+u_int16_t	TargetClosestShip( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t MeType, u_int16_t Me, float ViewConeCos, float * ClosestCos );
+_Bool	StillGotTarget( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t TargetType, u_int16_t Target, float ViewConeCos );
+void	CreateScatterTrail( u_int16_t i );
+void	CreateBigFlash( VECTOR * Pos, u_int16_t Group, float Size );
+void	CreateMuzzleFlash( VECTOR * Pos, u_int16_t Group, float Size );
+void	FireSecondaryWeapons( u_int8_t Ship );
+void	DestroySecondary( u_int16_t i, VECTOR * Int_Point );
+void	GenMineList( u_int16_t Ship, SHORTMINE * MineSlots, BYTE * NumMines, BYTE Section );
 void	RegenMineList( SHORTMINE * Slots, BYTE Num );
-void	CopyMines( uint16 Player );
+void	CopyMines( u_int16_t Player );
 void	RegenerateQuedMines( void );
-void	KillOwnerIDSecBulls( uint16 OwnerType, uint16 Owner, uint16 ID );
-BOOL	CheckForMines( VECTOR * Pos );
+void	KillOwnerIDSecBulls( u_int16_t OwnerType, u_int16_t Owner, u_int16_t ID );
+_Bool	CheckForMines( VECTOR * Pos );
 void	SyncMines( void );
-void	DoDamagedEffects( uint16 i );
+void	DoDamagedEffects( u_int16_t i );
 
 void	GetFinalMatrix( MATRIX * FinalMatrix );
-void	TargetingComputer( uint16 ClosestShip, uint16 ClosestEnemy );
-void	HeatseakerTarget( uint16 ClosestShip, uint16 ClosestEnemy );
+void	TargetingComputer( u_int16_t ClosestShip, u_int16_t ClosestEnemy );
+void	HeatseakerTarget( u_int16_t ClosestShip, u_int16_t ClosestEnemy );
 void	HUDNames( void );
 void	DispHUDNames( void );
 void	DropSecondary( void );
-void	CreateTitanStarShrapnel( uint16 i, VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateSmokeRing( VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector, uint16 Group );
-uint16	TargetClosestEnemy( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 MeType, uint16 Me, float ViewConeCos, float * ClosestCos );
-uint16	TargetClosestSecondary( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 MeType, uint16 Me, float ViewConeCos, float * ClosestCos );
-BOOL	CheckProximityToShips( VECTOR * Pos, uint16 Group, float Radius, uint16 OwnerType, uint16 Owner );
-BOOL	CheckProximityToEnemies( VECTOR * Pos, uint16 Group, float Radius, uint16 OwnerType, uint16 Owner );
-uint16	GetClosestEnemy( VECTOR * Pos, uint16 Group, float * Radius, uint16 OwnerType, uint16 Owner );
-void	CreateBigExplosion( VECTOR * Pos, uint16 Group );
-void	CreateSplash( VECTOR * Pos, VECTOR * DirVector, uint16 Group );
+void	CreateTitanStarShrapnel( u_int16_t i, VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateSmokeRing( VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector, u_int16_t Group );
+u_int16_t	TargetClosestEnemy( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t MeType, u_int16_t Me, float ViewConeCos, float * ClosestCos );
+u_int16_t	TargetClosestSecondary( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t MeType, u_int16_t Me, float ViewConeCos, float * ClosestCos );
+_Bool	CheckProximityToShips( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner );
+_Bool	CheckProximityToEnemies( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner );
+u_int16_t	GetClosestEnemy( VECTOR * Pos, u_int16_t Group, float * Radius, u_int16_t OwnerType, u_int16_t Owner );
+void	CreateBigExplosion( VECTOR * Pos, u_int16_t Group );
+void	CreateSplash( VECTOR * Pos, VECTOR * DirVector, u_int16_t Group );
 
 void	SetupSecBullGroups( void );
-void	AddSecBullToGroup( uint16 i, uint16 Group );
-void	RemoveSecBullFromGroup( uint16 i, uint16 Group );
-void	MoveSecBullToGroup( uint16 i, uint16 OldGroup, uint16 NewGroup );
-void	DispInGameText( VECTOR * Pos, int8 * Text );
-void	CreateFireBall( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-void	CreateTentacle( uint16 i );
-uint16	GetSecondaryBulletID( uint16 OwnerType, uint16 Owner );
+void	AddSecBullToGroup( u_int16_t i, u_int16_t Group );
+void	RemoveSecBullFromGroup( u_int16_t i, u_int16_t Group );
+void	MoveSecBullToGroup( u_int16_t i, u_int16_t OldGroup, u_int16_t NewGroup );
+void	DispInGameText( VECTOR * Pos, int8_t * Text );
+void	CreateFireBall( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+void	CreateTentacle( u_int16_t i );
+u_int16_t	GetSecondaryBulletID( u_int16_t OwnerType, u_int16_t Owner );
 FILE * SaveSecBulls( FILE * fp );
 FILE * LoadSecBulls( FILE * fp );
-uint8 GetNextValidSeconadaryWeapon( void );
-uint8 GetPrevValidSecondaryWeapon( void );
-int8 ConvSecToNormWeapon( int8 Secondary );
-void ToggleSecondaryWeapons( int8 Secondary );
+u_int8_t GetNextValidSeconadaryWeapon( void );
+u_int8_t GetPrevValidSecondaryWeapon( void );
+int8_t ConvSecToNormWeapon( int8_t Secondary );
+void ToggleSecondaryWeapons( int8_t Secondary );
 
-void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed );
-int16 HostGenerateSecondaryPickups( uint16 Ship, int16 NumAllowed );
+void ScatterWeaponsForShip( u_int16_t Ship, VECTOR * Dir, int16_t MaxPickupsAllowed );
+int16_t HostGenerateSecondaryPickups( u_int16_t Ship, int16_t NumAllowed );
 
 #endif // SECONDARY_INCLUDED
 

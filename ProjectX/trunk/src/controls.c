@@ -33,10 +33,10 @@ extern MENU MENU_NEW_Battle;
 extern MENU *CurrentMenu;
 
 extern render_info_t render_info;
-extern  BOOL  Cheated;
-extern BOOL WaitingToQuit;
-extern BOOL CheatsDisabled;
-extern  BOOL  JoystickInput;
+extern  _Bool  Cheated;
+extern _Bool WaitingToQuit;
+extern _Bool CheatsDisabled;
+extern  _Bool  JoystickInput;
 
 extern  BYTE  MyGameStatus;
 extern  float framelag;
@@ -58,13 +58,13 @@ extern  float RollDecell;
 extern  float MaxBankAngle;
 extern  float BankAccell;
 extern  float BankDecell;
-extern BOOL DebugInfo;
+extern _Bool DebugInfo;
 
-extern  int8  PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
-extern  BOOL  PrimaryWeaponCheat;
-extern  int8  SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
-extern  BOOL  SecondaryWeaponCheat;
-extern  BOOL  GodMode;
+extern  int8_t  PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
+extern  _Bool  PrimaryWeaponCheat;
+extern  int8_t  SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
+extern  _Bool  SecondaryWeaponCheat;
+extern  _Bool  GodMode;
 
 extern  int FontHeight;
 
@@ -108,7 +108,7 @@ extern  int FontHeight;
 
 int GetPOVMask( DWORD pov );
 
-BOOL CheatsEnabled = FALSE;
+_Bool CheatsEnabled = false;
 
 #define TOTAL_JOYSTICK_ACTIONS  140 // 5 axis positions, 3 axis rotations, 4 POV hats and 128 buttons!
 #define TOTAL_JOYSTICK_AXIS   8 // 5 axis positions, 3 axis rotations
@@ -130,21 +130,21 @@ extern MENU MENU_NEW_StartSinglePlayer;
 int old_input = 0;
 int new_input = 1;
 
-BOOL joystick_poll( int joysticknum );
+_Bool joystick_poll( int joysticknum );
 
 #ifdef DINPUTJOY
 BYTE 
 #else
-Uint8
+u_int8_t
 #endif
 js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 
 // (Sfx.c)
 extern void SendBikerTaunt();
 
-BOOL flush_input = TRUE;
+_Bool flush_input = true;
 
-Uint8 key_state[ INPUT_BUFFERS ][ SDLK_LAST ];
+u_int8_t key_state[ INPUT_BUFFERS ][ SDLK_LAST ];
 
 char *ShipActionText[NUM_SHIP_ACTIONS] = {
   "No Action",
@@ -208,12 +208,12 @@ char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2] = {
 char FlashText[ 128 ];
 float FlashTextActive = 0.0F;
 
-BOOL FullRearView = FALSE;
-BOOL ShowStats = FALSE;
-BOOL ShowMessages = FALSE;	// display long list of chat messages
-BOOL ShowStatistics = FALSE;	// display statistics in game
+_Bool FullRearView = false;
+_Bool ShowStats = false;
+_Bool ShowMessages = false;	// display long list of chat messages
+_Bool ShowStatistics = false;	// display statistics in game
 
-void FlashMenuText( char *text, float activetime, uint16 sfx )
+void FlashMenuText( char *text, float activetime, u_int16_t sfx )
 {
   if( text )
   {
@@ -240,9 +240,9 @@ void ProcessMenuFlashText( void )
 
 int EnableCheats( char *cheat )
 {
-  CheatsEnabled = TRUE;
+  CheatsEnabled = true;
   FlashMenuText( "cheat mode enabled", 120.0F, SFX_Secret );
-  Cheated = TRUE;
+  Cheated = true;
 
   return 1;
 }
@@ -257,12 +257,12 @@ int JimBeam( char *cheat )
     PrimaryToFireLookup[ TRANSPULSE_CANNON ] = TRANSPULSE_CANNON;
     PrimaryToFireLookup[ SUSS_GUN ] = SUSS_GUN;
     PrimaryToFireLookup[ LASER ] = LASER;
-    PrimaryWeaponCheat = FALSE;
+    PrimaryWeaponCheat = false;
     FlashMenuText( "Beam me down", 120.0F, SFX_Secret );
   }
   else
   {
-    PrimaryWeaponCheat = TRUE;
+    PrimaryWeaponCheat = true;
     FlashMenuText( "Beam me up", 120.0F, SFX_Secret );
   }
   return 1;
@@ -302,11 +302,11 @@ int Lumberjack( char *cheat )
 //    SecondaryToFireLookup[ ENEMYFIREBALL ] = ENEMYFIREBALL;
 //    SecondaryToFireLookup[ ENEMYTENTACLE ] = ENEMYTENTACLE;
 //    SecondaryToFireLookup[ ENEMYDEPTHCHARGE ] = ENEMYDEPTHCHARGE;
-    SecondaryWeaponCheat = FALSE;
+    SecondaryWeaponCheat = false;
   }
   else
   {
-    SecondaryWeaponCheat = TRUE;
+    SecondaryWeaponCheat = true;
     FlashMenuText( "He works all night...", 120.0F, SFX_Secret );
   }
 #endif
@@ -317,7 +317,7 @@ int ToggleGodMode( char *cheat )
 {
   if( !GodMode )
   {
-    GodMode = TRUE;
+    GodMode = true;
     FlashMenuText( "God mode enabled", 120.0F, SFX_Secret );
     GivemeAllWeapons();
   }
@@ -325,7 +325,7 @@ int ToggleGodMode( char *cheat )
   {
     FlashMenuText( "God mode disabled", 120.0F, SFX_Secret );
     LoseAllWeapons();
-    GodMode = FALSE;
+    GodMode = false;
   }
   return 1;
 }
@@ -334,14 +334,14 @@ static struct
 {
   unsigned char cheatcode[ 16 ];
   int (*cheatfunc)( char * );
-  BOOL allowmultiplayer;
+  _Bool allowmultiplayer;
   int next;
 } CheatTable[] = 
 {
-  { { SDLK_b, SDLK_u, SDLK_b, SDLK_b, SDLK_l, SDLK_e, SDLK_s, 0 }, EnableCheats, TRUE, 0 },
-  { { SDLK_j, SDLK_i, SDLK_m, SDLK_b, SDLK_e, SDLK_a, SDLK_m, 0 }, JimBeam, FALSE, 0 },
-  { { SDLK_l, SDLK_u, SDLK_m, SDLK_b, SDLK_e, SDLK_r, SDLK_j, SDLK_a, SDLK_c, SDLK_k, 0 }, Lumberjack, FALSE, 0 },
-  { { SDLK_i, SDLK_a, SDLK_m, SDLK_z, SDLK_e, SDLK_u, SDLK_s, 0 }, ToggleGodMode, FALSE, 0 },
+  { { SDLK_b, SDLK_u, SDLK_b, SDLK_b, SDLK_l, SDLK_e, SDLK_s, 0 }, EnableCheats, true, 0 },
+  { { SDLK_j, SDLK_i, SDLK_m, SDLK_b, SDLK_e, SDLK_a, SDLK_m, 0 }, JimBeam, false, 0 },
+  { { SDLK_l, SDLK_u, SDLK_m, SDLK_b, SDLK_e, SDLK_r, SDLK_j, SDLK_a, SDLK_c, SDLK_k, 0 }, Lumberjack, false, 0 },
+  { { SDLK_i, SDLK_a, SDLK_m, SDLK_z, SDLK_e, SDLK_u, SDLK_s, 0 }, ToggleGodMode, false, 0 },
 };
 // NOTE: add any new cheats to DisableCheats function to ensure they are not active in multiplayer game
 
@@ -488,11 +488,11 @@ short key_held( USERKEY *k )
 
 void DisableCheats( void )
 {
-  CheatsEnabled = FALSE;
-  DebugInfo = FALSE;
+  CheatsEnabled = false;
+  DebugInfo = false;
 
   // used to indicate cheats disabled for multiplayer game...
-  CheatsDisabled = TRUE;
+  CheatsDisabled = true;
 
   if( PrimaryWeaponCheat )
     JimBeam( NULL );
@@ -547,7 +547,7 @@ void CheckCheats( int key )
 static void ReadKeyboard( void )
 {
 	int i, nkeys;
-	Uint8 * keys;
+	u_int8_t * keys;
 
 	if( flush_input )
 	{
@@ -609,7 +609,7 @@ void ReadInput( void )
 		}
 	}
 
-	flush_input = FALSE;
+	flush_input = false;
 }
 
 void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
@@ -690,19 +690,19 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   turn_sign = ( conf->invert_turn ) ? -1.0F : 1.0F;
 
   if ( key_held( &conf->full_rear_view ) )
-    FullRearView = TRUE;
+    FullRearView = true;
   else
-    FullRearView = FALSE;
+    FullRearView = false;
 
   if( key_held( &conf->show_messages))
-	  ShowMessages = TRUE;
+	  ShowMessages = true;
   else
-	  ShowMessages = FALSE;
+	  ShowMessages = false;
 
   if( key_held( &conf->show_stats))
-	  ShowStatistics = TRUE;
+	  ShowStatistics = true;
   else
-	  ShowStatistics = FALSE;
+	  ShowStatistics = false;
 
   if ( key_pressed( &conf->headlights ) )
 		Ships[WhoIAm].headlights = !Ships[WhoIAm].headlights;
@@ -889,7 +889,7 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 #ifdef PLAYER_SPEECH_TAUNTS
   if( key_pressed( &conf->send_speech )  )
   {
-    PlaySpecificBikerSpeech( SFX_BIKER_TN, Ships[ WhoIAm ].Object.Group, &Ships[WhoIAm].Object.Pos, 0.0F, player_config->bike, -1, FALSE ); // don't update
+    PlaySpecificBikerSpeech( SFX_BIKER_TN, Ships[ WhoIAm ].Object.Group, &Ships[WhoIAm].Object.Pos, 0.0F, player_config->bike, -1, false ); // don't update
     if( MyGameStatus == STATUS_Normal )
     {
 		SendBikerTaunt(); // (Sfx.c)
@@ -1106,7 +1106,7 @@ HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
 void SetUpJoystickAxis(int joystick)
 {
   DIPROPRANGE diprg;
-  BOOL DeadzoneNotSet = FALSE;
+  _Bool DeadzoneNotSet = false;
   int i;
   
   // set axis range to (-100 ... +100)
@@ -1130,12 +1130,12 @@ void SetUpJoystickAxis(int joystick)
     diprg.diph.dwObj        = DIJOFS_X;
     if( !lpdiJoystick[joystick] )
 	{
-      JoystickInfo[joystick].Axis[AXIS_XAxis].exists = FALSE; // cannot set range, therefore do not allow axis
+      JoystickInfo[joystick].Axis[AXIS_XAxis].exists = false; // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for X axis because lpdiJoystick[joystick] is NULL\n" );
 	}
 	else if ( lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
-      JoystickInfo[joystick].Axis[AXIS_XAxis].exists = FALSE; // cannot set range, therefore do not allow axis
+      JoystickInfo[joystick].Axis[AXIS_XAxis].exists = false; // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for X axis\n" );
     }
 	else
@@ -1149,7 +1149,7 @@ void SetUpJoystickAxis(int joystick)
       if (SetDIDwordProperty(lpdiJoystick[joystick], DIPROP_DEADZONE, DIJOFS_X, DIPH_BYOFFSET, (DWORD)(JoystickInfo[joystick].Axis[AXIS_XAxis].deadzone * 100)) != DI_OK)
       {
         // cannot set deadzone - but just ignore for now...
-        DeadzoneNotSet = TRUE;
+        DeadzoneNotSet = true;
         DebugPrintf( "SetUpJoystickAxis: failed to set deadzone for X axis\n" );
       }
     }
@@ -1163,7 +1163,7 @@ void SetUpJoystickAxis(int joystick)
     diprg.diph.dwObj        = DIJOFS_Y;
     if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
-      JoystickInfo[joystick].Axis[AXIS_YAxis].exists = FALSE; // cannot set range, therefore do not allow axis
+      JoystickInfo[joystick].Axis[AXIS_YAxis].exists = false; // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for Y axis\n" );
     }else
     {
@@ -1174,7 +1174,7 @@ void SetUpJoystickAxis(int joystick)
       if (SetDIDwordProperty(lpdiJoystick[joystick], DIPROP_DEADZONE, DIJOFS_Y, DIPH_BYOFFSET, (DWORD)(JoystickInfo[joystick].Axis[AXIS_YAxis].deadzone * 100)) != DI_OK)
       {
         // cannot set deadzone - but just ignore for now...
-        DeadzoneNotSet = TRUE;
+        DeadzoneNotSet = true;
         DebugPrintf( "SetUpJoystickAxis: failed to set deadzone for Y axis\n" );
       }
     }
@@ -1188,7 +1188,7 @@ void SetUpJoystickAxis(int joystick)
     diprg.diph.dwObj        = DIJOFS_Z;
     if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
-      JoystickInfo[joystick].Axis[AXIS_ZAxis].exists = FALSE; // cannot set range, therefore do not allow axis
+      JoystickInfo[joystick].Axis[AXIS_ZAxis].exists = false; // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for Z axis\n" );
     }else
     {
@@ -1199,7 +1199,7 @@ void SetUpJoystickAxis(int joystick)
       if (SetDIDwordProperty(lpdiJoystick[joystick], DIPROP_DEADZONE, DIJOFS_Z, DIPH_BYOFFSET, (DWORD)(JoystickInfo[joystick].Axis[AXIS_ZAxis].deadzone * 100)) != DI_OK)
       {
         // cannot set deadzone - but just ignore for now...
-        DeadzoneNotSet = TRUE;
+        DeadzoneNotSet = true;
         DebugPrintf( "SetUpJoystickAxis: failed to set deadzone for Z axis\n" );
       }
     }
@@ -1213,7 +1213,7 @@ void SetUpJoystickAxis(int joystick)
     diprg.diph.dwObj        = DIJOFS_RX;
     if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
-      JoystickInfo[joystick].Axis[AXIS_RxAxis].exists = FALSE;  // cannot set range, therefore do not allow axis
+      JoystickInfo[joystick].Axis[AXIS_RxAxis].exists = false;  // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for Rx axis\n" );
     }else
     {
@@ -1224,7 +1224,7 @@ void SetUpJoystickAxis(int joystick)
       if (SetDIDwordProperty(lpdiJoystick[joystick], DIPROP_DEADZONE, DIJOFS_RX, DIPH_BYOFFSET, (DWORD)(JoystickInfo[joystick].Axis[AXIS_RxAxis].deadzone * 100)) != DI_OK)
       {
         // cannot set deadzone - but just ignore for now...
-        DeadzoneNotSet = TRUE;
+        DeadzoneNotSet = true;
         DebugPrintf( "SetUpJoystickAxis: failed to set deadzone for Rx axis\n" );
       }
     }
@@ -1238,7 +1238,7 @@ void SetUpJoystickAxis(int joystick)
     diprg.diph.dwObj        = DIJOFS_RY;
     if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
-      JoystickInfo[joystick].Axis[AXIS_RyAxis].exists = FALSE;  // cannot set range, therefore do not allow axis
+      JoystickInfo[joystick].Axis[AXIS_RyAxis].exists = false;  // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for Ry axis\n" );
     }else
     {
@@ -1249,7 +1249,7 @@ void SetUpJoystickAxis(int joystick)
       if (SetDIDwordProperty(lpdiJoystick[joystick], DIPROP_DEADZONE, DIJOFS_RY, DIPH_BYOFFSET, (DWORD)(JoystickInfo[joystick].Axis[AXIS_RyAxis].deadzone * 100)) != DI_OK)
       {
         // cannot set deadzone - but just ignore for now...
-        DeadzoneNotSet = TRUE;
+        DeadzoneNotSet = true;
         DebugPrintf( "SetUpJoystickAxis: failed to set deadzone for Ry axis\n" );
       }
     }
@@ -1263,7 +1263,7 @@ void SetUpJoystickAxis(int joystick)
     diprg.diph.dwObj        = DIJOFS_RZ;
     if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
-      JoystickInfo[joystick].Axis[AXIS_RzAxis].exists = FALSE;  // cannot set range, therefore do not allow axis
+      JoystickInfo[joystick].Axis[AXIS_RzAxis].exists = false;  // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for Rz axis\n" );
     }else
     {
@@ -1274,7 +1274,7 @@ void SetUpJoystickAxis(int joystick)
       if (SetDIDwordProperty(lpdiJoystick[joystick], DIPROP_DEADZONE, DIJOFS_RZ, DIPH_BYOFFSET, (DWORD)(JoystickInfo[joystick].Axis[AXIS_RzAxis].deadzone * 100)) != DI_OK)
       {
         // cannot set deadzone - but just ignore for now...
-        DeadzoneNotSet = TRUE;
+        DeadzoneNotSet = true;
         DebugPrintf( "SetUpJoystickAxis: failed to set deadzone for Rz axis\n" );
       }
     }
@@ -1291,7 +1291,7 @@ void SetUpJoystickAxis(int joystick)
       diprg.diph.dwObj        = DIJOFS_SLIDER(i);
       if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
       {
-        JoystickInfo[joystick].Axis[AXIS_SliderAxis0 + i].exists = FALSE; // cannot set range, therefore do not allow axis
+        JoystickInfo[joystick].Axis[AXIS_SliderAxis0 + i].exists = false; // cannot set range, therefore do not allow axis
         DebugPrintf( "SetUpJoystickAxis: failed to set range for Slider%d axis\n", i );
       }else
       {
@@ -1303,7 +1303,7 @@ void SetUpJoystickAxis(int joystick)
         if (SetDIDwordProperty(lpdiJoystick[joystick], DIPROP_DEADZONE, DIJOFS_SLIDER(i), DIPH_BYOFFSET, (DWORD)(JoystickInfo[joystick].Axis[AXIS_SliderAxis0 + i].deadzone * 100)) != DI_OK)
         {
           // cannot set deadzone - but just ignore for now...
-          DeadzoneNotSet = TRUE;
+          DeadzoneNotSet = true;
           DebugPrintf( "SetUpJoystickAxis: failed to set deadzone for Slider%d axis\n", i );
         }
       }
@@ -1312,7 +1312,7 @@ void SetUpJoystickAxis(int joystick)
 
   // could do something about unset deadzones here...
   if (DeadzoneNotSet)
-    DeadzoneNotSet = FALSE;
+    DeadzoneNotSet = false;
 
 }
 
@@ -1384,14 +1384,14 @@ int GetPOVMask( DWORD pov )
   return mask;
 }
 
-BOOL joystick_poll( int joysticknum )
+_Bool joystick_poll( int joysticknum )
 {
    HRESULT hRes;
    int i, j, povdir;
 
    /* joystick doesn't exist */
    if( !lpdiJoystick[joysticknum] )
-     return FALSE;
+     return false;
 
 poll:
 
@@ -1417,7 +1417,7 @@ poll:
 
      // must be a deeper issue
      if ( hRes != DI_OK )
-       return FALSE;
+       return false;
 
      // try again
      goto poll;
@@ -1428,7 +1428,7 @@ poll:
    case DIERR_NOTINITIALIZED:
 
      // must be a deeper issue
-     return FALSE;
+     return false;
      break;
 
    }
@@ -1458,7 +1458,7 @@ state:
 
      // must be a deeper issue
      if ( hRes != DI_OK )
-       return FALSE;
+       return false;
 
      // try again
      goto state;
@@ -1469,13 +1469,13 @@ state:
    case DIERR_NOTINITIALIZED:
       
      // must be a deeper issue
-     return FALSE;
+     return false;
      break;
 
    // Data is not yet available. 
    case E_PENDING:
      // no data just say ok and get out of here
-     return TRUE;
+     return true;
      break;
 
    }
@@ -1494,7 +1494,7 @@ povs:
    }
 
    /* everything fine */
-   return TRUE;
+   return true;
 }
 
 #else // ! DINPUTJOY
@@ -1503,12 +1503,12 @@ void SetUpJoystickAxis(int joystick)
 {
 }
 
-BOOL joystick_poll( int joysticknum )
+_Bool joystick_poll( int joysticknum )
 {
 	int i;
 
 	if(joysticknum >= Num_Joysticks)
-		return FALSE;
+		return false;
 
 	// copy joystick button state
 	for( i = 0; i < MAX_JOYSTICK_BUTTONS; i++ )
@@ -1528,7 +1528,7 @@ BOOL joystick_poll( int joysticknum )
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 #endif // !  DINPUTJOY
@@ -1608,67 +1608,67 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
   Procedure : Check if any buttons of a specific joystick are
         : pressed
   Input   : int     Joystick Number
-  Output    : BOOL    TRUE/FALSE
+  Output    : _Bool    true/false
 ===================================================================*/
-BOOL IsJoystickButtonPressed( int joysticknum )
+_Bool IsJoystickButtonPressed( int joysticknum )
 {
   int i;
 
 #ifdef DINPUTJOY
   if( !lpdiJoystick[joysticknum] )
-    return( FALSE );
+    return( false );
 #else
   if( joysticknum >= Num_Joysticks )
-	  return FALSE;
+	  return false;
 #endif
 
   for( i = 0; i < JoystickInfo[joysticknum].NumButtons; i++)
   {
     if ( JOYSTICK_BUTTON_PRESSED( joysticknum, i ) )
     {
-      return( TRUE );
+      return( true );
     }
   }
 
-  return( FALSE );
+  return( false );
 }
 
 /*===================================================================
   Procedure : Check if any buttons of a specific joystick are
         : released
   Input   : int     Joystick Number
-  Output    : BOOL    TRUE/FALSE
+  Output    : _Bool    true/false
 ===================================================================*/
-BOOL IsJoystickButtonReleased( int joysticknum )
+_Bool IsJoystickButtonReleased( int joysticknum )
 {
   int i;
 
 #ifdef DINPUTJOY
   if( !lpdiJoystick[joysticknum] )
-    return( FALSE );
+    return( false );
 #else
   if( joysticknum >= Num_Joysticks )
-	  return FALSE;
+	  return false;
 #endif
 
   for( i = 0; i < JoystickInfo[joysticknum].NumButtons; i++)
   {
     if ( JOYSTICK_BUTTON_RELEASED( joysticknum, i ) )
     {
-      return( TRUE );
+      return( true );
     }
   }
 
-  return( FALSE );
+  return( false );
 }
 
 /*===================================================================
   Procedure : Check if any buttons of a any connected joystick
         : are pressed
   Input   : Nothing
-  Output    : BOOL    TRUE/FALSE
+  Output    : _Bool    true/false
 ===================================================================*/
-BOOL IsAnyJoystickButtonPressed( void )
+_Bool IsAnyJoystickButtonPressed( void )
 {
   int joystick;
 
@@ -1676,19 +1676,19 @@ BOOL IsAnyJoystickButtonPressed( void )
   {
     if( IsJoystickButtonPressed( joystick ) )
     {
-      return( TRUE );
+      return( true );
     }
   }
-  return( FALSE );
+  return( false );
 }
 
 /*===================================================================
   Procedure : Check if any buttons of a any connected joystick
         : are released
   Input   : Nothing
-  Output    : BOOL    TRUE/FALSE
+  Output    : _Bool    true/false
 ===================================================================*/
-BOOL IsAnyJoystickButtonReleased( void )
+_Bool IsAnyJoystickButtonReleased( void )
 {
   int joystick;
 
@@ -1696,8 +1696,8 @@ BOOL IsAnyJoystickButtonReleased( void )
   {
     if( IsJoystickButtonReleased( joystick ) )
     {
-      return( TRUE );
+      return( true );
     }
   }
-  return( FALSE );
+  return( false );
 }

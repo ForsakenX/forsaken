@@ -415,7 +415,7 @@ void QuatFromVector2( VECTOR * Tv, QUAT * q )
 				:		QUAT	*	a ( start unit quaternions )
 				:		QUAT	*	b ( end unit quaternions )
 				:		QUAT	*	q ( output interpolated quaternion )
-				:		int16		spin ( number of extra spin rotations )
+				:		int16_t		spin ( number of extra spin rotations )
 	Output		:		Nothing
 ===================================================================*/
 void Quaternion_Slerp( float alpha, QUAT * a, QUAT * b, QUAT * q, int spin )
@@ -432,11 +432,11 @@ void Quaternion_Slerp( float alpha, QUAT * a, QUAT * b, QUAT * q, int spin )
  	if( cos_t < 0.0F )
 	{
 		cos_t = -cos_t;
-		bflip = TRUE;
+		bflip = true;
 	}
 	else
 	{
-		bflip = FALSE;
+		bflip = false;
 	}
 
 	/* if B is (within precision limits) the same as A,

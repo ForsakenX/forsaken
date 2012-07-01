@@ -77,30 +77,7 @@
 #define MAXLEVELS			(64)
 #define	MAGIC_NUMBER		0x584A5250
 
-#ifndef	TRUE
-#define	TRUE					(1==1)
-#endif
-
-#ifndef	FALSE
-#define	FALSE					(!TRUE)
-#endif
-
 #define	GLOBAL_SCALE			(0.25F)
-
-typedef	unsigned char		uint8;			/* Unsigned 8 Bit Integer  */
-typedef	char			int8;			/* Signed 8 Bit Integer    */
-typedef	unsigned short int	uint16;			/* Unsigned 16 Bit Integer */
-typedef	short int		int16;			/* Signed 16 bit Integer   */
-typedef	unsigned long		uint32;			/* Unsigned 32 Bit Integer */
-typedef	long			int32;			/* Signed 32 Bit Integer   */
-
-typedef int                 BOOL; // use c99 ones
-typedef unsigned char       BYTE;
-
-typedef unsigned long       DWORD;
-typedef unsigned short      WORD;
-
-typedef unsigned char uchar_t;
 
 typedef struct
 {
@@ -136,6 +113,9 @@ typedef struct
 #include <math.h>
 #endif
 
+// c99 boolean support
+#include <stdbool.h>
+
 // on osx trying to include malloc will not work
 // this brings in malloc on linux and osx
 #include <stdlib.h>
@@ -146,4 +126,9 @@ typedef struct
 // should be included after malloc/stdlib
 #include "xmem.h"
 
+// winapi compatibility
+typedef u_int8_t  BYTE;
+typedef u_int32_t DWORD;
+typedef u_int16_t WORD;
+ 
 #endif	// MAIN_INCLUDED

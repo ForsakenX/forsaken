@@ -55,7 +55,7 @@ extern	float			framelag;
 extern	XLIGHT * FirstLightVisible;
 
 extern	RENDERMATRIX		identity;
-extern	uint16			IsGroupVisible[MAXGROUPS];
+extern	u_int16_t			IsGroupVisible[MAXGROUPS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
 extern	VECTOR			SlideUp;
@@ -63,19 +63,19 @@ extern	VECTOR			SlideDown;
 extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
 
-extern	uint16			FirstSecBullUsed;
+extern	u_int16_t			FirstSecBullUsed;
 extern	SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
-extern	int16			SecondaryAmmo[ MAXSECONDARYWEAPONS ];
-extern	int16			SecAmmoUsed[ MAXSECONDARYWEAPONS ];
+extern	int16_t			SecondaryAmmo[ MAXSECONDARYWEAPONS ];
+extern	int16_t			SecAmmoUsed[ MAXSECONDARYWEAPONS ];
 
 extern	MATRIX			MATRIX_Identity;
 
 extern	XLIGHT			XLights[ MAXXLIGHTS ];
-extern	uint16			FirstXLightUsed;
-extern	uint16			FirstXLightFree;
+extern	u_int16_t			FirstXLightUsed;
+extern	u_int16_t			FirstXLightFree;
 extern	PICKUP			Pickups[ MAXPICKUPS ];
 
-extern	int16			NumPickupsPerGroup[ MAXGROUPS ];
+extern	int16_t			NumPickupsPerGroup[ MAXGROUPS ];
 extern	MODELNAME		TitleModelNames[MAXMODELHEADERS];
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	ENEMY	*		FirstEnemyUsed;
@@ -84,30 +84,30 @@ extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	POLY			Polys[MAXPOLYS];
 extern	FRAME_INFO	*	Flare_Header;
 extern	PRIMARYWEAPONBULLET	PrimBulls[MAXPRIMARYWEAPONBULLETS];
-extern	uint16			GlobalPrimBullsID;
-extern	uint16			GlobalSecBullsID;
-extern	int16			BikeModels[ MAXBIKETYPES ];
+extern	u_int16_t			GlobalPrimBullsID;
+extern	u_int16_t			GlobalSecBullsID;
+extern	int16_t			BikeModels[ MAXBIKETYPES ];
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
-extern	BOOL			IsHost;
+extern	_Bool			IsHost;
 extern	float			NmeDamageModifier;
-extern	int32			ColPerspective;
-extern	BOOL			TeamGame;
+extern	int32_t			ColPerspective;
+extern	_Bool			TeamGame;
 extern	BYTE			TeamNumber[MAX_PLAYERS];
-extern BOOL BikeExpanded;
+extern _Bool BikeExpanded;
 extern	ENEMY			Enemies[ MAXENEMIES ];
 extern	BIKEINFO		BikeCompFiles[ MAXBIKETYPES ];
-extern	BOOL			BikeExhausts;
-extern	int16			CameraRendering;
-extern	BOOL			PlayDemo;
+extern	_Bool			BikeExhausts;
+extern	int16_t			CameraRendering;
+extern	_Bool			PlayDemo;
 extern	BYTE			ChangeLevel_MyGameStatus;
-extern	BOOL			CaptureTheFlag;
-extern	BOOL			CTF;
-extern	BOOL			BikeEnginesOn;
+extern	_Bool			CaptureTheFlag;
+extern	_Bool			CTF;
+extern	_Bool			BikeEnginesOn;
 
 extern int KillMessageColour;
 extern int MatureContent;
 
-void RefreshModel( uint16 model );
+void RefreshModel( u_int16_t model );
 
 #define BALL_RADIUS	( 256 * GLOBAL_SCALE )
 #define	NUMBIKEDETAILS	4
@@ -121,542 +121,542 @@ extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);
 void CheckModelLinkList( void );
 void UpdateTracker( void );
 void CreateTracker( void );
-uint16	Tracker = (uint16) -1;
-uint16	TrackerTarget = (uint16) -1;
+u_int16_t	Tracker = (u_int16_t) -1;
+u_int16_t	TrackerTarget = (u_int16_t) -1;
 MODEL	Models[MAXNUMOFMODELS];
-uint16	FirstModelUsed;
-uint16	FirstModelFree;
-int16	NextNewModel = -1;
-BOOL	ShowBoundingBoxes = FALSE;
+u_int16_t	FirstModelUsed;
+u_int16_t	FirstModelFree;
+int16_t	NextNewModel = -1;
+_Bool	ShowBoundingBoxes = false;
 
-int8	*	ModelPath = "data\\models\\";
+int8_t	*	ModelPath = "data\\models\\";
 
 MXLOADHEADER ModelHeaders[MAXMODELHEADERS];
 
-#define	RETAIN_POLYS		TRUE
-#define	DISCARD_POLYS		FALSE
+#define	RETAIN_POLYS		true
+#define	DISCARD_POLYS		false
 void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * Blue );
-BOOL	ENVMxa( MXALOADHEADER * Mxaloadheader , MATRIX * Mat ,VECTOR * Pos);
+_Bool	ENVMxa( MXALOADHEADER * Mxaloadheader , MATRIX * Mat ,VECTOR * Pos);
 
 /*===================================================================
 	In game models
 ===================================================================*/
 MODELNAME	ModelNames[MAXMODELHEADERS] ={	
 
-	{ "heat.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Heatseaker missile
-	{ "fheat.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "grav.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Gravgon
-	{ "fgrav.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "troj.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Trojax
-	{ "stroj.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "prlt.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Pyrolyte
-	{ "sprlt.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "trans.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Transpulse
-	{ "strans.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "sus.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Suss Gun
-	{ "ssus.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
-	{ "beam.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Beam Laser
-	{ "sbeam.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "pod.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// powerpod..
-	{ "spod.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
-	{ "fuel.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Fuel				
-//	{ "sfuel.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..				
-	{ "shld.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shield
-	{ "sshld.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "ammo.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Suss Gun
-	{ "sammo.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "nrg.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Energy
-	{ "snrg.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
-	{ "mug.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Mug Missile
-	{ "fmug.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
-	{ "mugs.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Mug pickup
-	{ "smugs.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "sctr.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Scatter Missile
-	{ "fsctr.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-//	{ "thef.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Thief Missile
-//	{ "fthef.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "titan.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Timer Missile
-	{ "titan.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "lnch.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Rocket Launcher
-	{ "slnch.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "comp.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Computer Targetting
-	{ "scomp.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "pin.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Pine Mine
-	{ "spin.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1 ..
-	{ "pine.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Pine Pickup
-	{ "spine.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "qpod.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Quantum Pickup
-	{ "sqpod.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "qpik.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Quantum Mine
-	{ "sqpik.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "prge.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Purge Mine
-	{ "sprge.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-//	{ "spid.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Spider Mine
-//	{ "sspid.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "heatpk.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Heatseaker
-	{ "sheatpk.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-//	{ "smok.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Smoke Streamer
-//	{ "ssmok.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "prgpod.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Purge Pickup
-	{ "sprgpod.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-//	{ "para.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Parasite Mine
-//	{ "spara.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "ntro.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Nitro
-	{ "sntro.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1
-//	{ "gogl.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Goggles
-//	{ "sgogl.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "vuln.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Invulnerability
-	{ "svuln.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "gold.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "mant.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Stealth Mantle
-	{ "smant.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-//	{ "flar.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Flare Pod
-//	{ "sflar.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-//	{ "spdpod.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Spider Pod
-//	{ "sspdpod.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "crys.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "orb.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Orbital Pulsar
-	{ "sorb.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1 ..
-	{ "xtra.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Extra Life
-	{ "sxtra.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
-	{ "fpin.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "ball1.mx" , 2 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Ball
-	{ "ball2.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "ball3.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 2..
-//	{ "chaf.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Chaff
-//	{ "schaf.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-//	{ "pnlmesh.mx" , 0 , TRUE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// the Panel....
-	{ "gpod.mx" , 1 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Golden Powerpod
-	{ "sgldpod.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
-	{ "orb2.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Orbit pulsar
-	{ "orb3.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Orbit pulsar ( Light Model )
-	{ "gren.mx" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Titan Star Shrapnel
-	{ "tracker.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Ian's Tracker
-	{ "ping.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Ian's ping
-	{ "brain.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Brain
-	{ "ear.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Ear
-	{ "eyeball.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Daniel's Eyeball
-	{ "heart.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Heart
-	{ "kidney.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Kidney
-	{ "leg.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Leg
-	{ "shockwave.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Explosion Donut
-	{ "nmemisil.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// NME Missile
-	{ "dna.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// DNA Pickup
-	{ "key.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Skeleton Key Pickup
-	{ "shrap1.mx", 1, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel
-	{ "lshrap1.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1
-	{ "shrap2.mx", 1, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel2
-	{ "lshrap2.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1
-	{ "glass.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel
-	{ "rock1.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1
-	{ "rock2.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel2
-	{ "bomb.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Bomb Pickup
-	{ "goldfig.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Gold Figure
-	{ "flagmrphwave000.mxa" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Flag
-	{ "redflagwave000.mxa" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, // Red Flag
-	{ "greenflagwave000.mxa" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Green Flag
-	{ "blueflagwave000.mxa" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Blue Flag
-	{ "yellowflagwave000.mxa" , 0 , FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Yellow Flag
+	{ "heat.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Heatseaker missile
+	{ "fheat.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "grav.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Gravgon
+	{ "fgrav.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "troj.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Trojax
+	{ "stroj.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "prlt.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Pyrolyte
+	{ "sprlt.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "trans.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Transpulse
+	{ "strans.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "sus.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Suss Gun
+	{ "ssus.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
+	{ "beam.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Beam Laser
+	{ "sbeam.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "pod.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// powerpod..
+	{ "spod.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
+	{ "fuel.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Fuel				
+//	{ "sfuel.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..				
+	{ "shld.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shield
+	{ "sshld.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "ammo.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Suss Gun
+	{ "sammo.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "nrg.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Energy
+	{ "snrg.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
+	{ "mug.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Mug Missile
+	{ "fmug.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1..
+	{ "mugs.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Mug pickup
+	{ "smugs.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "sctr.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Scatter Missile
+	{ "fsctr.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+//	{ "thef.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Thief Missile
+//	{ "fthef.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "titan.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Timer Missile
+	{ "titan.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "lnch.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Rocket Launcher
+	{ "slnch.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "comp.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Computer Targetting
+	{ "scomp.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "pin.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Pine Mine
+	{ "spin.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1 ..
+	{ "pine.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Pine Pickup
+	{ "spine.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "qpod.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Quantum Pickup
+	{ "sqpod.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "qpik.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Quantum Mine
+	{ "sqpik.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "prge.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Purge Mine
+	{ "sprge.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+//	{ "spid.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Spider Mine
+//	{ "sspid.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "heatpk.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Heatseaker
+	{ "sheatpk.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+//	{ "smok.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Smoke Streamer
+//	{ "ssmok.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "prgpod.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Purge Pickup
+	{ "sprgpod.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+//	{ "para.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Parasite Mine
+//	{ "spara.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "ntro.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Nitro
+	{ "sntro.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1
+//	{ "gogl.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Goggles
+//	{ "sgogl.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "vuln.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Invulnerability
+	{ "svuln.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "gold.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mant.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Stealth Mantle
+	{ "smant.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+//	{ "flar.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Flare Pod
+//	{ "sflar.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+//	{ "spdpod.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Spider Pod
+//	{ "sspdpod.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "crys.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "orb.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Orbital Pulsar
+	{ "sorb.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1 ..
+	{ "xtra.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Extra Life
+	{ "sxtra.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1 ..
+	{ "fpin.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "ball1.mx" , 2 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Ball
+	{ "ball2.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "ball3.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 2..
+//	{ "chaf.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Chaff
+//	{ "schaf.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+//	{ "pnlmesh.mx" , 0 , true, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// the Panel....
+	{ "gpod.mx" , 1 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Golden Powerpod
+	{ "sgldpod.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1..
+	{ "orb2.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Orbit pulsar
+	{ "orb3.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Orbit pulsar ( Light Model )
+	{ "gren.mx" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Titan Star Shrapnel
+	{ "tracker.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Ian's Tracker
+	{ "ping.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Ian's ping
+	{ "brain.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Brain
+	{ "ear.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Ear
+	{ "eyeball.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Daniel's Eyeball
+	{ "heart.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Heart
+	{ "kidney.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Kidney
+	{ "leg.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Daniel's Leg
+	{ "shockwave.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Explosion Donut
+	{ "nmemisil.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// NME Missile
+	{ "dna.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// DNA Pickup
+	{ "key.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Skeleton Key Pickup
+	{ "shrap1.mx", 1, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel
+	{ "lshrap1.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// LOD 1
+	{ "shrap2.mx", 1, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel2
+	{ "lshrap2.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1
+	{ "glass.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel
+	{ "rock1.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// LOD 1
+	{ "rock2.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Shrapnel2
+	{ "bomb.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Bomb Pickup
+	{ "goldfig.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Gold Figure
+	{ "flagmrphwave000.mxa" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Flag
+	{ "redflagwave000.mxa" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, // Red Flag
+	{ "greenflagwave000.mxa" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Green Flag
+	{ "blueflagwave000.mxa" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Blue Flag
+	{ "yellowflagwave000.mxa" , 0 , false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }, //Yellow Flag
 
 
-	{ "tc-01.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Tom-Cruise Anim
-	{ "tc-02.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-03.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-04.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-05.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-06.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-07.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-08.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-09.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-10.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-11.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-12.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-13.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-14.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-15.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-16.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-17.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-18.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-19.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-20.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-21.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-22.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-23.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-24.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-25.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-26.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "tc-27.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-01.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Tom-Cruise Anim
+	{ "tc-02.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-03.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-04.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-05.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-06.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-07.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-08.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-09.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-10.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-11.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-12.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-13.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-14.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-15.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-16.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-17.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-18.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-19.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-20.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-21.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-22.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-23.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-24.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-25.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-26.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "tc-27.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
 #ifdef SHADOWTEST
 )
-	{ "borg400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "borg300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "borg200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "borg100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "borg050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sborg300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "borg300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sborg300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "brd400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "brd300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "brd200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "brd100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "brd050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sbrd300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "brd300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sbrd300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "laj400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "laj300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "laj200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "laj100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "laj050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "slaj300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-
-	{ "xcop400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "xcop300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "xcop200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "xcop100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "xcop050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sxcop300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "truk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "truk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "truk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "truk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "truk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "struk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "laj300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "slaj300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
-	{ "foet400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "foet300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "foet200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "foet100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "foet050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sfoet300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "xcop300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sxcop300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "jap400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "jap300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jap200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jap100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jap050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sjap300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "nut400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "nut300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nut200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nut100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nut050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "snut300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "rhes400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "rhes300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "rhes200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "rhes100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "rhes050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "srhes300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "jo400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
-	{ "jo300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jo200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jo100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jo050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sjo300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "shrk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "shrk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shrk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shrk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shrk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sshrk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "hk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
-	{ "hk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "hk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "hk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "hk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "shk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "nbia400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "nbia300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nbia200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nbia100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nbia050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "snbia300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "truk300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "struk300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
-	{ "mofi400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "mofi300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "mofi200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "mofi100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "mofi050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "smofi300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "foet300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sfoet300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "jap400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "jap300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jap200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jap100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jap050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sjap300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "nut400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "nut300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nut200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nut100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nut050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "snut300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "rhes400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "rhes300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "rhes200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "rhes100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "rhes050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "srhes300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "jo400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
+	{ "jo300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jo200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jo100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jo050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sjo300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "shrk400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "shrk300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shrk200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shrk100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shrk050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sshrk300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "hk400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
+	{ "hk300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "hk200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "hk100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "hk050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "shk300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "nbia400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "nbia300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nbia200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nbia100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nbia050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "snbia300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
-	{ "cerb400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "cerb300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "cerb200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "cerb100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "cerb050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "scerb300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mofi400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "mofi300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mofi200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mofi100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mofi050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "smofi300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
-	{ "slick400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "slick300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slick200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slick100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slick050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sslick300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "cerb400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "cerb300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "cerb200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "cerb100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "cerb050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "scerb300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+
+	{ "slick400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "slick300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slick200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slick100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slick050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick400.mxa", 4, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sslick300.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick200.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick100.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick050.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
 #else
 
 
-	{ "borg400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "borg300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "borg200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "borg100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "borg050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sborg300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sborg050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "borg300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "borg050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sborg300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sborg050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "brd400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "brd300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "brd200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "brd100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "brd050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sbrd300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sbrd050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-
-	{ "laj400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "laj300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "laj200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "laj100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "laj050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "slaj300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slaj050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "brd300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "brd050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sbrd300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sbrd050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
-	{ "xcop400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "xcop300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "xcop200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "xcop100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "xcop050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sxcop300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sxcop050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-
-	{ "truk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "truk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "truk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "truk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "truk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "struk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "struk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "laj300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "laj050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "slaj300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slaj050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 
-	{ "foet400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "foet300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "foet200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "foet100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "foet050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sfoet300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sfoet050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "xcop300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "xcop050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sxcop300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sxcop050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "jap400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "jap300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jap200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jap100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jap050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sjap300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjap050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "truk300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "truk050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "struk300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "struk050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "nut400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "nut300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nut200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nut100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nut050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "snut300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snut050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "rhes400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "rhes300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "rhes200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "rhes100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "rhes050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "srhes300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "srhes050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "foet300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "foet050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sfoet300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sfoet050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "jo400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
-	{ "jo300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jo200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jo100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "jo050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sjo300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sjo050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jap400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "jap300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jap200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jap100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jap050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sjap300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjap050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "shrk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "shrk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shrk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shrk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shrk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sshrk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sshrk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nut400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "nut300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nut200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nut100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nut050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "snut300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snut050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "hk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
-	{ "hk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "hk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "hk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "hk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "shk300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "shk050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "rhes400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "rhes300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "rhes200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "rhes100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "rhes050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "srhes300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "srhes050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "nbia400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "nbia300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nbia200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nbia100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "nbia050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "snbia300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "snbia050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jo400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
+	{ "jo300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jo200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jo100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "jo050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sjo300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sjo050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "mofi400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "mofi300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "mofi200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "mofi100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "mofi050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "smofi300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "smofi050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shrk400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "shrk300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shrk200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shrk100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shrk050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sshrk300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sshrk050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "cerb400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "cerb300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "cerb200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "cerb100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "cerb050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "scerb300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "scerb050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "hk400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Unstealthed
+	{ "hk300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "hk200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "hk100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "hk050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "shk300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "shk050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
-	{ "slick400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
-	{ "slick300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slick200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slick100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slick050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick400.mxa", 4, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
-	{ "sslick300.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick200.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick100.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "sslick050.mxa", 0, FALSE, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nbia400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "nbia300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nbia200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nbia100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "nbia050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "snbia300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "snbia050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "mofi400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "mofi300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mofi200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mofi100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "mofi050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "smofi300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "smofi050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "cerb400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "cerb300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "cerb200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "cerb100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "cerb050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "scerb300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "scerb050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+
+	{ "slick400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Unstealthed
+	{ "slick300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slick200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slick100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slick050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick400.mxa", 4, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Stealthed
+	{ "sslick300.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick200.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick100.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "sslick050.mxa", 0, false, MODELTYPE_Morphing, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 
 #endif
 
-	{ "" , 0 , FALSE, MODELTYPE_Static, 0, FALSE, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }
+	{ "" , 0 , false, MODELTYPE_Static, 0, false, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }
 };
 
 /*===================================================================
@@ -665,64 +665,64 @@ MODELNAME	ModelNames[MAXMODELHEADERS] ={
 MODELNAME *TitleModelSet;
 
 MODELNAME	TitleModelNames[ MAXMODELHEADERS ] ={	
-	{ "disc1.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 1
-	{ "disc2.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 2
-	{ "disc3.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 3
-	{ "disc4.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 4
-	{ "disc5.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 5
-	{ "disc6.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 6
-	{ "mbot.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Bot. of mech. device
-	{ "menuroom.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// main title screen room
-	{ "vdu.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// VDU
-	{ "holopad.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Holopad
-	{ "mtop.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Top of mech. device
-	{ "menutvdummy.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
-	{ "menutv.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
-	{ "hglaire.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// translucent glare effect for holopad
-	{ "bracket.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// VDU bracket
-	{ "borg400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "brd400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "laj400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "xcop400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "truk400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "foet400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "jap400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "nut400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "rhes400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "jo400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			
-	{ "shrk400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "hk400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			
-	{ "nbia400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "mofi400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
-	{ "cerb400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "slick400.mxa", 0, FALSE, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "" , 0 , FALSE, MODELTYPE_Static, 0, FALSE, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }
+	{ "disc1.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 1
+	{ "disc2.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 2
+	{ "disc3.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 3
+	{ "disc4.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 4
+	{ "disc5.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 5
+	{ "disc6.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 6
+	{ "mbot.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Bot. of mech. device
+	{ "menuroom.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// main title screen room
+	{ "vdu.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// VDU
+	{ "holopad.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Holopad
+	{ "mtop.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Top of mech. device
+	{ "menutvdummy.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
+	{ "menutv.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
+	{ "hglaire.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// translucent glare effect for holopad
+	{ "bracket.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// VDU bracket
+	{ "borg400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "brd400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "laj400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "xcop400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "truk400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "foet400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "jap400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "nut400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "rhes400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "jo400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			
+	{ "shrk400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "hk400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			
+	{ "nbia400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "mofi400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		
+	{ "cerb400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "slick400.mxa", 0, false, MODELTYPE_Morphing, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "" , 0 , false, MODELTYPE_Static, 0, false, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }
 };
 
 MODELNAME	InterLevelModelNames[ NUM_INTERLEVEL_MODELS + 1 ] ={
-	{ "disc1.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 1
-	{ "disc2.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 2
-	{ "disc3.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 3
-	{ "disc4.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 4
-	{ "disc5.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 5
-	{ "disc6.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 6
-	{ "mbot.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Bot. of mech. device
-	{ "menuroom.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// main title screen room
-	{ "vdu.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// VDU
-	{ "holopad.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Holopad
-	{ "mtop.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Top of mech. device
-	{ "menutvdummy.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
-	{ "menutv.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
-	{ "hglaire.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// translucent glare effect for holopad
-	{ "bracket.mx", 0, FALSE, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// VDU bracket
+	{ "disc1.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 1
+	{ "disc2.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 2
+	{ "disc3.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 3
+	{ "disc4.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 4
+	{ "disc5.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 5
+	{ "disc6.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Disc 6
+	{ "mbot.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Bot. of mech. device
+	{ "menuroom.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// main title screen room
+	{ "vdu.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// VDU
+	{ "holopad.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// Holopad
+	{ "mtop.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// Top of mech. device
+	{ "menutvdummy.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
+	{ "menutv.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },			// TV screen
+	{ "hglaire.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// translucent glare effect for holopad
+	{ "bracket.mx", 0, false, MODELTYPE_Static, 0, DISCARD_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },		// VDU bracket
 
-	{ "crys.mx" , 0 , FALSE, MODELTYPE_Static, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "gold.mx" , 0 , FALSE, MODELTYPE_Static, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
-	{ "" , 0 , FALSE, MODELTYPE_Static, 0, FALSE, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }
+	{ "crys.mx" , 0 , false, MODELTYPE_Static, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "gold.mx" , 0 , false, MODELTYPE_Static, 0, RETAIN_POLYS,  LOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "" , 0 , false, MODELTYPE_Static, 0, false, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD }
 };
 
 MODELNAME	SplashModelNames[ MAXMODELHEADERS ] ={
-	{ "" , 0 , FALSE, MODELTYPE_Static, 0, FALSE, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
+	{ "" , 0 , false, MODELTYPE_Static, 0, false, DONTLOAD_TPAGES, NOT_LEVEL_SPECIFIC, DO_LOAD },
 };
 
 
@@ -735,7 +735,7 @@ void OnceOnlyInitModel( void )
 	int i;
 	int	Count;
 
-	FirstModelUsed = (uint16) -1;
+	FirstModelUsed = (u_int16_t) -1;
 	FirstModelFree = 0;
 	
 	for( i=0;i<MAXNUMOFMODELS;i++)
@@ -744,16 +744,16 @@ void OnceOnlyInitModel( void )
 		Models[i].Func = MODFUNC_Nothing;
 		Models[i].LifeCount = -1.0F;
 		Models[i].Scale = 1.0F;
-		Models[i].Visible = TRUE;
+		Models[i].Visible = true;
 		Models[i].TimeInterval = (float) 1;
 
-		for( Count = 0; Count < 12; Count++ ) Models[i].TempLines[ Count ] = (uint16) -1;
+		for( Count = 0; Count < 12; Count++ ) Models[i].TempLines[ Count ] = (u_int16_t) -1;
 
 		Models[i].Next = i + 1;
-		Models[i].Prev = (uint16) -1;
+		Models[i].Prev = (u_int16_t) -1;
 	}
 
-	Models[MAXNUMOFMODELS-1].Next = (uint16) -1;
+	Models[MAXNUMOFMODELS-1].Next = (u_int16_t) -1;
 
 	NextNewModel = MODEL_ExtraModels;
 
@@ -777,15 +777,15 @@ void OnceOnlyInitModel( void )
 	Procedure	:	Pre-Init models
 	Input		:	LPDIRECT3DDEVICE	Direct 3D Device
 				:	MODELNAME	*		Current Model Name
-	Output		:	BOOL				TRUE/FALSE
+	Output		:	_Bool				true/false
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
-extern	int16		LevelNum;
-BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
+extern	int16_t		LevelNum;
+_Bool PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 {
 	int			i;
-	int8		TempFilename[ 256 ];
-	int8		Ext[ 32 ];
+	int8_t		TempFilename[ 256 ];
+	int8_t		Ext[ 32 ];
 
 	for( i = 0 ; i < MAXMODELHEADERS ; i++ )
 	{
@@ -807,28 +807,28 @@ BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 
 				if( !strcasecmp( &Ext[ 0 ], "MX" ) )
 				{
-					NamePnt->DoIMorph = FALSE;
+					NamePnt->DoIMorph = false;
 
 //					DebugPrintf( "PreLoading MX File %s\n", &TempFilename[ 0 ] );
 
-					if( !PreMxload( &TempFilename[0], &ModelHeaders[i] , NamePnt->Panel, NamePnt->LevelSpecific ) ) return FALSE;	// the model and visipoly data
+					if( !PreMxload( &TempFilename[0], &ModelHeaders[i] , NamePnt->Panel, NamePnt->LevelSpecific ) ) return false;	// the model and visipoly data
 				}
 				else
 				{
 					if( !strcasecmp( &Ext[ 0 ], "MXA" ) )
 					{
-						NamePnt->DoIMorph = TRUE;
+						NamePnt->DoIMorph = true;
 
 //						DebugPrintf( "PreLoading MXA File %s\n", &TempFilename[ 0 ] );
 
 						MxaModelHeaders[i].AllocateTPage = NamePnt->AllocateTpage;
 
-						if( !PreMxaload( &TempFilename[0], MxaModelHeaders, i, NamePnt->LevelSpecific ) ) return FALSE;	// the model and visipoly data
+						if( !PreMxaload( &TempFilename[0], MxaModelHeaders, i, NamePnt->LevelSpecific ) ) return false;	// the model and visipoly data
 					}
 					else
 					{
 						DebugPrintf( "Unknown format for file %s\n", &TempFilename[ 0 ] );
-						return FALSE;
+						return false;
 					}
 				}
 			}
@@ -838,19 +838,19 @@ BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 		}
 		else break;
 	}
-	return	TRUE;
+	return	true;
 }
 
 /*===================================================================
 	Procedure	:	Init models
 	Input		:	LPDIRECT3DDEVICE	Direct 3D Device
 				:	MODELNAME	*		Current Model Name
-	Output		:	BOOL				TRUE/FALSE
+	Output		:	_Bool				true/false
 ===================================================================*/
-BOOL InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
+_Bool InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
 {
 	int i;
-	int8		TempFilename[ 256 ];
+	int8_t		TempFilename[ 256 ];
 	VECTOR		TempVector = { 0.0F, 0.0F, 0.0F };
 	VECTOR		TopLeft;
 	VECTOR		BottomRight;
@@ -867,7 +867,7 @@ BOOL InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
 				{
 //					DebugPrintf( "Loading MXA File %s\n", &TempFilename[ 0 ] );
 
-					if( !Mxaload( &TempFilename[0] , &MxaModelHeaders[i], NamePnt->StoreTriangles ) ) return FALSE;	// the model and visipoly data
+					if( !Mxaload( &TempFilename[0] , &MxaModelHeaders[i], NamePnt->StoreTriangles ) ) return false;	// the model and visipoly data
 					ModelHeaders[i].LOD = NamePnt->LOD;
 
 					TopLeft = TempVector;
@@ -884,7 +884,7 @@ BOOL InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
 				{
 //					DebugPrintf( "Loading MX File %s\n", &TempFilename[ 0 ] );
 
-					if( !Mxload( &TempFilename[0] , &ModelHeaders[i] , NamePnt->Panel, NamePnt->StoreTriangles) ) return FALSE;	// the model and visipoly data
+					if( !Mxload( &TempFilename[0] , &ModelHeaders[i] , NamePnt->Panel, NamePnt->StoreTriangles) ) return false;	// the model and visipoly data
 					ModelHeaders[i].LOD = NamePnt->LOD;
 
 					TopLeft = TempVector;
@@ -903,18 +903,18 @@ BOOL InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
 		}
 		else break;
 	}
-	return	TRUE;
+	return	true;
 }
 
 /*===================================================================
 	Procedure	:	Find a free Model and move it from the free list to
 					the used list
 	Input		:	nothing
-	Output		:	uint16 number of Model free....
+	Output		:	u_int16_t number of Model free....
 ===================================================================*/
-uint16	FindFreeModel()
+u_int16_t	FindFreeModel()
 {
-	uint16 i;
+	u_int16_t i;
 
 #ifdef DEBUG_ON
 	CheckModelLinkList();
@@ -922,11 +922,11 @@ uint16	FindFreeModel()
 
 	i = FirstModelFree;
 	
-	if ( i == (uint16) -1)
+	if ( i == (u_int16_t) -1)
 		return i;
  
 	Models[i].Prev = FirstModelUsed;
-	if ( FirstModelUsed != (uint16) -1)
+	if ( FirstModelUsed != (u_int16_t) -1)
 	{
 		Models[FirstModelUsed].Next = i;
 	}
@@ -935,7 +935,7 @@ uint16	FindFreeModel()
 	Models[i].Func = MODFUNC_Nothing;
 	Models[i].LifeCount = -1.0F;
 	Models[i].Scale = 1.0F;
-	Models[i].Visible = TRUE;
+	Models[i].Visible = true;
 	Models[i].TimeInterval = (float) 1;
 	Models[i].TimeCount = 0.0F;
 
@@ -955,14 +955,14 @@ uint16	FindFreeModel()
 /*===================================================================
 	Procedure	:	Kill a used Model and move it from the used list to
 					the free list
-	Input		:	uint16 number of Model free....
+	Input		:	u_int16_t number of Model free....
 	Output		:	nothing
 ===================================================================*/
-void	KillUsedModel( uint16 i )
+void	KillUsedModel( u_int16_t i )
 {
-	uint16		its_prev;
-	uint16		its_next;
-	int16		Count;
+	u_int16_t		its_prev;
+	u_int16_t		its_next;
+	int16_t		Count;
 	
 #ifdef DEBUG_ON
 	CheckModelLinkList();
@@ -973,18 +973,18 @@ void	KillUsedModel( uint16 i )
 	if ( i == FirstModelUsed )
 		FirstModelUsed = Models[i].Prev;
 
-	if( its_prev != (uint16) -1)
+	if( its_prev != (u_int16_t) -1)
 		Models[its_prev].Next = its_next;
 
-	if( its_next != (uint16) -1)
+	if( its_next != (u_int16_t) -1)
 		Models[its_next].Prev = its_prev;
 
 	for( Count = 0; Count < 12; Count++ )
 	{
-		if( Models[i].TempLines[ Count ] != (uint16) -1 )
+		if( Models[i].TempLines[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedLine( Models[i].TempLines[ Count ] );
-			Models[i].TempLines[ Count ] = (uint16) -1;
+			Models[i].TempLines[ Count ] = (u_int16_t) -1;
 		}
 	}
 
@@ -992,7 +992,7 @@ void	KillUsedModel( uint16 i )
 	KillAttachedSoundFX( i );
 
 	Models[i].Func = MODFUNC_Nothing;
-	Models[i].Prev = (uint16) -1;
+	Models[i].Prev = (u_int16_t) -1;
 	Models[i].Next = FirstModelFree;
 	Models[i].LifeCount = -1.0F;
 	Models[i].Scale = 1.0F;
@@ -1006,13 +1006,13 @@ void	KillUsedModel( uint16 i )
 
 /*===================================================================
 	Procedure	:	Kill Attached SFX still playing
-	Input		:	uint16	number of Model
+	Input		:	u_int16_t	number of Model
 	Output		:	nothing
 ===================================================================*/
-void KillAttachedSoundFX( uint16 i )
+void KillAttachedSoundFX( u_int16_t i )
 {
-	int16		Count;
-	uint16		NumSpotFX = 0;
+	int16_t		Count;
+	u_int16_t		NumSpotFX = 0;
 	PVSPOTFX *	SpotFXPtr = NULL;
 
 	switch( Models[i].Func )
@@ -1069,13 +1069,13 @@ void KillAttachedSoundFX( uint16 i )
 
 /*===================================================================
 	Procedure	:	Kill Attached Spot still playing
-	Input		:	uint16	number of Model
+	Input		:	u_int16_t	number of Model
 	Output		:	nothing
 ===================================================================*/
-void KillAttachedSpotFX( uint16 i )
+void KillAttachedSpotFX( u_int16_t i )
 {
-	int16		Count;
-	uint16		NumSpotFX = 0;
+	int16_t		Count;
+	u_int16_t		NumSpotFX = 0;
 	PVSPOTFX *	SpotFXPtr = NULL;
 
 	switch( Models[i].Func )
@@ -1126,27 +1126,27 @@ void KillAttachedSpotFX( uint16 i )
 *		display all active Models...
 ===================================================================*/
 
-BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ) // bjd
+_Bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ) // bjd
 {
 	RENDERMATRIX TempWorld;
-	uint16	i;
-	uint16	nextmodel;
-	uint16	ModelNum;
+	u_int16_t	i;
+	u_int16_t	nextmodel;
+	u_int16_t	ModelNum;
 	float	temp, temp2;
 	VECTOR	TempVector;
 	QUAT	TempQuat;
 	MATRIX	TempMatrix, TempRotMatrix;
 	VECTOR	x1, x2;
-	uint16	ClipGroup;
+	u_int16_t	ClipGroup;
 	float r , g , b;
-	BOOL	InTitle;
-	BOOL	DoDisplay;
+	_Bool	InTitle;
+	_Bool	DoDisplay;
 
-	if( NamePnt == &ModelNames[0] ) InTitle = FALSE;
-	else InTitle = TRUE;
+	if( NamePnt == &ModelNames[0] ) InTitle = false;
+	else InTitle = true;
 
 	i =  FirstModelUsed;
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		nextmodel = Models[i].Prev;
 
@@ -1174,7 +1174,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 							}
 							*/
 							if (!FadeMxaModel( &MxaModelHeaders[ Models[ i ].ModelNum ] ))
-								Msg("MakeTranslucent() returned FALSE");
+								Msg("MakeTranslucent() returned false");
 
 							TempMatrix = MATRIX_Identity;
 							TempMatrix._11 *= Models[i].Xscale;
@@ -1271,7 +1271,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 					if (!FSSetWorld(&TempWorld))
 					{
 						Msg( "ModelDisp() SetMatrix1 Failed\n" );
-						return FALSE;
+						return false;
 					}
 					
 					// TODO - BEEF UP LOD LEVEL HANDLING (read notes bellow)
@@ -1313,7 +1313,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 							else
 							{
 								// wtf is this ?
-								ModelNum = (uint16) ( temp2 / (distance*GLOBAL_SCALE )  );
+								ModelNum = (u_int16_t) ( temp2 / (distance*GLOBAL_SCALE )  );
 
 								// make sure we don't select a value larger than acceptable
 								if( ModelNum > ModelHeaders[ Models[i].ModelNum ].LOD )
@@ -1331,7 +1331,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 //					if( ( temp > ( PICKUP_RADIUS * 0.75F ) ) || !( Models[i].Flags & MODFLAG_Clip ) )
 					if( ( temp > ( PICKUP_RADIUS * 0.75F ) ) || ( Models[i].Type == MODTYPE_Field ) )
 					{
-						DoDisplay = TRUE;
+						DoDisplay = true;
 
 						if( NamePnt[ ModelNum ].DoIMorph )
 						{
@@ -1340,7 +1340,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								if( !InterpFrames( &MxaModelHeaders[ ModelNum + Models[i].StealthOffset ], Models[i].Frame, Models[i].InterpFrame, Models[i].InterpTime ) )
 								{
 									Msg( "ModelDisp() InterpFrames() Failed\n" );
-									return FALSE;
+									return false;
 								}
 							}
 							else
@@ -1348,7 +1348,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								if( !InterpFrames( &MxaModelHeaders[ ModelNum ], Models[i].Frame, Models[i].InterpFrame, Models[i].InterpTime ) )
 								{
 									Msg( "ModelDisp() InterpFrames() Failed\n" );
-									return FALSE;
+									return false;
 								}
 							}
 
@@ -1390,7 +1390,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 									ModelNum += ( ModelHeaders[Models[i].ModelNum].LOD + 1 );
 								}
 
-								if( !LightMxaModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) ) DoDisplay = FALSE;
+								if( !LightMxaModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) ) DoDisplay = false;
 							}
 
 							if( !( Models[i].Flags & MODFLAG_RealLight ) &&
@@ -1407,11 +1407,11 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 							if( DoDisplay )
 							{
 								//count++;
-								if( ExecuteMxaloadHeader( &MxaModelHeaders[ModelNum], ClipGroup ) != TRUE)
+								if( ExecuteMxaloadHeader( &MxaModelHeaders[ModelNum], ClipGroup ) != true)
 								{
 									Msg( "ModelDisp() ExecuteMxaloadHeader for %s Failed\n", &ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
 									render_reset_lighting_variables();
-									return FALSE;
+									return false;
 								}
 							}
 
@@ -1455,7 +1455,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 									ModelNum += ( ModelHeaders[Models[i].ModelNum].LOD + 1 );
 								}
 
-								if( !LightMxModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) ) DoDisplay = FALSE;
+								if( !LightMxModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) ) DoDisplay = false;
 
 							}
 
@@ -1465,12 +1465,12 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 							if( DoDisplay )
 							{
 								//count++;
-								if( ExecuteMxloadHeader( &ModelHeaders[ ModelNum ], i ) != TRUE)
+								if( ExecuteMxloadHeader( &ModelHeaders[ ModelNum ], i ) != true)
 								{
 									Msg( "ModelDisp() ExecuteMxloadHeader for %s Failed\n",
 										&ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
 									render_reset_lighting_variables();
-									return FALSE;
+									return false;
 								}
 							}
 
@@ -1490,15 +1490,15 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 	if (!FSSetWorld(&identity))
 	{
 		Msg( "ModelDisp() SetMatrix2 Failed\n" );
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 *		Set up 2d exec buff etc...
 ===================================================================*/
-BOOL ReleaseTitleModels( )
+_Bool ReleaseTitleModels( )
 {
 	int i;
 
@@ -1520,13 +1520,13 @@ BOOL ReleaseTitleModels( )
 		}
 		else break;
 	}
-	return	TRUE;
+	return	true;
 }
 
 /*===================================================================
 *		Set up 2d exec buff etc...
 ===================================================================*/
-BOOL ReleaseModels( )
+_Bool ReleaseModels( )
 {
 	int i;
 
@@ -1548,7 +1548,7 @@ BOOL ReleaseModels( )
 		}
 		else break;
 	}
-	return	TRUE;
+	return	true;
 }
 
 /*===================================================================
@@ -1568,8 +1568,8 @@ float TomFrame = 0.0F;
 
 void ProcessModels( void )
 {
-	uint16		i;
-	uint16		nextmodel;
+	u_int16_t		i;
+	u_int16_t		nextmodel;
 	VECTOR		Int_Point;
 	NORMAL		Int_Normal;
 	VECTOR		TempVector;
@@ -1586,19 +1586,19 @@ void ProcessModels( void )
 	VECTOR		DirVector;
 	MATRIX		UpMatrix;
 	MATRIX		InvUpMatrix;
-	uint16		NumSpotFX;
+	u_int16_t		NumSpotFX;
 	PVSPOTFX *	SpotFXPtr;
-	int16		Count;
+	int16_t		Count;
 	float		WaterDamage;
-	uint16		SpotFXGroup;
-	int16		VisNum;
-	uint16		VisGroups[ MAXGROUPS ];
-	int16		Count2;
+	u_int16_t		SpotFXGroup;
+	int16_t		VisNum;
+	u_int16_t		VisGroups[ MAXGROUPS ];
+	int16_t		Count2;
 	float		ShipSpeed;
 
 	i =  FirstModelUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		nextmodel = Models[i].Prev;
 
@@ -1683,7 +1683,7 @@ void ProcessModels( void )
 					break;
 
 				case MODFUNC_BodyPart:
-					if( Models[i].Group != (uint16) -1 )
+					if( Models[i].Group != (u_int16_t) -1 )
 					{
 						QuatFrom2Vectors( &TempQuat, &Mloadheader.Group[ Models[i].Group ].up, &SlideUp );
 						QuatToMatrix( &TempQuat, &UpMatrix );
@@ -1718,7 +1718,7 @@ void ProcessModels( void )
 		  
 	     				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, &Models[i].Pos,
 	     									  Models[i].Group, &TempDir, (VECTOR *) &Int_Point,
-	     									  &Models[i].Group, &Int_Normal, &TempVector, TRUE, NULL ) == TRUE )
+	     									  &Models[i].Group, &Int_Normal, &TempVector, true, NULL ) == true )
 	     				{
 							Models[i].Pos = Int_Point;
 	     					CreateBloodSplat( &Int_Point, (VECTOR *) &Int_Normal, Models[i].Group );
@@ -1826,7 +1826,7 @@ void ProcessModels( void )
 					}
 	 				break;
 				case MODFUNC_TomCruise:
-					if( Models[i].Group != (uint16) -1 )
+					if( Models[i].Group != (u_int16_t) -1 )
 					{
 						QuatFrom2Vectors( &TempQuat, &Mloadheader.Group[ Models[i].Group ].up, &SlideUp );
 						QuatToMatrix( &TempQuat, &UpMatrix );
@@ -1842,7 +1842,7 @@ void ProcessModels( void )
 					TomFrame += ( framelag * 0.2F );
 					while( TomFrame >= 27.0F ) TomFrame -= 27.0F;
 
-					Models[ i ].ModelNum = (uint16) ( MODEL_Tom0 + TomFrame );
+					Models[ i ].ModelNum = (u_int16_t) ( MODEL_Tom0 + TomFrame );
 
 					Models[i].LifeCount -= framelag;
 					if( Models[i].LifeCount < 0.0F )
@@ -1866,7 +1866,7 @@ void ProcessModels( void )
 		  
 	     				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, &Models[i].Pos,
 	     									  Models[i].Group, &TempDir, (VECTOR *) &Int_Point,
-	     									  &Models[i].Group, &Int_Normal, &TempVector, TRUE, NULL ) == TRUE )
+	     									  &Models[i].Group, &Int_Normal, &TempVector, true, NULL ) == true )
 	     				{
 							PlayPannedSfx( SFX_Squish, Models[i].Group , &Models[i].Pos, 0.0F );
 							NormaliseVector( &Models[i].Dir );
@@ -1954,7 +1954,7 @@ void ProcessModels( void )
 					break;
 
 				case MODFUNC_LargeShrapnel:
-					if( Models[i].Group != (uint16) -1 )
+					if( Models[i].Group != (u_int16_t) -1 )
 					{
 						QuatFrom2Vectors( &TempQuat, &Mloadheader.Group[ Models[i].Group ].up, &SlideUp );
 						QuatToMatrix( &TempQuat, &UpMatrix );
@@ -1984,7 +1984,7 @@ void ProcessModels( void )
 
 	     				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, &Models[i].Pos,
 	     									  Models[i].Group, &TempDir, (VECTOR *) &Int_Point,
-	     									  &Models[i].Group, &Int_Normal, &TempVector, TRUE, NULL ) == TRUE )
+	     									  &Models[i].Group, &Int_Normal, &TempVector, true, NULL ) == true )
 	     				{
 							if( Random_Range( 3 ) )
 							{
@@ -2100,7 +2100,7 @@ void ProcessModels( void )
 	 				break;
 
 				case MODFUNC_SmallShrapnel:
-					if( Models[i].Group != (uint16) -1 )
+					if( Models[i].Group != (u_int16_t) -1 )
 					{
 						QuatFrom2Vectors( &TempQuat, &Mloadheader.Group[ Models[i].Group ].up, &SlideUp );
 						QuatToMatrix( &TempQuat, &UpMatrix );
@@ -2130,7 +2130,7 @@ void ProcessModels( void )
 
 	     				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, &Models[i].Pos,
 	     									  Models[i].Group, &TempDir, (VECTOR *) &Int_Point,
-	     									  &Models[i].Group, &Int_Normal, &TempVector, TRUE, NULL ) == TRUE )
+	     									  &Models[i].Group, &Int_Normal, &TempVector, true, NULL ) == true )
 	     				{
 							Models[i].Pos = Int_Point;
 
@@ -2753,23 +2753,23 @@ void ProcessModels( void )
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
 				:	VECTOR	*	Up
-				:	uint16		Group
-				:	uint16		Weapon
-				:	uint16		ModelIndex
-				:	uint16		SpotFXIndex
+				:	u_int16_t		Group
+				:	u_int16_t		Weapon
+				:	u_int16_t		ModelIndex
+				:	u_int16_t		SpotFXIndex
 	Output		:	Nothing
 ===================================================================*/
 void CreateModelSpotFXFirePrimary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
-							    uint16 Group, uint8 Weapon, uint16 ModelIndex, uint16 SpotFXIndex )
+							    u_int16_t Group, u_int8_t Weapon, u_int16_t ModelIndex, u_int16_t SpotFXIndex )
 {
 	VECTOR	TempVector = { 0.0F, 0.0F, 0.0F };
-	uint16	i;
+	u_int16_t	i;
 
-	if( Weapon != (uint8) -1 )
+	if( Weapon != (u_int8_t) -1 )
 	{
-		i = EnemyFirePrimary( OWNER_MODELSPOTFX, ModelIndex, 0, Weapon, Group, Pos, &TempVector, Dir, Up, 2, 0.0F, FALSE, NULL );
+		i = EnemyFirePrimary( OWNER_MODELSPOTFX, ModelIndex, 0, Weapon, Group, Pos, &TempVector, Dir, Up, 2, 0.0F, false, NULL );
 
-		if( i != (uint16) -1 )
+		if( i != (u_int16_t) -1 )
 		{
 			PrimBulls[i].SpotFX = SpotFXIndex;
 			GetLaserLocalVector( i, &PrimBulls[i].LocalDir );
@@ -2779,30 +2779,30 @@ void CreateModelSpotFXFirePrimary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
 
 /*===================================================================
 	Procedure	:	Process model
-	Input		:	uint16	Model Number
+	Input		:	u_int16_t	Model Number
 				:	float	Scale
 				:	float	MaxScale
-				:	int8	R
-				:	int8	G
-				:	int8	B
-	Output		:	BOOL	True/False
+				:	int8_t	R
+				:	int8_t	G
+				:	int8_t	B
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8 R, int8 G, int8 B )
+_Bool ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	COLOR				Colour;
 	float					Col2;
-	uint8					Col;
-	uint8					Red;
-	uint8					Green;
-	uint8					Blue;
+	u_int8_t					Col;
+	u_int8_t					Red;
+	u_int8_t					Green;
+	u_int8_t					Blue;
 
 	Col2 = ( ( Scale * ( 128.0F / MaxScale ) ) + 128.0F );
 	if( Col2 > 255.0F ) Col2 = 255.0F;
-	Col = (uint8) ( 255.0F - Col2 );
+	Col = (u_int8_t) ( 255.0F - Col2 );
 
 	if( R ) Red = Col;
 	else Red = 0;
@@ -2823,7 +2823,7 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 		{
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
@@ -2836,35 +2836,35 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Process model scaling original gouraud
-	Input		:	uint16	Model Number
+	Input		:	u_int16_t	Model Number
 				:	float	Scale
 				:	float	MaxScale
-				:	int8	R
-				:	int8	G
-				:	int8	B
-	Output		:	BOOL	True/False
+				:	int8_t	R
+				:	int8_t	G
+				:	int8_t	B
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8 R, int8 G, int8 B )
+_Bool ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	float					Col2;
-	uint16					Col;
-	uint16					Red;
-	uint16					Green;
-	uint16					Blue;
+	u_int16_t					Col;
+	u_int16_t					Red;
+	u_int16_t					Green;
+	u_int16_t					Blue;
 	
 	//COLOR	*			OrigColours;
 	LPLVERTEX			VertPtr;
@@ -2874,7 +2874,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 
 	Col2 = ( ( Scale / MaxScale ) * 255.0F );
 	if( Col2 > 255.0F ) Col2 = 255.0F;
-	Col = (uint16) ( 255.0F - Col2 );
+	Col = (u_int16_t) ( 255.0F - Col2 );
 
 	if( R ) Red = Col;
 	else Red = 0;
@@ -2889,7 +2889,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 		{
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
@@ -2901,17 +2901,17 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 #if 0
 				OrigRGBA = (COLOR_RGBA *) OrigColours;
 				DestRGBA = (COLOR_RGBA *) &DstlpD3DLVERTEX->color;
-				DestRGBA->r = (uint8) ( ( (uint16) OrigRGBA->r * Red ) >> 8 );
-				DestRGBA->g = (uint8) ( ( (uint16) OrigRGBA->g * Green ) >> 8 );
-				DestRGBA->b = (uint8) ( ( (uint16) OrigRGBA->b * Blue ) >> 8 );
+				DestRGBA->r = (u_int8_t) ( ( (u_int16_t) OrigRGBA->r * Red ) >> 8 );
+				DestRGBA->g = (u_int8_t) ( ( (u_int16_t) OrigRGBA->g * Green ) >> 8 );
+				DestRGBA->b = (u_int8_t) ( ( (u_int16_t) OrigRGBA->b * Blue ) >> 8 );
 				OrigColours++;
 				DstlpD3DLVERTEX++;
 #endif
 				DestRGBA = (COLOR_RGBA *) &DstlpD3DLVERTEX->color;
 
-				DestRGBA->r = (uint8) ( ( (uint16) (RGBA_GETRED(VertPtr->color) * Red) ) >> 8 );
-				DestRGBA->g = (uint8) ( ( (uint16) (RGBA_GETGREEN(VertPtr->color) * Green) ) >> 8 );
-				DestRGBA->b = (uint8) ( ( (uint16) (RGBA_GETBLUE(VertPtr->color) * Blue) ) >> 8 );
+				DestRGBA->r = (u_int8_t) ( ( (u_int16_t) (RGBA_GETRED(VertPtr->color) * Red) ) >> 8 );
+				DestRGBA->g = (u_int8_t) ( ( (u_int16_t) (RGBA_GETGREEN(VertPtr->color) * Green) ) >> 8 );
+				DestRGBA->b = (u_int8_t) ( ( (u_int16_t) (RGBA_GETBLUE(VertPtr->color) * Blue) ) >> 8 );
 
 				VertPtr++;
 				DstlpD3DLVERTEX++;
@@ -2920,29 +2920,29 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Process model
 ===================================================================*/
-BOOL ProcessModelExec( RENDEROBJECT *renderObject, int16 NumVerts, float Scale, float MaxScale, int8 R, int8 G, int8 B )
+_Bool ProcessModelExec( RENDEROBJECT *renderObject, int16_t NumVerts, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	COLOR				Colour;
 	float					Col2;
-	uint8					Col;
-	uint8					Red;
-	uint8					Green;
-	uint8					Blue;
+	u_int8_t					Col;
+	u_int8_t					Red;
+	u_int8_t					Green;
+	u_int8_t					Blue;
 
 	Col2 = ( ( Scale * ( 128.0F / MaxScale ) ) + 128.0F );
 	if( Col2 > 255.0F ) Col2 = 255.0F;
-	Col = (uint8) ( 255.0F - Col2 );
+	Col = (u_int8_t) ( 255.0F - Col2 );
 
 	if( R ) Red = Col;
 	else Red = 0;
@@ -2959,7 +2959,7 @@ BOOL ProcessModelExec( RENDEROBJECT *renderObject, int16 NumVerts, float Scale, 
 
 	if (!(FSLockVertexBuffer(renderObject, &DstlpD3DLVERTEX)))
 	{
-		return FALSE;
+		return false;
 	}
 	
 	while( NumVerts-- )
@@ -2970,22 +2970,22 @@ BOOL ProcessModelExec( RENDEROBJECT *renderObject, int16 NumVerts, float Scale, 
 
 	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Process Sphere Zone model
 	Input		:	LPDIRECT3DEXECUTEBUFFER	lpExBuf
-				:	int16	NumVerts
-				:	uint8	R
-				:	uint8	G
-				:	uint8	B
-	Output		:	BOOL	True/False
+				:	int16_t	NumVerts
+				:	u_int8_t	R
+				:	u_int8_t	G
+				:	u_int8_t	B
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16 NumVerts, uint8 R, uint8 G, uint8 B )
+_Bool ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16_t NumVerts, u_int8_t R, u_int8_t G, u_int8_t B )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	COLOR				Colour;
@@ -2998,7 +2998,7 @@ BOOL ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16 NumVerts, uin
 
 	if (!(FSLockVertexBuffer(renderObject, &DstlpD3DLVERTEX)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	while( NumVerts-- )
@@ -3009,10 +3009,10 @@ BOOL ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16 NumVerts, uin
 
 	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -3024,11 +3024,11 @@ void UpdateTracker( void )
 {
 	VECTOR	Pos;
 	VECTOR	Offset;
-	uint16	i;
+	u_int16_t	i;
 
-	if( Tracker == (uint16 ) -1 ) CreateTracker();
+	if( Tracker == (u_int16_t ) -1 ) CreateTracker();
 
-	if( Tracker != (uint16 ) -1 )
+	if( Tracker != (u_int16_t ) -1 )
 	{
 		Offset.x = ( -400.0F * GLOBAL_SCALE );
 		Offset.y = ( +300.0F * GLOBAL_SCALE );
@@ -3041,7 +3041,7 @@ void UpdateTracker( void )
 		Models[ Tracker ].Group = Ships[ WhoIAm ].Object.Group;
 	}
 
-	if( TrackerTarget != (uint16 ) -1 )
+	if( TrackerTarget != (u_int16_t ) -1 )
 	{
 		i = FindClosestPickup();
 
@@ -3074,18 +3074,18 @@ void UpdateTracker( void )
 ===================================================================*/
 void CreateTracker( void )
 {
-	uint16	Model;
+	u_int16_t	Model;
 
 	Model =	FindFreeModel();
 
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_NOBODY;
 		Models[ Model ].Owner = 0;
 		Models[ Model ].ModelNum = MODEL_Tracker;
 		Models[ Model ].Type = MODTYPE_Missile;
 		Models[ Model ].Flags = MODFLAG_Clip;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = Ships[ WhoIAm ].Object.Pos;
 		Models[ Model ].Dir.x = 0.0F;
 		Models[ Model ].Dir.y = 0.0F;
@@ -3110,14 +3110,14 @@ void CreateTracker( void )
 
 	Model =	FindFreeModel();
 
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_NOBODY;
 		Models[ Model ].Owner = 0;
 		Models[ Model ].ModelNum = MODEL_Ping;
 		Models[ Model ].Type = MODTYPE_Missile;
 		Models[ Model ].Flags = MODFLAG_Clip;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = Ships[ WhoIAm ].Object.Pos;
 		Models[ Model ].Dir.x = 0.0F;
 		Models[ Model ].Dir.y = 0.0F;
@@ -3144,23 +3144,23 @@ void CreateTracker( void )
 
 /*===================================================================
 	Procedure	:	Light model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
+_Bool TintModel( u_int16_t Model, float RF, float GF, float BF, float TF )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
 	COLOR				Colour;
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
-	Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
-	if( !Colour ) return FALSE;
+	Colour = RGBA_MAKE( (u_int8_t) RF, (u_int8_t) GF, (u_int8_t) BF, (u_int8_t) TF );
+	if( !Colour ) return false;
 
 	for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
 	{
@@ -3168,7 +3168,7 @@ BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 		{
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
@@ -3181,29 +3181,29 @@ BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Light model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF, float TF )
+_Bool TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF, float TF )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	COLOR				Colour;
 
-	Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
-	if( !Colour ) return FALSE;
+	Colour = RGBA_MAKE( (u_int8_t) RF, (u_int8_t) GF, (u_int8_t) BF, (u_int8_t) TF );
+	if( !Colour ) return false;
 
 	for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
 	{
@@ -3214,13 +3214,13 @@ BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF,
 			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//				return FALSE;
+//				return false;
 
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}	
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
@@ -3233,19 +3233,19 @@ BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF,
 
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Update Colours
 	Input		:	MXALOADHEADER	ModelHeader
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
+_Bool UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 {
     LPLVERTEX	lpPointer = NULL;
 	LPLVERTEX	lpLVERTEX;
@@ -3257,7 +3257,7 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 
 #ifdef NEW_LIGHTING
 	render_reset_lighting_variables();
-	return TRUE;
+	return true;
 #endif
 
 	group = MXAloadheader->num_groups;
@@ -3273,13 +3273,13 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 */
 			/*	lock the execute buffer	*/
 //			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
-//				return FALSE ;
+//				return false ;
 //			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//				return FALSE;
+//				return false;
 
 			if (!(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
-				return FALSE;
+				return false;
 			}
 
 //			lpPointer = (LPLVERTEX) debDesc.lpData;
@@ -3297,38 +3297,38 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 			}
 			/*	unlock the execute buffer	*/
 //			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-//				return FALSE;
+//				return false;
 			if (!(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
 /*===================================================================
 	Procedure	:	Ambient Light model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
+_Bool AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	LPLVERTEX			SrclpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	COLOR				Colour;
 #ifdef FAST_RGB_CLAMP
 #ifndef USEASM
-	uint32					tempiA;
-	uint32					carry, clamp;
+	u_int32_t					tempiA;
+	u_int32_t					carry, clamp;
 #endif
-	uint32					tempiR, tempiG, tempiB;
-	uint32					col_inc, inc_inv, inc_carry;
+	u_int32_t					tempiR, tempiG, tempiB;
+	u_int32_t					col_inc, inc_inv, inc_carry;
 #else
 	int r ,g ,b ,a;
 #endif
@@ -3338,7 +3338,7 @@ BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 	render_color_blend_red   = R;
 	render_color_blend_green = G;
 	render_color_blend_blue  = B;
-	return TRUE;
+	return true;
 #endif
 
 	R -= (int) rp;
@@ -3367,7 +3367,7 @@ BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 		{
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 			SrclpD3DLVERTEX = DstMloadheader->Group[ Group ].originalVerts[ExecBuf];
@@ -3442,37 +3442,37 @@ __asm
 			}
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:	Ambient Light MX model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
+_Bool AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	LPLVERTEX			SrclpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	COLOR				Colour;
 #ifdef FAST_RGB_CLAMP
 #ifndef USEASM
-	uint32					tempiA;
-	uint32					carry, clamp;
+	u_int32_t					tempiA;
+	u_int32_t					carry, clamp;
 #endif
-	uint32					tempiR, tempiG, tempiB;
-	uint32					col_inc, inc_inv, inc_carry;
+	u_int32_t					tempiR, tempiG, tempiB;
+	u_int32_t					col_inc, inc_inv, inc_carry;
 #else
 	int r ,g ,b ,a;
 #endif
@@ -3482,7 +3482,7 @@ BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 	render_color_blend_red   = R;
 	render_color_blend_green = G;
 	render_color_blend_blue  = B;
-	return TRUE;
+	return true;
 #endif
 
 	R -= (int) rp;
@@ -3515,12 +3515,12 @@ BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false;
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//				return FALSE;
+//				return false;
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 //			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -3597,14 +3597,14 @@ __asm
 			}
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -3612,19 +3612,19 @@ __asm
 
 /*===================================================================
 	Procedure	:	Light model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	MATRIX	*	Matrix
 				:	float		Z Translation
 				:	float		Range
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
+_Bool ShadeModel( u_int16_t Model, MATRIX * Matrix, float ZTrans, float Range )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
 	COLOR				Colour;
 	float					RF, GF, BF, TF;
@@ -3641,12 +3641,12 @@ BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
 			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//				return FALSE;
+//				return false;
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 //			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -3675,40 +3675,40 @@ BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
 					}
 				}
 
-				Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
+				Colour = RGBA_MAKE( (u_int8_t) RF, (u_int8_t) GF, (u_int8_t) BF, (u_int8_t) TF );
 
 				DstlpD3DLVERTEX->color = Colour;
 				DstlpD3DLVERTEX++;
 			}
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Light model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL LightModel( uint16 Model, VECTOR * Pos )
+_Bool LightModel( u_int16_t Model, VECTOR * Pos )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
 	COLOR				Colour;
     float					Val;
@@ -3722,7 +3722,7 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 	render_light_ambience = 0.0f;
 	render_light_ambience_alpha = 0.0f;
 	render_lighting_use_only_light_color = 1;
-	return TRUE;
+	return true;
 #endif
 
 	DstMloadheader = &ModelHeaders[ Model ];
@@ -3753,8 +3753,8 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 	if( BF > 255.0F ) BF = 255.0F;
 	if( TF > 255.0F ) TF = 255.0F;
 
-	Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
-	if( !Colour ) return FALSE;
+	Colour = RGBA_MAKE( (u_int8_t) RF, (u_int8_t) GF, (u_int8_t) BF, (u_int8_t) TF );
+	if( !Colour ) return false;
 
 	for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
 	{
@@ -3765,13 +3765,13 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//				return FALSE;
+//				return false;
 
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 //			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -3785,33 +3785,33 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 			}
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Light model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL LightModel2( uint16 Model, VECTOR * Pos )
+_Bool LightModel2( u_int16_t Model, VECTOR * Pos )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
 	COLOR				Colour;
     float					Val;
@@ -3825,7 +3825,7 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 	render_light_ambience = 128.0f;
 	render_light_ambience_alpha = 255.0f;
 	render_lighting_use_only_light_color = 1;
-	return TRUE;
+	return true;
 #endif
 
 	DstMloadheader = &ModelHeaders[ Model ];
@@ -3856,8 +3856,8 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 	if( BF > 255.0F ) BF = 255.0F;
 	if( TF > 255.0F ) TF = 255.0F;
 
-	Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
-	if( !Colour ) return FALSE;
+	Colour = RGBA_MAKE( (u_int8_t) RF, (u_int8_t) GF, (u_int8_t) BF, (u_int8_t) TF );
+	if( !Colour ) return false;
 
 	for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
 	{
@@ -3868,13 +3868,13 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false;
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//				return FALSE;
+//				return false;
 
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 //			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -3888,37 +3888,37 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 			}
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Light MX model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
 				:	float		Starting RED ( 0-255 )
 				:	float		Starting GREEN ( 0-255 )
 				:	float		Starting BLUE ( 0-255 )
 				:	float		Starting TRANSPARANCY ( 0-255 )
-	Output		:	BOOL	True/False ( Visible/Not )
+	Output		:	_Bool	True/False ( Visible/Not )
 ===================================================================*/
-BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
+_Bool LightMxModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
 	COLOR				Colour;
     float					Val;
@@ -3930,12 +3930,12 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 	render_color_blend_red   = RF;
 	render_color_blend_green = GF;
 	render_color_blend_blue  = BF;
-	return TRUE;
+	return true;
 #endif
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
-	if( DstMloadheader->state == TRUE )
+	if( DstMloadheader->state == true )
 	{
 		LightPnt = FirstLightVisible;
 		while( LightPnt )
@@ -3962,8 +3962,8 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 		if( BF > 255.0F ) BF = 255.0F;
 		if( TF > 255.0F ) TF = 255.0F;
 
-		Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
-		if( !Colour ) return FALSE;
+		Colour = RGBA_MAKE( (u_int8_t) RF, (u_int8_t) GF, (u_int8_t) BF, (u_int8_t) TF );
+		if( !Colour ) return false;
 
 		for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
 		{
@@ -3974,13 +3974,13 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//					return FALSE;
+//					return false;
 
 				if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
-					return FALSE;
+					return false;
 				}
 	
 //				DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -3994,38 +3994,38 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 				}
 	
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 				if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Light MXA model
-	Input		:	uint16		Model Number
+	Input		:	u_int16_t		Model Number
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
 				:	float		Starting RED ( 0-255 )
 				:	float		Starting GREEN ( 0-255 )
 				:	float		Starting BLUE ( 0-255 )
 				:	float		Starting TRANSPARANCY ( 0-255 )
-	Output		:	BOOL	True/False ( Visible/Not )
+	Output		:	_Bool	True/False ( Visible/Not )
 ===================================================================*/
-BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
+_Bool LightMxaModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXALOADHEADER	*		DstMloadheader;
 	COLOR				Colour;
     float					Val;
@@ -4037,12 +4037,12 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 	render_color_blend_red   = RF;
 	render_color_blend_green = GF;
 	render_color_blend_blue  = BF;
-	return TRUE;
+	return true;
 #endif
 
 	DstMloadheader = &MxaModelHeaders[ Model ];
 
-	if( DstMloadheader->state == TRUE )
+	if( DstMloadheader->state == true )
 	{
 		LightPnt = FirstLightVisible;
 	
@@ -4070,8 +4070,8 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 		if( BF > 255.0F ) BF = 255.0F;
 		if( TF > 255.0F ) TF = 255.0F;
 
-		Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
-		if( !Colour ) return FALSE;
+		Colour = RGBA_MAKE( (u_int8_t) RF, (u_int8_t) GF, (u_int8_t) BF, (u_int8_t) TF );
+		if( !Colour ) return false;
 
 		for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
 		{
@@ -4082,12 +4082,12 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//					return FALSE;
+//					return false;
 				if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
-					return FALSE;
+					return false;
 				}
 	
 //				DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -4101,40 +4101,40 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 				}
 	
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 				if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Shock Wave Damage to Ships and Mines.
 	Input		:	VECTOR	*	Position
 				:	float		Radius
-				:	uint16		OwnerType
-				:	uint16		Owner
+				:	u_int16_t		OwnerType
+				:	u_int16_t		Owner
 				:	float		Damage at center
-				:	uint16		Group
+				:	u_int16_t		Group
 				:	BYTE		Weapon
 	Output		:	Nothing
 ===================================================================*/
-void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, float Center_Damage, uint16 Group, BYTE Weapon, uint16 model )
+void ShockWave( VECTOR * Pos, float Radius, u_int16_t OwnerType, u_int16_t Owner, float Center_Damage, u_int16_t Group, BYTE Weapon, u_int16_t model )
 {
-//	int16		Count;
+//	int16_t		Count;
 	float		Damage;
-	uint16		EndGroup;
+	u_int16_t		EndGroup;
 	VECTOR		DistVector;
 	float		DistFromCenter;
 	VERT		Int_Point;
 	NORMAL		Int_Normal;
 	VECTOR		TempVector;
 	VECTOR		Recoil;
-	uint16		i, Next;
+	u_int16_t		i, Next;
 //	char		methodstr[256];
 //	char		tempstr[256];
 	ENEMY	*	Enemy;
@@ -4162,7 +4162,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 							{
 								if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 											  Group, &DistVector, (VECTOR *) &Int_Point,
-											  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+											  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 								{
 									Damage = ( Center_Damage - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Damage ) ) );
 				
@@ -4244,7 +4244,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 					{
 						if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 									  Group, &DistVector, (VECTOR *) &Int_Point,
-									  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+									  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 						{
 							Damage = ( Center_Damage - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Damage ) ) );
 			
@@ -4302,7 +4302,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 ===================================================================*/
 	i = FirstSecBullUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		Next = SecBulls[ i ].Prev;							/* Next Secondary Bullet */
 
@@ -4319,7 +4319,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
    			{
    				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
    							  Group, &DistVector, (VECTOR *) &Int_Point,
-   							  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+   							  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
    				{
 					Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + MINE_RADIUS ) / Center_Damage ) ) ) * framelag );
 
@@ -4364,7 +4364,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 					{
 						if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 									  Group, &DistVector, (VECTOR *) &Int_Point,
-									  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+									  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 						{
 							Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Damage ) ) ) * framelag );
 				
@@ -4400,15 +4400,15 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 	Procedure	:	Gravity Wave Damage to me
 	Input		:	VECTOR	*	Position
 				:	float		Radius
-				:	uint16		Owner
+				:	u_int16_t		Owner
 				:	float		Damage at center
-				:	uint16		Group
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void GravityWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Grav, uint16 Group )
+void GravityWave( VECTOR * Pos, float Radius, u_int16_t Owner, float Center_Grav, u_int16_t Group )
 {
-	int16	Gravity;
-	uint16	EndGroup;
+	int16_t	Gravity;
+	u_int16_t	EndGroup;
 	VECTOR	DistVector;
 	float	DistFromCenter;
 	VERT	Int_Point;
@@ -4431,9 +4431,9 @@ void GravityWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Grav, u
 	   		{
 	   			if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 	   						  Group, &DistVector, (VECTOR *) &Int_Point,
-	   						  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+	   						  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 	   			{
-	   				Gravity = (int16) ( Center_Grav - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Grav ) ) );
+	   				Gravity = (int16_t) ( Center_Grav - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Grav ) ) );
 	   
 	   				force.x = -( ( ( DistVector.x / DistFromCenter ) * Gravity ) * GLOBAL_SCALE ) * 0.5F;
 	   				force.y = -( ( ( DistVector.y / DistFromCenter ) * Gravity ) * GLOBAL_SCALE ) * 0.5F;
@@ -4466,9 +4466,9 @@ void GravityWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Grav, u
 				{
 					if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 								  Group, &DistVector, (VECTOR *) &Int_Point,
-								  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+								  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 					{
-	   					Gravity = (int16) ( Center_Grav - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Grav ) ) );
+	   					Gravity = (int16_t) ( Center_Grav - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Grav ) ) );
 		   
 	   					force.x = -( ( ( DistVector.x / DistFromCenter ) * Gravity ) * GLOBAL_SCALE ) * 0.5F;
 	   					force.y = -( ( ( DistVector.y / DistFromCenter ) * Gravity ) * GLOBAL_SCALE ) * 0.5F;
@@ -4489,18 +4489,18 @@ void GravityWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Grav, u
 /*===================================================================
 	Procedure	:	Check if within range of gravgon
 	Input		:	VECTOR	*	Pos
-	Output		:	BOOL		True/False ( True if collision )
+	Output		:	_Bool		True/False ( True if collision )
 ===================================================================*/
-BOOL CheckForGravgons( VECTOR * Pos )
+_Bool CheckForGravgons( VECTOR * Pos )
 {
-	uint16		i;
-	uint16		nextmodel;
+	u_int16_t		i;
+	u_int16_t		nextmodel;
 	VECTOR		DistVector;
 	float		DistToGravgon;
 
 	i =  FirstModelUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		nextmodel = Models[i].Prev;
 
@@ -4514,7 +4514,7 @@ BOOL CheckForGravgons( VECTOR * Pos )
 	
 				if( DistToGravgon <= ( ( BALL_RADIUS * Models[i].MaxScale ) + ( SHIP_RADIUS * 8.0F ) ) )
 				{
-					return TRUE;
+					return true;
 				}
 				break;
 
@@ -4525,15 +4525,15 @@ BOOL CheckForGravgons( VECTOR * Pos )
 		i = nextmodel;
 	}
 
-	return FALSE;
+	return false;
 }
 
 /*===================================================================
 	Procedure	:	Throw Rider toward all players
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void ThrowOutRider( uint16 Ship )
+void ThrowOutRider( u_int16_t Ship )
 {
 	VECTOR	Dir;
 
@@ -4551,10 +4551,10 @@ void ThrowOutRider( uint16 Ship )
 
 /*===================================================================
 	Procedure	:	Explode Body into Bits
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void ExplodeBody( VECTOR * Pos, VECTOR * Dir, uint16 Group )
+void ExplodeBody( VECTOR * Pos, VECTOR * Dir, u_int16_t Group )
 {
 	CreateBodyPart( Pos, Dir, Group, MODEL_Brain );
 	CreateBodyPart( Pos, Dir, Group, MODEL_Ear );
@@ -4567,22 +4567,22 @@ void ExplodeBody( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 /*===================================================================
 	Procedure	:	Create Body Part
 	Input		:	VECTOR	*	Pos
-				:	uint16		Group
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void CreateBodyPart( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 ModelNum )
+void CreateBodyPart( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t ModelNum )
 {
-	uint16	Model;
+	u_int16_t	Model;
 
 	Model =	FindFreeModel();
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_NOBODY;
 		Models[ Model ].Owner = 0;
 		Models[ Model ].ModelNum = ModelNum;
 		Models[ Model ].Type = MODTYPE_Missile;
 		Models[ Model ].Flags = MODFLAG_Clip;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = *Pos;
 
 		Models[ Model ].Dir = *Dir;
@@ -4618,12 +4618,12 @@ void CreateBodyPart( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 ModelNum )
 /*===================================================================
 	Procedure	:	Create Tom Cruise
 	Input		:	VECTOR	*	Pos
-				:	uint16		Group
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void CreateTomCruise( VECTOR * Pos, uint16 Group )
+void CreateTomCruise( VECTOR * Pos, u_int16_t Group )
 {
-	uint16	Model;
+	u_int16_t	Model;
 	VECTOR	TempDir;
 	VECTOR	TempPos;
 	float	Time;
@@ -4631,14 +4631,14 @@ void CreateTomCruise( VECTOR * Pos, uint16 Group )
 	float	Height;
 
 	Model =	FindFreeModel();
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_NOBODY;
 		Models[ Model ].Owner = 0;
 		Models[ Model ].ModelNum = MODEL_Tom0;
 		Models[ Model ].Type = MODTYPE_Field;
 		Models[ Model ].Flags = MODFLAG_Clip;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = *Pos;
 
 		TempDir.x = ( CurrentCamera.Pos.x - Pos->x );
@@ -4684,24 +4684,24 @@ void CreateTomCruise( VECTOR * Pos, uint16 Group )
 	Procedure	:	Missile Shock Wave Damage to Ships and Mines.
 	Input		:	VECTOR	*	Position
 				:	float		Radius
-				:	uint16		Owner
+				:	u_int16_t		Owner
 				:	float		Damage at center
-				:	uint16		Group
+				:	u_int16_t		Group
 				:	BYTE		Weapon
 	Output		:	Nothing
 ===================================================================*/
-void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Damage, uint16 Group, BYTE Weapon )
+void MissileShockWave( VECTOR * Pos, float Radius, u_int16_t Owner, float Center_Damage, u_int16_t Group, BYTE Weapon )
 {
-	int16		Count;
+	int16_t		Count;
 	float		Damage;
-	uint16		EndGroup;
+	u_int16_t		EndGroup;
 	VECTOR		DistVector;
 	float		DistFromCenter;
 	VERT		Int_Point;
 	NORMAL		Int_Normal;
 	VECTOR		TempVector;
 	VECTOR		Recoil;
-	uint16		i, Next;
+	u_int16_t		i, Next;
 	char		methodstr[256];
 	char		tempstr[256];
 	ENEMY	*	Enemy;
@@ -4727,7 +4727,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 							{
 								if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 											  Group, &DistVector, (VECTOR *) &Int_Point,
-											  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+											  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 								{
 									Damage = ( Center_Damage - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Damage ) ) );
 							
@@ -4789,7 +4789,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 					{
 						if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 									  Group, &DistVector, (VECTOR *) &Int_Point,
-									  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+									  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 						{
 							Damage = ( Center_Damage - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Damage ) ) );
 					
@@ -4833,7 +4833,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 
 	i = FirstSecBullUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		Next = SecBulls[ i ].Prev;							/* Next Secondary Bullet */
 
@@ -4848,7 +4848,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 			{
 				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 							  Group, &DistVector, (VECTOR *) &Int_Point,
-							  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+							  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 				{
 					Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + MINE_RADIUS ) / Center_Damage ) ) ) * framelag );
 					SecBulls[ i ].Shield -= Damage;
@@ -4887,7 +4887,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 				{
 					if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
 								  Group, &DistVector, (VECTOR *) &Int_Point,
-								  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+								  &EndGroup, &Int_Normal, &TempVector, true, NULL ) != true )
 					{
 						Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + SHIP_RADIUS ) / Center_Damage ) ) ) * framelag );
 			
@@ -4917,14 +4917,14 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 
 /*===================================================================
 	Procedure	:	Hit me
-	Input		:	uint16		OwnerType
-				:	uint16		OwnerID
+	Input		:	u_int16_t		OwnerType
+				:	u_int16_t		OwnerID
 				:	float		Damage
-				:	uint16		WeaponType
-				:	uint16		Weapon
+				:	u_int16_t		WeaponType
+				:	u_int16_t		Weapon
 	Output		:	Nothing
 ===================================================================*/
-void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, uint8 Weapon )
+void HitMe( u_int16_t OwnerType, u_int16_t OwnerID, float Damage, u_int8_t WeaponType, u_int8_t Weapon )
 {
 	char	methodstr[256];
 	char	tempstr[256];
@@ -4934,14 +4934,14 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 	{
 		Ships[ WhoIAm ].Damage = Damage;
 		if( OwnerType != OWNER_SHIP ) Ships[ WhoIAm ].ShipThatLastHitMe = MAX_PLAYERS;
-		else Ships[ WhoIAm ].ShipThatLastHitMe = (uint8) OwnerID;
+		else Ships[ WhoIAm ].ShipThatLastHitMe = (u_int8_t) OwnerID;
 
 		if( DoDamage( DONT_OVERRIDE_INVUL ) == 1 )		// Did I Die?
 		{
 			GetDeathString( WeaponType, Weapon, &methodstr[0] );
 
 			if( OwnerType != OWNER_SHIP ) Ships[ WhoIAm ].ShipThatLastKilledMe = MAX_PLAYERS;
-			else Ships[ WhoIAm ].ShipThatLastKilledMe = (uint8) OwnerID;
+			else Ships[ WhoIAm ].ShipThatLastKilledMe = (u_int8_t) OwnerID;
 			Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 			Ships[ WhoIAm ].Timer = 0.0F;
 			
@@ -4998,26 +4998,26 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 	
 /*===================================================================
 	Procedure	:	Create Orbit Pulsar
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void CreateOrbitPulsar( uint16 Ship )
+void CreateOrbitPulsar( u_int16_t Ship )
 {
 	float	Rot;
 	float	Inc;
-	int16	Count;
-	uint16	Model;
+	int16_t	Count;
+	u_int16_t	Model;
 
 	Rot = 0.0F;
 	Inc = ( 360.0F / Ships[ Ship ].NumMultiples );
 
 	for( Count = 0; Count < Ships[ Ship ].NumMultiples; Count++ )
 	{
-		if( Ships[ Ship ].OrbModels[ Count ] == (uint16) -1 )
+		if( Ships[ Ship ].OrbModels[ Count ] == (u_int16_t) -1 )
 		{
 			Model =	FindFreeModel();
 
-			if( Model != (uint16 ) -1 )
+			if( Model != (u_int16_t ) -1 )
 			{
 				Ships[ Ship ].OrbModels[ Count ] = Model;
 				Models[ Model ].OwnerType = OWNER_SHIP;
@@ -5026,7 +5026,7 @@ void CreateOrbitPulsar( uint16 Ship )
 				Models[ Model ].ModelNum = MODEL_OrbitPulsar;
 				Models[ Model ].Type = MODTYPE_Field; //Missile;
 				Models[ Model ].Flags = MODFLAG_Nothing;
-				Models[ Model ].Visible = TRUE;
+				Models[ Model ].Visible = true;
 				Models[ Model ].Pos = Ships[ Ship ].Object.Pos;
 				Models[ Model ].Dir.x = 0.0F;
 				Models[ Model ].Dir.y = 0.0F;
@@ -5058,10 +5058,10 @@ void CreateOrbitPulsar( uint16 Ship )
 
 	for( Count = Ships[ Ship ].NumMultiples; Count < MAXMULTIPLES; Count++ )
 	{
-		if( Ships[ Ship ].OrbModels[ Count ] != (uint16) -1 )
+		if( Ships[ Ship ].OrbModels[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedModel( Ships[ Ship ].OrbModels[ Count ] );
-			Ships[ Ship ].OrbModels[ Count ] = (uint16) -1;
+			Ships[ Ship ].OrbModels[ Count ] = (u_int16_t) -1;
 		}
 	}
 }
@@ -5070,22 +5070,22 @@ void CreateOrbitPulsar( uint16 Ship )
 	Procedure	:	Create Body Part
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	UpVector
-				:	uint16		Group
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void CreateExplosionDonut( VECTOR * Pos, VECTOR * Up, uint16 Group )
+void CreateExplosionDonut( VECTOR * Pos, VECTOR * Up, u_int16_t Group )
 {
-	uint16	Model;
+	u_int16_t	Model;
 
 	Model =	FindFreeModel();
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_NOBODY;
 		Models[ Model ].Owner = 0;
 		Models[ Model ].ModelNum = MODEL_ExplosionDonut;
 		Models[ Model ].Type = MODTYPE_Field;
 		Models[ Model ].Flags = MODFLAG_Nothing;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos.x = ( Pos->x + ( Up->x * SHIP_RADIUS ) );
 		Models[ Model ].Pos.y = ( Pos->y + ( Up->y * SHIP_RADIUS ) );
 		Models[ Model ].Pos.z = ( Pos->z + ( Up->z * SHIP_RADIUS ) );
@@ -5114,16 +5114,16 @@ void CreateExplosionDonut( VECTOR * Pos, VECTOR * Up, uint16 Group )
 				:	float		x2
 				:	float		y2
 				:	float		z2
-				:	uint16		Group
-	Output		:	uint16		Line Index
+				:	u_int16_t		Group
+	Output		:	u_int16_t		Line Index
 ===================================================================*/
-uint16 CreateLine( float x1, float y1, float z1, float x2, float y2, float z2, uint16 Group )
+u_int16_t CreateLine( float x1, float y1, float z1, float x2, float y2, float z2, u_int16_t Group )
 {
-	uint16	line;
+	u_int16_t	line;
 
 	line = FindFreeLine();						// Line attached
 
-	if( line != (uint16 ) -1 )
+	if( line != (u_int16_t ) -1 )
 	{
 		Lines[ line ].StartPos.x = x1;
 		Lines[ line ].StartPos.y = y1;
@@ -5151,16 +5151,16 @@ uint16 CreateLine( float x1, float y1, float z1, float x2, float y2, float z2, u
 				:	VECTOR	*	Pos
 				:	VECTOR	*	TopLeft
 				:	VECTOR	*	BottomRight
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+_Bool GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					   VECTOR * BottomRight )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Count;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Count;
+	u_int16_t					ExecBuf;
 	VECTOR					TempVert;
 
 	Group = 0;
@@ -5170,13 +5170,13 @@ BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * 
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//		return FALSE;
+//		return false;
 
 	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
-		return FALSE;
+		return false;
 	}
 
 //	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -5215,12 +5215,12 @@ BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * 
 	}
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -5241,16 +5241,16 @@ char *GetName(int Player)
 				:	VECTOR	*	Pos
 				:	VECTOR	*	TopLeft
 				:	VECTOR	*	BottomRight
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+_Bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					    VECTOR * BottomRight )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Count;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Count;
+	u_int16_t					ExecBuf;
 	VECTOR					TempVert;
 
 	Group = 0;
@@ -5260,12 +5260,12 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//		return FALSE;
+//		return false;
 	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
-		return FALSE;
+		return false;
 	}
 
 //	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -5304,13 +5304,13 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 	}
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
-		return FALSE;
+		return false;
 	}
 	
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -5318,29 +5318,29 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 	Input		:	MXLOADHEADER * DstMloadheader
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
-				:	uint16	*	Line Array
-				:	uint16		Group
-	Output		:	BOOL		True/False
+				:	u_int16_t	*	Line Array
+				:	u_int16_t		Group
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, uint16 * LineArray, uint16 Group2 )
+_Bool CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group2 )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Count;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Count;
+	u_int16_t					ExecBuf;
 	VECTOR					Verts[ 8 ];
 
 	for( Count = 0; Count < 12; Count++ )
 	{
-		if( LineArray[ Count ] != (uint16) -1 )
+		if( LineArray[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedLine( LineArray[ Count ] );
-			LineArray[ Count ] = (uint16) -1;
+			LineArray[ Count ] = (u_int16_t) -1;
 		}
 
 	}
-	if( !ShowBoundingBoxes ) return TRUE;
+	if( !ShowBoundingBoxes ) return true;
 
 	Group = 0;
 	ExecBuf = 0;
@@ -5349,12 +5349,12 @@ BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false;
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//		return FALSE;
+//		return false;
 	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
-		return FALSE;
+		return false;
 	}
 
 //	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -5388,12 +5388,12 @@ BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 	LineArray[ 11 ] = CreateLine( Verts[ 3 ].x, Verts[ 3 ].y, Verts[ 3 ].z, Verts[ 7 ].x, Verts[ 7 ].y, Verts[ 7 ].z, Group2 );
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -5401,29 +5401,29 @@ BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 	Input		:	MXALOADHEADER * DstMloadheader
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
-				:	uint16	*	Line Array
-				:	uint16		Group
-	Output		:	BOOL	True/False
+				:	u_int16_t	*	Line Array
+				:	u_int16_t		Group
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, uint16 * LineArray, uint16 Group2 )
+_Bool CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group2 )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Count;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Count;
+	u_int16_t					ExecBuf;
 	VECTOR					Verts[ 8 ];
 
 	for( Count = 0; Count < 12; Count++ )
 	{
-		if( LineArray[ Count ] != (uint16) -1 )
+		if( LineArray[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedLine( LineArray[ Count ] );
-			LineArray[ Count ] = (uint16) -1;
+			LineArray[ Count ] = (u_int16_t) -1;
 		}
 
 	}
-	if( !ShowBoundingBoxes ) return TRUE;
+	if( !ShowBoundingBoxes ) return true;
 
 	Group = 0;
 	ExecBuf = 0;
@@ -5432,12 +5432,12 @@ BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECT
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//		return FALSE;
+//		return false;
 	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
-		return FALSE;
+		return false;
 	}
 
 //	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -5471,24 +5471,24 @@ BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECT
 	LineArray[ 11 ] = CreateLine( Verts[ 3 ].x, Verts[ 3 ].y, Verts[ 3 ].z, Verts[ 7 ].x, Verts[ 7 ].y, Verts[ 7 ].z, Group2 );
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
-		return FALSE;
+		return false;
 	}
 	
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Setup Model SpotFX
-	Input		:	uint16		ModelIndex
+	Input		:	u_int16_t		ModelIndex
 	Output		:	Nothing
 ===================================================================*/
-void SetupModelSpotFX( uint16 i )
+void SetupModelSpotFX( u_int16_t i )
 {
-	int16		Count;
-	int16		NumSpotFX = 0;
+	int16_t		Count;
+	int16_t		NumSpotFX = 0;
 	PVSPOTFX *	SpotFXPtr = NULL;
 
 	if( ModelNames[ Models[i].ModelNum ].DoIMorph )
@@ -5534,23 +5534,23 @@ void SetupModelSpotFX( uint16 i )
 
 /*===================================================================
 	Procedure	:	Update Ship Model
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
 //#define	PHIL_TESTSFX
 
-extern BOOL TeamGame;
+extern _Bool TeamGame;
 extern int TeamCol[ MAX_TEAMS ];
-extern uint8 Colourtrans[MAXFONTCOLOURS][3];
+extern u_int8_t Colourtrans[MAXFONTCOLOURS][3];
 extern BYTE	TeamNumber[MAX_PLAYERS];
-extern BOOL TintBikeTeamColor;
+extern _Bool TintBikeTeamColor;
 
-void UpdateShipModel( uint16 Ship )
+void UpdateShipModel( u_int16_t Ship )
 {
-	uint16	Model;
+	u_int16_t	Model;
 
 #ifdef PHIL_TESTSFX
-	int16	SoundFX;
+	int16_t	SoundFX;
 #endif
 
 	if( Ship == MAX_PLAYERS ) return;
@@ -5559,12 +5559,12 @@ void UpdateShipModel( uint16 Ship )
 	{
 		if( BikeCompFiles[ ( Ships[ Ship ].BikeNum % MAXBIKETYPES ) ].Filename[ 0 ] )
 		{
-			if( Ships[ Ship ].ModelNum != (uint16) -1 )
+			if( Ships[ Ship ].ModelNum != (u_int16_t) -1 )
 			{
 //				DebugPrintf( "Deallocated Model %d for ship %d\n", Ships[ Ship ].ModelNum, Ship );
 
 				KillUsedModel( Ships[ Ship ].ModelNum );
-				Ships[ Ship ].ModelNum = (uint16) -1;
+				Ships[ Ship ].ModelNum = (u_int16_t) -1;
 			}
 
 			if( !Ships[ Ship ].Object.Components )
@@ -5617,11 +5617,11 @@ void UpdateShipModel( uint16 Ship )
 					( (GameStatus[ Ship ] == STATUS_Normal ) || (GameStatus[ Ship ] == STATUS_SinglePlayer ) ) &&
 					( Current_Camera_View != Ship ) )
 				{
-					SetCompObjModelsState( Ships[ Ship ].Object.Components, 1, TRUE );
+					SetCompObjModelsState( Ships[ Ship ].Object.Components, 1, true );
 				}
 				else
 				{
-					SetCompObjModelsState( Ships[ Ship ].Object.Components, 1, FALSE );
+					SetCompObjModelsState( Ships[ Ship ].Object.Components, 1, false );
 				}
 			}
 		}
@@ -5636,21 +5636,21 @@ void UpdateShipModel( uint16 Ship )
 				Ships[ Ship ].Object.Components = NULL;
 			}
 
-			if( Ships[ Ship ].ModelNum == (uint16) -1 )
+			if( Ships[ Ship ].ModelNum == (u_int16_t) -1 )
 			{
 #ifdef DEBUG_ON
 				PickupModelValid();
 #endif
 				Model =	FindFreeModel();
 
-				if( Model != (uint16 ) -1 )
+				if( Model != (u_int16_t ) -1 )
 				{
 					Models[ Model ].OwnerType = OWNER_SHIP;
 					Models[ Model ].Owner = WhoIAm;
 					Models[ Model ].ModelNum = BikeModels[ ( Ships[ Ship ].BikeNum % MAXBIKETYPES ) ];
 					Models[ Model ].Type = MODTYPE_Pickup;
 					Models[ Model ].Flags = MODFLAG_AmbientLight;
-					Models[ Model ].Visible = TRUE;
+					Models[ Model ].Visible = true;
 					Models[ Model ].Pos = Ships[ Ship ].Object.Pos;
 					Models[ Model ].Dir = Ships[ Ship ].Move_Off;
 					Models[ Model ].Rot.x = 0.0F;
@@ -5685,7 +5685,7 @@ void UpdateShipModel( uint16 Ship )
 				}
 			}
 
-			if( Ships[ Ship ].ModelNum != (uint16) -1 )
+			if( Ships[ Ship ].ModelNum != (u_int16_t) -1 )
 			{
 				Model = Ships[ Ship ].ModelNum;
 
@@ -5730,11 +5730,11 @@ void UpdateShipModel( uint16 Ship )
 					( (GameStatus[ Ship ] == STATUS_Normal ) || (GameStatus[ Ship ] == STATUS_SinglePlayer ) ) &&
 					( Current_Camera_View != Ship ) )
 				{
-					Models[ Model ].Visible = TRUE;
+					Models[ Model ].Visible = true;
 				}
 				else
 				{
-					Models[ Model ].Visible = FALSE;
+					Models[ Model ].Visible = false;
 				}
 			}
 		}
@@ -5744,12 +5744,12 @@ void UpdateShipModel( uint16 Ship )
 		Ships[ Ship ].NumMultiples = 0;
 		CreateOrbitPulsar( Ship );
 
-		if( Ships[ Ship ].ModelNum != (uint16) -1 )
+		if( Ships[ Ship ].ModelNum != (u_int16_t) -1 )
 		{
 //			DebugPrintf( "Deallocated Model %d for ship %d\n", Ships[ Ship ].ModelNum, Ship );
 
 			KillUsedModel( Ships[ Ship ].ModelNum );
-			Ships[ Ship ].ModelNum = (uint16) -1;
+			Ships[ Ship ].ModelNum = (u_int16_t) -1;
 		}
 
 		if( Ships[ Ship ].Object.Components )
@@ -5846,7 +5846,7 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 	float Size2;
 
 #ifdef NEW_LIGHTING
-	return TRUE;
+	return true;
 #endif
 
 	RF = GF = BF = 0.0F;
@@ -5893,11 +5893,11 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 
 #define POINT_TO_PLANE( P, N ) ( (P)->x * (N)->Normal.x + (P)->y * (N)->Normal.y + (P)->z * (N)->Normal.z + ( (N)->Offset) )
 
-void RefreshModel( uint16 model )
+void RefreshModel( u_int16_t model )
 {
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXALOADHEADER			*DstMloadheader;
 	float distance, refresh_value;
 	VECTOR point;
@@ -5953,13 +5953,13 @@ void InitShipSpeeds( void )
 
 /*===================================================================
 	Procedure	:	Update SFX for Ships/Enemies
-	Input		:	uint16		OwnerType
-				:	uint16		OwenID
-				:	uint32		SoundFX ID
+	Input		:	u_int16_t		OwnerType
+				:	u_int16_t		OwenID
+				:	u_int32_t		SoundFX ID
 				:	float		Speed
-	Output		:	uint32		New SoundFX ID
+	Output		:	u_int32_t		New SoundFX ID
 ===================================================================*/
-uint32 EngineCode( uint16 OwnerType, uint16 OwnerID, uint32 SoundFX_ID, float Speed )
+u_int32_t EngineCode( u_int16_t OwnerType, u_int16_t OwnerID, u_int32_t SoundFX_ID, float Speed )
 {
 	float fracspeed, newfreq;
 	int i;
@@ -6090,7 +6090,7 @@ uint32 EngineCode( uint16 OwnerType, uint16 OwnerID, uint32 SoundFX_ID, float Sp
 ===================================================================*/
 FILE * SaveModels( FILE * fp )
 {
-	uint16 i;
+	u_int16_t i;
 
 	if( fp )
 	{
@@ -6099,19 +6099,19 @@ FILE * SaveModels( FILE * fp )
 		
 		i = FirstModelUsed;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
-			fwrite( &Models[ i ].Next, sizeof( uint16 ), 1, fp );
-			fwrite( &Models[ i ].Prev, sizeof( uint16 ), 1, fp );
-			fwrite( &Models[ i ].Type, sizeof( int16 ), 1, fp );
-			fwrite( &Models[ i ].Flags, sizeof( uint16 ), 1, fp );
+			fwrite( &Models[ i ].Next, sizeof( u_int16_t ), 1, fp );
+			fwrite( &Models[ i ].Prev, sizeof( u_int16_t ), 1, fp );
+			fwrite( &Models[ i ].Type, sizeof( int16_t ), 1, fp );
+			fwrite( &Models[ i ].Flags, sizeof( u_int16_t ), 1, fp );
 			fwrite( &Models[ i ].SecWeapon, sizeof( BYTE ), 1, fp );
-			fwrite( &Models[ i ].Visible, sizeof( BOOL ), 1, fp );
-			fwrite( &Models[ i ].ModelNum, sizeof( uint16 ), 1, fp );
-			fwrite( &Models[ i ].Group, sizeof( uint16 ), 1, fp );
-			fwrite( &Models[ i ].OwnerType, sizeof( uint16 ), 1, fp );
-			fwrite( &Models[ i ].Owner, sizeof( uint16 ), 1, fp );
-			fwrite( &Models[ i ].Func, sizeof( int16 ), 1, fp );
+			fwrite( &Models[ i ].Visible, sizeof( _Bool ), 1, fp );
+			fwrite( &Models[ i ].ModelNum, sizeof( u_int16_t ), 1, fp );
+			fwrite( &Models[ i ].Group, sizeof( u_int16_t ), 1, fp );
+			fwrite( &Models[ i ].OwnerType, sizeof( u_int16_t ), 1, fp );
+			fwrite( &Models[ i ].Owner, sizeof( u_int16_t ), 1, fp );
+			fwrite( &Models[ i ].Func, sizeof( int16_t ), 1, fp );
 			fwrite( &Models[ i ].Scale, sizeof( float ), 1, fp );
 			fwrite( &Models[ i ].Xscale, sizeof( float ), 1, fp );
 			fwrite( &Models[ i ].Yscale, sizeof( float ), 1, fp );
@@ -6122,12 +6122,12 @@ FILE * SaveModels( FILE * fp )
 			fwrite( &Models[ i ].Speed, sizeof( float ), 1, fp );
 			fwrite( &Models[ i ].TimeInterval, sizeof( float ), 1, fp );
 			fwrite( &Models[ i ].TimeCount, sizeof( float ), 1, fp );
-			fwrite( &Models[ i ].Frame, sizeof( int16 ), 1, fp );
-			fwrite( &Models[ i ].InterpFrame, sizeof( int16 ), 1, fp );
+			fwrite( &Models[ i ].Frame, sizeof( int16_t ), 1, fp );
+			fwrite( &Models[ i ].InterpFrame, sizeof( int16_t ), 1, fp );
 			fwrite( &Models[ i ].InterpTime, sizeof( float ), 1, fp );
 			fwrite( &Models[ i ].Qlerp, sizeof( QUATLERP ), 1, fp );
 			fwrite( &Models[ i ].Quat, sizeof( QUAT ), 1, fp );
-			fwrite( &Models[ i ].Ship, sizeof( uint16 ), 1, fp );
+			fwrite( &Models[ i ].Ship, sizeof( u_int16_t ), 1, fp );
 			fwrite( &Models[ i ].Pos, sizeof( VECTOR ), 1, fp );
 			fwrite( &Models[ i ].OldPos, sizeof( VECTOR ), 1, fp );
 			fwrite( &Models[ i ].Dir, sizeof( VECTOR ), 1, fp );
@@ -6143,15 +6143,15 @@ FILE * SaveModels( FILE * fp )
 			fwrite( &Models[ i ].SpotFXTimeInterval[ 0 ], sizeof( Models[i].SpotFXTimeInterval ), 1, fp );
 			fwrite( &Models[ i ].SpotFXTimeCount[ 0 ], sizeof( Models[i].SpotFXTimeCount ), 1, fp );
 			fwrite( &Models[ i ].SpotFXSFX_ID[ 0 ], sizeof( Models[i].SpotFXSFX_ID ), 1, fp );
-			fwrite( &Models[ i ].ClipGroup, sizeof( uint16 ), 1, fp );
+			fwrite( &Models[ i ].ClipGroup, sizeof( u_int16_t ), 1, fp );
 			i = Models[ i ].Prev;
 		}
 
 		i = FirstModelFree;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
-			fwrite( &Models[ i ].Next, sizeof( uint16 ), 1, fp );
+			fwrite( &Models[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			i = Models[ i ].Next;
 		}
 
@@ -6167,8 +6167,8 @@ FILE * SaveModels( FILE * fp )
 ===================================================================*/
 FILE * LoadModels( FILE * fp )
 {
-	uint16	i;
-	int16	Count;
+	u_int16_t	i;
+	int16_t	Count;
 
 	if( fp )
 	{
@@ -6177,19 +6177,19 @@ FILE * LoadModels( FILE * fp )
 		
 		i = FirstModelUsed;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
-			fread( &Models[ i ].Next, sizeof( uint16 ), 1, fp );
-			fread( &Models[ i ].Prev, sizeof( uint16 ), 1, fp );
-			fread( &Models[ i ].Type, sizeof( int16 ), 1, fp );
-			fread( &Models[ i ].Flags, sizeof( uint16 ), 1, fp );
+			fread( &Models[ i ].Next, sizeof( u_int16_t ), 1, fp );
+			fread( &Models[ i ].Prev, sizeof( u_int16_t ), 1, fp );
+			fread( &Models[ i ].Type, sizeof( int16_t ), 1, fp );
+			fread( &Models[ i ].Flags, sizeof( u_int16_t ), 1, fp );
 			fread( &Models[ i ].SecWeapon, sizeof( BYTE ), 1, fp );
-			fread( &Models[ i ].Visible, sizeof( BOOL ), 1, fp );
-			fread( &Models[ i ].ModelNum, sizeof( uint16 ), 1, fp );
-			fread( &Models[ i ].Group, sizeof( uint16 ), 1, fp );
-			fread( &Models[ i ].OwnerType, sizeof( uint16 ), 1, fp );
-			fread( &Models[ i ].Owner, sizeof( uint16 ), 1, fp );
-			fread( &Models[ i ].Func, sizeof( int16 ), 1, fp );
+			fread( &Models[ i ].Visible, sizeof( _Bool ), 1, fp );
+			fread( &Models[ i ].ModelNum, sizeof( u_int16_t ), 1, fp );
+			fread( &Models[ i ].Group, sizeof( u_int16_t ), 1, fp );
+			fread( &Models[ i ].OwnerType, sizeof( u_int16_t ), 1, fp );
+			fread( &Models[ i ].Owner, sizeof( u_int16_t ), 1, fp );
+			fread( &Models[ i ].Func, sizeof( int16_t ), 1, fp );
 			fread( &Models[ i ].Scale, sizeof( float ), 1, fp );
 			fread( &Models[ i ].Xscale, sizeof( float ), 1, fp );
 			fread( &Models[ i ].Yscale, sizeof( float ), 1, fp );
@@ -6200,13 +6200,13 @@ FILE * LoadModels( FILE * fp )
 			fread( &Models[ i ].Speed, sizeof( float ), 1, fp );
 			fread( &Models[ i ].TimeInterval, sizeof( float ), 1, fp );
 			fread( &Models[ i ].TimeCount, sizeof( float ), 1, fp );
-			fread( &Models[ i ].Frame, sizeof( int16 ), 1, fp );
-			fread( &Models[ i ].InterpFrame, sizeof( int16 ), 1, fp );
+			fread( &Models[ i ].Frame, sizeof( int16_t ), 1, fp );
+			fread( &Models[ i ].InterpFrame, sizeof( int16_t ), 1, fp );
 			fread( &Models[ i ].InterpTime, sizeof( float ), 1, fp );
 			fread( &Models[ i ].Qlerp, sizeof( QUATLERP ), 1, fp );
 			Models[ i ].Qlerp.crnt = &Models[ i ].Quat;
 			fread( &Models[ i ].Quat, sizeof( QUAT ), 1, fp );
-			fread( &Models[ i ].Ship, sizeof( uint16 ), 1, fp );
+			fread( &Models[ i ].Ship, sizeof( u_int16_t ), 1, fp );
 			fread( &Models[ i ].Pos, sizeof( VECTOR ), 1, fp );
 			fread( &Models[ i ].OldPos, sizeof( VECTOR ), 1, fp );
 			fread( &Models[ i ].Dir, sizeof( VECTOR ), 1, fp );
@@ -6223,7 +6223,7 @@ FILE * LoadModels( FILE * fp )
 			fread( &Models[ i ].SpotFXTimeInterval[ 0 ], sizeof( Models[i].SpotFXTimeInterval ), 1, fp );
 			fread( &Models[ i ].SpotFXTimeCount[ 0 ], sizeof( Models[i].SpotFXTimeCount ), 1, fp );
 			fread( &Models[ i ].SpotFXSFX_ID[ 0 ], sizeof( Models[i].SpotFXSFX_ID ), 1, fp );
-			fread( &Models[ i ].ClipGroup, sizeof( uint16 ), 1, fp );
+			fread( &Models[ i ].ClipGroup, sizeof( u_int16_t ), 1, fp );
 
 			ReinitSpotFXSFX( i );
 
@@ -6232,18 +6232,18 @@ FILE * LoadModels( FILE * fp )
 
 		i = FirstModelFree;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
 			memset( &Models[ i ], 0, sizeof( MODEL ) );
 			Models[i].Func = MODFUNC_Nothing;
 			Models[i].LifeCount = -1.0F;
 			Models[i].Scale = 1.0F;
-			Models[i].Visible = TRUE;
+			Models[i].Visible = true;
 			Models[i].TimeInterval = (float) 1;
-			for( Count = 0; Count < 12; Count++ ) Models[i].TempLines[ Count ] = (uint16) -1;
-			Models[i].Prev = (uint16) -1;
+			for( Count = 0; Count < 12; Count++ ) Models[i].TempLines[ Count ] = (u_int16_t) -1;
+			Models[i].Prev = (u_int16_t) -1;
 
-			fread( &Models[ i ].Next, sizeof( uint16 ), 1, fp );
+			fread( &Models[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			i = Models[ i ].Next;
 		}
 	}
@@ -6253,13 +6253,13 @@ FILE * LoadModels( FILE * fp )
 
 /*===================================================================
 	Procedure	:	Reinitialise Sound FX on Models
-	Input		:	uint16		Model Index
-	Output		:	BOOL		True/False
+	Input		:	u_int16_t		Model Index
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL ReinitSpotFXSFX( uint16 i )
+_Bool ReinitSpotFXSFX( u_int16_t i )
 {
-	int16		Count;
-	uint16		NumSpotFX = 0;
+	int16_t		Count;
+	u_int16_t		NumSpotFX = 0;
 	PVSPOTFX *	SpotFXPtr = NULL;
 
 	if( ModelNames[ Models[i].ModelNum ].DoIMorph )
@@ -6302,7 +6302,7 @@ BOOL ReinitSpotFXSFX( uint16 i )
 			SpotFXPtr++;
 		}
 	}
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
@@ -6312,13 +6312,13 @@ BOOL ReinitSpotFXSFX( uint16 i )
 ===================================================================*/
 void SetShipsVisibleFlag( void )
 {
-	int16	Ship;
-	uint16	Model;
-	BOOL	ShipVisible;
+	int16_t	Ship;
+	u_int16_t	Model;
+	_Bool	ShipVisible;
 
 	for( Ship = 0; Ship < MAX_PLAYERS; Ship++ )
 	{
-		ShipVisible = FALSE;
+		ShipVisible = false;
 
 		if( ( Ships[ Ship ].enable ) &&
 			( Ships[ Ship ].Object.Mode != GAMEOVER_MODE ) &&
@@ -6329,11 +6329,11 @@ void SetShipsVisibleFlag( void )
 			{
 				if( PlayDemo && ( Current_Camera_View == Ship ) )
 				{
-					ShipVisible = FALSE;
+					ShipVisible = false;
 				}
 				else
 				{
-					ShipVisible = TRUE;
+					ShipVisible = true;
 				}
 			}
 			else
@@ -6341,7 +6341,7 @@ void SetShipsVisibleFlag( void )
 				if( ( CameraRendering != CAMRENDERING_Main ) &&
 					( CameraRendering != CAMRENDERING_Rear ) )
 				{
-					ShipVisible = TRUE;
+					ShipVisible = true;
 				}
 			}
 		}
@@ -6355,7 +6355,7 @@ void SetShipsVisibleFlag( void )
 		}
 		else
 		{
-			if( Ships[ Ship ].ModelNum != (uint16) -1 )
+			if( Ships[ Ship ].ModelNum != (u_int16_t) -1 )
 			{
 				Model = Ships[ Ship ].ModelNum;
 				Models[ Model ].Visible = ShipVisible;
@@ -6379,35 +6379,35 @@ void EnableRelavantModels( MODELNAME * ModelNamesPtr )
 		( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
 		( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) )
 	{
-		ModelNamesPtr[ MODEL_Tracker ].LoadEnable = FALSE;
-		ModelNamesPtr[ MODEL_Ping ].LoadEnable = FALSE;
-		ModelNamesPtr[ MODEL_Flag ].LoadEnable = FALSE;
-		ModelNamesPtr[ MODEL_RedFlag ].LoadEnable = FALSE;
-		ModelNamesPtr[ MODEL_GreenFlag ].LoadEnable = FALSE;
-		ModelNamesPtr[ MODEL_BlueFlag ].LoadEnable = FALSE;
-		ModelNamesPtr[ MODEL_YellowFlag ].LoadEnable = FALSE;
+		ModelNamesPtr[ MODEL_Tracker ].LoadEnable = false;
+		ModelNamesPtr[ MODEL_Ping ].LoadEnable = false;
+		ModelNamesPtr[ MODEL_Flag ].LoadEnable = false;
+		ModelNamesPtr[ MODEL_RedFlag ].LoadEnable = false;
+		ModelNamesPtr[ MODEL_GreenFlag ].LoadEnable = false;
+		ModelNamesPtr[ MODEL_BlueFlag ].LoadEnable = false;
+		ModelNamesPtr[ MODEL_YellowFlag ].LoadEnable = false;
 	}
 	else
 	{
-		ModelNamesPtr[ MODEL_Tracker ].LoadEnable = FALSE;
-		ModelNamesPtr[ MODEL_Ping ].LoadEnable = FALSE;
+		ModelNamesPtr[ MODEL_Tracker ].LoadEnable = false;
+		ModelNamesPtr[ MODEL_Ping ].LoadEnable = false;
 
-		if( CaptureTheFlag ) ModelNamesPtr[ MODEL_Flag ].LoadEnable = TRUE;
-		else ModelNamesPtr[ MODEL_Flag ].LoadEnable = FALSE;
+		if( CaptureTheFlag ) ModelNamesPtr[ MODEL_Flag ].LoadEnable = true;
+		else ModelNamesPtr[ MODEL_Flag ].LoadEnable = false;
 
 		if( CTF )
 		{
-			ModelNamesPtr[ MODEL_RedFlag ].LoadEnable = TRUE;
-			ModelNamesPtr[ MODEL_GreenFlag ].LoadEnable = TRUE;
-			ModelNamesPtr[ MODEL_BlueFlag ].LoadEnable = TRUE;
-			ModelNamesPtr[ MODEL_YellowFlag ].LoadEnable = TRUE;
+			ModelNamesPtr[ MODEL_RedFlag ].LoadEnable = true;
+			ModelNamesPtr[ MODEL_GreenFlag ].LoadEnable = true;
+			ModelNamesPtr[ MODEL_BlueFlag ].LoadEnable = true;
+			ModelNamesPtr[ MODEL_YellowFlag ].LoadEnable = true;
 		}
 		else
 		{
-			ModelNamesPtr[ MODEL_RedFlag ].LoadEnable = FALSE;
-			ModelNamesPtr[ MODEL_GreenFlag ].LoadEnable = FALSE;
-			ModelNamesPtr[ MODEL_BlueFlag ].LoadEnable = FALSE;
-			ModelNamesPtr[ MODEL_YellowFlag ].LoadEnable = FALSE;
+			ModelNamesPtr[ MODEL_RedFlag ].LoadEnable = false;
+			ModelNamesPtr[ MODEL_GreenFlag ].LoadEnable = false;
+			ModelNamesPtr[ MODEL_BlueFlag ].LoadEnable = false;
+			ModelNamesPtr[ MODEL_YellowFlag ].LoadEnable = false;
 		}
 	}
 }
@@ -6417,14 +6417,14 @@ void EnableRelavantModels( MODELNAME * ModelNamesPtr )
 
 void CheckModelLinkList( void )
 {
-	uint16 i;
-	uint16 Count;
+	u_int16_t i;
+	u_int16_t Count;
 
 
 	
 	i = 0;
 	Count = FirstModelFree;
-	while( ( Count != (uint16)-1 ) && i < MAXNUMOFMODELS*2 )
+	while( ( Count != (u_int16_t)-1 ) && i < MAXNUMOFMODELS*2 )
 	{
 		Count = Models[Count].Next;
 		i++;
@@ -6439,7 +6439,7 @@ void CheckModelLinkList( void )
 	i = 0;
 
 	Count = FirstModelUsed;
-	while( ( Count != (uint16)-1 ) && i < MAXNUMOFMODELS*2 )
+	while( ( Count != (u_int16_t)-1 ) && i < MAXNUMOFMODELS*2 )
 	{
 		if( Models[Count].Prev == Models[Count].Next )
 		{
@@ -6464,14 +6464,14 @@ void CheckModelLinkList( void )
 ===================================================================*/
 void KillAllBikeEngines( void )
 {
-	uint16		NumSpotFX  = 0;
+	u_int16_t		NumSpotFX  = 0;
 	PVSPOTFX *	SpotFXPtr = NULL;
-	int16		Count;
-	uint16		i;
+	int16_t		Count;
+	u_int16_t		i;
 
 	i = FirstModelUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		switch( Models[i].Func )
 		{
@@ -6534,26 +6534,26 @@ void KillAllBikeEngines( void )
 
 /*===================================================================
 	Procedure	:	Check if bike engine enabled and is ship if so then
-				:	return TRUE else return FALSE
+				:	return true else return false
 	Output		:	Nothing
 ===================================================================*/
-BOOL EngineEnabled( uint16 OwnerType, uint16 Owner )
+_Bool EngineEnabled( u_int16_t OwnerType, u_int16_t Owner )
 {
-	if( BikeEnginesOn ) return( TRUE );
-	if( ( OwnerType != OWNER_SHIP ) || ( Owner >= MAX_PLAYERS ) ) return( TRUE );
-	return( FALSE );
+	if( BikeEnginesOn ) return( true );
+	if( ( OwnerType != OWNER_SHIP ) || ( Owner >= MAX_PLAYERS ) ) return( true );
+	return( false );
 }
 
 /*===================================================================
 		True EnviroMent Mapping for an Mxaloadheader...
 ===================================================================*/
-BOOL	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
+_Bool	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 {
 	VECTOR Temp;
 //	D3DEXECUTEBUFFERDESC	debDesc;
-	uint16 group;
-	uint16 vert;
-	uint16 execbuf;
+	u_int16_t group;
+	u_int16_t vert;
+	u_int16_t execbuf;
 	LPLVERTEX	lpLVERTEX = NULL;
 	float	u,v;
 
@@ -6568,12 +6568,12 @@ BOOL	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 //				debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 
 //				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//					return FALSE ; // bjd
+//					return false ; // bjd
 //				if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//					return FALSE;
+//					return false;
 				if (!(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 				{
-					return FALSE;
+					return false;
 				}
 
 //				lpLVERTEX = ( LPLVERTEX ) debDesc.lpData;
@@ -6593,15 +6593,15 @@ BOOL	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 				}
 				/*	unlock the execute buffer	*/
 //				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-//					return FALSE ;
+//					return false ;
 				if (!(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 #ifdef OPT_ON

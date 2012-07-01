@@ -26,30 +26,30 @@
 #include "util.h"
 
 
-extern BOOL IsHost;   // is the user hosting/joining a game
+extern _Bool IsHost;   // is the user hosting/joining a game
 extern BYTE Current_Camera_View; // which object is currently using the camera view....
 extern	BYTE	GameStatus[];	// Game Status for every Ship...
-extern uint16 RandomStartPosModify;
-extern BOOL PlayDemo;
-extern	BOOL	CaptureTheFlag;
-extern	BOOL	CTF;
-extern	int16	SelectedBike;
+extern u_int16_t RandomStartPosModify;
+extern _Bool PlayDemo;
+extern	_Bool	CaptureTheFlag;
+extern	_Bool	CTF;
+extern	int16_t	SelectedBike;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern	char	biker_name[256];
-extern	BOOL	CountDownOn;
-extern	BOOL	TeamGame;
-extern  int16   NewLevelNum;
+extern	_Bool	CountDownOn;
+extern	_Bool	TeamGame;
+extern  int16_t   NewLevelNum;
 extern  BYTE          MyGameStatus;
 extern SLIDER WatchPlayerSelect;
-extern BOOL SwitchedToWatchMode;
+extern _Bool SwitchedToWatchMode;
 
-BOOL LoadASinglePlayerGame( MENUITEM * Item )
+_Bool LoadASinglePlayerGame( MENUITEM * Item )
 {
 	int i;
-	PlayDemo = FALSE;
-	IsHost = TRUE;
+	PlayDemo = false;
+	IsHost = true;
 	RandomStartPosModify = 0;
-	SetBikeMods( (uint16) (SelectedBike+2) );
+	SetBikeMods( (u_int16_t) (SelectedBike+2) );
 	SetupNetworkGame();
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
@@ -58,7 +58,7 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 	WhoIAm = 0;								// I was the first to join...
 	Current_Camera_View = 0;				// set camera to that view
 	WatchPlayerSelect.value = 0;
-	SwitchedToWatchMode = FALSE;
+	SwitchedToWatchMode = false;
 	Ships[WhoIAm].enable = 1;
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 	set_my_player_name();
@@ -69,29 +69,29 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 	PreInGameLoad( Item );
 
 	if( NewLevelNum == -1 )
-		return FALSE;
+		return false;
 
-	CountDownOn = FALSE;
+	CountDownOn = false;
 
 	MyGameStatus = STATUS_TitleLoadGameStartingSinglePlayer;
 
-	return TRUE;
+	return true;
 }
 
-BOOL StartASinglePlayerGame( MENUITEM * Item )
+_Bool StartASinglePlayerGame( MENUITEM * Item )
 {
 	int i;
 
-	PlayDemo = FALSE;
-	IsHost = TRUE;
+	PlayDemo = false;
+	IsHost = true;
 	// reset all bollocks...
-	TeamGame = FALSE;
-	CaptureTheFlag = FALSE;
-	CTF = FALSE;
+	TeamGame = false;
+	CaptureTheFlag = false;
+	CTF = false;
 
 	RandomStartPosModify = 0;
 
-	SetBikeMods( (uint16) (SelectedBike+2) );
+	SetBikeMods( (u_int16_t) (SelectedBike+2) );
 
 	SetupNetworkGame();
 	
@@ -101,16 +101,16 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	WhoIAm = 0;								// I was the first to join...
 	Current_Camera_View = 0;				// set camera to that view
 	WatchPlayerSelect.value = 0;
-	SwitchedToWatchMode = FALSE;
+	SwitchedToWatchMode = false;
 	Ships[WhoIAm].enable = 1;
 	
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 	set_my_player_name();
 	Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 	
-	CountDownOn = FALSE;
+	CountDownOn = false;
 
 	MyGameStatus = STATUS_StartingSinglePlayer;
 
-	return TRUE;
+	return true;
 }

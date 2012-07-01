@@ -25,13 +25,13 @@
 ===================================================================*/
 typedef struct RESTART {
 	
-	uint16		Sequence;
-	uint16		Index;
-	uint16		Group;
+	u_int16_t		Sequence;
+	u_int16_t		Index;
+	u_int16_t		Group;
 	VECTOR		Pos;
 	VECTOR		DirVector;
 	VECTOR		UpVector;
-	uint16		FmPoly;
+	u_int16_t		FmPoly;
 	MATRIX		Matrix;
 	float		Time;
 	float		OverallTime;
@@ -52,18 +52,18 @@ void InitRestartPoints( void );
 RESTART * FindFreeRestartPoint( void );
 void KillUsedRestartPoint( RESTART * Object );
 void ReleaseAllRestartPoints( void );
-BOOL LoadStartPoints( void );
-BOOL PreLoadRestartPoints( void );
-BOOL LoadRestartPoints( void );
-RESTART * InitOneFaceMeRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector );
-RESTART * InitOneRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector,
+_Bool LoadStartPoints( void );
+_Bool PreLoadRestartPoints( void );
+_Bool LoadRestartPoints( void );
+RESTART * InitOneFaceMeRestartPoint( u_int16_t Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector );
+RESTART * InitOneRestartPoint( u_int16_t Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector,
 							  COMP_OBJ * CompObj, float OverallTime );
 void ProcessRestartPoints( void );
 void SetupRestartPointGroups( void );
-void AddRestartPointToGroup( RESTART * Object, uint16 Group );
-void RemoveRestartPointFromGroup( RESTART * Object, uint16 Group );
-void MoveRestartPointToGroup( RESTART * Object, uint16 OldGroup, uint16 NewGroup );
-void ActivateRestartPoint( uint16 NewStartPos, uint16 OldStartPos );
+void AddRestartPointToGroup( RESTART * Object, u_int16_t Group );
+void RemoveRestartPointFromGroup( RESTART * Object, u_int16_t Group );
+void MoveRestartPointToGroup( RESTART * Object, u_int16_t OldGroup, u_int16_t NewGroup );
+void ActivateRestartPoint( u_int16_t NewStartPos, u_int16_t OldStartPos );
 FILE * SaveStartRestartPoints( FILE * fp );
 FILE * LoadStartRestartPoints( FILE * fp );
 void DisplayStartPoints( void );

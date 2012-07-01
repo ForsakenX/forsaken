@@ -52,8 +52,8 @@ typedef struct {
 
 typedef struct {
 	char name[MAX_PLAYER_NAME_LENGTH];
-	uint16 bike;
-	uint16 bikecomp;
+	u_int16_t bike;
+	u_int16_t bikecomp;
 	float mouse_x_sensitivity; // 1.0 is normal
 	float mouse_y_sensitivity; // 1.0 is normal
 	int invert_pitch; // 0 = no, otherwise yes -> pitch controls reversed
@@ -97,10 +97,10 @@ typedef struct {
 #ifdef PLAYER_SPEECH_TAUNTS
 	USERKEY send_speech;
 #endif
-	int16 primary_priority[MAX_PRIMARY_WEAPONS];
-	int16 primary_order[MAX_PRIMARY_WEAPONS];
-	int16 secondary_priority[MAX_SECONDARY_WEAPONS];
-	int16 secondary_order[MAX_SECONDARY_WEAPONS];
+	int16_t primary_priority[MAX_PRIMARY_WEAPONS];
+	int16_t primary_order[MAX_PRIMARY_WEAPONS];
+	int16_t secondary_priority[MAX_SECONDARY_WEAPONS];
+	int16_t secondary_order[MAX_SECONDARY_WEAPONS];
 	char macro1[ MAXTEXTMSG ];
 	char macro2[ MAXTEXTMSG ];
 	char macro3[ MAXTEXTMSG ];

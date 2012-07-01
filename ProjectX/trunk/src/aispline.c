@@ -126,7 +126,7 @@ void AI_SPLINE_FOLLOWPATH( register ENEMY * Enemy )
 	}while( ( Distance < WantedDistance ) && (Count < 100) );
 	
 
-	AI_THINK( Enemy , TRUE , TRUE);
+	AI_THINK( Enemy , true , true);
 
 	if( (Enemy->AIFlags & AI_ANYPLAYERINRANGE) )
 	{
@@ -140,7 +140,7 @@ void AI_SPLINE_FOLLOWPATH( register ENEMY * Enemy )
 			{
 				AI_DO_SCAN( Enemy );
 			}
-			Enemy->PrimaryFireTimer  =	RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
+			Enemy->PrimaryFireTimer  =	RESET_VALIDATE_TIME + (float) Random_Range( (u_int16_t) RESET_VALIDATE_TIME );
 		}
 	}
 	AI_UPDATEGUNS( Enemy );

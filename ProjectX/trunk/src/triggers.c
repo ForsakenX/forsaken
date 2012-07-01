@@ -45,8 +45,8 @@ extern	BYTE			WhoIAm;
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	float framelag;
 extern	BYTE	ChangeLevel_MyGameStatus;
-extern	BOOL	CountDownOn;
-extern	BOOL	KilledPlayer;
+extern	_Bool	CountDownOn;
+extern	_Bool	KilledPlayer;
 /*===================================================================
 		Globals ...
 ===================================================================*/
@@ -160,11 +160,11 @@ void ApplyTriggerMod( TRIGGERMOD * TrigMod )
 ===================================================================*/
 void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val )
 {
-	BOOL	Doit;
+	_Bool	Doit;
 	int		i;
 	TRIGGER	* Trig;
 	int		old_state;
-	uint32	flags;
+	u_int32_t	flags;
 	int		count;
 
 	old_state = TrigVar->State;
@@ -198,7 +198,7 @@ void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val )
 		TrigVar->State /= Val;
 		break;
 	case TRIGGEROP_Random:
-		TrigVar->State = (int) Random_Range( (uint16) Val );
+		TrigVar->State = (int) Random_Range( (u_int16_t) Val );
 		break;
 	case TRIGGEROP_Setflag:
 		TrigVar->State |= FLAG_MASK( Val );
@@ -218,33 +218,33 @@ void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val )
 	for( i = 0 ; i < TrigVar->NumOfTriggers ; i++ )
 	{
 		Trig = TrigVar->Triggers[i];
-		Doit = FALSE;
+		Doit = false;
 
 		switch( Trig->Type )
 		{
 		case TRIGGERTYPE_Equal:
 			if( TrigVar->State == Trig->ActiveState )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		case TRIGGERTYPE_NotEqual:
 			if( TrigVar->State != Trig->ActiveState )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		case TRIGGERTYPE_Less:
 			if( TrigVar->State < Trig->ActiveState )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		case TRIGGERTYPE_Greater:
 			if( TrigVar->State > Trig->ActiveState )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		case TRIGGERTYPE_LessEqual:
 			if( TrigVar->State <= Trig->ActiveState )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		case TRIGGERTYPE_GreaterEqual:
 			if( TrigVar->State >= Trig->ActiveState )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		case TRIGGERTYPE_FlagCount:
 			count = 0;
@@ -254,11 +254,11 @@ void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val )
 					count++;
 			}
 			if ( count == Trig->ActiveState )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		case TRIGGERTYPE_FlagTest:
 			if ( TrigVar->State & FLAG_MASK( Trig->ActiveState ) )
-				Doit = TRUE;
+				Doit = true;
 			break;
 		}
 
@@ -318,7 +318,7 @@ void TestAllConditions( TRIGGER * Trig )
 
 /*===================================================================
 	Procedure	:		Add Condition to the list of conditions that
-						have been proved TRUE and will therefor have 
+						have been proved true and will therefor have 
 						there event list processed...
 	Input		:		CONDITION * Con..
 	Output		:		nothing
@@ -378,7 +378,7 @@ void ProcessActiveConditions( void )
 /*===================================================================
 	Function	:	Event List Procs..
 ===================================================================*/
-void (* EventList[ ])( uint8 * Data ) = {
+void (* EventList[ ])( u_int8_t * Data ) = {
 		EVENT_PickupGenerate,			// TRIGGEREVENT_Pickup				0     
 		EVENT_EnemyGenerate,			// TRIGGEREVENT_Enemy				1     
 		EVENT_OpenDoor,					// TRIGGEREVENT_OpenDoor			2     
@@ -431,268 +431,268 @@ void ProcessEvent( EVENT * Event )
 		(int) Event->Type, *(int *) Event->Data );
 #endif
 	if( EventList[ Event->Type ] )
-		( * EventList[ Event->Type ] )( (uint8*) &Event->Data);		//go off and do his thing...
+		( * EventList[ Event->Type ] )( (u_int8_t*) &Event->Data);		//go off and do his thing...
 }
 
 
 /*===================================================================
 	Procedure	:		Generate a Pickup Event..
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_PickupGenerate( uint8 * Data )
+void EVENT_PickupGenerate( u_int8_t * Data )
 {
-	InitSlotPickup( (uint16) *Data );
+	InitSlotPickup( (u_int16_t) *Data );
 }
 
 /*===================================================================
 	Procedure	:		Generate an Enemy Event..
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_EnemyGenerate( uint8 * Data )
+void EVENT_EnemyGenerate( u_int8_t * Data )
 {
-	EnableEnemy( (uint16) *Data );
+	EnableEnemy( (u_int16_t) *Data );
 }
 
 /*===================================================================
 	Procedure	:		Start SpotFX
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StartSpotFX( uint8 * Data )
+void EVENT_StartSpotFX( u_int8_t * Data )
 {
-	uint16	*	Data2;
+	u_int16_t	*	Data2;
 
-	Data2 = (uint16 *) Data;
+	Data2 = (u_int16_t *) Data;
 
 	EnableSpotFX( *Data2 );
 }
 
 /*===================================================================
 	Procedure	:		Stop SpotFX
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StopSpotFX( uint8 * Data )
+void EVENT_StopSpotFX( u_int8_t * Data )
 {
-	uint16	*	Data2;
+	u_int16_t	*	Data2;
 
-	Data2 = (uint16 *) Data;
+	Data2 = (u_int16_t *) Data;
 
 	DisableSpotFX( *Data2 );
 }
 
 /*===================================================================
 	Procedure	:		Open BGObject Door
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_OpenDoor( uint8 * Data )
+void EVENT_OpenDoor( u_int8_t * Data )
 {
-	OpenDoor( (uint16) *Data );
+	OpenDoor( (u_int16_t) *Data );
 }
 
 /*===================================================================
 	Procedure	:		Close BGObject Door
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_CloseDoor( uint8 * Data )
+void EVENT_CloseDoor( u_int8_t * Data )
 {
-	CloseDoor( (uint16) *Data );
+	CloseDoor( (u_int16_t) *Data );
 }
 
 /*===================================================================
 	Procedure	:		Lock BGObject Door
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_LockDoor( uint8 * Data )
+void EVENT_LockDoor( u_int8_t * Data )
 {
-	LockDoor( (uint16) *Data );
+	LockDoor( (u_int16_t) *Data );
 }
 
 /*===================================================================
 	Procedure	:		Unlock BGObject Door
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_UnlockDoor( uint8 * Data )
+void EVENT_UnlockDoor( u_int8_t * Data )
 {
-	UnlockDoor( (uint16) *Data );
+	UnlockDoor( (u_int16_t) *Data );
 }
 
 /*===================================================================
 	Procedure	:		Start BGObject Anim
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StartBGOAnim( uint8 * Data )
+void EVENT_StartBGOAnim( u_int8_t * Data )
 {
-	StartBGOAnim( (uint16) *Data );
+	StartBGOAnim( (u_int16_t) *Data );
 }
 
 /*===================================================================
 	Procedure	:		Start BGObject Anim
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StopBGOAnim( uint8 * Data )
+void EVENT_StopBGOAnim( u_int8_t * Data )
 {
-	StopBGOAnim( (uint16) *Data );
+	StopBGOAnim( (u_int16_t) *Data );
 }
 /*===================================================================
 	Procedure	:		Start Texture Anim
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StartTexAnim( uint8 * Data )
+void EVENT_StartTexAnim( u_int8_t * Data )
 {
-	TriggerBackgroundAnimationGo( (uint16 *) Data );
+	TriggerBackgroundAnimationGo( (u_int16_t *) Data );
 }
 
 /*===================================================================
 	Procedure	:		Start Texture Anim
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StopTexAnim( uint8 * Data )
+void EVENT_StopTexAnim( u_int8_t * Data )
 {
-	TriggerBackgroundAnimationStop( (uint16 *) Data );
+	TriggerBackgroundAnimationStop( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Start Water Fill
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_WaterFill( uint8 * Data )
+void EVENT_WaterFill( u_int8_t * Data )
 {
-	TriggerWaterFill( (uint16 *) Data );
+	TriggerWaterFill( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Start Water Drain
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_WaterDrain( uint8 * Data )
+void EVENT_WaterDrain( u_int8_t * Data )
 {
-	TriggerWaterDrain( (uint16 *) Data );
+	TriggerWaterDrain( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Start Water Drain
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_ShowMessages( uint8 * Data )
+void EVENT_ShowMessages( u_int8_t * Data )
 {
-	TriggerTextMessage( (uint16 *) Data );
+	TriggerTextMessage( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Start External Force
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StartExternalForce( uint8 * Data )
+void EVENT_StartExternalForce( u_int8_t * Data )
 {
-	StartExternalForce( (uint16 *) Data );
+	StartExternalForce( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Stop External Force
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_StopExternalForce( uint8 * Data )
+void EVENT_StopExternalForce( u_int8_t * Data )
 {
-	StopExternalForce( (uint16 *) Data );
+	StopExternalForce( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Enable real-time light
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_EnableLight( uint8 * Data )
+void EVENT_EnableLight( u_int8_t * Data )
 {
-	EnableRTLight( (uint16 *) Data );
+	EnableRTLight( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Disable real-time light
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_DisableLight( uint8 * Data )
+void EVENT_DisableLight( u_int8_t * Data )
 {
-	DisableRTLight( (uint16 *) Data );
+	DisableRTLight( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Enable trigger area
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_TriggerAreaEnable( uint8 * Data )
+void EVENT_TriggerAreaEnable( u_int8_t * Data )
 {
-	EnableTriggerArea( (uint16 *) Data );
+	EnableTriggerArea( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Disable trigger area
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_TriggerAreaDisable( uint8 * Data )
+void EVENT_TriggerAreaDisable( u_int8_t * Data )
 {
-	DisableTriggerArea( (uint16 *) Data );
+	DisableTriggerArea( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Enable Camera
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_CameraEnable( uint8 * Data )
+void EVENT_CameraEnable( u_int8_t * Data )
 {
-	EnableRemoteCamera( (uint16 *) Data );
+	EnableRemoteCamera( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Disable Camera
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_CameraDisable( uint8 * Data )
+void EVENT_CameraDisable( u_int8_t * Data )
 {
-	DisableRemoteCamera( (uint16 *) Data );
+	DisableRemoteCamera( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Enable Teleport
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_TeleportEnable( uint8 * Data )
+void EVENT_TeleportEnable( u_int8_t * Data )
 {
-	StartTeleport( (uint16 *) Data );
+	StartTeleport( (u_int16_t *) Data );
 }
 /*===================================================================
 	Procedure	:		Disable Teleport
-	Input		:		uint8 * Data
+	Input		:		u_int8_t * Data
 	Output		:		nothing
 ===================================================================*/
-void EVENT_TeleportDisable( uint8 * Data )
+void EVENT_TeleportDisable( u_int8_t * Data )
 {
-	StopTeleport( (uint16 *) Data );
+	StopTeleport( (u_int16_t *) Data );
 }
 
 
 /*===================================================================
 	Procedure	:		Load .Trg File
 	Input		:		char	*	Filename
-	Output		:		BOOL	TRUE/FALSE
+	Output		:		_Bool	true/false
 ===================================================================*/
-BOOL Triggerload( char * Filename )
+_Bool Triggerload( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
 	char		*	OrgBuffer;
 	int			*	intpnt;
-	uint8		*	byteptr;
+	u_int8_t		*	byteptr;
 	float		*	floatptr;
 	int			i, j, k;
 	TRIGGERVAR	*	v;
@@ -700,9 +700,9 @@ BOOL Triggerload( char * Filename )
 	TRIGGERMOD	*	m;
 	EVENT		*	e;
 	CONDITION	*	c;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
-	uint32		*	uint32Pnt;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
+	u_int32_t		*	u_int32Pnt;
 	TRIGGERVAR	*	TVpnt;
 
 
@@ -720,28 +720,28 @@ BOOL Triggerload( char * Filename )
 
 
 	File_Size = Get_File_Size( Filename );
-	if( !File_Size ) return TRUE;
+	if( !File_Size ) return true;
 
 	Buffer = malloc( File_Size );
 
 	if( Buffer == NULL )
-		return FALSE;
+		return false;
 	OrgBuffer = Buffer;
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 
 	if( Read_Size != File_Size )
-		return FALSE;
+		return false;
 
-	uint32Pnt = (uint32 *) Buffer;
-	MagicNumber = *uint32Pnt++;
-	VersionNumber = *uint32Pnt++;
-	Buffer = (char *) uint32Pnt;
+	u_int32Pnt = (u_int32_t *) Buffer;
+	MagicNumber = *u_int32Pnt++;
+	VersionNumber = *u_int32Pnt++;
+	Buffer = (char *) u_int32Pnt;
 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != TRG_VERSION_NUMBER  ) )
 	{
 		Msg( "TriggerLoad() Incompatible triggers( .TRG ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	intpnt = (int *) Buffer;
@@ -824,7 +824,7 @@ BOOL Triggerload( char * Filename )
 		if ( !TrigVars )
 		{
 			Msg( "TriggerLoad() malloc failed for %d triggervars", NumOfTrigVars );
-			return FALSE;
+			return false;
 		}
 		for ( i = 0; i < MAX_PLAYERS; i++ )
 		{
@@ -833,7 +833,7 @@ BOOL Triggerload( char * Filename )
 			{
 				Msg( "TriggerLoad() malloc failed for %d short triggervars for player %d of %d",
 					NumOfTrigVars, i, MAX_PLAYERS );
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -844,7 +844,7 @@ BOOL Triggerload( char * Filename )
 		if ( !Triggers )
 		{
 			Msg( "TriggerLoad() malloc failed for %d triggers", NumOfTriggers );
-			return FALSE;
+			return false;
 		}
 		for ( i = 0; i < MAX_PLAYERS; i++ )
 		{
@@ -853,7 +853,7 @@ BOOL Triggerload( char * Filename )
 			{
 				Msg( "TriggerLoad() malloc failed for %d short triggers for player %d of %d",
 					NumOfTriggers, i, MAX_PLAYERS );
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -864,13 +864,13 @@ BOOL Triggerload( char * Filename )
 		if ( !TrigMods )
 		{
 			Msg( "TriggerLoad() malloc failed for %d triggermods", NumOfTrigMods );
-			return FALSE;
+			return false;
 		}
 		TrigModQue = (TRIGGERMODQUE *) calloc( NumOfTrigModQues, sizeof( TRIGGERMODQUE ) );
 		if ( !TrigModQue )
 		{
 			Msg( "TriggerLoad() malloc failed for %d triggermodques", NumOfTrigModQues );
-			return FALSE;
+			return false;
 		}
 		for( i = 0 ; i < NumOfTrigModQues ; i++ )
 		{
@@ -884,7 +884,7 @@ BOOL Triggerload( char * Filename )
 		if ( !Events )
 		{
 			Msg( "TriggerLoad() malloc failed for %d events", NumOfEvents );
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -894,13 +894,13 @@ BOOL Triggerload( char * Filename )
 		if ( !Conditions )
 		{
 			Msg( "TriggerLoad() malloc failed for %d conditions", NumOfConditions );
-			return FALSE;
+			return false;
 		}
 		ActiveConditions = (CONDITION **) calloc( NumOfConditions, sizeof( CONDITION ) );
 		if ( !ActiveConditions )
 		{
 			Msg( "TriggerLoad() malloc failed for %d active conditions", NumOfConditions );
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -908,7 +908,7 @@ BOOL Triggerload( char * Filename )
 	for ( i = 0; i < NumOfTrigVars; i++ )
 	{
 		v = &TrigVars[ i ];
-		byteptr = (uint8 *) intpnt;
+		byteptr = (u_int8_t *) intpnt;
 		for ( j = 0; j < (int) sizeof( v->Name ); j++ )
 		{
 			v->Name[ j ] = *byteptr++;
@@ -930,7 +930,7 @@ BOOL Triggerload( char * Filename )
 			{
 				Msg( "TriggerLoad() malloc failed for %d triggers in trigvar %d of %d",
 					v->NumOfTriggers, i, NumOfTrigVars );
-				return FALSE;
+				return false;
 			}
 		}
 		else
@@ -939,7 +939,7 @@ BOOL Triggerload( char * Filename )
 		{
 			k = *intpnt++;
 			if ( k >= NumOfTriggers )
-				return FALSE;
+				return false;
 			v->Triggers[ j ] = &Triggers[ k ];
 		}
 	}
@@ -947,12 +947,12 @@ BOOL Triggerload( char * Filename )
 	for ( i = 0; i < NumOfTriggers; i++ )
 	{
 		t = &Triggers[ i ];
-		byteptr = (uint8 *) intpnt;
+		byteptr = (u_int8_t *) intpnt;
 		t->Type = *byteptr++;
 		intpnt = (int *) byteptr;
 		j = *intpnt++;
 		if ( j >= NumOfTrigVars )
-			return FALSE;
+			return false;
 		t->TrigVar = &TrigVars[ j ];
 		t->ActiveState = *intpnt++;
 		t->Active = 0;
@@ -964,7 +964,7 @@ BOOL Triggerload( char * Filename )
 			{
 				Msg( "TriggerLoad() malloc failed for %d conditions in trigger %d of %d\n",
 					t->NumOfConditions, i, NumOfTriggers );
-				return FALSE;
+				return false;
 			}
 		}
 		else
@@ -973,7 +973,7 @@ BOOL Triggerload( char * Filename )
 		{
 			k = *intpnt++;
 			if ( k >= NumOfConditions )
-				return FALSE;
+				return false;
 			t->Conditions[ j ] = &Conditions[ k ];
 		}
 	}
@@ -984,7 +984,7 @@ BOOL Triggerload( char * Filename )
 		m->Op = *intpnt++;
 		j = *intpnt++;
 		if ( j >= NumOfTrigVars )
-			return FALSE;
+			return false;
 		m->TrigVar = &TrigVars[ j ];
 		m->Val = *intpnt++;
 
@@ -994,12 +994,12 @@ BOOL Triggerload( char * Filename )
 				
 		j = *intpnt++;
 		if ( j >= NumOfTrigMods )
-			return FALSE;
+			return false;
 		m->Next = ( j < 0 ) ? NULL : &TrigMods[ j ];
 
 	}
 
-	byteptr = (uint8 *) intpnt;
+	byteptr = (u_int8_t *) intpnt;
 	for ( i = 0; i < NumOfEvents; i++ )
 	{
 		e = &Events[ i ];
@@ -1022,7 +1022,7 @@ BOOL Triggerload( char * Filename )
 			{
 				Msg( "TriggerLoad() malloc failed for %d triggers in condition %d of %d",
 					c->NumOfTriggers, i, NumOfConditions );
-				return FALSE;
+				return false;
 			}
 		}
 		else
@@ -1031,7 +1031,7 @@ BOOL Triggerload( char * Filename )
 		{
 			k = *intpnt++;
 			if ( k >= NumOfTriggers )
-				return FALSE;
+				return false;
 			c->Triggers[ j ] = &Triggers[ k ];
 		}
 		c->NumOfEvents = *intpnt++;
@@ -1042,7 +1042,7 @@ BOOL Triggerload( char * Filename )
 			{
 				Msg( "TriggerLoad() malloc failed for %d events in condition %d of %d",
 					c->NumOfEvents, i, NumOfConditions );
-				return FALSE;
+				return false;
 			}
 		}
 		else
@@ -1051,7 +1051,7 @@ BOOL Triggerload( char * Filename )
 		{
 			k = *intpnt++;
 			if ( k > NumOfEvents )
-				return FALSE;
+				return false;
 			c->Events[ j ] = &Events[ k ];
 		}
 	}
@@ -1145,7 +1145,7 @@ BOOL Triggerload( char * Filename )
 	NumOfActiveConditions = 0;
 	
 	free( OrgBuffer );
-	return TRUE;
+	return true;
 }
 
 
@@ -1233,17 +1233,17 @@ void ReleaseTriggers( void )
 
 /*===================================================================
 	Procedure	:	Generate Trigger list for new player
-	Input		:	uint16			Ship
+	Input		:	u_int16_t			Ship
 				:	SHORTTRIGGER *	Trigger Array to be filled in
 				:	BYTE		*	Number of Triggers to be filled in
 				:	BYTE			Section group of Triggers
 	Output		:	Nothing
 ===================================================================*/
-void GenTriggerList( uint16 Ship, SHORTTRIGGER * TriggerSlots, BYTE * NumTriggerSlots, BYTE Section )
+void GenTriggerList( u_int16_t Ship, SHORTTRIGGER * TriggerSlots, BYTE * NumTriggerSlots, BYTE Section )
 {
-	int16	Count;
-	int16	i;
-	int16	NumUsed = 0;
+	int16_t	Count;
+	int16_t	i;
+	int16_t	NumUsed = 0;
 
 	for( Count = 0; Count < MAXGENTRIGGERCOUNT; Count++ )
 	{
@@ -1272,7 +1272,7 @@ void GenTriggerList( uint16 Ship, SHORTTRIGGER * TriggerSlots, BYTE * NumTrigger
 ===================================================================*/
 void RegenTriggerList( SHORTTRIGGER * Slots, BYTE Num )
 {
-	int16		Count;
+	int16_t		Count;
 	TRIGGER	*	Ptr;
 
 	Ptr = &Triggers[ ( Ships[ WhoIAm ].Triggers * MAXGENTRIGGERCOUNT ) ];
@@ -1290,12 +1290,12 @@ void RegenTriggerList( SHORTTRIGGER * Slots, BYTE Num )
 
 /*===================================================================
 	Procedure	:	Copy Triggers into copy for player
-	Input		:	uint16		Player
+	Input		:	u_int16_t		Player
 	Output		:	Nothing
 ===================================================================*/
-void CopyTriggers( uint16 Player )
+void CopyTriggers( u_int16_t Player )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < NumOfTriggers; Count++ )
 	{
@@ -1305,17 +1305,17 @@ void CopyTriggers( uint16 Player )
 
 /*===================================================================
 	Procedure	:	Generate TrigVar list for new player
-	Input		:	uint16			Ship
+	Input		:	u_int16_t			Ship
 				:	SHORTTRIGVAR *	TrigVar Array to be filled in
 				:	BYTE		*	Number of TrigVars to be filled in
 				:	BYTE			Section group of TrigVars
 	Output		:	Nothing
 ===================================================================*/
-void GenTrigVarList( uint16 Ship, SHORTTRIGVAR * TrigVarSlots, BYTE * NumTrigVarSlots, BYTE Section )
+void GenTrigVarList( u_int16_t Ship, SHORTTRIGVAR * TrigVarSlots, BYTE * NumTrigVarSlots, BYTE Section )
 {
-	int16	Count;
-	int16	i;
-	int16	NumUsed = 0;
+	int16_t	Count;
+	int16_t	i;
+	int16_t	NumUsed = 0;
 
 	for( Count = 0; Count < MAXGENTRIGVARCOUNT; Count++ )
 	{
@@ -1344,7 +1344,7 @@ void GenTrigVarList( uint16 Ship, SHORTTRIGVAR * TrigVarSlots, BYTE * NumTrigVar
 ===================================================================*/
 void RegenTrigVarList( SHORTTRIGVAR * Slots, BYTE Num )
 {
-	int16		Count;
+	int16_t		Count;
 	TRIGGERVAR	*	Ptr;
 
 	Ptr = &TrigVars[ ( Ships[ WhoIAm ].TrigVars * MAXGENTRIGVARCOUNT ) ];
@@ -1362,12 +1362,12 @@ void RegenTrigVarList( SHORTTRIGVAR * Slots, BYTE Num )
 
 /*===================================================================
 	Procedure	:	Copy TrigVars into copy for player
-	Input		:	uint16		Player
+	Input		:	u_int16_t		Player
 	Output		:	Nothing
 ===================================================================*/
-void CopyTrigVars( uint16 Player )
+void CopyTrigVars( u_int16_t Player )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < NumOfTrigVars; Count++ )
 	{
@@ -1410,9 +1410,9 @@ void HowManySecrets( int * NumOfSecrets , int * SecretsFound )
 /*===================================================================
 	Procedure	:	Has the level ended
 	Input		:	Nothing
-	Output		:	BOOL yes/no
+	Output		:	_Bool yes/no
 ===================================================================*/
-BOOL HasLevelEnded( void )
+_Bool HasLevelEnded( void )
 {
 	TRIGGERVAR	* TVpnt;
 
@@ -1423,19 +1423,19 @@ BOOL HasLevelEnded( void )
 		if( TVpnt->State )
 		{
 			// Level is Complete...
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 /*===================================================================
 	Procedure	:	Am i in cool pool
 	Input		:	Nothing
-	Output		:	BOOL yes/no
+	Output		:	_Bool yes/no
 ===================================================================*/
-BOOL CheckDecreaseTemperature( void )
+_Bool CheckDecreaseTemperature( void )
 {
 	TRIGGERVAR	* TVpnt;
 
@@ -1446,7 +1446,7 @@ BOOL CheckDecreaseTemperature( void )
 		if( TVpnt->State )
 		{
 			TVpnt->State = 0;
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -1457,7 +1457,7 @@ BOOL CheckDecreaseTemperature( void )
 
 	}
 
-	return FALSE;
+	return false;
 }
 
 /*===================================================================
@@ -1475,8 +1475,8 @@ void CheckTimeLimit( void )
 	{
 		if( TVpnt->State )
 		{
-			CountDownOn = TRUE;
-			KilledPlayer = FALSE;
+			CountDownOn = true;
+			KilledPlayer = false;
 
 			CreateCountdownDigits();
 			StartCountDown( 1, 0 );
@@ -1489,9 +1489,9 @@ void CheckTimeLimit( void )
 /*===================================================================
 	Procedure	:	Has the Avatar Boss been activated...
 	Input		:	Nothing
-	Output		:	BOOL yes/no
+	Output		:	_Bool yes/no
 ===================================================================*/
-BOOL IsAvatarActive( void )
+_Bool IsAvatarActive( void )
 {
 	TRIGGERVAR	* TVpnt;
 
@@ -1502,11 +1502,11 @@ BOOL IsAvatarActive( void )
 		if( TVpnt->State )
 		{
 			// Avatar is Active...
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 /*===================================================================
@@ -1520,7 +1520,7 @@ FILE * SaveAllTriggers( FILE * fp )
 	TRIGGERVAR	*	TrigVar;
 	TRIGGER		*	Trig;
 	TRIGGERMODQUE *	TrigQue;
-	int32			Index;
+	int32_t			Index;
 
 	if( fp )
 	{
@@ -1551,8 +1551,8 @@ FILE * SaveAllTriggers( FILE * fp )
 		for( i = 0; i < NumOfTrigModQues; i++ )
 		{
 			fwrite( &TrigQue->Time, sizeof( float ), 1, fp );
-			Index = (int32) ( TrigQue->TriggerMod - TrigMods );
-			fwrite( &Index, sizeof( int32 ), 1, fp );
+			Index = (int32_t) ( TrigQue->TriggerMod - TrigMods );
+			fwrite( &Index, sizeof( int32_t ), 1, fp );
 			TrigQue++;
 		}
 
@@ -1572,7 +1572,7 @@ FILE * LoadAllTriggers( FILE * fp )
 	TRIGGERVAR	*	TrigVar;
 	TRIGGER		*	Trig;
 	TRIGGERMODQUE *	TrigQue;
-	int32			Index;
+	int32_t			Index;
 	int				NumTrigVars;
 	int				NumTrigs;
 	int				NumTrigMods;
@@ -1632,7 +1632,7 @@ FILE * LoadAllTriggers( FILE * fp )
 		for( i = 0; i < NumOfTrigModQues; i++ )
 		{
 			fread( &TrigQue->Time, sizeof( float ), 1, fp );
-			fread( &Index, sizeof( int32 ), 1, fp );
+			fread( &Index, sizeof( int32_t ), 1, fp );
 			TrigQue->TriggerMod = ( TrigMods + Index );
 			TrigQue++;
 		}

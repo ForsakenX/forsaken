@@ -130,8 +130,8 @@ enum {
 ===================================================================*/
 typedef struct PICKUPATTRIB {
 
-	uint16 ModelType;	// if 3D model which one....
-	uint16 Light;			// do I produce Light
+	u_int16_t ModelType;	// if 3D model which one....
+	u_int16_t Light;			// do I produce Light
 	float	Lightsize;		// how big is the light
 	float	R;					// what color does it emit....
 	float	G;					// what color does it emit....
@@ -141,15 +141,15 @@ typedef struct PICKUPATTRIB {
 
 typedef struct PICKUP {
 
-	uint16	Next;				// link list.....	
-	uint16	Prev;				// link list.....
+	u_int16_t	Next;				// link list.....	
+	u_int16_t	Prev;				// link list.....
 	struct PICKUP * NextInGroup;		// Next in same group ....
 	struct PICKUP *	PrevInGroup;	// Previous in same group ....
-	uint16	Index;
-	uint16	Type;				// which type of bullet am I
-	uint16	Owner;			// Owner ID
-	uint16	ID;				// ID
-	int16	Mode;				// Mode Pickup is currently in ...
+	u_int16_t	Index;
+	u_int16_t	Type;				// which type of bullet am I
+	u_int16_t	Owner;			// Owner ID
+	u_int16_t	ID;				// ID
+	int16_t	Mode;				// Mode Pickup is currently in ...
 	float	LifeCount;			// How long do i live ...
 	float	PickupCount;		// Cannot pickup unless zero...
 	VECTOR	Rot;				// Rotation..
@@ -157,14 +157,14 @@ typedef struct PICKUP {
 	VECTOR	Dir;				// where am I looking
 	float	Speed;				// how fast am I moving...
 	float	ExternalSpeed;	// Speed created by external force
-	uint16	Group;			// which group am I in...
-	uint16	ModelType;		// if Im a 3D model then I need a model type
-	uint16	ModelNum;		// Index into models...
+	u_int16_t	Group;			// which group am I in...
+	u_int16_t	ModelType;		// if Im a 3D model then I need a model type
+	u_int16_t	ModelNum;		// Index into models...
 	MATRIX	Mat;				// and a Matrix for when Im displayed...
-	uint16	Fmpoly;			// if Im 2D then I need a Face Me Poly..
+	u_int16_t	Fmpoly;			// if Im 2D then I need a Face Me Poly..
 	float	Xsize;				// x size..
 	float	Ysize;				// y size..
-	uint16	Light;				// if I produce Light then I Need A Light
+	u_int16_t	Light;				// if I produce Light then I Need A Light
 	float	Lightsize;			// how big is the light
 	float	R;						// what color does it emit....
 	float	G;						// what color does it emit....
@@ -172,17 +172,17 @@ typedef struct PICKUP {
 	QUAT	DirQuat;				// Direction Quaternion
 	VECTOR	DirVector;		// Forward Vector
 	VECTOR	UpVector;		// Up Vector
-	int16	RegenSlot;			// Slot from original pickup file ( -1 anywhere )
-	uint16	TriggerMod;		// Trigger Mod pointer index
+	int16_t	RegenSlot;			// Slot from original pickup file ( -1 anywhere )
+	u_int16_t	TriggerMod;		// Trigger Mod pointer index
 	TRIGGERMOD * TriggerModPtr;	// Trigger Mod Array
 
 	VECTOR	ColStart;			// where I was when started going straight.
 	float	ColDist;			// Length from Collision to ColStart.
-	uint16	ColFlag;			// have I checked if im going to collide with something
-	uint16	ColGroup;			// Collision Group
+	u_int16_t	ColFlag;			// have I checked if im going to collide with something
+	u_int16_t	ColGroup;			// Collision Group
 	VERT	ColPoint;			// where am I going to collide
 	NORMAL	ColPointNormal;		// if I reflect use this when I do
-	BOOL	CouldNotPickup;		// Could not pickup last time collided
+	_Bool	CouldNotPickup;		// Could not pickup last time collided
 
 	float	PickupTime;			// Life count so far for pickup
 
@@ -190,24 +190,24 @@ typedef struct PICKUP {
 
 typedef struct REGENPOINT {
 
-	uint16	GenType;			// Generation Type
-	uint16	RegenType;			// Regeneration Type
+	u_int16_t	GenType;			// Generation Type
+	u_int16_t	RegenType;			// Regeneration Type
 	float	GenDelay;			// Generation Delay ( 60hz )
 	float	Lifespan;			// Lifespan of pickup ( 60hz )
 	float	Wait;				// Global count
-	int16	Status;				// Status of slot
-	int16	Group;				// Group to generate pickup
+	int16_t	Status;				// Status of slot
+	int16_t	Group;				// Group to generate pickup
 	VECTOR	Pos;				// Position to generate pickup
-	uint16	Type;				// Type of pickup
-	uint16	TriggerMod;			// Trigger Mod Index
-	uint16	PickupIndex;		// Pickup Index
-	uint16	PickupID;			// Pickup ID
+	u_int16_t	Type;				// Type of pickup
+	u_int16_t	TriggerMod;			// Trigger Mod Index
+	u_int16_t	PickupIndex;		// Pickup Index
+	u_int16_t	PickupID;			// Pickup ID
 
 } REGENPOINT;
 
 typedef struct QUEDPICKUP {
 
-	int16	Type;
+	int16_t	Type;
 	struct	QUEDPICKUP	*	PrevUsed;
 	struct	QUEDPICKUP	*	NextUsed;
 	struct	QUEDPICKUP	*	PrevFree;
@@ -217,27 +217,27 @@ typedef struct QUEDPICKUP {
 
 typedef struct REGENPICKUPINFO {
 
-	int16	Required;
-	int16	Num;
+	int16_t	Required;
+	int16_t	Num;
 
 } REGENPICKUPINFO;
 
 typedef struct FREESLOTINFO {
 
-	int16	Slot;
+	int16_t	Slot;
 	float	Distance;
 
 } FREESLOTINFO;
 
 typedef struct FAILEDKILL {
 
-	int16	Next;				// link list.....	
-	int16	Prev;				// link list.....
+	int16_t	Next;				// link list.....	
+	int16_t	Prev;				// link list.....
 	float	Life;
-	uint16	Owner;
-	uint16	ID;
-	int16	Style;
-	uint16	NewOwner;
+	u_int16_t	Owner;
+	u_int16_t	ID;
+	int16_t	Style;
+	u_int16_t	NewOwner;
 
 } FAILEDKILL;
 
@@ -245,70 +245,70 @@ typedef struct FAILEDKILL {
 	Prototypes
 ===================================================================*/
 void	InitPickups( void );
-uint16	FindFreePickup( void );
-void	KillUsedPickup( uint16 i );
+u_int16_t	FindFreePickup( void );
+void	KillUsedPickup( u_int16_t i );
 void	ProcessPickups( void );
-void	CleanUpPickup( uint16 i );
-uint16	InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type,
-					   uint16 Owner, uint16 ID, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod );
-uint16	InitJoinPickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type,
-					   uint16 Owner, uint16 ID, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod );
-void	DropPickup( int16 Type );
-void	KillPickup( uint16 Owner, uint16 ID, int16 Style );
-BOOL	CollectPickup( uint16 i );
+void	CleanUpPickup( u_int16_t i );
+u_int16_t	InitOnePickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type,
+					   u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod );
+u_int16_t	InitJoinPickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type,
+					   u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod );
+void	DropPickup( int16_t Type );
+void	KillPickup( u_int16_t Owner, u_int16_t ID, int16_t Style );
+_Bool	CollectPickup( u_int16_t i );
 void	CheckPickup( void );
 void	SavePickupsPositions( void );
-BOOL	LoadPickupsPositions( void );
+_Bool	LoadPickupsPositions( void );
 void	RegeneratePickups( void );
 void	RegenerateQuedPickups( void );
-BOOL	RegeneratePickup( uint16 Type );
-void	GenPickupList( uint16 Ship, SHORTPICKUP * PickupSlots, BYTE * NumPickups, BYTE Section );
+_Bool	RegeneratePickup( u_int16_t Type );
+void	GenPickupList( u_int16_t Ship, SHORTPICKUP * PickupSlots, BYTE * NumPickups, BYTE Section );
 void	RegenPickupList( SHORTPICKUP * Slots, BYTE Num );
-void	GenRegenSlotList( uint16 Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegenSlots, BYTE Section );
+void	GenRegenSlotList( u_int16_t Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegenSlots, BYTE Section );
 void	RegenRegenSlotList( SHORTREGENSLOT * Slots, BYTE Num );
 void	KillAllPickups( void );
-void	NewSecondaryWeapon( int16 Weapon );
-void	NewPrimaryWeapon( int16 Weapon );
-void	CopyPickups( uint16 Player );
-void	AddPickupToRegen( uint16 Type );
-uint16	InitSlotPickup( uint16 Slot );
-void	CopyRegenSlots( uint16 Player );
-uint16	FindClosestPickup( void );
-uint16	FindClosestShip( void );
+void	NewSecondaryWeapon( int16_t Weapon );
+void	NewPrimaryWeapon( int16_t Weapon );
+void	CopyPickups( u_int16_t Player );
+void	AddPickupToRegen( u_int16_t Type );
+u_int16_t	InitSlotPickup( u_int16_t Slot );
+void	CopyRegenSlots( u_int16_t Player );
+u_int16_t	FindClosestPickup( void );
+u_int16_t	FindClosestShip( void );
 void	SetupPickupGroups( void );
-void	AddPickupToGroup( uint16 i, uint16 Group );
-void	RemovePickupFromGroup( uint16 i, uint16 Group );
-void	MovePickupToGroup( uint16 i, uint16 OldGroup, uint16 NewGroup );
+void	AddPickupToGroup( u_int16_t i, u_int16_t Group );
+void	RemovePickupFromGroup( u_int16_t i, u_int16_t Group );
+void	MovePickupToGroup( u_int16_t i, u_int16_t OldGroup, u_int16_t NewGroup );
 void	ClearPickupsGot( void );
-BOOL	FilterPickup( uint16 PickupType );
-void	PackPickupInfo( uint32 *packed );
-void	UnpackPickupInfo( uint32 *packed );
+_Bool	FilterPickup( u_int16_t PickupType );
+void	PackPickupInfo( u_int32_t *packed );
+void	UnpackPickupInfo( u_int32_t *packed );
 FILE * SaveAllPickups( FILE * fp );
 FILE * LoadAllPickups( FILE * fp );
-void KillAllPickupsOfType( uint16 Type, int16 Style );
+void KillAllPickupsOfType( u_int16_t Type, int16_t Style );
 
 void InitQuedPickups( void );
-BOOL AddPickupToRegenQue( int16 Type );
+_Bool AddPickupToRegenQue( int16_t Type );
 void FreeQuedPickup( QUEDPICKUP * QuedPickup );
 void ProcessQuedPickups( void );
-void GetFreeSlots( int16 Type, int16 * NumRandomSlots, FREESLOTINFO * RandomSlots,
-				   int16 * NumConstantSlots, FREESLOTINFO * ConstantSlots );
-BOOL AddPrimaryToRegenQue( int8 Weapon );
-BOOL AddSecondaryToRegenQue( int8 Weapon );
+void GetFreeSlots( int16_t Type, int16_t * NumRandomSlots, FREESLOTINFO * RandomSlots,
+				   int16_t * NumConstantSlots, FREESLOTINFO * ConstantSlots );
+_Bool AddPrimaryToRegenQue( int8_t Weapon );
+_Bool AddSecondaryToRegenQue( int8_t Weapon );
 void PickupModelValid( void );
 void CheckPickupAllPlayers( void );
-BOOL ActuallyCollectPickup( uint16 i );
-BOOL PretendCollectPickup( uint16 i );
+_Bool ActuallyCollectPickup( u_int16_t i );
+_Bool PretendCollectPickup( u_int16_t i );
 void CorrectForExtraOrMissingPickups( void );
 void CountMinesInLevel( void );
-void KillAllPickupsOfTypeAndSend( uint16 Type, int16 Style );
+void KillAllPickupsOfTypeAndSend( u_int16_t Type, int16_t Style );
 
 void InitFailedKillSlots( void );
-BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner);
-int16 FindFreeFailedKillSlot( void );
-void ReleaseFailedKillSlot( int16 i );
+_Bool AddFailedKillToQue( u_int16_t Owner, u_int16_t ID, int16_t Style, u_int16_t NewOwner);
+int16_t FindFreeFailedKillSlot( void );
+void ReleaseFailedKillSlot( int16_t i );
 void ProcessFailedKills( void );
-uint16 FindPickup( uint16 Owner, uint16 ID );
+u_int16_t FindPickup( u_int16_t Owner, u_int16_t ID );
 
 #endif
 

@@ -88,7 +88,7 @@ void AI_TURRET_SCAN( register ENEMY * Enemy )
  	// Scan for target
 	if ( Enemy->Timer <= 0.0F )
 	{
-		AI_THINK( Enemy , TRUE , TRUE );
+		AI_THINK( Enemy , true , true );
 		if( Enemy->AIFlags & AI_ANYPLAYERINRANGE )
 		{
 			SET_TARGET_PLAYERS;
@@ -149,7 +149,7 @@ void AI_CRAWL_SCAN( register ENEMY * Enemy )
 			// Switch to AIMODE_IDLE
 			//------------------------------------------------------------------------------
 			Enemy->Object.AI_Mode = AIMODE_IDLE;
-			Enemy->Timer  =	RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
+			Enemy->Timer  =	RESET_SCAN_TIME + (float) Random_Range( (u_int16_t) RESET_SCAN_TIME );
 			return;         
 		}
 	}         

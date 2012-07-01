@@ -1,13 +1,13 @@
 
 /*
 .NOD file
-	int32 Num of nodes...
+	int32_t Num of nodes...
 	{NODE
-		int16 Group
+		int16_t Group
 		VECTOR Pos
 		float Radius
-		uint32 NetMask...Which networks im in...
-		int16 numoflinks..
+		u_int32_t NetMask...Which networks im in...
+		int16_t numoflinks..
 		{LINK
 			int Link num inside this network....
 		}
@@ -68,25 +68,25 @@ NODE *	NodeInGroup[MAXGROUPS];
 	Input		:		char	*	Filename 
 	Output		:		Nothing
 ===================================================================*/
-BOOL Nodeload( char * Filename )
+_Bool Nodeload( char * Filename )
 {
 	char		*	Buffer;
 	char		*	OrgBuffer;
-	int32		*	int32Pnt;
-	uint32		*	uint32Pnt;
-	int16		*	int16Pnt;
+	int32_t		*	int32Pnt;
+	u_int32_t		*	u_int32Pnt;
+	int16_t		*	int16Pnt;
 	float		*	FloatPnt;
 	int			e,o,i;
 	long			File_Size;
 	long			Read_Size;
 	NODE		*	NodePnt;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
-   	uint16		TempGroup;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
+   	u_int16_t		TempGroup;
 	NORMAL		TempNormal;
 	VECTOR		TempPos_New;
 	VECTOR		Move_Off = { 0.0F , -MaxColDistance , 0.0F };
-	BOOL		LegalGroup;
+	_Bool		LegalGroup;
 
 
 	for( i = 0 ; i < MAXGROUPS ; i ++ )
@@ -94,7 +94,7 @@ BOOL Nodeload( char * Filename )
 		NodeInGroup[i] = NULL;
 	}
 	
-	NodeNetworkHeader.State = FALSE;
+	NodeNetworkHeader.State = false;
 
 
 	File_Size = Get_File_Size( Filename );	
@@ -102,7 +102,7 @@ BOOL Nodeload( char * Filename )
 	if( !File_Size )
 	{
 		// Doesnt Matter.....
-		return TRUE;
+		return true;
 	}
 	Buffer = calloc( 1, File_Size );
 	OrgBuffer = Buffer;
@@ -110,7 +110,7 @@ BOOL Nodeload( char * Filename )
 	if( !Buffer )
 	{
 		Msg( "Nodeload failed to Allocate buffer for %s failed\n", Filename );
-		return FALSE;
+		return false;
 	}
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
@@ -118,27 +118,27 @@ BOOL Nodeload( char * Filename )
 	if( Read_Size != File_Size )
 	{
 		Msg( "Nodeload Error reading file %s\n", Filename );
-		return FALSE;
+		return false;
 	}
 
-	uint32Pnt = (uint32 *) Buffer;
-	MagicNumber = *uint32Pnt++;
-	VersionNumber = *uint32Pnt++;
-	Buffer = (char *) uint32Pnt;
+	u_int32Pnt = (u_int32_t *) Buffer;
+	MagicNumber = *u_int32Pnt++;
+	VersionNumber = *u_int32Pnt++;
+	Buffer = (char *) u_int32Pnt;
 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != NOD_VERSION_NUMBER  ) )
 	{
 		Msg( "NodeLoad() Incompatible node( .NOD ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	int32Pnt = (int32*) Buffer;
+	int32Pnt = (int32_t*) Buffer;
 	NodeNetworkHeader.NumOfNodes = *int32Pnt++;
 
 	if( NodeNetworkHeader.NumOfNodes >= MAXNODES )
 	{
 		Msg( "You have to many Nodes!!! %d is far to many... \n", NodeNetworkHeader.NumOfNodes);
-		return FALSE;
+		return false;
 	}
 
 	NodeArray = (float*) malloc( NodeNetworkHeader.NumOfNodes * NodeNetworkHeader.NumOfNodes * sizeof(float) );
@@ -146,7 +146,7 @@ BOOL Nodeload( char * Filename )
 	if(!NodeArray)
 	{
 		Msg( "Nodeload failed NodeArray malloc in %s \n", Filename );
-		return FALSE;
+		return false;
 
 	}
 	
@@ -157,13 +157,13 @@ BOOL Nodeload( char * Filename )
 	if( !NodePnt )
 	{
 		Msg( "Nodeload failed allocate Node Pointer in %s \n", Filename );
-		return FALSE;
+		return false;
 	}
 	Buffer = (char*) int32Pnt;
 	
 	for( e = 0 ; e < NodeNetworkHeader.NumOfNodes ; e++ )
 	{
-		int16Pnt = (int16*) Buffer;
+		int16Pnt = (int16_t*) Buffer;
 		NodePnt->Group = *int16Pnt++;
 		FloatPnt = (float*) int16Pnt;
 		
@@ -174,28 +174,28 @@ BOOL Nodeload( char * Filename )
 		NodePnt->Pos.z = *FloatPnt++;
 		NodePnt->Radius = *FloatPnt++;
 		
-		uint32Pnt = (uint32*) FloatPnt;
-		NodePnt->NetMask = *uint32Pnt++;				// which networks this node is in...
+		u_int32Pnt = (u_int32_t*) FloatPnt;
+		NodePnt->NetMask = *u_int32Pnt++;				// which networks this node is in...
 
 //		if( !(NodePnt->NetMask&1) )
 //		{
 //			Msg( "Nodeload failed Node %d is not in Network 1\n", e );
 //		}
 		
-		int16Pnt = (int16*) uint32Pnt;
-		NodePnt->Flags = (uint16) *int16Pnt++;
+		int16Pnt = (int16_t*) u_int32Pnt;
+		NodePnt->Flags = (u_int16_t) *int16Pnt++;
 		NodePnt->NumOfLinks = *int16Pnt++;
 		
 		if( NodePnt->NumOfLinks > MAXLINKSPERNODE )
 		{
 			Msg( "NoadLoad failed too many Nodelinks in network , Node %d \n", e );
-			return FALSE;
+			return false;
 		}
 		if( !NodePnt->NumOfLinks )
 		{
 			DebugPrintf("No Links for Node %d\n" , e );
 		}
-		int32Pnt = (int32*) int16Pnt;
+		int32Pnt = (int32_t*) int16Pnt;
 		for( o = 0 ; o < NodePnt->NumOfLinks ; o++ )
 		{
 			
@@ -205,29 +205,29 @@ BOOL Nodeload( char * Filename )
 		NodePnt->SolidPos = NodePnt->Pos;
 		// we need a Point on the background that is below the Node...
 		
-		LegalGroup = FALSE;
+		LegalGroup = false;
 		
 		if( !PointInsideSkin( &NodePnt->Pos, NodePnt->Group ) )
 		{
 			DebugPrintf( "NoadLoad failed Node %d is in WRONG Group (%s)\n", e, Mloadheader.Group[ NodePnt->Group ].name );
 			for( i = 0 ; i < Mloadheader.num_groups ; i++ )
 			{
-				if( PointInsideSkin( &NodePnt->Pos, (uint16) i ) )
+				if( PointInsideSkin( &NodePnt->Pos, (u_int16_t) i ) )
 				{
 					NodePnt->Group = i;
 					DebugPrintf( "Node %d Should be in %s, FIX IT NOW!\n", e, Mloadheader.Group[ i ].name );
-					LegalGroup = TRUE;
+					LegalGroup = true;
 					break;
 				}
 			}
 		}else{
-			LegalGroup = TRUE;
+			LegalGroup = true;
 		}
 
 		if( LegalGroup )
 		{
 			if(	BackgroundCollide( &MCloadheadert0, &Mloadheader, &NodePnt->Pos, NodePnt->Group, &Move_Off,
-				&NodePnt->SolidPos , &TempGroup, &TempNormal, &TempPos_New, FALSE, NULL ) )
+				&NodePnt->SolidPos , &TempGroup, &TempNormal, &TempPos_New, false, NULL ) )
 			{
 #ifdef DEBUG_ON
 				VECTOR move;
@@ -245,7 +245,7 @@ BOOL Nodeload( char * Filename )
 				NodePnt->SolidPos.y += 75.0F;
 			}else{
 				DebugPrintf( "NodeLoad failed Couldnt find a Solid collide , Node %d in %s\n", e, Mloadheader.Group[ NodePnt->Group ].name );
-				//return FALSE;
+				//return false;
 			}
 		}else{
 			DebugPrintf( "Node %d Is not in any Legal Group..This is Very Bad...FIX IT!\n", e );
@@ -272,12 +272,12 @@ BOOL Nodeload( char * Filename )
 		if(!NodeArray2)
 		{
 			Msg( "Nodeload failed NodeArray2 malloc in %s \n", Filename );
-			return FALSE;
+			return false;
 		}
 		// copy pre-calculated node distances over
 		memmove( NodeArray2, Buffer, NodeNetworkHeader.NumOfNodes * NodeNetworkHeader.NumOfNodes * sizeof( float ) );
 
-		NodeNetworkHeader.State = TRUE;
+		NodeNetworkHeader.State = true;
 		SetNetworkDistance();
 		for ( j = 0; j < NodeNetworkHeader.NumOfNodes * NodeNetworkHeader.NumOfNodes; j++ )
 		{
@@ -299,13 +299,13 @@ BOOL Nodeload( char * Filename )
 	// All Node Networks have been loaded...
 	free(OrgBuffer);
 	
-	NodeNetworkHeader.State = TRUE;
+	NodeNetworkHeader.State = true;
 
 #ifndef LOAD_PRECALC_NODE_DISTANCE_TABLE
 	SetNetworkDistance();
 #endif
 	
-	return TRUE;
+	return true;
 }
 
 
@@ -321,7 +321,7 @@ void NodeRelease( void)
 	{
 		free( NodeNetworkHeader.FirstNode );
 		NodeNetworkHeader.FirstNode = NULL;
-		NodeNetworkHeader.State = FALSE;
+		NodeNetworkHeader.State = false;
 	}
 	if( NodeArray )
 	{
@@ -342,9 +342,9 @@ ENEMY * PutEnemiesAtNodes(void)
 	NODE * NodeLink;
 	VECTOR Dir = { 0.0F , 0.0F , 1.0F };
 	VECTOR Up = { 0.0F , 1.0F , 0.0F };
-	uint32 NetMask = 1;
-	uint16	line;
-	BOOL	Mutual;
+	u_int32_t NetMask = 1;
+	u_int16_t	line;
+	_Bool	Mutual;
 	int	NumOfEnemies = 0;
 	ENEMY * Enemy;
 
@@ -368,7 +368,7 @@ ENEMY * PutEnemiesAtNodes(void)
 		if( NumOfEnemies )
 		{
 			NumOfEnemies--;
-			InitOneEnemy( ENEMY_GENTYPE_Initialised, &NodePnt->SolidPos, &Dir, &Up, NodePnt->Group, Enemy->ModelNum, -1 ,ENEMY_Swarm ,0,-1,(uint16) -1 , 0.0F);
+			InitOneEnemy( ENEMY_GENTYPE_Initialised, &NodePnt->SolidPos, &Dir, &Up, NodePnt->Group, Enemy->ModelNum, -1 ,ENEMY_Swarm ,0,-1,(u_int16_t) -1 , 0.0F);
 		}
 
 //		if( (NodePnt->NetMask&NetMask) && !NodePnt->LegalGroup)
@@ -379,17 +379,17 @@ ENEMY * PutEnemiesAtNodes(void)
 				NodeLink = NodePnt->NodeLink[i];
 				if( NodeLink->NetMask & NetMask )
 				{
-					Mutual = FALSE;
+					Mutual = false;
 
 					for( e = 0 ; e < NodeLink->NumOfLinks ; e ++ )
 					{
 						if( NodePnt == NodeLink->NodeLink[e] )
-							Mutual = TRUE;
+							Mutual = true;
 					}
 					
 
 					line = FindFreeLine();						// Line attached
-					if( line != (uint16 ) -1 )
+					if( line != (u_int16_t ) -1 )
 					{
 						Lines[ line ].StartPos = NodePnt->Pos;
 						Lines[ line ].EndPos = NodeLink->Pos;
@@ -437,14 +437,14 @@ ENEMY * PutEnemiesAtNodes(void)
 	Input		:		NOTHING
 	Output		:		Nothing
 ===================================================================*/
-void ShowNodeNetwork( uint32 NetMask )
+void ShowNodeNetwork( u_int32_t NetMask )
 {
 	int o,i,e;
 	NODE * NodePnt;
 	NODE * NodeLink;
-	uint16	line;
-	BOOL	Mutual;
-	BOOL	CanSee;
+	u_int16_t	line;
+	_Bool	Mutual;
+	_Bool	CanSee;
 
 	InitLines(); // kill all lines (hack hack hack)
 
@@ -463,18 +463,18 @@ void ShowNodeNetwork( uint32 NetMask )
 				NodeLink = NodePnt->NodeLink[i];
 				if( NodeLink->NetMask & NetMask )
 				{
-					Mutual = FALSE;
+					Mutual = false;
 
 					for( e = 0 ; e < NodeLink->NumOfLinks ; e ++ )
 					{
 						if( NodePnt == NodeLink->NodeLink[e] )
-							Mutual = TRUE;
+							Mutual = true;
 					}
 					
 					CanSee = AI_ClearLOSNonZeroNonObject( &NodePnt->Pos, NodePnt->Group, &NodeLink->Pos, SHIP_RADIUS );
 					
 					line = FindFreeLine();						// Line attached
-					if( line != (uint16 ) -1 )
+					if( line != (u_int16_t ) -1 )
 					{
 						Lines[ line ].StartPos = NodePnt->Pos;
 						Lines[ line ].EndPos = NodeLink->Pos;
@@ -526,7 +526,7 @@ void ShowNodeNetwork( uint32 NetMask )
 /*===================================================================
 	Procedure	:		Recursive Node Dsistance Find.....
 	Input		:		NODE * Node
-				:		int32	Network
+				:		int32_t	Network
 	Output		:		Nothing
 ===================================================================*/
 NODE * Source;
@@ -559,7 +559,7 @@ void NodeRecurse( NODE * NodeFrom , NODE * NodeTo , float Distance )
 /*===================================================================
 	Procedure	:		Set Network weight form 1 Node...
 	Input		:		NODE * Node
-				:		int32	Network
+				:		int32_t	Network
 	Output		:		Nothing
 ===================================================================*/
 void SetNetworkDistance( void )
@@ -701,12 +701,12 @@ void UpdateNearestNode( OBJECT * Object )
 
 /*===================================================================
 	Procedure	:		Which Node to aim for to get to my target Node....
-	Input		:		int16 Network..Which Network...
+	Input		:		int16_t Network..Which Network...
 				:		NODE * NodeFrom ...Which node im close to..
 				:		NODE * NodeTo...Which node im trying to get to...
 	Output		:		NODE * Which node to go to get to my destination quickly..
 ===================================================================*/
-NODE * WhichNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
+NODE * WhichNode( u_int32_t Network , NODE * NodeFrom , NODE * NodeTo )
 {
 	float Distance,Temp;
 	int i;
@@ -752,12 +752,12 @@ NODE * WhichNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
 }
 /*===================================================================
 	Procedure	:		Which Node to aim for to get to get away from my target....
-	Input		:		int16 Network..Which Network...
+	Input		:		int16_t Network..Which Network...
 				:		NODE * NodeFrom ...Which node im close to..
 				:		NODE * NodeTo...Which node im trying to get to...
 	Output		:		NODE * Which node to go to get to my destination quickly..
 ===================================================================*/
-NODE * WhichRetreatNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
+NODE * WhichRetreatNode( u_int32_t Network , NODE * NodeFrom , NODE * NodeTo )
 {
 	float Distance,Temp;
 	int i;
@@ -805,12 +805,12 @@ NODE * WhichRetreatNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
 
 /*===================================================================
 	Procedure	:		An Alternate root is needed so find a different node if possible..
-	Input		:		int16 Network..Which Network...
+	Input		:		int16_t Network..Which Network...
 				:		NODE * NodeFrom ...Which node im close to..
 				:		NODE * NodeTo...Which node im trying to get to...
 	Output		:		NODE * Which node to go to for a different path..
 ===================================================================*/
-NODE * ChooseAlternateNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
+NODE * ChooseAlternateNode( u_int32_t Network , NODE * NodeFrom , NODE * NodeTo )
 {
 	int i;
 	NODE * NodeLink;
@@ -836,7 +836,7 @@ NODE * ChooseAlternateNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
 
 
 
-NODE * FindSuitableSplineNode( uint32 Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 )
+NODE * FindSuitableSplineNode( u_int32_t Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 )
 {
 
 	int i;
@@ -863,7 +863,7 @@ NODE * FindSuitableSplineNode( uint32 Network, NODE * NodeFrom , NODE *Node1 , N
 	}
 	return NodeFrom;
 }
-NODE * FindSuitableSplineNodeRandom( uint32 Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 )
+NODE * FindSuitableSplineNodeRandom( u_int32_t Network, NODE * NodeFrom , NODE *Node1 , NODE *Node2 , NODE *Node3 , NODE *Node4 )
 {
 
 	int i;
@@ -881,7 +881,7 @@ NODE * FindSuitableSplineNodeRandom( uint32 Network, NODE * NodeFrom , NODE *Nod
 			(NodeLink != Node4 ) &&
 			(NodeLink->NetMask&Network) )
 		{
-			if( !Random_Range((uint16) (NodeFrom->NumOfLinks / 2) ) )
+			if( !Random_Range((u_int16_t) (NodeFrom->NumOfLinks / 2) ) )
 				return NodeLink;
 		}
 	}
@@ -966,12 +966,12 @@ void UpdateNearestNodeSpecial( OBJECT * Object )
 /*===================================================================
 	Procedure	:		Return Pos of nearest node to a point
 	Input		:		VECTOR	*	Pos
-				:		uint16	*	Group
+				:		u_int16_t	*	Group
 				:		VECTOR	*	TopLeft
 				:		VECTOR	*	BottomRight
 	Output		:		float		Distance ( -1 None )
 ===================================================================*/
-float ReturnClosestNode( VECTOR * Pos, VECTOR * NearestNodePos, uint16 * Group, VECTOR * TopLeft, VECTOR * BottomRight )
+float ReturnClosestNode( VECTOR * Pos, VECTOR * NearestNodePos, u_int16_t * Group, VECTOR * TopLeft, VECTOR * BottomRight )
 {
 	int			i;
 	float		Temp;

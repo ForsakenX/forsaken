@@ -24,7 +24,7 @@
 	Structures
 ===================================================================*/
 typedef struct FIREPOS {
-	int16	NumPoints;
+	int16_t	NumPoints;
 	VECTOR	Points[ 6 ];
 	VECTOR	Dir[ 6 ];
 } FIREPOS;
@@ -32,13 +32,13 @@ typedef struct FIREPOS {
 #define ENEMY_TAUNT_PAUSE 600.0F;
 
 typedef struct ENEMY {
-	BOOL	Used;
-	BOOL	Alive;			// Am I Alive or dead
-	BOOL	CompCollision;
+	_Bool	Used;
+	_Bool	Alive;			// Am I Alive or dead
+	_Bool	CompCollision;
 	OBJECT	Object;
-	uint16	Type;
-	uint32	AIMoveFlags;
-	uint32	AIFlags;
+	u_int16_t	Type;
+	u_int32_t	AIMoveFlags;
+	u_int32_t	AIFlags;
 	VECTOR	AI_Angle;
 	float	Timer;
 	float	ThinkTimer;			// Is It Time for me to have a bit of a think???
@@ -55,24 +55,24 @@ typedef struct ENEMY {
 	BYTE	LastPrimaryFiredAtMe;
 	BYTE	LastSecondaryFiredAtMe;
 	float	Viewcone;
-	uint16	PickupHeld;				// When I Die do I Release a Pickup???
+	u_int16_t	PickupHeld;				// When I Die do I Release a Pickup???
 
 	VECTOR	TargetingPos;
 	VECTOR	TargetingDir;
 
 	VECTOR	MinePos;
 	float	MineDistance;
-	uint16	MineNum;
+	u_int16_t	MineNum;
 
 	float	AvoidTimer;
-	uint16	AvoidType;
+	u_int16_t	AvoidType;
 	
-	uint16	Status;				// Status
-	uint16	GenType;			// Generation Type
-	uint16	BulletID;			// ID
-	uint16	ModelNum;			// ModelNum
-	uint16	ModelIndex;			// Model Array Index
-	uint16	TriggerMod;			// Trigger
+	u_int16_t	Status;				// Status
+	u_int16_t	GenType;			// Generation Type
+	u_int16_t	BulletID;			// ID
+	u_int16_t	ModelNum;			// ModelNum
+	u_int16_t	ModelIndex;			// Model Array Index
+	u_int16_t	TriggerMod;			// Trigger
 	float	Delay;
 
 	TRIGGERMOD * TriggerModPtr;	// Trigger Mod Ptr
@@ -84,12 +84,12 @@ typedef struct ENEMY {
 
 	struct	ENEMY	*	NextInGroup;// Next in same group ....
 	struct	ENEMY	*	PrevInGroup;// Previous in same group ....
-	uint16	Index;
+	u_int16_t	Index;
 
 	float	PrimaryFireTimer;
 	float	SecondaryFireTimer;
-	BOOL	ImInNodeTransition;
-	BOOL	PickNewNodeNow;
+	_Bool	ImInNodeTransition;
+	_Bool	PickNewNodeNow;
 	float	DistanceToPointOnSlope;
 
 struct ENEMY * FormationLink;
@@ -115,7 +115,7 @@ struct ENEMY * FormationLink;
 
 	float	SmokeTime;
 
-	int16				FirePosCount;	// if I have more than 1 firing position then cycle between them..
+	int16_t				FirePosCount;	// if I have more than 1 firing position then cycle between them..
 
 #ifdef DEBUG_ON
 	// used for finding out where an enemy is killed from...
@@ -127,7 +127,7 @@ struct ENEMY * FormationLink;
 } ENEMY;
 
 typedef struct AI_BEHAVIOUR{
-	uint32	Flags;								// flags to show what stuff I can Do..
+	u_int32_t	Flags;								// flags to show what stuff I can Do..
 	float	Anticipate_Move;					// when targeting the player how far ahead can I predict where he will be....
 	float	NetworkRange;						// how far from my net work do I Wander...
 	float	Avoid_Primary;						// if player fires at me and I can see it check to see if I should avoid...
@@ -146,18 +146,18 @@ typedef struct AI_BEHAVIOUR{
 typedef struct ENEMY_TYPES {
 
 	char *	ModelFilename;		// Model Filename or Component Filename ( .MX/.MXA or .COB )
-	BOOL	StealthMode;		// Can use Stealth
-	BOOL	LevelSpecific;		// Level Specific
-	BOOL	CompCollision;		// Component collision
-	int16	ModelNumber;		// -1 None ( Not used so far )
+	_Bool	StealthMode;		// Can use Stealth
+	_Bool	LevelSpecific;		// Level Specific
+	_Bool	CompCollision;		// Component collision
+	int16_t	ModelNumber;		// -1 None ( Not used so far )
 	ANIM_SEQ * AnimSeqs;		// Animation Sequences ( NULL if none )
 	FIREPOS * FirePoints;
 	VECTOR * AimPos;
-	uint16	ControlType;
-	uint16	AiMode;				// what initial Ai mode I Have...
+	u_int16_t	ControlType;
+	u_int16_t	AiMode;				// what initial Ai mode I Have...
 
-	uint16	NumOfGuns;			// How many Guns do I Have???
-	uint16	GunType[MAXGUNSPERENEMY];			// What type of gun???
+	u_int16_t	NumOfGuns;			// How many Guns do I Have???
+	u_int16_t	GunType[MAXGUNSPERENEMY];			// What type of gun???
 	FIREPOS * GunFirePoints[MAXGUNSPERENEMY];
 	VECTOR * GunAimPos[MAXGUNSPERENEMY];
 
@@ -170,17 +170,17 @@ typedef struct ENEMY_TYPES {
 	float	Viewcone;
 	float	MinRange;			// minimum range I can dogfight at...
 	float	MaxRange;			// maximum range I can dogfight at...
-	int16	Shield;
+	int16_t	Shield;
 	float	MoveRestrictClearTime;
 	float	Radius;
 	float	PrimaryFireRate;
 	float	SecondaryFireRate;
 
-	int16	PowerLevel;
+	int16_t	PowerLevel;
 	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
-//	BOOL	DoIBank;					// When Turning Left and Right Do I Bank???
+//	_Bool	DoIBank;					// When Turning Left and Right Do I Bank???
 
 struct	AI_BEHAVIOUR Behave;
 } ENEMY_TYPES;
@@ -340,11 +340,11 @@ enum
 #define	MAXENEMIES				256
 #define	MAX_ENEMY_TYPES			56
 
-#define	YES_STEALTH_MODE		TRUE
-#define	NO_STEALTH_MODE			FALSE
+#define	YES_STEALTH_MODE		true
+#define	NO_STEALTH_MODE			false
 
-#define	COMPONENTCOLLISION		TRUE
-#define	SPHERECOLLISION			FALSE
+#define	COMPONENTCOLLISION		true
+#define	SPHERECOLLISION			false
 
 /*===================================================================
 	Prototypes
@@ -364,39 +364,39 @@ void KillUsedEnemy( ENEMY * Object );
 
 
 
-BOOL PreLoadEnemies( void );
-BOOL LoadEnemies( void );
-ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, uint16 Group, uint16 ModelNum, uint16 TriggerMod , uint16 EnemyType , uint32 Network , int32 PickupHeld , uint16 FormationLink , float GenerationDelay);
+_Bool PreLoadEnemies( void );
+_Bool LoadEnemies( void );
+ENEMY * InitOneEnemy( u_int16_t GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u_int16_t Group, u_int16_t ModelNum, u_int16_t TriggerMod , u_int16_t EnemyType , u_int32_t Network , int32_t PickupHeld , u_int16_t FormationLink , float GenerationDelay);
 void ProcessEnemies( void );
-void EnableEnemy( uint16 EnemyIndex );
+void EnableEnemy( u_int16_t EnemyIndex );
 void DisableEnemy( ENEMY * Enemy );
-ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point,
-						VECTOR * Int_Point2, float * Dist, float WeaponRadius, uint16 ColType );
-void SetCurAnimSeq( int16 Seq, OBJECT * Object );
-BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16 BaseIndex );
-void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex );
-BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off );
+ENEMY * CheckHitEnemy( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point,
+						VECTOR * Int_Point2, float * Dist, float WeaponRadius, u_int16_t ColType );
+void SetCurAnimSeq( int16_t Seq, OBJECT * Object );
+_Bool GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16_t BaseIndex );
+void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16_t BaseIndex );
+_Bool Ship2EnemyCollide( u_int16_t i , VECTOR * Move_Off );
 void SetupEnemyGroups( void );
-void AddEnemyToGroup( ENEMY * Enemy, uint16 Group );
-void RemoveEnemyFromGroup( ENEMY * Enemy, uint16 Group );
-void MoveEnemyToGroup( ENEMY * Enemy, uint16 OldGroup, uint16 NewGroup );
-BOOL ReadEnemyTxtFile( char *Filename );
+void AddEnemyToGroup( ENEMY * Enemy, u_int16_t Group );
+void RemoveEnemyFromGroup( ENEMY * Enemy, u_int16_t Group );
+void MoveEnemyToGroup( ENEMY * Enemy, u_int16_t OldGroup, u_int16_t NewGroup );
+_Bool ReadEnemyTxtFile( char *Filename );
 void ObjectForceExternalOneOff( OBJECT * Object, VECTOR *force );
-BYTE BodgePrimaryWeapon( BYTE Weapon, uint16 Pickup );
-uint16 FindDuplicateModel( int8 * Filename, int16 NumModels );
-BOOL DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed ,uint16 Owner , uint16 OwnerType);
+BYTE BodgePrimaryWeapon( BYTE Weapon, u_int16_t Pickup );
+u_int16_t FindDuplicateModel( int8_t * Filename, int16_t NumModels );
+_Bool DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed ,u_int16_t Owner , u_int16_t OwnerType);
 void ObjectRotateExternal( OBJECT * Object, VECTOR *Pos, VECTOR *point, VECTOR *dir, float force , float Radius );
 void ReleaseAllEnemies( void );
 void DoNmeDamagedEffects( ENEMY * Enemy );
 void DispUntriggeredNMEs( void );
 void AccellDecell(  float *  value ,  float  Decell );
 
-BOOL Enemy_Load( FILE * fp );
-BOOL Enemy_Save( FILE * fp );
-BOOL Object_Save( FILE * fp , OBJECT * Obj );
-BOOL Object_Load( FILE * fp , OBJECT * Obj );
-BOOL Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
-BOOL Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
+_Bool Enemy_Load( FILE * fp );
+_Bool Enemy_Save( FILE * fp );
+_Bool Object_Save( FILE * fp , OBJECT * Obj );
+_Bool Object_Load( FILE * fp , OBJECT * Obj );
+_Bool Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
+_Bool Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
 
 #endif
 

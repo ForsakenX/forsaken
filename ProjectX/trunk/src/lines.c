@@ -14,14 +14,14 @@
 #include "camera.h"
 
 extern	CAMERA	CurrentCamera;
-extern	BOOL	DebugInfo;
+extern	_Bool	DebugInfo;
 
 /*===================================================================
 	Globals
 ===================================================================*/
 LINE	Lines[ MAXLINES ];
-uint16	FirstLineUsed;
-uint16	FirstLineFree;
+u_int16_t	FirstLineUsed;
+u_int16_t	FirstLineFree;
 
 /*===================================================================
 	Procedure	:	Init Line Structures and Execute buffer
@@ -32,7 +32,7 @@ void InitLines( void )
 {
 	int i;
 
-	FirstLineUsed = (uint16) -1;
+	FirstLineUsed = (u_int16_t) -1;
 	FirstLineFree = 0;
 	
 	for( i=0; i < MAXLINES; i++ )
@@ -50,27 +50,27 @@ void InitLines( void )
 		Lines[i].EndCol.G = 0;
 		Lines[i].EndCol.B = 0;
 		Lines[i].Next = i + 1;
-		Lines[i].Prev = (uint16) -1;
+		Lines[i].Prev = (u_int16_t) -1;
 	}
-	Lines[ MAXLINES-1 ].Next = (uint16) -1;
+	Lines[ MAXLINES-1 ].Next = (u_int16_t) -1;
 }
 
 /*===================================================================
 	Procedure	:	Find a free Line and move it from the free list to
 					the used list
 	Input		:	Nothing
-	Output		:	uint16	Number of the free Line
+	Output		:	u_int16_t	Number of the free Line
 ===================================================================*/
-uint16 FindFreeLine( void )
+u_int16_t FindFreeLine( void )
 {
-	uint16 i;
+	u_int16_t i;
 
 	i = FirstLineFree;
-	if( i == (uint16) -1 ) return i;
+	if( i == (u_int16_t) -1 ) return i;
  
 	Lines[i].Prev = FirstLineUsed;
 
-	if ( FirstLineUsed != (uint16) -1)
+	if ( FirstLineUsed != (u_int16_t) -1)
 	{
 		Lines[ FirstLineUsed ].Next = i;
 	}
@@ -84,60 +84,60 @@ uint16 FindFreeLine( void )
 /*===================================================================
 	Procedure	:	Kill a used Line and move it from the used list
 				:	to the free list
-	Input		:	uint16		Number of Line to free....
+	Input		:	u_int16_t		Number of Line to free....
 	Output		:	Nothing
 ===================================================================*/
-void KillUsedLine( uint16 i )
+void KillUsedLine( u_int16_t i )
 {
-	uint16	its_prev;
-	uint16	its_next;
+	u_int16_t	its_prev;
+	u_int16_t	its_next;
 	
 	its_prev = Lines[ i ].Prev;
 	its_next = Lines[ i ].Next;
 
 	if( i == FirstLineUsed ) FirstLineUsed = Lines[ i ].Prev;
-	if( its_prev != (uint16) -1 ) Lines[ its_prev ].Next = its_next;
-	if( its_next != (uint16) -1 ) Lines[ its_next ].Prev = its_prev;
+	if( its_prev != (u_int16_t) -1 ) Lines[ its_prev ].Next = its_next;
+	if( its_next != (u_int16_t) -1 ) Lines[ its_next ].Prev = its_prev;
 
-	Lines[i].Prev = (uint16) -1;
+	Lines[i].Prev = (u_int16_t) -1;
 	Lines[i].Next = FirstLineFree;
 	FirstLineFree	= i;
 }
 
 /*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
-	Input		:	uint16	Group
+	Input		:	u_int16_t	Group
 				:	LPDIRECT3DEXECUTEBUFFER ExecBuffer
-				:	uint16	* StartLine
+				:	u_int16_t	* StartLine
 	Output		:	Nothing
 ===================================================================*/
-BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 * StartLine )
+_Bool LinesDispGroup( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, u_int16_t * StartLine )
 {
 	LPLVERTEX	Vert_Ptr;
 	COLOR		color;
-	int16			Num_Lines;
-	uint16			i;
+	int16_t			Num_Lines;
+	u_int16_t			i;
 
 	if ( !DebugInfo )
 	{
-		*StartLine = (uint16) -1;
-		return FALSE; // don't display lines if not debugging
+		*StartLine = (u_int16_t) -1;
+		return false; // don't display lines if not debugging
 	}
 
 	renderObject->numTextureGroups = 0;
 
-	if( *StartLine != (uint16) -1 )
+	if( *StartLine != (u_int16_t) -1 )
 	{
 		if (!(FSLockVertexBuffer(renderObject, &Vert_Ptr)))
 		{
-			return FALSE;
+			return false;
 		}
 
 		Num_Lines = 0;
 
 		i = *StartLine;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
 			if( Lines[ i ].Group == Group )
 			{
@@ -196,8 +196,8 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 /*	old render states passed to d3dline , might be needed later for reference
 
 			OP_STATE_RENDER( 2, lpPointer );
-			    STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
-			    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
+			    STATE_DATA( D3DRENDERSTATE_WRAPU, false, lpPointer );
+			    STATE_DATA( D3DRENDERSTATE_WRAPV, false, lpPointer );
 	   		OP_PROCESS_VERTICES( 1, lpPointer );
 	   		    PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, 0, ( Num_Lines * 2 ), lpPointer );
 	   		OP_STATE_RENDER( 1, lpPointer );
@@ -211,42 +211,42 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		*StartLine = i;
 		
 		if( Num_Lines == 0 ) 
-			return FALSE;
+			return false;
 		
 		renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = Num_Lines; // each line is a triangle
 		renderObject->textureGroups[renderObject->numTextureGroups].numVerts = Num_Lines * 2; // 3 verts in a triangle
 		renderObject->textureGroups[renderObject->numTextureGroups].startVert = 0;
 		renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-		renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
+		renderObject->textureGroups[renderObject->numTextureGroups].colourkey = false;
 		renderObject->numTextureGroups = 1;
 
 	}
 	else
 	{
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
-BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject ) 
+_Bool ExecuteLines( u_int16_t group, RENDEROBJECT *renderObject ) 
 {
-	uint16  i = 0;
+	u_int16_t  i = 0;
 
 	//  if( !render_info.bIsPrimary )
-	//		return TRUE;
+	//		return true;
 
 	i = FirstLineUsed;
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		if( LinesDispGroup( group, renderObject, &i ) )
 		{
 			if (!draw_line_object(renderObject))
-				return FALSE;
+				return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 

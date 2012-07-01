@@ -50,12 +50,12 @@ extern	MCLOADHEADER		MCloadheadert0;
 	Globals
 ===================================================================*/
 FMPOLY		FmPolys[ MAXNUMOF2DPOLYS ];
-uint16		FirstFmPolyUsed;
-uint16		FirstFmPolyFree;
-uint32		TotalFmPolysInUse = 0;
+u_int16_t		FirstFmPolyUsed;
+u_int16_t		FirstFmPolyFree;
+u_int32_t		TotalFmPolysInUse = 0;
 TPAGEINFO	FmPolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 
-void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed );
+void FadeColour( u_int8_t * Colour, u_int8_t WantedColour, float Speed );
 
 #define RGBA_MAKE2(r, g, b, a)   ((COLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 
@@ -68,7 +68,7 @@ void InitFmPoly( void )
 {
 	int i;
 
-	FirstFmPolyUsed = (uint16) -1;
+	FirstFmPolyUsed = (u_int16_t) -1;
 	FirstFmPolyFree = 0;
 
 	for( i=0;i<MAXNUMOF2DPOLYS;i++)
@@ -92,13 +92,13 @@ void InitFmPoly( void )
 		FmPolys[i].UpVector.y = 1.0F;
 		FmPolys[i].UpVector.z = 0.0F;
 
-		FmPolys[i].NextInTPage = (uint16) -1;
-		FmPolys[i].PrevInTPage = (uint16) -1;
+		FmPolys[i].NextInTPage = (u_int16_t) -1;
+		FmPolys[i].PrevInTPage = (u_int16_t) -1;
 
 		FmPolys[i].Next = i + 1;
-		FmPolys[i].Prev = (uint16) -1;
+		FmPolys[i].Prev = (u_int16_t) -1;
 	}
-	FmPolys[MAXNUMOF2DPOLYS-1].Next = (uint16) -1;
+	FmPolys[MAXNUMOF2DPOLYS-1].Next = (u_int16_t) -1;
 
 	InitFmPolyTPages();
 }
@@ -107,18 +107,18 @@ void InitFmPoly( void )
 	Procedure	:	Find a free FmPoly and move it from the free list to
 					the used list
 	Input		:	Nothing
-	Output		:	uint16	Number of the free FmPoly
+	Output		:	u_int16_t	Number of the free FmPoly
 ===================================================================*/
-uint16 FindFreeFmPoly( void )
+u_int16_t FindFreeFmPoly( void )
 {
-	uint16 i;
+	u_int16_t i;
 
 	i = FirstFmPolyFree;
-	if( i == (uint16) -1 ) return i;
+	if( i == (u_int16_t) -1 ) return i;
 
 	FmPolys[i].Prev = FirstFmPolyUsed;
 
-	if ( FirstFmPolyUsed != (uint16) -1)
+	if ( FirstFmPolyUsed != (u_int16_t) -1)
 	{
 		FmPolys[FirstFmPolyUsed].Next = i;
 	}
@@ -133,13 +133,13 @@ uint16 FindFreeFmPoly( void )
 /*===================================================================
 	Procedure	:	Kill a used FmPoly and move it from the used list to
 					the free list
-	Input		:	uint16		Number of FmPoly to free....
+	Input		:	u_int16_t		Number of FmPoly to free....
 	Output		:	Nothing
 ===================================================================*/
-void KillUsedFmPoly( uint16 i )
+void KillUsedFmPoly( u_int16_t i )
 {
-	uint16	its_prev;
-	uint16	its_next;
+	u_int16_t	its_prev;
+	u_int16_t	its_next;
 
 	its_prev = FmPolys[i].Prev;
 	its_next = FmPolys[i].Next;
@@ -147,17 +147,17 @@ void KillUsedFmPoly( uint16 i )
 	if ( i == FirstFmPolyUsed )
 		FirstFmPolyUsed = FmPolys[i].Prev;
 
-	if( its_prev != (uint16) -1)
+	if( its_prev != (u_int16_t) -1)
 		FmPolys[its_prev].Next = its_next;
 
-	if( its_next != (uint16) -1)
+	if( its_next != (u_int16_t) -1)
 		FmPolys[its_next].Prev = its_prev;
 
 	TotalFmPolysInUse--;
 
 	RemoveFmPolyFromTPage( i, GetTPage( *FmPolys[i].Frm_Info, 0 ) );
 
-	FmPolys[i].Prev = (uint16) -1;
+	FmPolys[i].Prev = (u_int16_t) -1;
 	FmPolys[i].Next = FirstFmPolyFree;
 	FmPolys[i].LifeCount = 0.0F;
 	FmPolys[i].xsize = ( 16.0F * GLOBAL_SCALE );
@@ -212,14 +212,14 @@ void KillUsedFmPoly( uint16 i )
 
 #endif
 
-static	int16	GlobCount;
-static	uint8	ShadeTable[ 16 ] = { 255, 200, 128, 104, 96, 92, 80, 77, 74, 72, 69, 66, 64, 64, 64, 64 };
-static	uint8	SmokeRingShadeTable[ 5 ] = { 255, 200, 150, 100, 50 };
+static	int16_t	GlobCount;
+static	u_int8_t	ShadeTable[ 16 ] = { 255, 200, 128, 104, 96, 92, 80, 77, 74, 72, 69, 66, 64, 64, 64, 64 };
+static	u_int8_t	SmokeRingShadeTable[ 5 ] = { 255, 200, 150, 100, 50 };
 
 void FmPolyProcess( void )
 {
-	uint16	i;
-	uint16	nextprim;
+	u_int16_t	i;
+	u_int16_t	nextprim;
 	float	Speed;
 	float	R, G, B, T, FadeDec;
 	VECTOR	Rotation;
@@ -233,11 +233,11 @@ void FmPolyProcess( void )
 	QUAT	TempQuat;
 	VECTOR	OldPos;
 
-	GlobCount += (int16) framelag;								// Use Timer!!!
+	GlobCount += (int16_t) framelag;								// Use Timer!!!
 
 	i = FirstFmPolyUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		nextprim = FmPolys[i].Prev;
 
@@ -256,7 +256,7 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_ANIM:								// Explosion?
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 		   		FmPolys[i].Frame += ( framelag / 3.0F );
 
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
@@ -266,7 +266,7 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_ANIM2:								// Ship Explosion?
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 		   		FmPolys[i].Frame += ( framelag / 4.0F );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
@@ -276,11 +276,11 @@ void FmPolyProcess( void )
 
 		   	case FM_SMOKE_TRAIL:						// Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 
-		   		FmPolys[i].R = ShadeTable[ (int16) FmPolys[i].Frame ];
-		   		FmPolys[i].G = ShadeTable[ (int16) FmPolys[i].Frame ];
-		   		FmPolys[i].B = ShadeTable[ (int16) FmPolys[i].Frame ];
+		   		FmPolys[i].R = ShadeTable[ (int16_t) FmPolys[i].Frame ];
+		   		FmPolys[i].G = ShadeTable[ (int16_t) FmPolys[i].Frame ];
+		   		FmPolys[i].B = ShadeTable[ (int16_t) FmPolys[i].Frame ];
 
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
@@ -310,10 +310,10 @@ void FmPolyProcess( void )
 				if( G < 0.0F ) G = 0.0F;
 				if( B < 0.0F ) B = 0.0F;
 				if( T < 0.0F ) T = 0.0F;
-				FmPolys[i].R = (uint8) R;
-				FmPolys[i].G = (uint8) G;
-				FmPolys[i].B = (uint8) B;
-				FmPolys[i].Trans = (uint8) T;
+				FmPolys[i].R = (u_int8_t) R;
+				FmPolys[i].G = (u_int8_t) G;
+				FmPolys[i].B = (u_int8_t) B;
+				FmPolys[i].Trans = (u_int8_t) T;
 
 	   			FmPolys[i].xsize += ( TROJAX_EXPINC * framelag );
 	   			FmPolys[i].ysize += ( TROJAX_EXPINC * framelag );
@@ -358,7 +358,7 @@ void FmPolyProcess( void )
 				{
 					if( FmPolys[i].Frm_Info != &Shrapnel_Header )
 					{
-						RemoveFmPolyFromTPage( i, GetTPage( *FmPolys[i].Frm_Info, (int16) FmPolys[i].Frame ) );
+						RemoveFmPolyFromTPage( i, GetTPage( *FmPolys[i].Frm_Info, (int16_t) FmPolys[i].Frame ) );
 				   		FmPolys[i].Frm_Info = &Shrapnel_Header;
 						AddFmPolyToTPage( i, GetTPage( *FmPolys[i].Frm_Info, 0 ) );
 						FmPolys[i].Frame = 0.0F;
@@ -443,10 +443,10 @@ void FmPolyProcess( void )
 				if( G < 0.0F ) G = 0.0F;
 				if( B < 0.0F ) B = 0.0F;
 				if( T < 0.0F ) T = 0.0F;
-				FmPolys[i].R = (uint8) R;
-				FmPolys[i].G = (uint8) G;
-				FmPolys[i].B = (uint8) B;
-				FmPolys[i].Trans = (uint8) T;
+				FmPolys[i].R = (u_int8_t) R;
+				FmPolys[i].G = (u_int8_t) G;
+				FmPolys[i].B = (u_int8_t) B;
+				FmPolys[i].Trans = (u_int8_t) T;
 
 	   			FmPolys[i].xsize += ( TRANSPULSE_EXP_INC * framelag );
 	   			FmPolys[i].ysize += ( TRANSPULSE_EXP_INC * framelag );
@@ -465,11 +465,11 @@ void FmPolyProcess( void )
 
 		   	case FM_GRAVGON_TRAIL:						// Gravgon Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 5.0F ) * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( ( FmPolys[i].Frame * 5.0F ) * 8.0F ) ) );
 
-		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
-		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
-		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
+		   		FmPolys[i].R = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 5.0F )];
+		   		FmPolys[i].G = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 5.0F )];
+		   		FmPolys[i].B = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 5.0F )];
 
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
@@ -490,11 +490,11 @@ void FmPolyProcess( void )
 
 		   	case FM_SOLARIS_TRAIL:						// Solaris Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 3.0F ) * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( ( FmPolys[i].Frame * 3.0F ) * 8.0F ) ) );
 
-		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
-		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
-		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
+		   		FmPolys[i].R = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 3.0F )];
+		   		FmPolys[i].G = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 3.0F )];
+		   		FmPolys[i].B = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 3.0F )];
 
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
@@ -512,11 +512,11 @@ void FmPolyProcess( void )
 
 		   	case FM_NEW_TRAIL:								// New Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 3.0F ) * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( ( FmPolys[i].Frame * 3.0F ) * 8.0F ) ) );
 
-		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
-		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
-		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
+		   		FmPolys[i].R = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 3.0F )];
+		   		FmPolys[i].G = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 3.0F )];
+		   		FmPolys[i].B = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 3.0F )];
 
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
@@ -573,10 +573,10 @@ void FmPolyProcess( void )
 					if( G < 0.0F ) G = 0.0F;
 					if( B < 0.0F ) B = 0.0F;
 					if( T < 0.0F ) T = 0.0F;
- 					FmPolys[i].R = (uint8) R;
-					FmPolys[i].G = (uint8) G;
-					FmPolys[i].B = (uint8) B;
-					FmPolys[i].Trans = (uint8) T;
+ 					FmPolys[i].R = (u_int8_t) R;
+					FmPolys[i].G = (u_int8_t) G;
+					FmPolys[i].B = (u_int8_t) B;
+					FmPolys[i].Trans = (u_int8_t) T;
 				}
 		   		break;
 
@@ -611,7 +611,7 @@ void FmPolyProcess( void )
 
 
 		   	case FM_BLACK_SMOKE:						// Black Smoke?
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 
 				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
@@ -654,10 +654,10 @@ void FmPolyProcess( void )
 
 		   	case FM_SMOKE_RING:								// Smoke Ring?
 				Speed = ( FmPolys[i].Speed * framelag );
-		   		FmPolys[i].Trans = (uint8) 255;
-		   		FmPolys[i].R = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
-		   		FmPolys[i].G = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
-		   		FmPolys[i].B = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
+		   		FmPolys[i].Trans = (u_int8_t) 255;
+		   		FmPolys[i].R = SmokeRingShadeTable[ (int16_t) FmPolys[i].Frame ];
+		   		FmPolys[i].G = SmokeRingShadeTable[ (int16_t) FmPolys[i].Frame ];
+		   		FmPolys[i].B = SmokeRingShadeTable[ (int16_t) FmPolys[i].Frame ];
 
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
@@ -672,12 +672,12 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_SPOTFX_SMOKE:							// Smoke?
-		   		FmPolys[i].Trans = ( 128 - ( (int16) ( FmPolys[i].Frame * 25.0F ) ) );
+		   		FmPolys[i].Trans = ( 128 - ( (int16_t) ( FmPolys[i].Frame * 25.0F ) ) );
 
 				Speed = (float) ( 64.0F - ( (float) ( FmPolys[i].Frame * 12.0F ) ) );
-				FmPolys[i].R = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
-				FmPolys[i].G = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
-				FmPolys[i].B = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
+				FmPolys[i].R = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
+				FmPolys[i].G = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
+				FmPolys[i].B = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
 
 				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
@@ -713,12 +713,12 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_SPOTFX_STEAM:							// STEAM?
-		   		FmPolys[i].Trans = (uint8) 255;
+		   		FmPolys[i].Trans = (u_int8_t) 255;
 
-				Speed = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
-				FmPolys[i].R = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
-				FmPolys[i].G = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
-				FmPolys[i].B = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
+				Speed = SmokeRingShadeTable[ (int16_t) FmPolys[i].Frame ];
+				FmPolys[i].R = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
+				FmPolys[i].G = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
+				FmPolys[i].B = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
 
 				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
@@ -754,7 +754,7 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_SPOTFX_FLAME:							// Flame?
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 
 				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
@@ -827,11 +827,11 @@ void FmPolyProcess( void )
 
 		   	case FM_SPOTFX_GRAVGON_TRAIL:						// Gravgon Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 5.0F ) * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( ( FmPolys[i].Frame * 5.0F ) * 8.0F ) ) );
 
-		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
-		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
-		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
+		   		FmPolys[i].R = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 5.0F )];
+		   		FmPolys[i].G = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 5.0F )];
+		   		FmPolys[i].B = ShadeTable[ (int16_t) ( FmPolys[i].Frame * 5.0F )];
 
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
@@ -885,12 +885,12 @@ void FmPolyProcess( void )
 		   		break;
 
 			case FM_NME_VAPOUR_TRAIL:						// Vapour Trail?
-		   		FmPolys[i].Trans = ( 128 - ( (int16) ( FmPolys[i].Frame * 25.0F ) ) );
+		   		FmPolys[i].Trans = ( 128 - ( (int16_t) ( FmPolys[i].Frame * 25.0F ) ) );
 
 				Speed = (float) ( 64.0F - ( (float) ( FmPolys[i].Frame * 12.0F ) ) );
-				FmPolys[i].R = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
-				FmPolys[i].G = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
-				FmPolys[i].B = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
+				FmPolys[i].R = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
+				FmPolys[i].G = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
+				FmPolys[i].B = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
 
 				Speed = ( FmPolys[i].Speed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
@@ -915,12 +915,12 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_SPOTFX_SHRAPNEL_TRAIL:						// Shrapnel Trail?
-		   		FmPolys[i].Trans = (uint8) 255;
+		   		FmPolys[i].Trans = (u_int8_t) 255;
 
-				Speed = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
-				FmPolys[i].R = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
-				FmPolys[i].G = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
-				FmPolys[i].B = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
+				Speed = SmokeRingShadeTable[ (int16_t) FmPolys[i].Frame ];
+				FmPolys[i].R = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_R ) );
+				FmPolys[i].G = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
+				FmPolys[i].B = (u_int8_t) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
 
 				FmPolys[i].xsize += ( ( 0.25F * GLOBAL_SCALE ) * framelag );
 				FmPolys[i].ysize += ( ( 0.25F * GLOBAL_SCALE ) * framelag );
@@ -971,7 +971,7 @@ void FmPolyProcess( void )
 
 					if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, &FmPolys[i].Pos,
 	     								  FmPolys[i].Group, &TempDir, (VECTOR *) &Int_Point,
-	     								  &FmPolys[i].Group, &Int_Normal, &TempVector, TRUE, NULL ) == TRUE )
+	     								  &FmPolys[i].Group, &Int_Normal, &TempVector, true, NULL ) == true )
 	     			{
 						FmPolys[i].Pos = Int_Point;
 
@@ -1083,8 +1083,8 @@ void FmPolyProcess( void )
 					{
 			   			FmPolys[ i ].Rot -= ( ( 360.0F / NMEGEN_STAGE0_LEN ) * framelag ); // 1 Rot in 3 seconds
 			   			FmPolys[ i ].Rot = FMOD( FmPolys[ i ].Rot, 360.0F );
-						FmPolys[ i ].R = (uint8) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
-						FmPolys[ i ].G = (uint8) ( 49.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 49.0F / NMEGEN_STAGE0_LEN ) ) );
+						FmPolys[ i ].R = (u_int8_t) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
+						FmPolys[ i ].G = (u_int8_t) ( 49.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 49.0F / NMEGEN_STAGE0_LEN ) ) );
 					}
 					else
 					{
@@ -1093,9 +1093,9 @@ void FmPolyProcess( void )
 
 						if( FmPolys[ i ].LifeCount >= NMEGEN_STAGE2 )		// 3 - 4
 						{
-							FmPolys[ i ].R = (uint8) ( 255.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE2 ) * ( 83.0F / NMEGEN_STAGE1_LEN ) ) );
-							FmPolys[ i ].G = (uint8) ( 255.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE2 ) * ( 206.0F / NMEGEN_STAGE1_LEN ) ) );
-							FmPolys[ i ].B = (uint8) ( 255.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE2 ) * ( 255.0F / NMEGEN_STAGE1_LEN ) ) );
+							FmPolys[ i ].R = (u_int8_t) ( 255.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE2 ) * ( 83.0F / NMEGEN_STAGE1_LEN ) ) );
+							FmPolys[ i ].G = (u_int8_t) ( 255.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE2 ) * ( 206.0F / NMEGEN_STAGE1_LEN ) ) );
+							FmPolys[ i ].B = (u_int8_t) ( 255.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE2 ) * ( 255.0F / NMEGEN_STAGE1_LEN ) ) );
 							FmPolys[ i ].xsize -= ( ( ( 6.0F * GLOBAL_SCALE ) / NMEGEN_STAGE1_LEN ) * framelag );
 							FmPolys[ i ].ysize = FmPolys[ i ].xsize;
 						}
@@ -1117,9 +1117,9 @@ void FmPolyProcess( void )
 				{
 					if( FmPolys[ i ].LifeCount >= NMEGEN_STAGE1 )			// 0 - 3
 					{
-						FmPolys[ i ].R = (uint8) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
-						FmPolys[ i ].G = (uint8) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
-						FmPolys[ i ].B = (uint8) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
+						FmPolys[ i ].R = (u_int8_t) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
+						FmPolys[ i ].G = (u_int8_t) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
+						FmPolys[ i ].B = (u_int8_t) ( 172.0F - ( ( FmPolys[ i ].LifeCount - NMEGEN_STAGE1 ) * ( 172.0F / NMEGEN_STAGE0_LEN ) ) );
 						FmPolys[ i ].xsize += ( ( ( 14.0F * GLOBAL_SCALE ) / NMEGEN_STAGE0_LEN ) * framelag );
 						FmPolys[ i ].ysize = FmPolys[ i ].xsize;
 					}
@@ -1164,7 +1164,7 @@ void FmPolyProcess( void )
 					{
 		     			if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, &FmPolys[i].Pos,
 		     								  FmPolys[i].Group, &TempDir, (VECTOR *) &Int_Point,
-			 								  &FmPolys[i].Group, &Int_Normal, &TempVector, TRUE, NULL ) == TRUE )
+			 								  &FmPolys[i].Group, &Int_Normal, &TempVector, true, NULL ) == true )
 	     				{
 							CreateSpotFXDripSplash( &Int_Point, &SlideUp, FmPolys[i].Group, FmPolys[i].R, FmPolys[i].G, FmPolys[i].B );
 				   			KillUsedFmPoly( i );
@@ -1194,7 +1194,7 @@ void FmPolyProcess( void )
 				break;
 
 		   	case FM_SPOTFX_BURNING:
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 
 				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
@@ -1239,7 +1239,7 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_SPOTFX_BEARD_AFTERBURNER:
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 
 				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
@@ -1384,7 +1384,7 @@ void FmPolyProcess( void )
 		   		break;
 
 		   	case FM_FIREBALL:
-		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
+		   		FmPolys[i].Trans = ( 248 - ( (int16_t) ( FmPolys[i].Frame * 8.0F ) ) );
 
 				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
@@ -1494,28 +1494,28 @@ void FmPolyProcess( void )
 ===================================================================*/
 void InitFmPolyTPages( void )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	for( i = 0; i < MAXTPAGESPERTLOAD; i++ )
 	{
-		FmPolyTPages[ i ].FirstPoly = (uint16) -1;
+		FmPolyTPages[ i ].FirstPoly = (u_int16_t) -1;
 	}
 }
 
 /*===================================================================
 	Procedure	:	Add FmPoly To TPage Link List
-	Input		:	uint16		FmPoly Index
-				:	uint16		TPage to add to
+	Input		:	u_int16_t		FmPoly Index
+				:	u_int16_t		TPage to add to
 	Output		:	Nothing
 ===================================================================*/
-void AddFmPolyToTPage( uint16 i, int16 TPage )
+void AddFmPolyToTPage( u_int16_t i, int16_t TPage )
 {
 	if( TPage == -1 ) TPage = MAXTPAGESPERTLOAD;
 
-	FmPolys[ i ].PrevInTPage = (uint16) -1;
+	FmPolys[ i ].PrevInTPage = (u_int16_t) -1;
 	FmPolys[ i ].NextInTPage = FmPolyTPages[ TPage ].FirstPoly;
 
-	if( FmPolys[ i ].NextInTPage != (uint16) -1 )
+	if( FmPolys[ i ].NextInTPage != (u_int16_t) -1 )
 	{
 		FmPolys[ FmPolys[ i ].NextInTPage ].PrevInTPage = i;
 	}
@@ -1525,15 +1525,15 @@ void AddFmPolyToTPage( uint16 i, int16 TPage )
 
 /*===================================================================
 	Procedure	:	Remove FmPoly From TPage Link List
-	Input		:	uint16		FmPoly Index
-				:	uint16		TPage to add to
+	Input		:	u_int16_t		FmPoly Index
+				:	u_int16_t		TPage to add to
 	Output		:	Nothing
 ===================================================================*/
-void RemoveFmPolyFromTPage( uint16 i, int16 TPage )
+void RemoveFmPolyFromTPage( u_int16_t i, int16_t TPage )
 {
 	if( TPage == -1 ) TPage = MAXTPAGESPERTLOAD;
 
-	if( FmPolys[ i ].PrevInTPage != (uint16) -1 )
+	if( FmPolys[ i ].PrevInTPage != (u_int16_t) -1 )
 	{
 		FmPolys[ FmPolys[ i ].PrevInTPage ].NextInTPage = FmPolys[ i ].NextInTPage;
 	}
@@ -1542,19 +1542,19 @@ void RemoveFmPolyFromTPage( uint16 i, int16 TPage )
 		FmPolyTPages[ TPage ].FirstPoly = FmPolys[ i ].NextInTPage;
 	}
 
-	if( FmPolys[ i ].NextInTPage != (uint16) -1 )
+	if( FmPolys[ i ].NextInTPage != (u_int16_t) -1 )
 	{
 		FmPolys[ FmPolys[ i ].NextInTPage ].PrevInTPage = FmPolys[ i ].PrevInTPage;
 	}
 
-	FmPolys[ i ].PrevInTPage = (uint16) -1;
-	FmPolys[ i ].NextInTPage = (uint16) -1;
+	FmPolys[ i ].PrevInTPage = (u_int16_t) -1;
+	FmPolys[ i ].NextInTPage = (u_int16_t) -1;
 }
 
-BOOL DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, uint16 Group )
+_Bool DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, u_int16_t Group )
 {
-	int16	TPage;
-	uint16	i;
+	int16_t	TPage;
+	u_int16_t	i;
 
 	TPage = 0;
 	i = FmPolyTPages[ 0 ].FirstPoly;
@@ -1562,23 +1562,23 @@ BOOL DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, uint16 Group )
 	while( 1 )
 	{
  		if( !FmPolyDispGroupClipped( Group, renderObject, &TPage, &i ) )
-			return( TRUE );
+			return( true );
 
 		cull_none();
 
 		if (!draw_object(renderObject))
-			return FALSE;
+			return false;
 
 		reset_cull();
 	}
 
-	return( FALSE );
+	return( false );
 }
 
-BOOL DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
+_Bool DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
 {
-	int16	TPage;
-	uint16	i;
+	int16_t	TPage;
+	u_int16_t	i;
 
 	TPage = 0;
 	i = FmPolyTPages[ 0 ].FirstPoly;
@@ -1586,36 +1586,36 @@ BOOL DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
 	while( 1 )
 	{
  		if( !FmPolyDispGroupUnclipped( renderObject, &TPage, &i ) )
-			return( TRUE );
+			return( true );
 
 		cull_none();
 
 		if (!draw_object(renderObject))
-			return FALSE;
+			return false;
 
 		reset_cull();
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
-	Input		:	uint16						Group
+	Input		:	u_int16_t						Group
 				:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	int16	*					Current TPage List
-				:	uint16	*					Current FmPoly
+				:	int16_t	*					Current TPage List
+				:	u_int16_t	*					Current FmPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly )
+_Bool FmPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly )
 {
-	uint16			i;
-	int16			Count;
-	int16			BitCount;
-	int16			TotalVerts;
-	int16			StartVert;
-	int16			NumVerts;
-	int16			NumTris;
+	u_int16_t			i;
+	int16_t			Count;
+	int16_t			BitCount;
+	int16_t			TotalVerts;
+	int16_t			StartVert;
+	int16_t			NumVerts;
+	int16_t			NumTris;
 	VECTOR			TempVector;
 	VECTOR			XVector;
 	VECTOR			YVector;
@@ -1653,13 +1653,13 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		if( Count == *TPage ) i = *NextFmPoly;
 		else i = FmPolyTPages[ Count ].FirstPoly;
 
-		while( ( i != (uint16) -1 ) && ( ( StartVert + NumVerts ) < MAXFMPOLYVERTS ) )
+		while( ( i != (u_int16_t) -1 ) && ( ( StartVert + NumVerts ) < MAXFMPOLYVERTS ) )
 		{
 			if( !( FmPolys[i].Flags & FM_FLAG_DONTCLIP ) && ( FmPolys[i].Group == Group ) )
 			{
 				if( FmPolys[i].Frm_Info && (*FmPolys[i].Frm_Info ) )
 				{
-					Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
+					Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16_t) FmPolys[ i ].Frame );
 					NumTris += ( 2 * Bit_Ptr->numbits );
 					NumVerts += ( 4 * Bit_Ptr->numbits );
 				}
@@ -1676,7 +1676,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		if( TotalVerts >= MAXFMPOLYVERTS ) break;
 	}
 
-	if( !TotalVerts ) return( FALSE );
+	if( !TotalVerts ) return( false );
 
 	renderObject->numTextureGroups = 0;
 
@@ -1686,12 +1686,12 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 
 	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	FmPolyFacePnt = (LPTRIANGLE) lpIndices;
@@ -1724,7 +1724,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
 
-			while( ( i != (uint16) -1 ) && ( StartVert < MAXFMPOLYVERTS ) )
+			while( ( i != (u_int16_t) -1 ) && ( StartVert < MAXFMPOLYVERTS ) )
 			{
 				if( !( FmPolys[i].Flags & FM_FLAG_DONTCLIP ) && ( FmPolys[i].Group == Group ) )
 				{
@@ -1776,7 +1776,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 /*===================================================================
 		Setup FrameInfo description pointers
 ===================================================================*/
-						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
+						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16_t) FmPolys[ i ].Frame );
 						Off_Ptr = ( (*FmPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 
 						for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
@@ -1946,37 +1946,37 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 ===================================================================*/
 	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
-		return FALSE ;
+		return false ;
 	}
 
 	*TPage = Count;
 	*NextFmPoly = i;
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	int16	*					Current TPage List
-				:	uint16	*					Current FmPoly
+				:	int16_t	*					Current TPage List
+				:	u_int16_t	*					Current FmPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly )
+_Bool FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly )
 {
-	uint16			i;
-	int16			Count;
-	int16			BitCount;
-	int16			TotalVerts;
-	int16			StartVert;
-	int16			NumVerts;
-	int16			NumTris;
+	u_int16_t			i;
+	int16_t			Count;
+	int16_t			BitCount;
+	int16_t			TotalVerts;
+	int16_t			StartVert;
+	int16_t			NumVerts;
+	int16_t			NumTris;
 	VECTOR			TempVector;
 	VECTOR			XVector;
 	VECTOR			YVector;
@@ -2014,13 +2014,13 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		if( Count == *TPage ) i = *NextFmPoly;
 		else i = FmPolyTPages[ Count ].FirstPoly;
 
-		while( ( i != (uint16) -1 ) && ( ( StartVert + NumVerts ) < MAXFMPOLYVERTS ) )
+		while( ( i != (u_int16_t) -1 ) && ( ( StartVert + NumVerts ) < MAXFMPOLYVERTS ) )
 		{
 			if( ( FmPolys[i].Flags & FM_FLAG_DONTCLIP ) )
 			{
 				if( FmPolys[i].Frm_Info && (*FmPolys[i].Frm_Info ) )
 				{
-					Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
+					Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16_t) FmPolys[ i ].Frame );
 					NumTris += ( 2 * Bit_Ptr->numbits );
 					NumVerts += ( 4 * Bit_Ptr->numbits );
 				}
@@ -2037,7 +2037,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		if( TotalVerts >= MAXFMPOLYVERTS ) break;
 	}
 
-	if( !TotalVerts ) return( FALSE );
+	if( !TotalVerts ) return( false );
 
 	renderObject->numTextureGroups = 0;
 
@@ -2047,12 +2047,12 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 
 	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	FmPolyFacePnt = (LPTRIANGLE) lpIndices;
@@ -2085,7 +2085,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
 
-			while( ( i != (uint16) -1 ) && ( StartVert < MAXFMPOLYVERTS ) )
+			while( ( i != (u_int16_t) -1 ) && ( StartVert < MAXFMPOLYVERTS ) )
 			{
 				if( ( FmPolys[i].Flags & FM_FLAG_DONTCLIP ) )
 				{
@@ -2137,7 +2137,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 /*===================================================================
 		Setup FrameInfo description pointers
 ===================================================================*/
-						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
+						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16_t) FmPolys[ i ].Frame );
 						Off_Ptr = ( (*FmPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 
 						for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
@@ -2308,28 +2308,28 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 
 	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
-		return FALSE ;
+		return false ;
 	}
 
 	*TPage = Count;
 	*NextFmPoly = i;
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Fade Colour to wanted colour
-	Input		:	uint8	*	Colour
-				:	uint8		Wanted Colour
+	Input		:	u_int8_t	*	Colour
+				:	u_int8_t		Wanted Colour
 	Output		:	Nothing
 ===================================================================*/
-void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed )
+void FadeColour( u_int8_t * Colour, u_int8_t WantedColour, float Speed )
 {
 	float	WanCol, CurCol;
 
@@ -2348,7 +2348,7 @@ void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed )
 		if( CurCol < WanCol ) CurCol = WanCol;
 	}
 
-	*Colour = (uint8) CurCol;
+	*Colour = (u_int8_t) CurCol;
 }
 
 /*===================================================================
@@ -2358,51 +2358,51 @@ void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed )
 ===================================================================*/
 FILE * SaveFmPolys( FILE * fp )
 {
-	uint16 i;
-	int16	Frm_Info_Index;
+	u_int16_t i;
+	int16_t	Frm_Info_Index;
 
 	if( fp )
 	{
-		fwrite( &TotalFmPolysInUse, sizeof( uint32 ),1 ,fp );
+		fwrite( &TotalFmPolysInUse, sizeof( u_int32_t ),1 ,fp );
 		fwrite( &FirstFmPolyUsed, sizeof( FirstFmPolyUsed ), 1, fp );
 		fwrite( &FirstFmPolyFree, sizeof( FirstFmPolyFree ), 1, fp );
 
 		for( i = 0; i < ( MAXTPAGESPERTLOAD + 1 ); i++ )
 		{
-			fwrite( &FmPolyTPages[ i ].FirstPoly, sizeof( uint16 ), 1, fp );
+			fwrite( &FmPolyTPages[ i ].FirstPoly, sizeof( u_int16_t ), 1, fp );
 		}
 
 		i = FirstFmPolyUsed;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
-			fwrite( &FmPolys[ i ].Next, sizeof( uint16 ), 1, fp );
-			fwrite( &FmPolys[ i ].Prev, sizeof( uint16 ), 1, fp );
-			fwrite( &FmPolys[ i ].NextInTPage, sizeof( uint16 ), 1, fp );
-			fwrite( &FmPolys[ i ].PrevInTPage, sizeof( uint16 ), 1, fp );
+			fwrite( &FmPolys[ i ].Next, sizeof( u_int16_t ), 1, fp );
+			fwrite( &FmPolys[ i ].Prev, sizeof( u_int16_t ), 1, fp );
+			fwrite( &FmPolys[ i ].NextInTPage, sizeof( u_int16_t ), 1, fp );
+			fwrite( &FmPolys[ i ].PrevInTPage, sizeof( u_int16_t ), 1, fp );
 			fwrite( &FmPolys[ i ].LifeCount, sizeof( float ), 1, fp );
 			fwrite( &FmPolys[ i ].Pos, sizeof( VECTOR ), 1, fp );
-			fwrite( &FmPolys[ i ].Start_R, sizeof( uint8 ), 1, fp );
-			fwrite( &FmPolys[ i ].Start_G, sizeof( uint8 ), 1, fp );
-			fwrite( &FmPolys[ i ].Start_B, sizeof( uint8 ), 1, fp );
-			fwrite( &FmPolys[ i ].R, sizeof( uint8 ), 1, fp );
-			fwrite( &FmPolys[ i ].G, sizeof( uint8 ), 1, fp );
-			fwrite( &FmPolys[ i ].B, sizeof( uint8 ), 1, fp );
-			fwrite( &FmPolys[ i ].Trans, sizeof( uint8 ), 1, fp );
-			fwrite( &FmPolys[ i ].OnceOnly, sizeof( uint8 ), 1, fp );
+			fwrite( &FmPolys[ i ].Start_R, sizeof( u_int8_t ), 1, fp );
+			fwrite( &FmPolys[ i ].Start_G, sizeof( u_int8_t ), 1, fp );
+			fwrite( &FmPolys[ i ].Start_B, sizeof( u_int8_t ), 1, fp );
+			fwrite( &FmPolys[ i ].R, sizeof( u_int8_t ), 1, fp );
+			fwrite( &FmPolys[ i ].G, sizeof( u_int8_t ), 1, fp );
+			fwrite( &FmPolys[ i ].B, sizeof( u_int8_t ), 1, fp );
+			fwrite( &FmPolys[ i ].Trans, sizeof( u_int8_t ), 1, fp );
+			fwrite( &FmPolys[ i ].OnceOnly, sizeof( u_int8_t ), 1, fp );
 			fwrite( &FmPolys[ i ].Rot, sizeof( float ), 1, fp );
 			fwrite( &FmPolys[ i ].RotSpeed, sizeof( float ), 1, fp );
 			fwrite( &FmPolys[ i ].Frame, sizeof( float ), 1, fp );
 			fwrite( &FmPolys[ i ].AnimSpeed, sizeof( float ), 1, fp );
-			fwrite( &FmPolys[ i ].Flags, sizeof( int16 ), 1, fp );
+			fwrite( &FmPolys[ i ].Flags, sizeof( int16_t ), 1, fp );
 			Frm_Info_Index = Get_Frm_Info_Index( FmPolys[ i ].Frm_Info );
-			fwrite( &Frm_Info_Index, sizeof( int16 ), 1, fp );
-			fwrite( &FmPolys[ i ].SeqNum, sizeof( int16 ), 1, fp );
+			fwrite( &Frm_Info_Index, sizeof( int16_t ), 1, fp );
+			fwrite( &FmPolys[ i ].SeqNum, sizeof( int16_t ), 1, fp );
 			fwrite( &FmPolys[ i ].Dir, sizeof( VECTOR ), 1, fp );
 			fwrite( &FmPolys[ i ].DirVector, sizeof( VECTOR ), 1, fp );
 			fwrite( &FmPolys[ i ].UpVector, sizeof( VECTOR ), 1, fp );
 			fwrite( &FmPolys[ i ].Mat, sizeof( MATRIX ), 1, fp );
-			fwrite( &FmPolys[ i ].Group, sizeof( uint16 ), 1, fp );
+			fwrite( &FmPolys[ i ].Group, sizeof( u_int16_t ), 1, fp );
 			fwrite( &FmPolys[ i ].Speed, sizeof( float ), 1, fp );
 			fwrite( &FmPolys[ i ].UpSpeed, sizeof( float ), 1, fp );
 			fwrite( &FmPolys[ i ].xsize, sizeof( float ), 1, fp );
@@ -2413,9 +2413,9 @@ FILE * SaveFmPolys( FILE * fp )
 
 		i = FirstFmPolyFree;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
-			fwrite( &FmPolys[ i ].Next, sizeof( uint16 ), 1, fp );
+			fwrite( &FmPolys[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			i = FmPolys[ i ].Next;
 		}
 	}
@@ -2430,51 +2430,51 @@ FILE * SaveFmPolys( FILE * fp )
 ===================================================================*/
 FILE * LoadFmPolys( FILE * fp )
 {
-	uint16 i;
-	int16	Frm_Info_Index;
+	u_int16_t i;
+	int16_t	Frm_Info_Index;
 
 	if( fp )
 	{
-		fread( &TotalFmPolysInUse, sizeof( uint32 ),1 ,fp );
+		fread( &TotalFmPolysInUse, sizeof( u_int32_t ),1 ,fp );
 		fread( &FirstFmPolyUsed, sizeof( FirstFmPolyUsed ), 1, fp );
 		fread( &FirstFmPolyFree, sizeof( FirstFmPolyFree ), 1, fp );
 
 		for( i = 0; i < ( MAXTPAGESPERTLOAD + 1 ); i++ )
 		{
-			fread( &FmPolyTPages[ i ].FirstPoly, sizeof( uint16 ), 1, fp );
+			fread( &FmPolyTPages[ i ].FirstPoly, sizeof( u_int16_t ), 1, fp );
 		}
 
 		i = FirstFmPolyUsed;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
-			fread( &FmPolys[ i ].Next, sizeof( uint16 ), 1, fp );
-			fread( &FmPolys[ i ].Prev, sizeof( uint16 ), 1, fp );
-			fread( &FmPolys[ i ].NextInTPage, sizeof( uint16 ), 1, fp );
-			fread( &FmPolys[ i ].PrevInTPage, sizeof( uint16 ), 1, fp );
+			fread( &FmPolys[ i ].Next, sizeof( u_int16_t ), 1, fp );
+			fread( &FmPolys[ i ].Prev, sizeof( u_int16_t ), 1, fp );
+			fread( &FmPolys[ i ].NextInTPage, sizeof( u_int16_t ), 1, fp );
+			fread( &FmPolys[ i ].PrevInTPage, sizeof( u_int16_t ), 1, fp );
 			fread( &FmPolys[ i ].LifeCount, sizeof( float ), 1, fp );
 			fread( &FmPolys[ i ].Pos, sizeof( VECTOR ), 1, fp );
-			fread( &FmPolys[ i ].Start_R, sizeof( uint8 ), 1, fp );
-			fread( &FmPolys[ i ].Start_G, sizeof( uint8 ), 1, fp );
-			fread( &FmPolys[ i ].Start_B, sizeof( uint8 ), 1, fp );
-			fread( &FmPolys[ i ].R, sizeof( uint8 ), 1, fp );
-			fread( &FmPolys[ i ].G, sizeof( uint8 ), 1, fp );
-			fread( &FmPolys[ i ].B, sizeof( uint8 ), 1, fp );
-			fread( &FmPolys[ i ].Trans, sizeof( uint8 ), 1, fp );
-			fread( &FmPolys[ i ].OnceOnly, sizeof( uint8 ), 1, fp );
+			fread( &FmPolys[ i ].Start_R, sizeof( u_int8_t ), 1, fp );
+			fread( &FmPolys[ i ].Start_G, sizeof( u_int8_t ), 1, fp );
+			fread( &FmPolys[ i ].Start_B, sizeof( u_int8_t ), 1, fp );
+			fread( &FmPolys[ i ].R, sizeof( u_int8_t ), 1, fp );
+			fread( &FmPolys[ i ].G, sizeof( u_int8_t ), 1, fp );
+			fread( &FmPolys[ i ].B, sizeof( u_int8_t ), 1, fp );
+			fread( &FmPolys[ i ].Trans, sizeof( u_int8_t ), 1, fp );
+			fread( &FmPolys[ i ].OnceOnly, sizeof( u_int8_t ), 1, fp );
 			fread( &FmPolys[ i ].Rot, sizeof( float ), 1, fp );
 			fread( &FmPolys[ i ].RotSpeed, sizeof( float ), 1, fp );
 			fread( &FmPolys[ i ].Frame, sizeof( float ), 1, fp );
 			fread( &FmPolys[ i ].AnimSpeed, sizeof( float ), 1, fp );
-			fread( &FmPolys[ i ].Flags, sizeof( int16 ), 1, fp );
-			fread( &Frm_Info_Index, sizeof( int16 ), 1, fp );
+			fread( &FmPolys[ i ].Flags, sizeof( int16_t ), 1, fp );
+			fread( &Frm_Info_Index, sizeof( int16_t ), 1, fp );
 			FmPolys[ i ].Frm_Info = Get_Frm_Info_Address( Frm_Info_Index );
-			fread( &FmPolys[ i ].SeqNum, sizeof( int16 ), 1, fp );
+			fread( &FmPolys[ i ].SeqNum, sizeof( int16_t ), 1, fp );
 			fread( &FmPolys[ i ].Dir, sizeof( VECTOR ), 1, fp );
 			fread( &FmPolys[ i ].DirVector, sizeof( VECTOR ), 1, fp );
 			fread( &FmPolys[ i ].UpVector, sizeof( VECTOR ), 1, fp );
 			fread( &FmPolys[ i ].Mat, sizeof( MATRIX ), 1, fp );
-			fread( &FmPolys[ i ].Group, sizeof( uint16 ), 1, fp );
+			fread( &FmPolys[ i ].Group, sizeof( u_int16_t ), 1, fp );
 			fread( &FmPolys[ i ].Speed, sizeof( float ), 1, fp );
 			fread( &FmPolys[ i ].UpSpeed, sizeof( float ), 1, fp );
 			fread( &FmPolys[ i ].xsize, sizeof( float ), 1, fp );
@@ -2484,7 +2484,7 @@ FILE * LoadFmPolys( FILE * fp )
 
 		i = FirstFmPolyFree;
 
-		while( i != (uint16) -1 )
+		while( i != (u_int16_t) -1 )
 		{
 			memset( &FmPolys[i], 0, sizeof( FMPOLY ) );
 			FmPolys[i].xsize = ( 16.0F * GLOBAL_SCALE );
@@ -2503,11 +2503,11 @@ FILE * LoadFmPolys( FILE * fp )
 			FmPolys[i].UpVector.x = 0.0F;
 			FmPolys[i].UpVector.y = 1.0F;
 			FmPolys[i].UpVector.z = 0.0F;
-			FmPolys[i].NextInTPage = (uint16) -1;
-			FmPolys[i].PrevInTPage = (uint16) -1;
-			FmPolys[i].Prev = (uint16) -1;
+			FmPolys[i].NextInTPage = (u_int16_t) -1;
+			FmPolys[i].PrevInTPage = (u_int16_t) -1;
+			FmPolys[i].Prev = (u_int16_t) -1;
 
-			fread( &FmPolys[ i ].Next, sizeof( uint16 ), 1, fp );
+			fread( &FmPolys[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			i = FmPolys[ i ].Next;
 		}
 	}

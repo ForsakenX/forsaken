@@ -64,7 +64,7 @@ void AI_FLESHMORPH_IDLE( register ENEMY * Enemy )
 		return;         
 	}         
  	// Scan for target
-	AI_THINK( Enemy , TRUE , TRUE );
+	AI_THINK( Enemy , true , true );
 	if( Enemy->AIFlags & AI_ANYPLAYERINRANGE )
 	{
 		SetCurAnimSeq( FLESHMORPHSEQ_Stop, &Enemy->Object );
@@ -170,13 +170,13 @@ void AI_FLESHMORPH_STOPFORWARD( register ENEMY * Enemy )
 			
 			if( (Enemy->PrimaryFireTimer == 0.0F) && ( EnemyTypes[Enemy->Type].PrimaryWeaponType != NO_PRIMARY )  )
 			{
-				Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].PrimaryFireRate );
+				Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (u_int16_t) EnemyTypes[Enemy->Type].PrimaryFireRate );
 				
 				Weapon = BodgePrimaryWeapon( EnemyTypes[Enemy->Type].PrimaryWeaponType, Enemy->PickupHeld );
 				
 				EnemyFirePrimary( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Weapon,
 					Enemy->Object.Group, &Enemy->Object.Pos, &TempOffset, &TempVector, &TempUpVector,
-					EnemyTypes[Enemy->Type].PowerLevel, (EnemyTypes[Enemy->Type].PowerLevel +1) * 33.0F, FALSE, NULL );
+					EnemyTypes[Enemy->Type].PowerLevel, (EnemyTypes[Enemy->Type].PowerLevel +1) * 33.0F, false, NULL );
 			}
 
 			if( (Enemy->SecondaryFireTimer == 0.0F) &&
@@ -193,7 +193,7 @@ void AI_FLESHMORPH_STOPFORWARD( register ENEMY * Enemy )
 					ApplyMatrix( &Enemy->Object.Mat , &FirePosPnt->Points[i] , &FireOffset );
 					InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 						&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-						&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, FALSE );
+						&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, false );
 				}else{
 					for( i = 0 ; i < FirePosPnt->NumPoints ; i++ )
 					{
@@ -202,7 +202,7 @@ void AI_FLESHMORPH_STOPFORWARD( register ENEMY * Enemy )
 						
 						InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 							&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-							&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, FALSE );
+							&TempOffset, EnemyTypes[Enemy->Type].SecondaryWeaponType, false );
 					}
 				}
 			}
@@ -264,7 +264,7 @@ void AI_FLESHMORPH_STOPBACKWARD( register ENEMY * Enemy )
 	}         
 
 	Enemy->Object.Pos = FleshmorphPos;
-	AI_THINK( Enemy , TRUE , TRUE );
+	AI_THINK( Enemy , true , true );
 	if( !(Enemy->AIFlags & AI_ANYPLAYERINRANGE) )
 	{
 		Enemy->Timer = RESET_IDLE_TIME;
@@ -304,7 +304,7 @@ void AI_FLESHMORPH_RANDOMFIREBALL( register ENEMY * Enemy )
 	VECTOR		TempOffset = { 0.0F, 0.0F, 0.0F };
 	VECTOR		FireOffset = { (-400.0F * GLOBAL_SCALE), (1200.0F * GLOBAL_SCALE), (600.0F * GLOBAL_SCALE) };
 	VECTOR		Dir;
-	int8		Weapon;
+	int8_t		Weapon;
 	int i , Num;
 
 	Enemy->SecondaryFireTimer -= framelag;
@@ -343,7 +343,7 @@ void AI_FLESHMORPH_RANDOMFIREBALL( register ENEMY * Enemy )
 
 			InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 				&Enemy->Object.Pos, &FireOffset, &TempVector, &TempUpVector,
-				&TempOffset, Weapon, FALSE );
+				&TempOffset, Weapon, false );
 		}
 	}
 	

@@ -789,8 +789,8 @@ read_autolevel( FILE *f, USERCONFIG *u, char *last_token )
 static int
 read_preferred_primary( FILE *f, USERCONFIG *u, char *last_token )
 {
-	uint16 j;
-	uint16 pnum;
+	u_int16_t j;
+	u_int16_t pnum;
 
 	for ( j = 0; j < MAX_PRIMARY_WEAPONS; j++ )
 	{
@@ -802,7 +802,7 @@ read_preferred_primary( FILE *f, USERCONFIG *u, char *last_token )
 	{
 		if ( j < MAX_PRIMARY_WEAPONS )
 		{
-			if ( pnum < (uint16) MAX_PRIMARY_WEAPONS )
+			if ( pnum < (u_int16_t) MAX_PRIMARY_WEAPONS )
 			{
 				u->primary_priority[ pnum ] = j;
 				u->primary_order[ j ] = pnum;
@@ -818,8 +818,8 @@ read_preferred_primary( FILE *f, USERCONFIG *u, char *last_token )
 static int
 read_preferred_secondary( FILE *f, USERCONFIG *u, char *last_token )
 {
-	uint16 j;
-	uint16 pnum;
+	u_int16_t j;
+	u_int16_t pnum;
 
 	for ( j = 0; j < MAX_SECONDARY_WEAPONS; j++ )
 	{
@@ -831,7 +831,7 @@ read_preferred_secondary( FILE *f, USERCONFIG *u, char *last_token )
 	{
 		if ( j < MAX_SECONDARY_WEAPONS )
 		{
-			if ( pnum < (uint16) MAX_SECONDARY_WEAPONS )
+			if ( pnum < (u_int16_t) MAX_SECONDARY_WEAPONS )
 			{
 				u->secondary_priority[ pnum ] = j;
 				u->secondary_order[ j ] = pnum;
@@ -1000,7 +1000,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 	if (fscanf( f, " %80s", last_token ) != 1)
 		return 0;
 
-	// look for matching, joystick. If found, assign actions & set assigned to TRUE
+	// look for matching, joystick. If found, assign actions & set assigned to true
 	joy = NULL;
 	for (i = 0; i < Num_Joysticks; i++)
 	{
@@ -1010,7 +1010,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 		if ( JoystickInfo[i].assigned )
 			continue;
 
-		JoystickInfo[i].assigned = TRUE;
+		JoystickInfo[i].assigned = true;
 		joynum = i;
 		joy = &JoystickInfo[ joynum ];
 		break;
@@ -1024,8 +1024,8 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 			// (will ensure that joystick is written back to config file)
 			joynum = Num_Joysticks++;
 			joy = &JoystickInfo[ joynum ];
-			joy->assigned = TRUE;
-			joy->connected = FALSE;
+			joy->assigned = true;
+			joy->connected = false;
 			joy->Name = (char *)malloc(strlen(tempstr) + 1 );
 			strcpy( joy->Name, tempstr );
 		}
@@ -1139,14 +1139,14 @@ void ConfigureSpaceorbAxis( int joystick )
 	int k;
 
 	DebugPrintf("Spaceorb detected - auto configuring axis...\n");
-	JoystickInfo[ joystick ].assigned = TRUE;
+	JoystickInfo[ joystick ].assigned = true;
 	
 	for ( k = AXIS_Start; k <= AXIS_End; k++ )
 	{
 		JoystickInfo[ joystick ].Axis[ k ].deadzone = 1;
 		JoystickInfo[ joystick ].Axis[ k ].sensitivity = 0.01F;
-		JoystickInfo[ joystick ].Axis[ k ].inverted = FALSE;
-		JoystickInfo[ joystick ].Axis[ k ].fine = FALSE;
+		JoystickInfo[ joystick ].Axis[ k ].inverted = false;
+		JoystickInfo[ joystick ].Axis[ k ].fine = false;
 	}
 
 	JoystickInfo[ joystick ].Axis[ AXIS_XAxis ].action = SHIPACTION_SlideLeft;
@@ -1225,8 +1225,8 @@ void DefaultJoystickSettings( USERCONFIG *u )
 					JoystickInfo[ j ].Axis[ k ].action = SHIPACTION_Nothing;
 					JoystickInfo[ j ].Axis[ k ].sensitivity = 0.02F;
 					JoystickInfo[ j ].Axis[ k ].deadzone = 20;
-					JoystickInfo[ j ].Axis[ k ].inverted = FALSE;
-					JoystickInfo[ j ].Axis[ k ].fine = TRUE;
+					JoystickInfo[ j ].Axis[ k ].inverted = false;
+					JoystickInfo[ j ].Axis[ k ].fine = true;
 				}
 				JoystickInfo[ j ].Axis[ AXIS_XAxis ].action = SHIPACTION_RotateLeft;
 				JoystickInfo[ j ].Axis[ AXIS_YAxis ].action = SHIPACTION_RotateUp;
@@ -1237,7 +1237,7 @@ void DefaultJoystickSettings( USERCONFIG *u )
 			AddButton( j, 3, &u->fire_mine );
 			AddButton( j, 4, &u->select_next_primary );
 			AddButton( j, 5, &u->select_next_secondary );
-			JoystickInfo[ j ].assigned = TRUE;
+			JoystickInfo[ j ].assigned = true;
 			SetUpJoystickAxis( j );
 		}
 	}
@@ -1270,14 +1270,14 @@ void ReInitJoysticks( void )
 		if ( JoystickInfo[ i ].connected )
 		{
 			tempJoystickInfo[ j ] = JoystickInfo[ i ];
-			tempJoystickInfo[ j ].assigned = FALSE;
+			tempJoystickInfo[ j ].assigned = false;
 			for ( k = AXIS_Start; k <= AXIS_End; k++ )
 			{
 				tempJoystickInfo[ j ].Axis[ k ].action = SHIPACTION_Nothing;
 				tempJoystickInfo[ j ].Axis[ k ].sensitivity = 0.02F;
 				tempJoystickInfo[ j ].Axis[ k ].deadzone = 20;
-				tempJoystickInfo[ j ].Axis[ k ].inverted = FALSE;
-				tempJoystickInfo[ j ].Axis[ k ].fine = TRUE;
+				tempJoystickInfo[ j ].Axis[ k ].inverted = false;
+				tempJoystickInfo[ j ].Axis[ k ].fine = true;
 			}
 			j++;
 		}
@@ -1639,7 +1639,7 @@ write_keydef_indexed( FILE *f, char *ctl_name, USERKEY *keydef, int index )
 
 
 static void
-write_preferred( FILE *f, char *ctl_name, int16 *order, int max_entries )
+write_preferred( FILE *f, char *ctl_name, int16_t *order, int max_entries )
 {
 	int j;
 

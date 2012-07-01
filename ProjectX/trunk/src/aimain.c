@@ -257,9 +257,9 @@ void AI_FLESHMORPH( register ENEMY * Enemy )
 /*===================================================================
 	Procedure	:	Enemy to Enemy Check Friendly Fire...
 	Input		:	ENEMY * SEnemy
-	Output		:	BOOL TRUE/FALSE...Yes you will hit an enemy if you fire..
+	Output		:	_Bool true/false...Yes you will hit an enemy if you fire..
 ===================================================================*/
-BOOL Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
+_Bool Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 {
 	ENEMY * TEnemy;
 	VECTOR	Move_Dir;
@@ -280,7 +280,7 @@ BOOL Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 					// Two Enemies are within visible params....
 					if( RaytoSphere2(&TEnemy->Object.Pos, EnemyTypes[TEnemy->Type].Radius , &SEnemy->Object.Pos, &Move_Dir , &TempVector , &TempVector ) )
 					{
-						return TRUE;
+						return true;
 					}
 				}
 			}
@@ -288,7 +288,7 @@ BOOL Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 		TEnemy = TEnemy->NextUsed;
 	}
 
-	return FALSE;
+	return false;
 }
 
 
@@ -297,11 +297,11 @@ BOOL Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
 ===================================================================*/
-void AI_THINK( register ENEMY * Enemy , BOOL OverideThinkTime , BOOL JustCheckPlayerRange )
+void AI_THINK( register ENEMY * Enemy , _Bool OverideThinkTime , _Bool JustCheckPlayerRange )
 {
 	OBJECT * TObject;
-	BOOL	InViewCone;
-	BOOL	InHisViewCone;
+	_Bool	InViewCone;
+	_Bool	InHisViewCone;
 	ENEMY * EnemyLink;
 	int i;
 
@@ -431,7 +431,7 @@ void AI_THINK( register ENEMY * Enemy , BOOL OverideThinkTime , BOOL JustCheckPl
 		if( Enemy->AIFlags & AI_ICANHEARPLAYER )
 		{
 			// if an enemy can hear a player he should be able to use that to see him.....
-			InViewCone = TRUE;
+			InViewCone = true;
 		}else{
 			//See if Its within my viewcone..
 			InViewCone = AI_InViewCone( &Enemy->Object.Pos, &Enemy->Object.Mat , &TObject->Pos, Enemy->Viewcone ) + ( (Enemy->AIFlags & AI_ICANSEEPLAYER) != 0 );
@@ -490,7 +490,7 @@ void AI_AVOIDCHECK( register ENEMY * Enemy )
 {
 	OBJECT * TObject;
 	float	Cone;
-	BOOL	InCone;
+	_Bool	InCone;
 	GLOBALSHIP * TShip;
 	float DistanceToMissile;
 	float Range;

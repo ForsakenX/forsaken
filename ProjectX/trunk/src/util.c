@@ -8,8 +8,8 @@
 #include "string.h"
 #include "title.h"
 
-extern BOOL Debug;
-BOOL DebugLog = FALSE;
+extern _Bool Debug;
+_Bool DebugLog = false;
 
 #ifdef WIN32
 #include <windows.h>	// for various things
@@ -60,9 +60,9 @@ void strtoupper(char *str)
 	}
 }
 
-void GetFilename( uint8 * Src, uint8 * Dest )
+void GetFilename( u_int8_t * Src, u_int8_t * Dest )
 {
-	uint8	*	Char_Ptr;
+	u_int8_t	*	Char_Ptr;
 
 	Char_Ptr = ( Src + strlen( Src ) ) -1;
 
@@ -84,9 +84,9 @@ void GetFilename( uint8 * Src, uint8 * Dest )
 	}
 }
 
-void Get_Ext( uint8 * Src, uint8 * Dest )
+void Get_Ext( u_int8_t * Src, u_int8_t * Dest )
 {
-	uint8	*	Char_Ptr;
+	u_int8_t	*	Char_Ptr;
 
 	Char_Ptr = ( Src + strlen( Src ) ) -1;
 
@@ -106,7 +106,7 @@ void Get_Ext( uint8 * Src, uint8 * Dest )
 
 void Change_Ext( const char * Src, char * Dest, const char * Ext )
 {
-	uint8	*	Char_Ptr;
+	u_int8_t	*	Char_Ptr;
 
 	int length = strlen( Src );
 
@@ -117,13 +117,13 @@ void Change_Ext( const char * Src, char * Dest, const char * Ext )
 		return;
 	}
 
-	Char_Ptr = ( (uint8*)Src + length ) - 1;
+	Char_Ptr = ( (u_int8_t*)Src + length ) - 1;
 
-	while( Char_Ptr != (uint8*)Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
+	while( Char_Ptr != (u_int8_t*)Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
 
 	if( *Char_Ptr == '.' )
 	{
-		while( (uint8*)Src != Char_Ptr )
+		while( (u_int8_t*)Src != Char_Ptr )
 			*Dest++ = *Src++;
 		strcpy( Dest, Ext );
 	}
@@ -241,10 +241,10 @@ void DebugState( const char * str )
 //#include "render.h"
 //extern render_info_t render_info;
 extern void MenuGoFullScreen( MENUITEM *Item );
-extern void input_grab( BOOL clip );
+extern void input_grab( _Bool clip );
 int Msg( const char * msg, ... )
 {
-//	BOOL was_fullscreen = render_info.fullscreen;
+//	_Bool was_fullscreen = render_info.fullscreen;
 
 	char txt[ 1024 ];
 	va_list args;
@@ -267,7 +267,7 @@ int Msg( const char * msg, ... )
 
 	
 	// release mouse so they can interact with message box
-	input_grab( FALSE );
+	input_grab( false );
 
     res = MessageBox( GetActiveWindow(), txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
 
@@ -276,7 +276,7 @@ int Msg( const char * msg, ... )
 		// switch back to fullscreen
 		MenuGoFullScreen(NULL);
         SetWindowPos(GetActiveWindow(), HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
-		input_grab( TRUE ); // don't do this in window mode just let them click back on the window
+		input_grab( true ); // don't do this in window mode just let them click back on the window
 	}
 
 	DebugPrintf( txt );

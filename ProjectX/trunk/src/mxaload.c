@@ -10,33 +10,33 @@
 /*
 Execution list format with animated vertices (*.mxa):
 
-num_texture_files : uint16
+num_texture_files : u_int16_t
 texture_file_name[num_texture_files] : '\0' separated strings
-num_groups : uint16
+num_groups : u_int16_t
 {
-	num_exec_lists : uint16
+	num_exec_lists : u_int16_t
 	{
-	  exec_type : uint16 // 0 = entirely opaque, 1 = contains transparencies
-	  num_vertices : uint16
-	  vertex(x,y,z,reserved,colour,specular,tu,tv)[num_vertices] : x, y, z float, others uint32
-	  num_texture_groups : uint16
+	  exec_type : u_int16_t // 0 = entirely opaque, 1 = contains transparencies
+	  num_vertices : u_int16_t
+	  vertex(x,y,z,reserved,colour,specular,tu,tv)[num_vertices] : x, y, z float, others u_int32_t
+	  num_texture_groups : u_int16_t
 	  {
-	    texture_type : uint16 // 0 = normal, 1 = environment mapped
-		start_vertex : uint16
-		num_vertices : uint16
-		texture_no : uint16
-		num_triangles : uint16
-		triangles(v0,v1,v2,pad16,nx,ny,nz)[num_triangles] : v? uint16, pad16 uint16, n? float
+	    texture_type : u_int16_t // 0 = normal, 1 = environment mapped
+		start_vertex : u_int16_t
+		num_vertices : u_int16_t
+		texture_no : u_int16_t
+		num_triangles : u_int16_t
+		triangles(v0,v1,v2,pad16,nx,ny,nz)[num_triangles] : v? u_int16_t, pad16 u_int16_t, n? float
 	  }[num_texture_groups]
 	}[num_exec_lists]
 }[num_groups]
-mxtype : uint16 // always 2 for mxa format
-num_frames : uint16 // number of animation frames
+mxtype : u_int16_t // always 2 for mxa format
+num_frames : u_int16_t // number of animation frames
 {
 	{
 		{
 			{
-				num_anim_vertices : uint16 // number of animating vertices for this texture group
+				num_anim_vertices : u_int16_t // number of animating vertices for this texture group
 				vertex(x, y, z)[num_anim_vertices] : all float
 			}[num_texture_groups]
 		}[num_exec_lists]
@@ -75,7 +75,7 @@ num_frames : uint16 // number of animation frames
 		Externals...	
 ===================================================================*/
 
-extern void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, uint16 Tpage, LPOLDLVERTEX Orig_Vert );
+extern void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, u_int16_t Tpage, LPOLDLVERTEX Orig_Vert );
 
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
@@ -84,13 +84,13 @@ extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
-extern	int16	BikeModels[ MAXBIKETYPES ];
+extern	int16_t	BikeModels[ MAXBIKETYPES ];
 extern	RENDERMATRIX view;
 extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
 extern	RENDERMATRIX  TempWorld;
 
-int16		NewLevelNum;
+int16_t		NewLevelNum;
 
 /*===================================================================
 		Globals...	
@@ -98,7 +98,7 @@ int16		NewLevelNum;
 MXALOADHEADER MxaModelHeaders[MAXMXAMODELHEADERS];
 
 static void
-FixUV_MXA( uint16 vertices, MXAVERT *MXA_Vert, LPLVERTEX Vert, LPLVERTEX Orig_Vert )
+FixUV_MXA( u_int16_t vertices, MXAVERT *MXA_Vert, LPLVERTEX Vert, LPLVERTEX Orig_Vert )
 {
 	int vnum;
 
@@ -114,50 +114,50 @@ FixUV_MXA( uint16 vertices, MXAVERT *MXA_Vert, LPLVERTEX Vert, LPLVERTEX Orig_Ve
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangles  )
+_Bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, _Bool StoreTriangles  )
 {
 
 	char		*	Buffer;
 	char		*	tempBuffer;
-	int16		*	Int16Pnt;
-	uint32		*	Uint32Pnt;
-	uint16		*	Uint16Pnt;
+	int16_t		*	Int16Pnt;
+	u_int32_t		*	Uint32Pnt;
+	u_int16_t		*	Uint16Pnt;
 	float		*	FloatPnt;
 	MFACE		*	MFacePnt;
 	TRIANGLE		FacePnt; // was a pointer
 	LPTRIANGLE	TempFacePnt; ZEROMEM(TempFacePnt);
-	uint16			exec_type;			// the type of execute buffer
-	uint16			texture_type;		// the type of texture...0 normal  1 env
-	uint16			num_vertices;		// overall number of verts
-	uint16			num_texture_groups;// number of triangle groups
-	uint16			num_triangles;		// number of triangles in group
-	uint16			group_vertex_start; // where in the vert list to start processing
-	uint16			group_vertex_num;	// and how many to do...
+	u_int16_t			exec_type;			// the type of execute buffer
+	u_int16_t			texture_type;		// the type of texture...0 normal  1 env
+	u_int16_t			num_vertices;		// overall number of verts
+	u_int16_t			num_texture_groups;// number of triangle groups
+	u_int16_t			num_triangles;		// number of triangles in group
+	u_int16_t			group_vertex_start; // where in the vert list to start processing
+	u_int16_t			group_vertex_num;	// and how many to do...
 	LPOLDLVERTEX lpLVERTEX2;
 	LPLVERTEX	lpLVERTEX;
 	LPLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
 	NORMAL		*lpNormals = NULL;
 	int				ibIndex = 0;
-	uint16			frame;
-	uint16			texgroup;
-	uint16			num_anim_vertices;
+	u_int16_t			frame;
+	u_int16_t			texgroup;
+	u_int16_t			num_anim_vertices;
 	int				i,e;
-	uint16			tpage = 0;
+	u_int16_t			tpage = 0;
 	int				execbuf;
 	int				group;
-	uint16			ExecSize;
+	u_int16_t			ExecSize;
 
-	uint16			NumSpotFX;
+	u_int16_t			NumSpotFX;
 	PVSPOTFX *		SpotFXPtr;
-	uint16			NumFirePoints;
+	u_int16_t			NumFirePoints;
 	PVFIREPOINT *	FirePointPtr;
-	uint32			Colour;
+	u_int32_t			Colour;
 	int				colourkey = 0;
 #if	MXA_VERSION_NUMBER == 2
-	int16			c;
-	int8		*	Int8Pnt;
-	int8			SFXFilename[ 128 ];
+	int16_t			c;
+	int8_t		*	Int8Pnt;
+	int8_t			SFXFilename[ 128 ];
 #endif
 
 	int numTriangles = 0;
@@ -166,7 +166,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	int tempInt;
 
 	// Mxaloadheader is not valid until everything has been done..
-	Mxaloadheader->state = FALSE;
+	Mxaloadheader->state = false;
 	Mxaloadheader->WantedFrame = 0;
 	Mxaloadheader->CurrentFrame = 0;
 	Mxaloadheader->Interp = 0.0F;
@@ -178,38 +178,38 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	if( Buffer == NULL)
 	{
 		Msg( "Mxaload() Unable to allocate buffer in %s\n", Filename );
-		return FALSE;
+		return false;
 	}
 	
 
 	/*	get the number of groups	*/
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 	Mxaloadheader->num_groups = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;		
 
 	if ( Mxaloadheader->num_groups > MAXGROUPS )
 	{
 		Msg( "Mxaload() num_groups > MAXGROUPS\n", Filename );
-		return FALSE;
+		return false;
 	}
 
 	for( group=0 ; group<Mxaloadheader->num_groups; group++)
 	{
 		
 		/*	get the number of execbufs in this group	*/
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		Mxaloadheader->Group[group].num_execbufs = *Uint16Pnt++;
 		Buffer = (char *) Uint16Pnt;		
 	
 		if ( Mxaloadheader->Group[group].num_execbufs > MAXEXECBUFSPERGROUP )
 		{
 			Msg( "Mxaload() num_execbufs > MAXEXECBUFSPERGROUP\n", Filename );
-			return FALSE;
+			return false;
 		}
 		
 		for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
 		{
-			Uint16Pnt = (uint16 *) Buffer;
+			Uint16Pnt = (u_int16_t *) Buffer;
 
 			ExecSize = 	*Uint16Pnt++;
 			ExecSize += 512;
@@ -233,7 +233,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			/*	create a vertex buffer	*/
 			if (!FSCreateVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], num_vertices))
 			{
-				return FALSE;
+				return false;
 			}
 
 			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
@@ -242,7 +242,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if (!(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
-				return FALSE;
+				return false;
 			}
 
 			lpBufStart = lpLVERTEX;
@@ -288,12 +288,12 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 							   D3DSTATUS_CLIPINTERSECTIONBOTTOM |
 							   D3DSTATUS_CLIPINTERSECTIONLEFT |
 							   D3DSTATUS_CLIPINTERSECTIONRIGHT
-							   , 0, TRUE , 0, lpPointer);
+							   , 0, true , 0, lpPointer);
 */
 			
 			Buffer = (char *) lpLVERTEX2;
 			
-			Uint16Pnt = (uint16 *) Buffer;
+			Uint16Pnt = (u_int16_t *) Buffer;
 			num_texture_groups = *Uint16Pnt++;    
 			Buffer = (char *) Uint16Pnt;		
 			Mxaloadheader->Group[group].num_texture_groups[execbuf] = num_texture_groups;
@@ -305,7 +305,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
-				uint16 *temp = (uint16 *) tempBuffer;
+				u_int16_t *temp = (u_int16_t *) tempBuffer;
 				
 				/* skip over unwated stuff */
 				temp += 4;
@@ -323,7 +323,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			/*	create an index buffer	*/
 			if (!FSCreateIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], triangleCount * 3))
 			{
-				return FALSE;
+				return false;
 			}
 
 			DebugPrintf("created index buffer to hold :%d incidices\n", triangleCount * 3);
@@ -332,18 +332,18 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if (!(FSLockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpIndices)))
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
-				return FALSE;
+				return false;
 			}
 
 			if (!FSCreateNormalBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], triangleCount))
 			{
 				DebugPrintf("Mxload() failed to create normal buffer in %s\n", Filename);
-				return FALSE;
+				return false;
 			}
 			if (!(FSLockNormalBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpNormals)))
 			{
 				Msg( "Mxload() normal lock failed in %s\n", Filename );
-				return FALSE;
+				return false;
 			}
 
 			ibIndex = 0;
@@ -351,7 +351,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
-				Uint16Pnt = (uint16 *) Buffer;
+				Uint16Pnt = (u_int16_t *) Buffer;
 				texture_type = *Uint16Pnt++;
 				group_vertex_start = *Uint16Pnt++;
 				group_vertex_num = *Uint16Pnt++;
@@ -359,7 +359,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				num_triangles = *Uint16Pnt++;    
 				Buffer = (char *) Uint16Pnt;		
 	
-				Mxaloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(LVERTEX));
+				Mxaloadheader->Group[group].texture_group_vert_off[execbuf][i] = (u_int32_t) (group_vertex_start*sizeof(LVERTEX));
 
 				MFacePnt = (MFACE *) Buffer;
 
@@ -446,20 +446,20 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if (!(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxaload() unlock failed in %s\n", Filename );
-				return FALSE ;
+				return false ;
 			}
 
 			/*	unlock the index buffer	*/
 			if (!(FSUnlockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() ib unlock failed in %s\n", Filename );
-				return FALSE ;
+				return false ;
 			}
 
 			if (!(FSUnlockNormalBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() normal unlock failed in %s\n", Filename );
-				return FALSE ;
+				return false ;
 			}
 /*
 			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;
@@ -477,7 +477,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	}
 				
 
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 	// is there any vispoly info.....
 	if ( *Uint16Pnt++ == 2)				// 2 means .mxa format
 	{
@@ -493,12 +493,12 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if ( !( Mxaloadheader->num_anim_vertices = (MXAVERTCOUNT *) calloc( Mxaloadheader->num_frames, sizeof( MXAVERTCOUNT ) ) ) )
 			{
 				Msg( "Mxaload() calloc(num_frames=%d) failed in %s\n", Mxaloadheader->num_frames, Filename );
-				return FALSE;
+				return false;
 			}
 			if ( !( Mxaloadheader->frame_pnts = (MXAVERTFRAME *) calloc( Mxaloadheader->num_frames, sizeof( MXAVERTFRAME ) ) ) )
 			{
 				Msg( "Mxaload() calloc(num_frames=%d) failed in %s\n", Mxaloadheader->num_frames, Filename );
-				return FALSE;
+				return false;
 			}
 			
 			for( frame=0 ; frame<Mxaloadheader->num_frames; frame++)
@@ -510,19 +510,19 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 						if (!(FSLockVertexBuffer(&Mxaloadheader->Group[ group ].renderObject[execbuf], &lpLVERTEX)))
 						{
 							Msg( "Mxaload : Lock VertexBuffer failed\n" );
-							return FALSE;
+							return false;
 						}
 
 						for( texgroup=0; texgroup < Mxaloadheader->Group[group].num_texture_groups[execbuf] ; texgroup++)
 						{
-							Uint16Pnt = (uint16 *) Buffer;
+							Uint16Pnt = (u_int16_t *) Buffer;
 							num_anim_vertices = *Uint16Pnt++;
 							Buffer = (char * ) Uint16Pnt;
 							Mxaloadheader->num_anim_vertices[frame][group][execbuf][texgroup] = num_anim_vertices;
 							Mxaloadheader->frame_pnts[frame][group][execbuf][texgroup] = (MXAVERT*) Buffer;
-							lpLVERTEX = 	( LPLVERTEX ) ( lpLVERTEX +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+							lpLVERTEX = 	( LPLVERTEX ) ( lpLVERTEX +( (u_int32_t) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 							lpLVERTEX += 8;
-							//lpLVERTEX2 =	( LPOLDLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+							//lpLVERTEX2 =	( LPOLDLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] +( (u_int32_t) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 							//lpLVERTEX2 += 8;
 #ifdef FIX_MXA_UV
 							FixUV_MXA( Mxaloadheader->num_anim_vertices[frame][group][execbuf][texgroup],
@@ -535,7 +535,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 						if (!(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 						{
 							Msg( "Mxaload : Unlock VertexBuffer failed\n" );
-							return FALSE ;
+							return false ;
 						}
 					}
 				}
@@ -552,7 +552,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 /*===================================================================
 	Point Direction Data
 ===================================================================*/
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 #if 0
 	if( *Uint16Pnt++ )
 	{
@@ -566,15 +566,15 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if( !Mxaloadheader->PVs )
 			{
 				Mxaloadheader->NumPVs = 0;
-				return( FALSE );
+				return( false );
 			}
 
 			PVPtr = Mxaloadheader->PVs;
 
 			for( i = 0; i < NumPVs; i++ )
 			{
-				PVPtr->Type = *Uint16Pnt++;				// Type ( uint16 )
-				PVPtr->ID = *Uint16Pnt++;				// ID ( uint16 )
+				PVPtr->Type = *Uint16Pnt++;				// Type ( u_int16_t )
+				PVPtr->ID = *Uint16Pnt++;				// ID ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
 				PVPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				PVPtr->Pos.y = *FloatPnt++;
@@ -586,7 +586,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				PVPtr->Up.y = *FloatPnt++;
 				PVPtr->Up.z = *FloatPnt++;
 				PVPtr->OldPos = PVPtr->Pos;
-				Uint16Pnt = (uint16 *) FloatPnt;
+				Uint16Pnt = (u_int16_t *) FloatPnt;
 				PVPtr++;
 			}
 		}
@@ -616,14 +616,14 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if( !Mxaloadheader->FirePoints )
 			{
 				Mxaloadheader->NumFirePoints = 0;
-				return( FALSE );
+				return( false );
 			}
 
 			FirePointPtr = Mxaloadheader->FirePoints;
 
 			for( i = 0; i < NumFirePoints; i++ )
 			{
-				FirePointPtr->ID = *Uint16Pnt++;				// ID ( uint16 )
+				FirePointPtr->ID = *Uint16Pnt++;				// ID ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
 				FirePointPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				FirePointPtr->Pos.y = *FloatPnt++;
@@ -634,7 +634,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				FirePointPtr->Up.x = *FloatPnt++;				// Up ( 3 floats )
 				FirePointPtr->Up.y = *FloatPnt++;
 				FirePointPtr->Up.z = *FloatPnt++;
-				Uint16Pnt = (uint16 *) FloatPnt;
+				Uint16Pnt = (u_int16_t *) FloatPnt;
 				FirePointPtr++;
 			}
 		}
@@ -654,14 +654,14 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if( !Mxaloadheader->SpotFX )
 			{
 				Mxaloadheader->NumSpotFX = 0;
-				return( FALSE );
+				return( false );
 			}
 
 			SpotFXPtr = Mxaloadheader->SpotFX;
 
 			for( i = 0; i < NumSpotFX; i++ )
 			{
-				SpotFXPtr->Type = *Uint16Pnt++;				// Type ( uint16 )
+				SpotFXPtr->Type = *Uint16Pnt++;				// Type ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
 				SpotFXPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				SpotFXPtr->Pos.y = *FloatPnt++;
@@ -675,18 +675,18 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				SpotFXPtr->StartDelay = ( *FloatPnt++ * ANIM_SECOND );	// Start Delay
 				SpotFXPtr->ActiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Active Delay
 				SpotFXPtr->InactiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Inactive Delay
-				Int16Pnt = (int16 *) FloatPnt;
-				SpotFXPtr->Primary = (int8) *Int16Pnt++;	// Primary ( int16 )
-				SpotFXPtr->Secondary = (int8) *Int16Pnt++;	// Secondary ( int16 )
-				Uint32Pnt = (uint32 *) Int16Pnt;
+				Int16Pnt = (int16_t *) FloatPnt;
+				SpotFXPtr->Primary = (int8_t) *Int16Pnt++;	// Primary ( int16_t )
+				SpotFXPtr->Secondary = (int8_t) *Int16Pnt++;	// Secondary ( int16_t )
+				Uint32Pnt = (u_int32_t *) Int16Pnt;
 				Colour = *Uint32Pnt++;
 
 #if	MXA_VERSION_NUMBER == 2
-//				Int16Pnt = (int16 *) Uint32Pnt;
+//				Int16Pnt = (int16_t *) Uint32Pnt;
 //				SpotFXPtr->SoundFX = *Int16Pnt++;
-//				Uint16Pnt = (uint16 *) Int16Pnt;
+//				Uint16Pnt = (u_int16_t *) Int16Pnt;
 
-				Int8Pnt = (int8 *) Uint32Pnt;
+				Int8Pnt = (int8_t *) Uint32Pnt;
 
 				c = 0;
 				do
@@ -716,14 +716,14 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				FloatPnt = (float *) Int8Pnt;
 				SpotFXPtr->SoundFXVolume = *FloatPnt++;
 				SpotFXPtr->SoundFXSpeed = *FloatPnt++;
-				Uint16Pnt = (uint16 *) FloatPnt;
+				Uint16Pnt = (u_int16_t *) FloatPnt;
 #else
-				Uint16Pnt = (uint16 *) Uint32Pnt;
+				Uint16Pnt = (u_int16_t *) Uint32Pnt;
 #endif
 
-				SpotFXPtr->Red = (uint8) ( ( Colour >> 16 ) & 255 );
-				SpotFXPtr->Green = (uint8) ( ( Colour >> 8 ) & 255 );
-				SpotFXPtr->Blue = (uint8) ( Colour & 255 );
+				SpotFXPtr->Red = (u_int8_t) ( ( Colour >> 16 ) & 255 );
+				SpotFXPtr->Green = (u_int8_t) ( ( Colour >> 8 ) & 255 );
+				SpotFXPtr->Blue = (u_int8_t) ( Colour & 255 );
 				SpotFXPtr++;
 			}
 		}
@@ -748,8 +748,8 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	if ( colourkey )
 		DebugPrintf( "Mxaload: %d colourkey triangles found\n", colourkey );
 	// Mxaloadheader is valid and can be executed...
-	Mxaloadheader->state = TRUE;
-	return( TRUE );
+	Mxaloadheader->state = true;
+	return( true );
 }
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -758,15 +758,15 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 /*===================================================================
 	Procedure	:		Execute all group buffers for a Mxaloadheader
 	Input		;		MXALOADHEADER *
-	Output		:		FLASE/TRUE
+	Output		:		FLASE/true
 ===================================================================*/
 
-BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
+_Bool ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t in_group  )
 {
 	int i;
 	int group;
 	RENDERMATRIX Matrix;
-	if (Mxaloadheader->state == TRUE )
+	if (Mxaloadheader->state == true )
 	{
 		for ( group=0 ; group<Mxaloadheader->num_groups ; group++)
 		{
@@ -776,21 +776,21 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 				{
 					if (!FSGetWorld(&Matrix))
 					{
-						return FALSE;
+						return false;
 					}
-					AddTransExe( &Matrix , &Mxaloadheader->Group[group].renderObject[i] , 0, (uint16) -1, in_group, Mxaloadheader->Group[ group ].num_verts_per_execbuf[i] );
+					AddTransExe( &Matrix , &Mxaloadheader->Group[group].renderObject[i] , 0, (u_int16_t) -1, in_group, Mxaloadheader->Group[ group ].num_verts_per_execbuf[i] );
 				}
 				else
 				{
 					if (!draw_object(&Mxaloadheader->Group[group].renderObject[i]))
 					{
-						return FALSE;
+						return false;
 					}
 				}
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*
@@ -849,7 +849,7 @@ void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 		Mxaloadheader->frame_pnts = NULL;
 	}
 
-	Mxaloadheader->state = FALSE;
+	Mxaloadheader->state = false;
 }
 
 
@@ -861,25 +861,25 @@ void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 	Output		:		Nothing
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
-extern	int16		LevelNum;
-BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, BOOL LevelSpecific )
+extern	int16_t		LevelNum;
+_Bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, _Bool LevelSpecific )
 {
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
-	uint16		*	Uint16Pnt;
+	u_int16_t		*	Uint16Pnt;
 	int			i;
 	char	*	FileNamePnt;
 	MXALOADHEADER * Mxaloadheader;
-	uint32		*	Uint32Pnt;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
-	int8			TempFilename[ 256 ];
+	u_int32_t		*	Uint32Pnt;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
+	int8_t			TempFilename[ 256 ];
 
 	Mxaloadheader = &Mxaloadheaders[header_num];
 
 	// Mxaloadheader is not valid until everything has been done..
-	Mxaloadheader->state = FALSE;
+	Mxaloadheader->state = false;
 	Mxaloadheader->Buffer = NULL;
 
 	File_Size = Get_File_Size( Filename );	
@@ -887,7 +887,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	if( !File_Size )
 	{
 		Msg( "PreMxaload() File %s not found\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	Buffer = calloc( 1, File_Size + 32 );
@@ -895,7 +895,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	if( Buffer == NULL )
 	{
 		Msg( "PreMxaload() Unable to allocate buffer in %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
@@ -903,12 +903,12 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	if( Read_Size != File_Size )
 	{
 		Msg( "PreMxaload() Error reading %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	Mxaloadheader->OrgAddr = Buffer;
 
-	Uint32Pnt = (uint32 *) Buffer;
+	Uint32Pnt = (u_int32_t *) Buffer;
 	MagicNumber = *Uint32Pnt++;
 	VersionNumber = *Uint32Pnt++;
 	Buffer = (char *) Uint32Pnt;
@@ -916,10 +916,10 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != MXA_VERSION_NUMBER  ) )
 	{
 		Msg( "PreMxaload() Incompatible model( .MXA ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 
 	Mxaloadheader->num_texture_files = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;		
@@ -927,7 +927,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	if ( Mxaloadheader->num_texture_files > MAXTPAGESPERMXALOAD )
 	{
 		Msg( "PreMxaload() Too many textures in mxamodel\n%s\n", Filename );
-		return FALSE;
+		return false;
 	}
 	
 	if ( Mxaloadheader->num_texture_files !=0)
@@ -944,43 +944,43 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxaloadheader->ImageFile[i][0] );
 
 			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES)
-				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE , TRUE ,FALSE, 0, 0 );
+				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , true , true ,false, 0, 0 );
 			
 			if( Mxaloadheader->TloadIndex[i] == -1 )
 			{
 				Msg( "PreMxaload() Too many TPages\n" );
-				return FALSE;
+				return false;
 			}
 		}
 	}
 
 	Mxaloadheader->Buffer = Buffer;
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:		Interp between frames for MXA Anim...
 	Input		:		MXALOADHEADER * Mxaloadheader 
 				:		int FrameFrom, int FrameTo , float Interp
-	Output		:		FLASE/TRUE
+	Output		:		FLASE/true
 ===================================================================*/
-BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp )
+_Bool	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp )
 {
     LPLVERTEX	lpBufStart = NULL;
 	LPLVERTEX	lpLVERTEX;
 	LPLVERTEX	lpLVERTEX2;
 	MXAVERT *		FromVert;
 	MXAVERT *		ToVert;
-	uint16			texgroup;
-	uint16			num_anim_vertices;
+	u_int16_t			texgroup;
+	u_int16_t			num_anim_vertices;
 	int execbuf;
 	int group;
 	COLOR_RGBA * color;
 	COLOR_RGBA * from_color;
 	COLOR_RGBA * to_color;
 
-	if ( Mxaloadheader->num_frames <= 1 ) return TRUE;
+	if ( Mxaloadheader->num_frames <= 1 ) return true;
 
 	for( group=0 ; group<Mxaloadheader->num_groups; group++)
 	{
@@ -988,15 +988,15 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 		{
 			if (!(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpBufStart)))
 			{
-				return FALSE;
+				return false;
 			}
 		
 			for( texgroup=0; texgroup < Mxaloadheader->Group[group].num_texture_groups[execbuf] ; texgroup++)
 			{
-				lpLVERTEX = 	( LPLVERTEX ) ( (char*) lpBufStart+( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+				lpLVERTEX = 	( LPLVERTEX ) ( (char*) lpBufStart+( (u_int32_t) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpLVERTEX += 8;
 
-				lpLVERTEX2 = ( LPLVERTEX ) ( (char*) Mxaloadheader->Group[group].originalVerts[execbuf] + ( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+				lpLVERTEX2 = ( LPLVERTEX ) ( (char*) Mxaloadheader->Group[group].originalVerts[execbuf] + ( (u_int32_t) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpLVERTEX2 += 8;
 				
 				FromVert = ( MXAVERT * ) Mxaloadheader->frame_pnts[FromFrame][group][execbuf][texgroup];
@@ -1017,11 +1017,11 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 
 						from_color = (COLOR_RGBA *) &FromVert->color;
 						to_color = (COLOR_RGBA *) &ToVert->color;
-						color->r = from_color->r + (int8) floor( ( to_color->r - from_color->r ) * Interp );
-						color->g = from_color->g + (int8) floor( ( to_color->g - from_color->g ) * Interp );
-						color->b = from_color->b + (int8) floor( ( to_color->b - from_color->b ) * Interp );
+						color->r = from_color->r + (int8_t) floor( ( to_color->r - from_color->r ) * Interp );
+						color->g = from_color->g + (int8_t) floor( ( to_color->g - from_color->g ) * Interp );
+						color->b = from_color->b + (int8_t) floor( ( to_color->b - from_color->b ) * Interp );
 #ifdef DOES_NOT_WORK_FOR_BLASTER
-						color->a = from_color->a + (int8) floor( ( to_color->a - from_color->a ) * Interp );
+						color->a = from_color->a + (int8_t) floor( ( to_color->a - from_color->a ) * Interp );
 #endif
 					}
 					if ( FromVert->flags & MXA_ANIM_UV )
@@ -1039,16 +1039,16 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 #if 0
 			/*	unlock the execute buffer	*/
 			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxaloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-				return FALSE ;
+				return false ;
 #endif
 			if (!(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
 	
-	return TRUE;
+	return true;
 }
 
 #ifdef OPT_ON

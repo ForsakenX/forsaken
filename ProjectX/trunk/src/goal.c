@@ -30,37 +30,37 @@
 
 
 // externs
-extern	BOOL			PlayDemo;
-extern	BOOL			DebugInfo;
-extern	BOOL			IsHost;
-extern	BOOL			CaptureTheFlag;
-extern	BOOL			CTF;
+extern	_Bool			PlayDemo;
+extern	_Bool			DebugInfo;
+extern	_Bool			IsHost;
+extern	_Bool			CaptureTheFlag;
+extern	_Bool			CTF;
 extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	char			LevelNames[MAXLEVELS][128];
-extern	BOOL			Entry;
-extern	BOOL			Exit;
-extern	BOOL			In;
+extern	_Bool			Entry;
+extern	_Bool			Exit;
+extern	_Bool			In;
 extern	char		*	TeamName[ MAX_TEAMS ];
-extern	uint32			TeamFlagMask[ MAX_TEAMS ];
-extern	int8			TeamFlagPickup[ MAX_TEAMS ];
-extern	BOOL			TeamFlagAtHome[ MAX_TEAMS ];
-extern	int16			NumPickupType[ MAXPICKUPTYPES ];
+extern	u_int32_t			TeamFlagMask[ MAX_TEAMS ];
+extern	int8_t			TeamFlagPickup[ MAX_TEAMS ];
+extern	_Bool			TeamFlagAtHome[ MAX_TEAMS ];
+extern	int16_t			NumPickupType[ MAXPICKUPTYPES ];
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	FRAME_INFO	*	GreyFlare_Header;
 extern	float			framelag;
-extern	uint8			Colourtrans[MAXFONTCOLOURS][3];
+extern	u_int8_t			Colourtrans[MAXFONTCOLOURS][3];
 extern	int				TeamCol[ MAX_TEAMS ];
 extern	BYTE			TeamNumber[MAX_PLAYERS];
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
-extern	uint16			RandomStartPosModify;
-extern	int16			PickupsGot[ MAXPICKUPTYPES ];
+extern	u_int16_t			RandomStartPosModify;
+extern	int16_t			PickupsGot[ MAXPICKUPTYPES ];
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	uint32			Host_Flags[ MAX_PLAYERS ];
+extern	u_int32_t			Host_Flags[ MAX_PLAYERS ];
 
-BOOL ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16 NumSides, int16 Side );
-BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , uint16 StartNumSides );
-void ShowGoal( GOAL * Goal, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans );
-void TeamGoalsSend( uint16 * TeamGoals );
+_Bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side );
+_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
+void ShowGoal( GOAL * Goal, u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans );
+void TeamGoalsSend( u_int16_t * TeamGoals );
 
 
 // globals
@@ -69,77 +69,77 @@ GOAL *Goal = NULL;
 int TeamFlag[ MAX_TEAMS ];
 int GoalTeamMembers[ MAX_TEAMS ];
 int LastTeamMembers[ MAX_TEAMS ];
-int16 Teamgoal[ MAX_TEAMS ];
+int16_t Teamgoal[ MAX_TEAMS ];
 int LastEnable[ MAX_PLAYERS ];
 
 
-extern int16   LevelNum;
-BOOL GoalLoad( void )
+extern int16_t   LevelNum;
+_Bool GoalLoad( void )
 {
-	int8		Filename[ 256 ];
+	int8_t		Filename[ 256 ];
 	char	*	NewExt = ".GOL";
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
 	char		*	OrgBuffer;
-	uint16			*	uint16pnt;
-	uint32			*	uint32pnt;
+	u_int16_t			*	u_int16_tpnt;
+	u_int32_t			*	u_int32_tpnt;
 	int			i, j;
 	GOAL * GoalPnt;
 	TRIGGER_ZONE * ZonePnt;
 	float * floatpnt;
-	uint32	MagicNumber;
-	uint32	VersionNumber;
+	u_int32_t	MagicNumber;
+	u_int32_t	VersionNumber;
 
 	if ( !CaptureTheFlag && !CTF )
-		return TRUE;
+		return true;
 	
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &Filename[ 0 ], NewExt );
 
 	File_Size = Get_File_Size( Filename );	
 
-	if( !File_Size ) return TRUE;
+	if( !File_Size ) return true;
 
 	Buffer = malloc( File_Size );
 	OrgBuffer = Buffer;
 
-	if( Buffer == NULL ) return FALSE;
+	if( Buffer == NULL ) return false;
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 
-	if( Read_Size != File_Size ) return FALSE;
+	if( Read_Size != File_Size ) return false;
 
-	uint32pnt = (uint32 *) Buffer;
-	MagicNumber = *uint32pnt++;
-	VersionNumber = *uint32pnt++;
-	Buffer = (char *) uint32pnt;
+	u_int32_tpnt = (u_int32_t *) Buffer;
+	MagicNumber = *u_int32_tpnt++;
+	VersionNumber = *u_int32_tpnt++;
+	Buffer = (char *) u_int32_tpnt;
 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != GOAL_VERSION_NUMBER  ) )
 	{
 		Msg( "GoalLoad() Incompatible triggerzone( .ZON ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	uint16pnt = (uint16 *) Buffer;
-	NumGoals = *uint16pnt++;
-	Buffer = (char*) uint16pnt;
+	u_int16_tpnt = (u_int16_t *) Buffer;
+	NumGoals = *u_int16_tpnt++;
+	Buffer = (char*) u_int16_tpnt;
 	Goal = (GOAL *) calloc( NumGoals, sizeof( GOAL ) );	
 	if ( !Goal )
 	{
 		NumGoals = 0;
-		return FALSE;
+		return false;
 	}
 	GoalPnt = Goal;
 
 	for( i = 0 ; i < NumGoals ; i++ )
 	{
-		uint16pnt = (uint16 *) Buffer;
-		GoalPnt->group = *uint16pnt++;
-		GoalPnt->type = *uint16pnt++;
+		u_int16_tpnt = (u_int16_t *) Buffer;
+		GoalPnt->group = *u_int16_tpnt++;
+		GoalPnt->type = *u_int16_tpnt++;
 		GoalPnt->team = -1;
 		GoalPnt->state = GOALSTATE_Off;
 
-		floatpnt = (float * ) uint16pnt;
+		floatpnt = (float * ) u_int16_tpnt;
 		GoalPnt->pos.x = *floatpnt++;
 		GoalPnt->pos.y = *floatpnt++;
 		GoalPnt->pos.z = *floatpnt++;
@@ -160,9 +160,9 @@ BOOL GoalLoad( void )
 		if( GoalPnt->type != ZONE_Sphere )
 		{
 			// convex hull...
-			uint16pnt = (uint16*) Buffer;
-			GoalPnt->num_sides = *uint16pnt++;
-			Buffer = (char*) uint16pnt;
+			u_int16_tpnt = (u_int16_t*) Buffer;
+			GoalPnt->num_sides = *u_int16_tpnt++;
+			Buffer = (char*) u_int16_tpnt;
 			if ( GoalPnt->num_sides )
 				GoalPnt->Zone = (TRIGGER_ZONE*) malloc( GoalPnt->num_sides * sizeof( TRIGGER_ZONE ) );
 			else
@@ -173,7 +173,7 @@ BOOL GoalLoad( void )
 				NumGoals = 0;
 				free( Goal );
 				Goal = NULL;
-				return FALSE;
+				return false;
 			}
 
 			floatpnt = (float * ) Buffer;
@@ -204,7 +204,7 @@ BOOL GoalLoad( void )
 		LastEnable[ j ] = 0;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -232,24 +232,24 @@ void ReleaseGoal( void )
 
 static void GoalCheck( VECTOR * OldPos , VECTOR * NewPos , GOAL * goal )
 {
-	BOOL	OldIn;
-	BOOL	NewIn;
+	_Bool	OldIn;
+	_Bool	NewIn;
 
-	Entry = FALSE;
-	Exit = FALSE;
-	In = FALSE;
+	Entry = false;
+	Exit = false;
+	In = false;
 	if( goal->type == ZONE_Sphere )
 	{
    		OldIn = DistanceVector2Vector( &goal->pos , OldPos ) < goal->half_size.x;
    		NewIn = DistanceVector2Vector( &goal->pos , NewPos ) < goal->half_size.x;
 
    		if( !OldIn && NewIn )
-   			Entry = TRUE;
+   			Entry = true;
    		if( OldIn && !NewIn )
-   			Exit = TRUE;
+   			Exit = true;
    		if( OldIn && NewIn )
    		{
-   			In = TRUE;
+   			In = true;
    		}
    	}else{
    		RayToHull( goal->Zone , OldPos , NewPos , goal->num_sides );
@@ -272,7 +272,7 @@ GOAL *TeamGoal( int team )
 }
 
 
-BOOL GenerateFlagAtHome( int team )
+_Bool GenerateFlagAtHome( int team )
 {
 	int j;
 
@@ -281,29 +281,29 @@ BOOL GenerateFlagAtHome( int team )
 		if ( Goal[ j ].team == team )
 		{
 			GOAL *goal;
-			uint16 i;
+			u_int16_t i;
 			VECTOR Dir = { 0.0F, 0.0F, 0.0F };
 			
 			goal = &Goal[ j ];
 			i = InitOnePickup( &goal->pos, goal->group,
 				&Dir, 0.0F, TeamFlagPickup[ team ], WhoIAm,
-				++Ships[WhoIAm].PickupIdCount, -1, TRUE,
-				-1.0F, (uint16) -1 );
+				++Ships[WhoIAm].PickupIdCount, -1, true,
+				-1.0F, (u_int16_t) -1 );
 			
-			if( ( i != (uint16) -1 )  && ( i != (uint16) -2 ) )
+			if( ( i != (u_int16_t) -1 )  && ( i != (u_int16_t) -2 ) )
 			{
 				DropPickupSend( &goal->pos, goal->group,
 					&Dir, 0.0F, TeamFlagPickup[ team ], Ships[WhoIAm].PickupIdCount,
-					-1, TRUE, -1.0F, (uint16) -1 );
+					-1, true, -1.0F, (u_int16_t) -1 );
 			}
 			else
 			{
 				DebugPrintf( "Unable to generate %s flag\n", TeamName[ team ] );
 			}
-			return TRUE;
+			return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -369,7 +369,7 @@ int PickTeamGoal( int team )
 }
 
 
-void SetTeamGoals( uint16 *TeamGoals )
+void SetTeamGoals( u_int16_t *TeamGoals )
 {
 	int j;
 
@@ -379,13 +379,13 @@ void SetTeamGoals( uint16 *TeamGoals )
 		if ( Teamgoal[ j ] >= 0 && Teamgoal[ j ] < NumGoals )
 		{
 			if ( Goal[ Teamgoal[ j ] ].team < 0 )
-				TeamFlagAtHome[ j ] = FALSE;
+				TeamFlagAtHome[ j ] = false;
 			Goal[ Teamgoal[ j ] ].team = j;
 		}
 		else
 		{
 			Teamgoal[ j ] = -1;
-			TeamFlagAtHome[ j ] = FALSE;
+			TeamFlagAtHome[ j ] = false;
 		}
 		DebugPrintf( "Teamgoal[ %d(%s) ] = %hd\n",
 			j, TeamName[ j ], Teamgoal[ j ] );
@@ -515,14 +515,14 @@ void ProcessGoals( void )
 				KillAllPickupsOfType( TeamFlagPickup[ j ], PICKUPKILL_Immediate );
 				Ships[ WhoIAm ].Object.Flags &= ~TeamFlagMask[ j ];
 				PickupsGot[ TeamFlagPickup[ j ] ] = 0;
-				TeamFlagAtHome[ j ] = FALSE;
+				TeamFlagAtHome[ j ] = false;
 			}
 		}
 	}
 }
 
 
-int GoalCheckTeam( VECTOR * OldPos , VECTOR * NewPos, uint16 Group, int team )
+int GoalCheckTeam( VECTOR * OldPos , VECTOR * NewPos, u_int16_t Group, int team )
 {
 	int j;
 
@@ -551,11 +551,11 @@ int GoalCheckTeam( VECTOR * OldPos , VECTOR * NewPos, uint16 Group, int team )
 }
 
 
-int DisplayGoal( uint16 group )
+int DisplayGoal( u_int16_t group )
 {
 	int j, k;
 	int shown;
-	uint8 c[ 3 ];
+	u_int8_t c[ 3 ];
 
 	if ( !CaptureTheFlag && !CTF )
 		return 0;
@@ -580,18 +580,18 @@ int DisplayGoal( uint16 group )
 /*===================================================================
 	Procedure	:	Show Goal
 	Input		:	GOAL	*	Goal
-				:	uint8		Red
-				:	uint8		Green
-				:	uint8		Blue
-				:	uint8		Trans
+				:	u_int8_t		Red
+				:	u_int8_t		Green
+				:	u_int8_t		Blue
+				:	u_int8_t		Trans
 	Output		:	Nothing
 ===================================================================*/
 float	SparkleTime = 0.1F;
 
-void ShowGoal( GOAL * Goal, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
+void ShowGoal( GOAL * Goal, u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans )
 {
-	int16	Count;
-	uint16	fmpoly;
+	int16_t	Count;
+	u_int16_t	fmpoly;
 	VECTOR	Offset;
 	VECTOR	Pos;
 	QUAT	TempQuat;
@@ -608,9 +608,9 @@ void ShowGoal( GOAL * Goal, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
 		{
 			SparkleTime = 0.1F;
 
-			Offset.x = (float) ( Random_Range( (uint16) Goal->width ) - ( Goal->width / 2.0F ) );
-			Offset.y = (float) ( Random_Range( (uint16) Goal->height ) - ( Goal->height / 2.0F ) );
-			Offset.z = (float) ( Random_Range( (uint16) Goal->depth ) - ( Goal->depth / 2.0F ) );
+			Offset.x = (float) ( Random_Range( (u_int16_t) Goal->width ) - ( Goal->width / 2.0F ) );
+			Offset.y = (float) ( Random_Range( (u_int16_t) Goal->height ) - ( Goal->height / 2.0F ) );
+			Offset.z = (float) ( Random_Range( (u_int16_t) Goal->depth ) - ( Goal->depth / 2.0F ) );
 
 			ApplyMatrix( &GoalMatrix, &Offset, &Pos );
 
@@ -620,7 +620,7 @@ void ShowGoal( GOAL * Goal, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
 
 			fmpoly = FindFreeFmPoly();
 
-			if( fmpoly != (uint16 ) -1 )
+			if( fmpoly != (u_int16_t ) -1 )
 			{
 				FmPolys[ fmpoly ].LifeCount = 20.0F;
 				FmPolys[ fmpoly ].Pos = Pos;

@@ -14,42 +14,42 @@
 typedef struct _GROUPLIST
 {
 	int groups;
-	uint16 *group;
+	u_int16_t *group;
 } GROUPLIST;
 
 // indirectly visible groups seen by any active camera
-uint16 Num_IndirectVisible;
-uint16 IndirectVisible[ MAXGROUPS ];
+u_int16_t Num_IndirectVisible;
+u_int16_t IndirectVisible[ MAXGROUPS ];
 
 /*
  * fn prototypes
  */
-BOOL LightGroupDispGroup( MLOADHEADER	* Mloadheader);
+_Bool LightGroupDispGroup( MLOADHEADER	* Mloadheader);
 
-BOOL DispVisipolyModel( MLOADHEADER	* Mloadheader) ;
+_Bool DispVisipolyModel( MLOADHEADER	* Mloadheader) ;
 void FindGroupImIn( MLOADHEADER	* Mloadheader);
-uint16 WhichGroupImIn( MLOADHEADER	* Mloadheader , VECTOR * Pos );
-BOOL PortalTestTransformClip( MLOADHEADER * Mloadheader , uint16 group );
-void FindVisiblePortals( MLOADHEADER * Mloadheader , uint16 group );
-void BuildGroupList ( MLOADHEADER * Mloadheader , uint16 group );
+u_int16_t WhichGroupImIn( MLOADHEADER	* Mloadheader , VECTOR * Pos );
+_Bool PortalTestTransformClip( MLOADHEADER * Mloadheader , u_int16_t group );
+void FindVisiblePortals( MLOADHEADER * Mloadheader , u_int16_t group );
+void BuildGroupList ( MLOADHEADER * Mloadheader , u_int16_t group );
 void FindVisible( CAMERA *cam, MLOADHEADER	* Mloadheader );
-int ClipGroup( CAMERA *cam, uint16 group );
-BOOL DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam );
+int ClipGroup( CAMERA *cam, u_int16_t group );
+_Bool DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam );
 void InitVisiStats( MLOADHEADER *m );
-BOOL OutputVisiStats( MLOADHEADER *m, char *lname );
+_Bool OutputVisiStats( MLOADHEADER *m, char *lname );
 
-BOOL FindGroupConnections( MLOADHEADER *m );
+_Bool FindGroupConnections( MLOADHEADER *m );
 void FreeGroupConnections( void );
-GROUPLIST *ConnectedGroups( uint16 g );
-GROUPLIST *VisibleGroups( uint16 g );
-GROUPLIST *IndirectVisibleGroups( uint16 g );
-int VisibleOverlap( uint16 g1, uint16 g2, uint16 *overlapping_group );
-BOOL GroupsAreVisible( uint16 g1, uint16 g2 );
-BOOL GroupsAreConnected( uint16 g1, uint16 g2 );
-BOOL GroupsAreIndirectVisible( uint16 g1, uint16 g2 );
+GROUPLIST *ConnectedGroups( u_int16_t g );
+GROUPLIST *VisibleGroups( u_int16_t g );
+GROUPLIST *IndirectVisibleGroups( u_int16_t g );
+int VisibleOverlap( u_int16_t g1, u_int16_t g2, u_int16_t *overlapping_group );
+_Bool GroupsAreVisible( u_int16_t g1, u_int16_t g2 );
+_Bool GroupsAreConnected( u_int16_t g1, u_int16_t g2 );
+_Bool GroupsAreIndirectVisible( u_int16_t g1, u_int16_t g2 );
 
-uint16 FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max );
-uint16 FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max, uint16 * group );
-BOOL PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, uint16 group );
+u_int16_t FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max );
+u_int16_t FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max, u_int16_t * group );
+_Bool PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, u_int16_t group );
 
 #endif	// VISI_INCLUDED

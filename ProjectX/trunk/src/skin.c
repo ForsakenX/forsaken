@@ -19,10 +19,10 @@
 /*===================================================================
 	Externals
 ===================================================================*/
-extern	BOOL		DebugInfo;
+extern	_Bool		DebugInfo;
 extern	MLOADHEADER Mloadheader;
-extern	uint16		NumGroupsVisible;
-extern	uint16		GroupsVisible[MAXGROUPS];
+extern	u_int16_t		NumGroupsVisible;
+extern	u_int16_t		GroupsVisible[MAXGROUPS];
 extern	BYTE		WhoIAm;
 extern	GLOBALSHIP  Ships[MAX_PLAYERS+1];
 
@@ -32,57 +32,57 @@ extern	DWORD		CurrentTextureBlend;
 
 extern	LINE		Lines[ MAXLINES ];
 extern	CAMERA		CurrentCamera;
-extern	BOOL		NodeCube;
-extern	BOOL		OldNodeCube;
-extern	BOOL		NodeCubeType;
+extern	_Bool		NodeCube;
+extern	_Bool		OldNodeCube;
+extern	_Bool		NodeCubeType;
 
 extern	int			Depth;
 extern	BSP_NODE *	BSP_Nodes[ 256 ];
-extern	BOOL		Inside;
+extern	_Bool		Inside;
 extern	float		CollisionRadius;
-extern	BOOL		ShowColZones;
+extern	_Bool		ShowColZones;
 
 extern	MODEL		Models[MAXNUMOFMODELS];
 extern	MATRIX		MATRIX_Identity;
 
 #define	BOXSIZE		96.0F
-#define	NODECUBE_Branch	FALSE
-#define	NODECUBE_Array	TRUE
+#define	NODECUBE_Branch	false
+#define	NODECUBE_Array	true
 
 /*===================================================================
 	Globals variables and structures
 ===================================================================*/
 	static	LVERTEX		PortalVerts[ 310 * 3 ];
 	static	TRIANGLE		PortalTris[ 310 ];
-	static	int16			PortalVertCount;
-	static	int16			PortalTriCount;
+	static	int16_t			PortalVertCount;
+	static	int16_t			PortalTriCount;
 //	D3DEXECUTEBUFFERDESC	Portal_debdesc;
 //	D3DEXECUTEDATA			Portal_d3dexdata;
 //	LPDIRECT3DEXECUTEBUFFER Portal_Execs[ MAXPORTALEXECS ];
 	RENDEROBJECT			Portal_Execs[ MAXPORTALEXECS ];
-	int16					Num_Portal_Execs = 0;
-	int16					ShowPortal = 0;
+	int16_t					Num_Portal_Execs = 0;
+	int16_t					ShowPortal = 0;
 
 	static	LVERTEX		SkinVerts[ 310 * 3 ];
 	static	TRIANGLE		SkinTris[ 310 ];
-	static	int16			SkinVertCount;
-	static	int16			SkinTriCount;
+	static	int16_t			SkinVertCount;
+	static	int16_t			SkinTriCount;
 //	D3DEXECUTEBUFFERDESC	Skin_debdesc;
 //	D3DEXECUTEDATA			Skin_d3dexdata;
 //	LPDIRECT3DEXECUTEBUFFER Skin_Execs[ MAXSKINEXECS ];
 	RENDEROBJECT			Skin_Execs[ MAXSKINEXECS ];
-	int16					Num_Skin_Execs = 0;
-	int16					ShowSkin = 0;
-	BOOL					ShowTrigZones = FALSE;
-	BOOL					ShowEFZones = FALSE;
-	BOOL					ShowTeleports = FALSE;
+	int16_t					Num_Skin_Execs = 0;
+	int16_t					ShowSkin = 0;
+	_Bool					ShowTrigZones = false;
+	_Bool					ShowEFZones = false;
+	_Bool					ShowTeleports = false;
 
-	static int16			NumNodeCubeLines = 0;
-	uint16					NodeCubeLines[ MAXLINES ];
+	static int16_t			NumNodeCubeLines = 0;
+	u_int16_t					NodeCubeLines[ MAXLINES ];
 
 	VECTOR					TempVerts[ 64 ];
-	uint16					SphereZones[ MAXNUMOFMODELS ];
-	int16					NumSphereZones = 0;
+	u_int16_t					SphereZones[ MAXNUMOFMODELS ];
+	int16_t					NumSphereZones = 0;
 
 
 /*===================================================================
@@ -92,7 +92,7 @@ extern	MATRIX		MATRIX_Identity;
 ===================================================================*/
 void InitSkinExecs( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < MAXGROUPS; Count++ )
 	{
@@ -106,30 +106,30 @@ void InitSkinExecs( void )
 /*===================================================================
 	Procedure	:		Modify Collision Skin Execution Buffer
 	Input		:		MLOADHEADER	*	Mloadheader
-				:		int16			Number of Groups Visible
+				:		int16_t			Number of Groups Visible
 	Output		:		Nothing
 ===================================================================*/
-BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
+_Bool CreateSkinExecList( MCLOADHEADER * MCloadheader, int16_t NumVisible )
 {
 	COLOR		color;
 	COLOR		skincolor;
 	COLOR		patchcolor;
 	COLOR		backpatchcolor;
 	MCFACE		*	FacePtr;
-	int16			g;
-	int16			Count;
-	int16			FaceCnt;
-	uint16			Group;
+	int16_t			g;
+	int16_t			Count;
+	int16_t			FaceCnt;
+	u_int16_t			Group;
 	VERT			Verts[ 4 ];
 	float			x=0, y=0, z=0;
-	int16			Vnum;
-	int16			VertCount;
+	int16_t			Vnum;
+	int16_t			VertCount;
 	VECTOR			Vector1;
 	VECTOR			Vector2;
 	VECTOR			Normal;
 	VECTOR			C;
 	float			I;
-	int32			Shade = 0;
+	int32_t			Shade = 0;
 	float			PlaneOffset;
 
 	skincolor = RGBA_MAKE( 0, 0, 192, 128 );
@@ -139,7 +139,7 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 	switch( ShowSkin )
 	{
 		case 0: 
-			return TRUE;
+			return true;
 			break;
 		case 2:
 		case 4:
@@ -180,7 +180,7 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 	
 		for( Count = 0; Count < FaceCnt; Count++, FacePtr++ )
 		{
-			Vnum = (int16) ( ( FacePtr->type & 1 ) + 3 );
+			Vnum = (int16_t) ( ( FacePtr->type & 1 ) + 3 );
 
 			color = skincolor;
 			if ( FacePtr->type & 0x200000L )
@@ -240,7 +240,7 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 				C.x = 0.5F + 0.5F * C.x;
 				C.y = 0.5F + 0.5F * C.y;
 				C.z = 0.5F + 0.5F * C.z;
-				color = RGB_MAKE( (int32) floor(C.x * 255), (int32) floor(C.y * 255), (int32) floor(C.z * 255) );
+				color = RGB_MAKE( (int32_t) floor(C.x * 255), (int32_t) floor(C.y * 255), (int32_t) floor(C.z * 255) );
 			}
 
 			SkinVerts[ SkinVertCount ].x = Verts[ 0 ].x;
@@ -316,7 +316,7 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 
 			if( SkinTriCount > MAX_TRIS_PER_EXEC )
 			{
-				if( MakeNewSkinExec( &SkinVerts[ 0 ], &SkinTris[ 0 ], SkinVertCount, SkinTriCount ) == FALSE ) return FALSE;
+				if( MakeNewSkinExec( &SkinVerts[ 0 ], &SkinTris[ 0 ], SkinVertCount, SkinTriCount ) == false ) return false;
 				SkinVertCount = 0;
 				SkinTriCount = 0;
 			}
@@ -325,23 +325,23 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 
 	if( SkinTriCount )
 	{
-		if( MakeNewSkinExec( &SkinVerts[ 0 ], &SkinTris[ 0 ], SkinVertCount, SkinTriCount ) == FALSE ) return FALSE;
+		if( MakeNewSkinExec( &SkinVerts[ 0 ], &SkinTris[ 0 ], SkinVertCount, SkinTriCount ) == false ) return false;
 		SkinVertCount = 0;
 		SkinTriCount = 0;
 	}
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:		Create New Execute Buffer
 	Input		:		Nothing
-	Output		:		BOOL		True/False
+	Output		:		_Bool		True/False
 ===================================================================*/
 void DisplayBSPNode( BSP_NODE * Node )
 {
 #ifdef BSP
-	int16			Count;
-	int16			Vnum;
+	int16_t			Count;
+	int16_t			Vnum;
 	VECTOR			TLPos;
 	VECTOR			BRPos;
 	COLOR		color;
@@ -349,7 +349,7 @@ void DisplayBSPNode( BSP_NODE * Node )
 	float			D;
 	BSP_NODE	*	TempNode;
 	float			NumNodes = 0.0F;
-	int16			NodeNum;
+	int16_t			NodeNum;
 #endif
 
 	SkinVertCount = 0;
@@ -520,13 +520,13 @@ void DisplayBSPNode( BSP_NODE * Node )
 void DisplayNewBSPNode( BSP_NODE * Node )
 {
 #ifdef BSP
-	int16			Count;
-	int16			Vnum;
+	int16_t			Count;
+	int16_t			Vnum;
 	COLOR		color;
 	BSP_NODE	*	TempNode;
 	BSP_NODE	*	StartNode;
 	int				Side;
-	uint16			line;
+	u_int16_t			line;
 
 	Side = -1;
 	StartNode = Node;
@@ -545,7 +545,7 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 		{
 			line = FindFreeLine();						// Line attached
 
-			if( line != (uint16 ) -1 )
+			if( line != (u_int16_t ) -1 )
 			{
 				if( Count == ( Vnum - 1 ) )
 				{
@@ -619,14 +619,14 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 ===================================================================*/
 void KillAllSphereZones( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < NumSphereZones; Count++ )
 	{
-		if( SphereZones[ Count ] != (uint16) -1 )
+		if( SphereZones[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedModel( SphereZones[ Count ] );
-			SphereZones[ Count ] = (uint16) -1;
+			SphereZones[ Count ] = (u_int16_t) -1;
 		}
 	}
 
@@ -637,22 +637,22 @@ void KillAllSphereZones( void )
 	Procedure	:		Display sphere zone
 	Input		:		VECTOR		*	Pos
 				:		float			Radius
-				:		uint16			Group
-				:		uint8			Red
-				:		uint8			Green
-				:		uint8			Blue
-				:		uint8			Trans
+				:		u_int16_t			Group
+				:		u_int8_t			Red
+				:		u_int8_t			Green
+				:		u_int8_t			Blue
+				:		u_int8_t			Trans
 	Output		:		Nothing
 ===================================================================*/
-void DisplaySphereZone( VECTOR * Pos, float Radius, uint16 Group,
-					   uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
+void DisplaySphereZone( VECTOR * Pos, float Radius, u_int16_t Group,
+					   u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans )
 {
 	float	Scale;
-	uint16	Model;
+	u_int16_t	Model;
 
 	Model =	FindFreeModel();
 
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Scale = ( ( Radius * 2.0F ) / ( 512.0F * GLOBAL_SCALE ) );
 
@@ -661,7 +661,7 @@ void DisplaySphereZone( VECTOR * Pos, float Radius, uint16 Group,
 		Models[ Model ].ModelNum = MODEL_Sphere;
 		Models[ Model ].Type = MODTYPE_Field;
 		Models[ Model ].Flags = MODFLAG_Nothing;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = *Pos;
 		Models[ Model ].Mat = MATRIX_Identity;
 		MatrixTranspose( &Models[ Model ].Mat, &Models[ Model ].InvMat );
@@ -683,12 +683,12 @@ void DisplaySphereZone( VECTOR * Pos, float Radius, uint16 Group,
 	Procedure	:		Display Zone Direction
 	Input		:		VECTOR		*	Pos
 				:		VECTOR		*	Dir
-				:		uint16			Group
+				:		u_int16_t			Group
 	Output		:		Nothing
 ===================================================================*/
-void DisplayZoneDirection( VECTOR * Pos, VECTOR * Dir, uint16 Group )
+void DisplayZoneDirection( VECTOR * Pos, VECTOR * Dir, u_int16_t Group )
 {
-	uint16	Model;
+	u_int16_t	Model;
 	QUAT	TempQuat;
 	VECTOR	TempDir;
 
@@ -698,14 +698,14 @@ void DisplayZoneDirection( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 
 	Model =	FindFreeModel();
 
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_NOBODY;
 		Models[ Model ].Owner = 0;
 		Models[ Model ].ModelNum = MODEL_TitanStar;
 		Models[ Model ].Type = MODTYPE_Field;
 		Models[ Model ].Flags = MODFLAG_Nothing;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = *Pos;
 		QuatFromVector2( &TempDir, &TempQuat );
 		QuatToMatrix( &TempQuat, &Models[ Model ].Mat );
@@ -726,12 +726,12 @@ void DisplayZoneDirection( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	Input		:		VECTOR		*	Pos
 				:		VECTOR		*	Dir
 				:		VECTOR		*	Up
-				:		uint16			Group
+				:		u_int16_t			Group
 	Output		:		Nothing
 ===================================================================*/
-void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, uint16 Group )
+void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, u_int16_t Group )
 {
-	uint16	Model;
+	u_int16_t	Model;
 	QUAT	TempQuat;
 	VECTOR	TempDir;
 
@@ -741,14 +741,14 @@ void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, uint16 Group )
 
 	Model =	FindFreeModel();
 
-	if( Model != (uint16 ) -1 )
+	if( Model != (u_int16_t ) -1 )
 	{
 		Models[ Model ].OwnerType = OWNER_NOBODY;
 		Models[ Model ].Owner = 0;
 		Models[ Model ].ModelNum = MODEL_Heatseaker;
 		Models[ Model ].Type = MODTYPE_Field;
 		Models[ Model ].Flags = MODFLAG_Nothing;
-		Models[ Model ].Visible = TRUE;
+		Models[ Model ].Visible = true;
 		Models[ Model ].Pos = *Pos;
 		QuatFromDirAndUp( Dir, Up, &TempQuat );
 		QuatToMatrix( &TempQuat, &Models[ Model ].Mat );
@@ -767,20 +767,20 @@ void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, uint16 Group )
 /*===================================================================
 	Procedure	:		Display Trigger Zone Volume
 	Input		:		TRIGGER_ZONE *	Zone Sides
-				:		int16			NumSides
-				:		uint16			Group
+				:		int16_t			NumSides
+				:		u_int16_t			Group
 	Output		:		Nothing
 ===================================================================*/
-void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
-						 uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
+void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16_t NumSides, u_int16_t Group,
+						 u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans )
 {
-	int16			Count;
-	int16			Vnum;
+	int16_t			Count;
+	int16_t			Vnum;
 	COLOR		color;
 	TRIGGER_ZONE *	StartSide;
 	int				Side;
-	uint16			line;
-	int16			SideCount;
+	u_int16_t			line;
+	int16_t			SideCount;
 
 	Side = -1;
 	StartSide = Sides;
@@ -795,7 +795,7 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 		{
 			line = FindFreeLine();						// Line attached
 
-			if( line != (uint16 ) -1 )
+			if( line != (u_int16_t ) -1 )
 			{
 				if( Count == ( Vnum - 1 ) )
 				{
@@ -863,20 +863,20 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 /*===================================================================
 	Procedure	:		Display ColZone Volume
 	Input		:		ZONESIDE	*	Zone Sides
-				:		int16			NumSides
-				:		uint16			Group
-				:		int16			Sensitive
+				:		int16_t			NumSides
+				:		u_int16_t			Group
+				:		int16_t			Sensitive
 	Output		:		Nothing
 ===================================================================*/
-void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensitive )
+void DisplayColZone( ZONESIDE * Sides, int16_t NumSides, u_int16_t Group, int16_t Sensitive )
 {
-	int16			Count;
-	int16			Vnum;
+	int16_t			Count;
+	int16_t			Vnum;
 	COLOR		color;
 	ZONESIDE	*	StartSide;
 	int				Side;
-	uint16			line;
-	int16			SideCount;
+	u_int16_t			line;
+	int16_t			SideCount;
 
 	if( !ShowColZones || !NumSides || !Sides ) return;
 
@@ -901,7 +901,7 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 		{
 			line = FindFreeLine();						// Line attached
 
-			if( line != (uint16 ) -1 )
+			if( line != (u_int16_t ) -1 )
 			{
 				if( Count == ( Vnum - 1 ) )
 				{
@@ -973,14 +973,14 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 ===================================================================*/
 void KillNodeCubeLines( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < NumNodeCubeLines; Count++ )
 	{
-		if( NodeCubeLines[ Count ] != (uint16) -1 )
+		if( NodeCubeLines[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedLine( NodeCubeLines[ Count ] );
-			NodeCubeLines[ Count ] = (uint16) -1;
+			NodeCubeLines[ Count ] = (u_int16_t) -1;
 		}
 	}
 
@@ -990,26 +990,26 @@ void KillNodeCubeLines( void )
 /*===================================================================
 	Procedure	:		Create New Execute Buffer
 	Input		:		Nothing
-	Output		:		BOOL		True/False
+	Output		:		_Bool		True/False
 ===================================================================*/
-BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 NumTris )
+_Bool MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t	NumVerts, int16_t NumTris )
 {
     LPLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
 
 	if( Num_Skin_Execs >= MAXSKINEXECS )
 	{
 		DebugPrintf( "Skin Execs Overflow\n" );
-		return FALSE;
+		return false;
 	}
 
 	if (!FSCreateVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], NumVerts))
 	{
-		return FALSE;
+		return false;
 	}
    
 	if (!(FSLockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], &lpBufStart)))
 	{
-		return FALSE;
+		return false;
 	}
    		
 //   	lpBufStart = Skin_debdesc.lpData;
@@ -1033,13 +1033,13 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
 /* bjd - CHECK
 	   	   	OP_STATE_RENDER( 8, lpPointer);
 				STATE_DATA( D3DRENDERSTATE_TEXTUREMAPBLEND, D3DTBLEND_MODULATE, lpPointer );
-				STATE_DATA( D3DRENDERSTATE_BLENDENABLE, FALSE, lpPointer );
-				STATE_DATA( D3DRENDERSTATE_ZWRITEENABLE, TRUE, lpPointer );
-				STATE_DATA( D3DRENDERSTATE_STIPPLEDALPHA , FALSE, lpPointer );
+				STATE_DATA( D3DRENDERSTATE_BLENDENABLE, false, lpPointer );
+				STATE_DATA( D3DRENDERSTATE_ZWRITEENABLE, true, lpPointer );
+				STATE_DATA( D3DRENDERSTATE_STIPPLEDALPHA , false, lpPointer );
 				STATE_DATA( D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE, lpPointer );
 				STATE_DATA( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO, lpPointer );
-			    STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
-			    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
+			    STATE_DATA( D3DRENDERSTATE_WRAPU, false, lpPointer );
+			    STATE_DATA( D3DRENDERSTATE_WRAPV, false, lpPointer );
 */
 		}
    	}
@@ -1057,7 +1057,7 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
 //   	Skin_Execs[ Num_Skin_Execs ]->lpVtbl->Unlock( Skin_Execs[ Num_Skin_Execs ] );
 	if (!(FSUnlockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ])))
 	{
-		return FALSE;
+		return false;
 	}
 /*		
    	memset( &Skin_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -1065,11 +1065,11 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
    	Skin_d3dexdata.dwVertexCount = NumVerts;
    	Skin_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
    	Skin_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-   	if( ( Skin_Execs[ Num_Skin_Execs ]->lpVtbl->SetExecuteData( Skin_Execs[ Num_Skin_Execs ], &Skin_d3dexdata ) ) != D3D_OK) return FALSE;
+   	if( ( Skin_Execs[ Num_Skin_Execs ]->lpVtbl->SetExecuteData( Skin_Execs[ Num_Skin_Execs ], &Skin_d3dexdata ) ) != D3D_OK) return false;
 */
 	Num_Skin_Execs++;
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -1079,7 +1079,7 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
 ===================================================================*/
 void ReleaseSkinExecs( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < Num_Skin_Execs; Count++ )
 	{
@@ -1097,18 +1097,18 @@ void ReleaseSkinExecs( void )
 /*===================================================================
 	Procedure	:		Modify Collision Portal Execution Buffer
 	Input		:		MLOADHEADER	*	Mloadheader
-				:		int16			Number of Groups Visible
+				:		int16_t			Number of Groups Visible
 	Output		:		Nothing
 ===================================================================*/
-BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
+_Bool CreatePortalExecList( MLOADHEADER * Mloadheader, int16_t NumVisible )
 {
 	COLOR		color;
-	int16			g;
-	int16			Count, Count2;
-	uint16			VertCount;
-	uint16			TriCount;
-	int16			PortalCnt;
-	int16			PolyCount;
+	int16_t			g;
+	int16_t			Count, Count2;
+	u_int16_t			VertCount;
+	u_int16_t			TriCount;
+	int16_t			PortalCnt;
+	int16_t			PolyCount;
 	PORTAL		*	PortalPtr;
 	MCFACE		*	PolyPtr;
 	VECTOR			Verts[ 4 ];
@@ -1121,7 +1121,7 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 	switch( ShowPortal )
 	{
 		case 0: 
-			return TRUE;
+			return true;
 			break;
 		case 2:
 		case 4:
@@ -1145,7 +1145,7 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 			PolyPtr = PortalPtr->Poly;
 			for ( PolyCount = 0; PolyCount < PortalPtr->num_polys_in_portal; PolyCount++ )
 			{
-				VertCount = (int16) ( ( PolyPtr->type & 1 ) + 3 );
+				VertCount = (int16_t) ( ( PolyPtr->type & 1 ) + 3 );
 
 				for( Count2 = 0; Count2 < VertCount; Count2++ )
 				{
@@ -1201,7 +1201,7 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 
 				if( PortalTriCount > MAX_TRIS_PER_EXEC )
 				{
-					if( MakeNewPortalExec( &PortalVerts[ 0 ], &PortalTris[ 0 ], PortalVertCount, PortalTriCount ) == FALSE ) return FALSE;
+					if( MakeNewPortalExec( &PortalVerts[ 0 ], &PortalTris[ 0 ], PortalVertCount, PortalTriCount ) == false ) return false;
 					PortalVertCount = 0;
 					PortalTriCount = 0;
 				}
@@ -1215,37 +1215,37 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 
 	if( PortalTriCount )
 	{
-		if( MakeNewPortalExec( &PortalVerts[ 0 ], &PortalTris[ 0 ], PortalVertCount, PortalTriCount ) == FALSE ) return FALSE;
+		if( MakeNewPortalExec( &PortalVerts[ 0 ], &PortalTris[ 0 ], PortalVertCount, PortalTriCount ) == false ) return false;
 		PortalVertCount = 0;
 		PortalTriCount = 0;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:		Create New Execute Buffer for portal polys
 	Input		:		Nothing
-	Output		:		BOOL		True/False
+	Output		:		_Bool		True/False
 ===================================================================*/
-BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 NumTris )
+_Bool MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t NumVerts, int16_t NumTris )
 {
     LPLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
 
 	if( Num_Portal_Execs >= MAXPORTALEXECS )
 	{
 		DebugPrintf( "Portal Execs Overflow\n" );
-		return FALSE;
+		return false;
 	}
 
 	if (!FSCreateVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], NumVerts))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSLockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], &lpBufStart)))
 	{
-		return FALSE;
+		return false;
 	}
    		
 //   	lpBufStart = Portal_debdesc.lpData;
@@ -1270,7 +1270,7 @@ BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 
 
 	if (!(FSUnlockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ])))
 	{
-		return FALSE;
+		return false;
 	}
 /*   		
    	memset( &Portal_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -1278,11 +1278,11 @@ BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 
    	Portal_d3dexdata.dwVertexCount = NumVerts;
    	Portal_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
    	Portal_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-   	if( ( Portal_Execs[ Num_Portal_Execs ]->lpVtbl->SetExecuteData( Portal_Execs[ Num_Portal_Execs ], &Portal_d3dexdata ) ) != D3D_OK) return FALSE;
+   	if( ( Portal_Execs[ Num_Portal_Execs ]->lpVtbl->SetExecuteData( Portal_Execs[ Num_Portal_Execs ], &Portal_d3dexdata ) ) != D3D_OK) return false;
 */
 	Num_Portal_Execs++;
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -1292,7 +1292,7 @@ BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 
 ===================================================================*/
 void InitPortalExecs( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < MAXGROUPS; Count++ )
 	{
@@ -1310,7 +1310,7 @@ void InitPortalExecs( void )
 ===================================================================*/
 void ReleasePortalExecs( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < Num_Portal_Execs; Count++ )
 	{
@@ -1330,11 +1330,11 @@ void ReleasePortalExecs( void )
 struct
 {
 	float	x, y, z;
-	BOOL	flag;
+	_Bool	flag;
 
 } PointList[ 12 ];
 
-#define	SET_POINT( idx, x, y, z )	{ PointList[ idx ].x = x; PointList[ idx ].y = y; PointList[ idx ].z = z; PointList[ idx ].flag = TRUE; }
+#define	SET_POINT( idx, x, y, z )	{ PointList[ idx ].x = x; PointList[ idx ].y = y; PointList[ idx ].z = z; PointList[ idx ].flag = true; }
 
 /*---------------------------------------------------------------------------------------------------------------------------*\
 \*---------------------------------------------------------------------------------------------------------------------------*/
@@ -1488,7 +1488,7 @@ int PlaneToCubeIntersectionShape( VECTOR * min_ptr, VECTOR * max_ptr, VECTOR * v
 
 	for( i = 0; i < 12; i++ )
 	{
-		PointList[i].flag = FALSE;
+		PointList[i].flag = false;
 	}
 
 	if( vec_ptr->y != 0 )
@@ -1580,7 +1580,7 @@ int PlaneToCubeIntersectionShape( VECTOR * min_ptr, VECTOR * max_ptr, VECTOR * v
 		result_ptr[ count ].x = PointList[ side ].x;
 		result_ptr[ count ].y = PointList[ side ].y;
 		result_ptr[ count ].z = PointList[ side ].z;
-		PointList[ side ].flag = FALSE;
+		PointList[ side ].flag = false;
 		count++;
 
 		side = GetNextSide( side );
@@ -1589,7 +1589,7 @@ int PlaneToCubeIntersectionShape( VECTOR * min_ptr, VECTOR * max_ptr, VECTOR * v
 	return count;
 }
 
-uint16	BoxLines[ 12 ] = { 0xffff, 0xffff, 0xffff, 0xffff,
+u_int16_t	BoxLines[ 12 ] = { 0xffff, 0xffff, 0xffff, 0xffff,
 						   0xffff, 0xffff, 0xffff, 0xffff,
 						   0xffff, 0xffff, 0xffff, 0xffff };
 
@@ -1624,8 +1624,8 @@ VECTOR	BoxOffsets[ 24 ] = {
 
 void CreateLineBox( void )
 { 
-	int16	Count;
-	uint16	line;
+	int16_t	Count;
+	u_int16_t	line;
 	VECTOR	StartPos;
 	VECTOR	EndPos;
 
@@ -1635,7 +1635,7 @@ void CreateLineBox( void )
 
 		BoxLines[ Count ] = line;
 
-		if( line != (uint16 ) -1 )
+		if( line != (u_int16_t ) -1 )
 		{
 			StartPos.x = ( Ships[ WhoIAm ].Object.Pos.x + BoxOffsets[ Count * 2 ].x );
 			StartPos.y = ( Ships[ WhoIAm ].Object.Pos.y + BoxOffsets[ Count * 2 ].y );
@@ -1661,14 +1661,14 @@ void CreateLineBox( void )
 
 void KillBoxLines( void )
 { 
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < 12; Count++ )
 	{
-		if( BoxLines[ Count ] != (uint16) -1 )
+		if( BoxLines[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedLine( BoxLines[ Count ] );
-			BoxLines[ Count ] = (uint16) -1;
+			BoxLines[ Count ] = (u_int16_t) -1;
 		}
 	}
 }
@@ -2020,10 +2020,10 @@ int GimmeNodeVertices( BSP_NODE * plane_ptr, BSP_NODE * space_ptr, int side, VEC
 	Procedure	:		Get Plane Intersected with Zone Vertices
 	Input		:		TRIGGER_ZONE *	Plane to intersect
 				:		TRIGGER_ZONE *	Space Ptr
-				:		int16			Num Sides in Space
-				:		int16			Side
+				:		int16_t			Num Sides in Space
+				:		int16_t			Side
 				:		VECTOR		*	Vertices to output
-	Output		:		BOOL			True/False
+	Output		:		_Bool			True/False
 ===================================================================*/
 int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr, int NumSides, int side, VECTOR * out_ptr )
 {
@@ -2316,10 +2316,10 @@ int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr
 	Procedure	:		Get Plane Intersected with Zone Vertices
 	Input		:		ZONESIDE	*	Plane to intersect
 				:		ZONESIDE	*	Space Ptr
-				:		int16			Num Sides in Space
-				:		int16			Side
+				:		int16_t			Num Sides in Space
+				:		int16_t			Side
 				:		VECTOR		*	Vertices to output
-	Output		:		BOOL			True/False
+	Output		:		_Bool			True/False
 ===================================================================*/
 int GimmeColZoneVertices( ZONESIDE * plane_ptr, ZONESIDE * space_ptr, int NumSides, int side, VECTOR * out_ptr )
 {

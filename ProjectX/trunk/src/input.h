@@ -24,9 +24,9 @@ int new_input;
 ////////////
 
 BOOL input_grabbed;
-void input_grab( BOOL grab );
+void input_grab( _Bool grab );
 
-BOOL handle_events( void );
+_Bool handle_events( void );
 
 //////////////////
 // Input Buffer //
@@ -107,8 +107,8 @@ mouse_state_t* read_mouse(void);
 extern int Num_Joysticks;
 
 typedef struct {
-	BOOL assigned;
-	BOOL connected;
+	_Bool assigned;
+	_Bool connected;
 #ifndef DINPUTJOY
 	SDL_Joystick * sdl_joy;
 #endif
@@ -123,14 +123,14 @@ typedef struct {
 
 JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
 
-BOOL joysticks_init(void);
-BOOL joysticks_cleanup( void );
+_Bool joysticks_init(void);
+_Bool joysticks_cleanup( void );
 
 // this holds the current state joysticks
 long joy_axis_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_AXIS ];
-BOOL joy_button_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_BUTTONS ];
+_Bool joy_button_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_BUTTONS ];
 // hat has 4 directions, diagnols turn on both adjecent angles
-Uint8 joy_hat_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
+u_int8_t joy_hat_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 
 enum {
 	JOY_HAT_UP,

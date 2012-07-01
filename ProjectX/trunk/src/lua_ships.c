@@ -24,8 +24,8 @@ extern BYTE WhoIAm;
 extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 extern BYTE GameStatus[MAX_PLAYERS+1];
 
-extern int8 PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
-extern int8 SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
+extern int8_t PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
+extern int8_t SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
 
 static void lua_pushobjptr(lua_State *L, void *v, const char *type)
 {
@@ -114,7 +114,7 @@ static int luaship_table(lua_State *L)
 	FIELD(JustRecievedPacket, boolean);
 	FIELDPTR(LastMove, vector);
 	FIELDPTR(Move_Off, vector);
-	/* TODO: OrbModels (uint16 array) */
+	/* TODO: OrbModels (u_int16_t array) */
 	/* TODO: OrbAmmo (float array) */
 	FIELD(PrimPowerLevel, number);
 	FIELD(PrimID, integer);
@@ -129,7 +129,7 @@ static int luaship_table(lua_State *L)
 	FIELD(OldBank, number);
 	FIELD(NextBank, number);
 	FIELD(SuperNashramTimer, number);
-	/* TODO: TempLines? (uint16 array) */
+	/* TODO: TempLines? (u_int16_t array) */
 	FIELD(ShakeTimer, number);
 	FIELD(ShakeDirTimer, number);
 	FIELD(ShakeForce, number);
@@ -215,7 +215,7 @@ static int luaship_index(lua_State *L)
 	FIELD(JustRecievedPacket, boolean);
 	FIELDPTR(LastMove, vector);
 	FIELDPTR(Move_Off, vector);
-	/* TODO: OrbModels (uint16 array) */
+	/* TODO: OrbModels (u_int16_t array) */
 	/* TODO: OrbAmmo (float array) */
 	FIELD(PrimPowerLevel, number);
 	FIELD(PrimID, integer);
@@ -230,7 +230,7 @@ static int luaship_index(lua_State *L)
 	FIELD(OldBank, number);
 	FIELD(NextBank, number);
 	FIELD(SuperNashramTimer, number);
-	/* TODO: TempLines? (uint16 array) */
+	/* TODO: TempLines? (u_int16_t array) */
 	FIELD(ShakeTimer, number);
 	FIELD(ShakeDirTimer, number);
 	return luaL_argerror(L, 2, "unknown field name");
@@ -239,11 +239,11 @@ static int luaship_index(lua_State *L)
 #undef FIELD
 
 /* TODO: move to a common function file and export */
-static BOOL isudatatype(lua_State *L, int index, const char *mt)
+static _Bool isudatatype(lua_State *L, int index, const char *mt)
 {
-	BOOL ret;
+	_Bool ret;
 	if (!lua_getmetatable(L, index))
-		return FALSE;
+		return false;
 	lua_getfield(L, LUA_REGISTRYINDEX, mt);
 	ret = lua_rawequal(L, -1, -2);
 	lua_pop(L, 2);

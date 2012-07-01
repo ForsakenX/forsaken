@@ -46,8 +46,8 @@ typedef struct ANIM_SEQ {
 
 typedef struct COMP_OBJ {
 
-	int16		Flags;
-	int16		ID;
+	int16_t		Flags;
+	int16_t		ID;
 	VECTOR		DisplayPos;
 	VECTOR		OffPos;
 	VECTOR		Dir;
@@ -60,8 +60,8 @@ typedef struct COMP_OBJ {
 	MATRIX		DisplayMatrix;
 	MATRIX		InvDisplayMatrix;
 
-	int16		Frame;
-	int16		InterpFrame;
+	int16_t		Frame;
+	int16_t		InterpFrame;
 	float		InterpTime;
 
 	float		OldOldTime;
@@ -74,19 +74,19 @@ typedef struct COMP_OBJ {
 	MATRIX		OldDisplayMatrix;
 	MATRIX		OldInvDisplayMatrix;
 
-	BOOL		UserControl;
+	_Bool		UserControl;
 
 	VECTOR		UserAxis;
 	VECTOR		UserAxisPoint;
 	float		UserAngle;
 
-	int16		NumChildren;
-	uint16		ModelIndex;
+	int16_t		NumChildren;
+	u_int16_t		ModelIndex;
 	struct COMP_OBJ	 * Children;
-	int16		NumTrans;
+	int16_t		NumTrans;
 	struct ANI_TRANS * Trans;
 
-	int16		NumColZones;
+	int16_t		NumColZones;
 	struct ANI_ZONES * ColZones;
 
 } COMP_OBJ;
@@ -96,7 +96,7 @@ typedef struct COMP_OBJ {
 ===================================================================*/
 typedef struct ANI_TRANS {
 
-	int16	Type;
+	int16_t	Type;
 	float	TimeStart;
 	float	TimeDuration;
 	void *	Data;
@@ -106,7 +106,7 @@ typedef struct ANI_TRANS {
 typedef struct ANI_TRANSLATE {
 
 	VECTOR	Trans;
-	int16	Local;
+	int16_t	Local;
 
 } ANI_TRANSLATE;
 
@@ -115,20 +115,20 @@ typedef struct ANI_ROTATE {
 	VECTOR	Axis;
 	VECTOR	Origin;
 	float	Angle;
-	int16	Local;
+	int16_t	Local;
 
 } ANI_ROTATE;
 
 typedef struct ANI_MORPH {
 
-	int16	Frame;
+	int16_t	Frame;
 
 } ANI_MORPH;
 
 typedef struct ANI_PROPERTY {
 
-	int16	Type;
-	int16	Value;
+	int16_t	Type;
+	int16_t	Value;
 
 } ANI_PROPERTY;
 
@@ -139,15 +139,15 @@ typedef struct ZONESIDE {
 
 	VECTOR	Normal;
 	float	PlaneOffset;
-	int16	Sensitive;
+	int16_t	Sensitive;
 	float	Damage;
 
 } ZONESIDE;
 
 typedef struct ANI_ZONES {
 
-	int16	Type;
-	int16	Sensitive;
+	int16_t	Type;
+	int16_t	Sensitive;
 	float	Damage;
 	void *	Data;
 
@@ -164,7 +164,7 @@ typedef struct ANI_ZONE_BOX {
 
 	VECTOR	Center;
 	VECTOR	HalfSize;
-	uint16	NumSides;
+	u_int16_t	NumSides;
 	ZONESIDE * Sides;
 
 } ANI_ZONE_BOX;
@@ -173,7 +173,7 @@ typedef struct ANI_ZONE_POLYGONAL {
 
 	VECTOR	Center;
 	VECTOR	HalfSize;
-	uint16	NumSides;
+	u_int16_t	NumSides;
 	ZONESIDE * Sides;
 
 } ANI_ZONE_POLYGONAL;
@@ -181,50 +181,50 @@ typedef struct ANI_ZONE_POLYGONAL {
 /*===================================================================
 	Prototypes
 ===================================================================*/
-BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific );
-COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Group,
-					    float * OverallTime, float * MidTime, uint16 * BaseModel,
-						uint16 OwnerType, uint16 OwnerID );
-FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
-						    VECTOR * Pos, VECTOR * Dir, uint16 Group,
-							float * Time, float * MidTime, uint16 * BaseModel, uint16 OwnerType, uint16 OwnerID );
-void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren );
-void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix, VECTOR * ParentPos, float Time, uint16 Group, VECTOR * Pos );
-COMP_OBJ * GetCompObjAddress( int16 ID, int16 NumChildren, COMP_OBJ * Children );
-void SetCompObjModelsState( COMP_OBJ * Children, int16 NumChildren, BOOL Visible );
-void UndoCompObjAnim( COMP_OBJ * Children, int16 NumChildren );
-void ShowCompObjColZones( COMP_OBJ * Children, int16 NumChildren, uint16 Group );
-BOOL RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16 StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius );
-BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, int16 Side );
-BOOL GetCompObjAxis( COMP_OBJ * Comp );
+_Bool PreLoadCompObj( int8_t * Filename, u_int16_t * BaseModel, _Bool LevelSpecific );
+COMP_OBJ * LoadCompObj( int8_t * Filename, VECTOR * Pos, VECTOR * Dir, u_int16_t Group,
+					    float * OverallTime, float * MidTime, u_int16_t * BaseModel,
+						u_int16_t OwnerType, u_int16_t OwnerID );
+FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16_t NumComp,
+						    VECTOR * Pos, VECTOR * Dir, u_int16_t Group,
+							float * Time, float * MidTime, u_int16_t * BaseModel, u_int16_t OwnerType, u_int16_t OwnerID );
+void FreeCompObjChildren( COMP_OBJ * Children, int16_t NumChildren );
+void UpdateCompObjChildren( COMP_OBJ * Children, int16_t NumChildren, MATRIX * ParentMatrix, VECTOR * ParentPos, float Time, u_int16_t Group, VECTOR * Pos );
+COMP_OBJ * GetCompObjAddress( int16_t ID, int16_t NumChildren, COMP_OBJ * Children );
+void SetCompObjModelsState( COMP_OBJ * Children, int16_t NumChildren, _Bool Visible );
+void UndoCompObjAnim( COMP_OBJ * Children, int16_t NumChildren );
+void ShowCompObjColZones( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Group );
+_Bool RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16_t StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius );
+_Bool PointInside( VECTOR * Pos, ZONESIDE * Sides, int16_t NumSides, float Radius, int16_t Side );
+_Bool GetCompObjAxis( COMP_OBJ * Comp );
 void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
-						   COMP_OBJ * Children, int16 NumChildren, float OverallTime, VECTOR * TopLeft,
+						   COMP_OBJ * Children, int16_t NumChildren, float OverallTime, VECTOR * TopLeft,
 						   VECTOR * BottomRight );
-void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix,
+void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16_t NumChildren, MATRIX * ParentMatrix,
 								    VECTOR * ParentPos, float Time, VECTOR * TopLeft, VECTOR * BottomRight );
-void UpdateCompObjColours( COMP_OBJ * Children, int16 NumChildren, int Red, int Green, int Blue );
-void UpdateCompObjClipGroup( COMP_OBJ * Children, int16 NumChildren, uint16 ClipGroup );
+void UpdateCompObjColours( COMP_OBJ * Children, int16_t NumChildren, int Red, int Green, int Blue );
+void UpdateCompObjClipGroup( COMP_OBJ * Children, int16_t NumChildren, u_int16_t ClipGroup );
 void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight );
-void SetCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren, float Radius );
-void ClearCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren );
-BOOL AmIInvulnerable( COMP_OBJ * Children, int16 NumChildren, float Time );
-void UpdateCompObjFlags( COMP_OBJ * Children, int16 NumChildren, uint16 Flags );
-FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren );
-FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren );
+void SetCompObjRealLighting( COMP_OBJ * Children, int16_t NumChildren, float Radius );
+void ClearCompObjRealLighting( COMP_OBJ * Children, int16_t NumChildren );
+_Bool AmIInvulnerable( COMP_OBJ * Children, int16_t NumChildren, float Time );
+void UpdateCompObjFlags( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Flags );
+FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren );
+FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren );
 
 void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
-						   COMP_OBJ * Children, int16 NumChildren, float OverallTime, VECTOR * TopLeft,
+						   COMP_OBJ * Children, int16_t NumChildren, float OverallTime, VECTOR * TopLeft,
 						   VECTOR * BottomRight );
-void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix,
+void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16_t NumChildren, MATRIX * ParentMatrix,
 								    VECTOR * ParentPos, float Time, VECTOR * TopLeft, VECTOR * BottomRight );
 void GetCompObjColZoneBoundingBox( COMP_OBJ * Children, MATRIX * DisplayMatrix, VECTOR * DisplayPos,
 								   VECTOR * TopLeft, VECTOR * BottomRight );
 void GetZoneBoundingBox( VECTOR * Center, VECTOR * HalfSize, MATRIX * Matrix, VECTOR * Pos,
 						 VECTOR * TopLeft, VECTOR * BottomRight );
 void AddVertToBoundingBox( VECTOR * Vert, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft, VECTOR * BottomRight );
-void SetStealthOffset( COMP_OBJ * Children, int16 NumChildren, uint16 Offset );
-void SetCompObjStealth( COMP_OBJ * Children, int16 NumChildren );
-void SetCompObjNonStealth( COMP_OBJ * Children, int16 NumChildren );
+void SetStealthOffset( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Offset );
+void SetCompObjStealth( COMP_OBJ * Children, int16_t NumChildren );
+void SetCompObjNonStealth( COMP_OBJ * Children, int16_t NumChildren );
 
 #endif
 

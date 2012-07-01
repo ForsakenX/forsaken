@@ -79,7 +79,7 @@ typedef struct EVENT{
 }EVENT;
 
 typedef struct TRIGGERVAR{
-	int		State;				// TRUE / FALSE ...
+	int		State;				// true / false ...
 	int		InitState;
 	int		NumOfTriggers;
 	char	Name[32];
@@ -88,9 +88,9 @@ typedef struct TRIGGERVAR{
 
 typedef struct TRIGGER{
 	BYTE	Type;
-	TRIGGERVAR *	TrigVar;	// TRUE / FALSE ...
-	int		ActiveState;		// TRUE / FALSE ...
-	int		Active;				// FALSE...TRUE...
+	TRIGGERVAR *	TrigVar;	// true / false ...
+	int		ActiveState;		// true / false ...
+	int		Active;				// false...true...
 	int		NumOfConditions;
 	CONDITION ** Conditions;
 }TRIGGER;
@@ -115,7 +115,7 @@ typedef struct TRIGGERMODQUE{
 /*
  * fn prototypes
  */
-BOOL Triggerload( char * Filename );
+_Bool Triggerload( char * Filename );
 void ReleaseTriggers( void );
 void ApplyTriggerMod( TRIGGERMOD * TrigMod );
 void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val );
@@ -123,43 +123,43 @@ void TestAllConditions( TRIGGER * Trig );
 void AddCondition( CONDITION * Con );
 void ProcessActiveConditions( void );
 void ProcessEvent( EVENT * Event );
-void GenTriggerList( uint16 Ship, SHORTTRIGGER * TriggerSlots, BYTE * NumTriggerSlots, BYTE Section );
+void GenTriggerList( u_int16_t Ship, SHORTTRIGGER * TriggerSlots, BYTE * NumTriggerSlots, BYTE Section );
 void RegenTriggerList( SHORTTRIGGER * Slots, BYTE Num );
-void CopyTriggers( uint16 Player );
-void GenTrigVarList( uint16 Ship, SHORTTRIGVAR * TrigVarSlots, BYTE * NumTrigVarSlots, BYTE Section );
+void CopyTriggers( u_int16_t Player );
+void GenTrigVarList( u_int16_t Ship, SHORTTRIGVAR * TrigVarSlots, BYTE * NumTrigVarSlots, BYTE Section );
 void RegenTrigVarList( SHORTTRIGVAR * Slots, BYTE Num );
-void CopyTrigVars( uint16 Player );
+void CopyTrigVars( u_int16_t Player );
 void HowManySecrets( int * NumOfSecrets , int * SecretsFound );
-BOOL HasLevelEnded( void );
-BOOL IsAvatarActive( void );
-BOOL CheckDecreaseTemperature( void );
+_Bool HasLevelEnded( void );
+_Bool IsAvatarActive( void );
+_Bool CheckDecreaseTemperature( void );
 
 // Event Prototypes...
-void EVENT_PickupGenerate( uint8 * Data );
-void EVENT_EnemyGenerate( uint8 * Data );
-void EVENT_OpenDoor( uint8 * Data );
-void EVENT_CloseDoor( uint8 * Data );
-void EVENT_LockDoor( uint8 * Data );
-void EVENT_UnlockDoor( uint8 * Data );
-void EVENT_StartBGOAnim( uint8 * Data );
-void EVENT_StopBGOAnim( uint8 * Data );
-void EVENT_StartTexAnim( uint8 * Data );
-void EVENT_StopTexAnim( uint8 * Data );
-void EVENT_WaterFill( uint8 * Data );
-void EVENT_WaterDrain( uint8 * Data );
-void EVENT_StartSpotFX( uint8 * Data );
-void EVENT_StopSpotFX( uint8 * Data );
-void EVENT_ShowMessages( uint8 * Data );
-void EVENT_StartExternalForce( uint8 * Data );
-void EVENT_StopExternalForce( uint8 * Data );
-void EVENT_EnableLight( uint8 * Data );
-void EVENT_DisableLight( uint8 * Data );
-void EVENT_TriggerAreaEnable( uint8 * Data );
-void EVENT_TriggerAreaDisable( uint8 * Data );
-void EVENT_CameraEnable( uint8 * Data );
-void EVENT_CameraDisable( uint8 * Data );
-void EVENT_TeleportEnable( uint8 * Data );
-void EVENT_TeleportDisable( uint8 * Data );
+void EVENT_PickupGenerate( u_int8_t * Data );
+void EVENT_EnemyGenerate( u_int8_t * Data );
+void EVENT_OpenDoor( u_int8_t * Data );
+void EVENT_CloseDoor( u_int8_t * Data );
+void EVENT_LockDoor( u_int8_t * Data );
+void EVENT_UnlockDoor( u_int8_t * Data );
+void EVENT_StartBGOAnim( u_int8_t * Data );
+void EVENT_StopBGOAnim( u_int8_t * Data );
+void EVENT_StartTexAnim( u_int8_t * Data );
+void EVENT_StopTexAnim( u_int8_t * Data );
+void EVENT_WaterFill( u_int8_t * Data );
+void EVENT_WaterDrain( u_int8_t * Data );
+void EVENT_StartSpotFX( u_int8_t * Data );
+void EVENT_StopSpotFX( u_int8_t * Data );
+void EVENT_ShowMessages( u_int8_t * Data );
+void EVENT_StartExternalForce( u_int8_t * Data );
+void EVENT_StopExternalForce( u_int8_t * Data );
+void EVENT_EnableLight( u_int8_t * Data );
+void EVENT_DisableLight( u_int8_t * Data );
+void EVENT_TriggerAreaEnable( u_int8_t * Data );
+void EVENT_TriggerAreaDisable( u_int8_t * Data );
+void EVENT_CameraEnable( u_int8_t * Data );
+void EVENT_CameraDisable( u_int8_t * Data );
+void EVENT_TeleportEnable( u_int8_t * Data );
+void EVENT_TeleportDisable( u_int8_t * Data );
 
 FILE * SaveAllTriggers( FILE * fp );
 FILE * LoadAllTriggers( FILE * fp );

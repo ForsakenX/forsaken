@@ -73,7 +73,7 @@ typedef struct
 typedef struct _RTLIGHT
 {
 	LIGHTTYPE type;
-	uint16 group;
+	u_int16_t group;
 	VECTOR pos;
 	float range;
 	float r;
@@ -88,8 +88,8 @@ typedef struct _RTLIGHT
 		RT_FLICKERING_LIGHT flicker;
 		RT_SPOT_LIGHT spot;
 	};
-	uint16 xlight;
-	BOOL enabled;
+	u_int16_t xlight;
+	_Bool enabled;
 	LIGHTSTATE state;
 	float now_time;
 	float delay;
@@ -97,15 +97,15 @@ typedef struct _RTLIGHT
 } RT_LIGHT;
 
 
-extern BOOL LoadRTLights( void );
+extern _Bool LoadRTLights( void );
 
-extern BOOL ReleaseRTLights( void );
+extern _Bool ReleaseRTLights( void );
 
 extern void ProcessRTLights( void );
 
-extern void EnableRTLight( uint16 *data );
+extern void EnableRTLight( u_int16_t *data );
 
-extern void DisableRTLight( uint16 *data );
+extern void DisableRTLight( u_int16_t *data );
 
 FILE * SaveRealTimeLights( FILE * fp );
 FILE * LoadRealTimeLights( FILE * fp );

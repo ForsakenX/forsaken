@@ -16,7 +16,7 @@ void render_mode_fill(void){}
 void build_gamma_table( double gamma ){}
 void release_texture( LPTEXTURE texture ){}
 void render_cleanup( render_info_t * info ){}
-void render_set_filter( BOOL red, BOOL green, BOOL blue ){}
+void render_set_filter( _Bool red, _Bool green, _Bool blue ){}
 void reset_trans( void ){}
 void reset_zbuff( void ){}
 void disable_zbuff_write( void ){}
@@ -31,7 +31,7 @@ void set_trans_state_9(){}
 void set_alpha_states( void ){}
 void set_whiteout_state( void ){}
 void render_reset_lighting_variables( void ){}
-void do_water_effect( VECTOR * pos, uchar_t * color ){}
+void do_water_effect( VECTOR * pos, u_int8_t * color ){}
 void do_whiteout_effect( VECTOR * pos, COLOR * color ){}
 void GetRealLightAmbientWorldSpace( VECTOR * Pos , float * R , float * G , float * B, float * A ){}
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
@@ -62,99 +62,99 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	renderObject->numTextureGroups = 0;
 }
 
-BOOL FSBeginScene(){ return TRUE; }
-BOOL FSEndScene(){ return TRUE; }
-BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey){return TRUE;}
-BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colorkey){return TRUE;}
-BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey){return TRUE;}
-BOOL render_mode_select( render_info_t * info ){return TRUE;}
-BOOL render_reset( render_info_t * info ){return TRUE;}
-BOOL render_flip( render_info_t * info ){return TRUE;}
-BOOL FSClear(XYRECT * rect){return TRUE;}
-BOOL FSClearBlack(void){return TRUE;}
-BOOL FSClearDepth(XYRECT * rect){return TRUE;}
-BOOL FSGetViewPort(render_viewport_t *view){return TRUE;}
-BOOL FSSetViewPort(render_viewport_t *view){return TRUE;}
-BOOL FSSetProjection( RENDERMATRIX *matrix ){return TRUE;}
-BOOL FSSetView( RENDERMATRIX *matrix ){return TRUE;}
-BOOL FSSetWorld( RENDERMATRIX *matrix ){return TRUE;}
-BOOL FSGetWorld(RENDERMATRIX *matrix){return TRUE;}
-BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
-BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
-BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return TRUE;}
-BOOL draw_object(RENDEROBJECT *renderObject){return TRUE;}
-BOOL draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
-BOOL draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
+_Bool FSBeginScene(){ return true; }
+_Bool FSEndScene(){ return true; }
+_Bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey){return true;}
+_Bool update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey){return true;}
+_Bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colourkey){return true;}
+_Bool render_mode_select( render_info_t * info ){return true;}
+_Bool render_reset( render_info_t * info ){return true;}
+_Bool render_flip( render_info_t * info ){return true;}
+_Bool FSClear(XYRECT * rect){return true;}
+_Bool FSClearBlack(void){return true;}
+_Bool FSClearDepth(XYRECT * rect){return true;}
+_Bool FSGetViewPort(render_viewport_t *view){return true;}
+_Bool FSSetViewPort(render_viewport_t *view){return true;}
+_Bool FSSetProjection( RENDERMATRIX *matrix ){return true;}
+_Bool FSSetView( RENDERMATRIX *matrix ){return true;}
+_Bool FSSetWorld( RENDERMATRIX *matrix ){return true;}
+_Bool FSGetWorld(RENDERMATRIX *matrix){return true;}
+_Bool FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return true;}
+_Bool FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return true;}
+_Bool FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return true;}
+_Bool draw_object(RENDEROBJECT *renderObject){return true;}
+_Bool draw_2d_object(RENDEROBJECT *renderObject){return true;}
+_Bool draw_line_object(RENDEROBJECT *renderObject){return true;}
 
-BOOL render_init( render_info_t * info )
+_Bool render_init( render_info_t * info )
 {
-	info->ok_to_render = TRUE;
-	return TRUE;
+	info->ok_to_render = true;
+	return true;
 }
 
-BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(LVERTEX) );
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	FSCreateVertexBuffer(renderObject, numVertices);
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+_Bool FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 {
 	renderObject->lpNormalBuffer = malloc( numNormals * sizeof(NORMAL) );
-	return TRUE; 
+	return true; 
 }
 
-BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+_Bool FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 {
 	FSCreateNormalBuffer(renderObject, numNormals); 
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+_Bool FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	renderObject->lpIndexBuffer = malloc( numIndices * 3 * sizeof(WORD) );
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+_Bool FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	return FSCreateIndexBuffer(renderObject,numIndices);
 }
 
-BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+_Bool FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {
 	(*indices) = renderObject->lpIndexBuffer; 
-	return TRUE;
+	return true;
 }
 
-BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
+_Bool FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {
 	(*verts) = renderObject->lpVertexBuffer; 
-	return TRUE;
+	return true;
 }
 
-BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
+_Bool FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
 {
 	(*normals) = renderObject->lpNormalBuffer; 
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(TLVERTEX) ); 
-	return TRUE;
+	return true;
 }
 
-BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
+_Bool FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {
 	*verts = (void*)renderObject->lpVertexBuffer; 
-	return TRUE;
+	return true;
 }
 
 int render_color_blend_red   = 0;

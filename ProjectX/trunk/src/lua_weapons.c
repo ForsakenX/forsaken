@@ -20,8 +20,8 @@
 
 extern PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[];
 extern SECONDARYWEAPONATTRIB SecondaryWeaponAttribs[];
-extern int8 * DebugPrimStrings[];
-extern int8 * DebugSecStrings[];
+extern int8_t * DebugPrimStrings[];
+extern int8_t * DebugSecStrings[];
 
 #define FIELD(field, table, index, type) do { \
 	lua_push ## type(L, table[index].field);  \

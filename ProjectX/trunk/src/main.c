@@ -26,9 +26,9 @@
 // GLOBAL VARIABLES
 //
 
-BOOL Debug = TRUE;
-BOOL ShowFrameRate = FALSE;
-BOOL ShowInfo = FALSE;
+_Bool Debug = true;
+_Bool ShowFrameRate = false;
+_Bool ShowInfo = false;
 
 int cliSleep = 0;
 
@@ -38,7 +38,7 @@ render_info_t render_info;
 // Parses the directory to change to from the command line options
 //
 
-static BOOL parse_chdir( char *cli )
+static _Bool parse_chdir( char *cli )
 {
     char * option;
 	char cmdline[256];
@@ -48,7 +48,7 @@ static BOOL parse_chdir( char *cli )
 	if ( size > sizeof(cmdline) )
 	{
 		Msg("Command line to long!");
-		return FALSE;
+		return false;
 	}
 	strcpy(cmdline,cli);
 
@@ -68,7 +68,7 @@ static BOOL parse_chdir( char *cli )
 			if (!option)
 			{
 				Msg("Error using chdir");
-				return FALSE;
+				return false;
 				break;
 			}
 
@@ -78,7 +78,7 @@ static BOOL parse_chdir( char *cli )
 			{
 				// error
 				Msg("Could not change to directory: %s", option);
-				return FALSE;
+				return false;
 			}
 
 			// dont loop anymore were done
@@ -88,7 +88,7 @@ static BOOL parse_chdir( char *cli )
         option = strtok(NULL, " -+'\"");
 	}
 
-	return TRUE;
+	return true;
 }
 
 //
@@ -96,7 +96,7 @@ static BOOL parse_chdir( char *cli )
 //
 
 #define CRITICAL_FOLDERS 4
-static BOOL missing_folders( void )
+static _Bool missing_folders( void )
 {
 	int x = 0;
 	char* folders[CRITICAL_FOLDERS] = {"Configs","Data","Pilots","Scripts"};
@@ -106,9 +106,9 @@ static BOOL missing_folders( void )
 			Msg("Could not locate the '%s' folder...\n%s\n%s", folders[x],
 				"exe is most likely in the wrong directory.",
 				"or you just need to create the folder.");
-			return TRUE;
+			return true;
 		}
-	return FALSE;
+	return false;
 }
 
 
@@ -116,22 +116,22 @@ static BOOL missing_folders( void )
 // Parse the Command Line
 //
 
-extern BOOL NoSFX;
+extern _Bool NoSFX;
 extern float normal_fov;
 extern float UV_Fix;
 extern int NetUpdateIntervalCmdLine;
 extern char *config_name;
 extern int cliSleep;
 extern TEXT local_port_str;
-extern BOOL SpaceOrbSetup;
+extern _Bool SpaceOrbSetup;
 extern TEXT TCPAddress;
 extern TEXT local_port_str;
 extern TEXT host_port_str;
-extern BOOL DebugLog;
-extern uint8 QuickStart;
-extern BOOL IpOnCLI;
+extern _Bool DebugLog;
+extern u_int8_t QuickStart;
+extern _Bool IpOnCLI;
 
-static BOOL ParseCommandLine(char* lpCmdLine)
+static _Bool ParseCommandLine(char* lpCmdLine)
 {
 	
 	//
@@ -146,8 +146,8 @@ static BOOL ParseCommandLine(char* lpCmdLine)
     //  Set Global Defaults
     //
 	
-	NoSFX					= FALSE; // turns off sound
-	Debug					= FALSE; // turns it off now
+	NoSFX					= false; // turns off sound
+	Debug					= false; // turns it off now
 
 	NetUpdateIntervalCmdLine	= 0;
 
@@ -159,7 +159,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 	if ( size > sizeof(cmdline) )
 	{
 		Msg("Command line to long!");
-		return FALSE;
+		return false;
 	}
 	strcpy(cmdline,lpCmdLine);
 
@@ -182,43 +182,43 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
 		// sdl + opengl setting
 		else if (!strcasecmp(option,"ForceAccel")){
-			render_info.force_accel = TRUE;
+			render_info.force_accel = true;
 		}
 
 		// off only works in full screen...
 		// turn on vertical syncing
 		else if (!strcasecmp(option,"VSync")){
-			render_info.vsync = TRUE;
+			render_info.vsync = true;
 		}
 
 		// debugging information send to Log...
         else if (!strcasecmp(option, "log"))
 		{
-            DebugLog = TRUE;
+            DebugLog = true;
 		}
 
 		// debugging information
         else if (!strcasecmp(option, "Debug"))
 		{
-            Debug = TRUE;
+            Debug = true;
 		}
 		
 		// start in window mode
 		else if (!strcasecmp(option,"Fullscreen"))
 		{
-			render_info.fullscreen = TRUE;
+			render_info.fullscreen = true;
 		}
 
 		// start in window mode
 		else if (!strcasecmp(option,"Window"))
 		{
-			render_info.fullscreen = FALSE;
+			render_info.fullscreen = false;
 		}
 
 		// turn off sound
 		else if (!strcasecmp(option, "NoSFX"))
 		{
-			NoSFX = TRUE;
+			NoSFX = true;
         }
 		
 		// jump to the host screen
@@ -239,7 +239,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 			char * port;
 			char address[255];
 
-			IpOnCLI = TRUE;
+			IpOnCLI = true;
 
 			// extract the address
 	        option = strtok(NULL, " ");
@@ -267,13 +267,13 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 		// supposedly to set wire mode for mxv's...
 		else if (!strcasecmp(option, "wireframe")) 
 		{
-            render_info.wireframe = TRUE;
+            render_info.wireframe = true;
         }
 
 		// special override to allow setting up of spaceorb
 		else if ( !strcasecmp( option, "SetupSpaceOrb" ) )
 		{
-			SpaceOrbSetup = TRUE;
+			SpaceOrbSetup = true;
 		}
 
 		// use sscanf
@@ -328,7 +328,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
     }
 
-	return TRUE;
+	return true;
 }
 
 //
@@ -340,7 +340,7 @@ extern void DestroySound( int flags );
 extern void render_cleanup( render_info_t * info );
 extern void ReleaseScene(void);
 
-BOOL QuitRequested = FALSE;
+_Bool QuitRequested = false;
 void CleanUpAndPostQuit(void)
 {
 	// check if this function was ran already
@@ -363,10 +363,10 @@ void CleanUpAndPostQuit(void)
 	ReleaseScene();
 
 	// set flag
-    QuitRequested = TRUE;
+    QuitRequested = true;
 
 	// we dont control the cursor anymore
-	input_grab( FALSE );
+	input_grab( false );
 
 	// close up lua
 	lua_shutdown();
@@ -392,25 +392,25 @@ void CleanUpAndPostQuit(void)
 #ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..
 #ifndef __WINE__
-extern BOOL breakpad_init( void );
+extern _Bool breakpad_init( void );
 #endif
 #endif
 
-extern BOOL InitView( void );
+extern _Bool InitView( void );
 extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
 extern void GetDefaultPilot(void);
-extern BOOL InitScene(void);
+extern _Bool InitScene(void);
 extern BYTE MyGameStatus;
-extern BOOL sdl_init_video( void );
-extern BOOL sdl_init( void );
+extern _Bool sdl_init_video( void );
+extern _Bool sdl_init( void );
 
 #include "mload.h"
 extern RENDEROBJECT Portal_Execs[ MAXGROUPS ];
 extern RENDEROBJECT Skin_Execs[ MAXGROUPS ];
 extern RENDEROBJECT RenderBufs[4];
 
-static BOOL AppInit( char * lpCmdLine )
+static _Bool AppInit( char * lpCmdLine )
 {
 #if defined(DEBUG_ON) && defined(_SVID_)
 	_LIB_VERSION = _SVID_; // enable matherr
@@ -421,13 +421,13 @@ static BOOL AppInit( char * lpCmdLine )
 	ZEROMEM(Portal_Execs);
 	ZEROMEM(Skin_Execs);
 
-	render_info.vsync = FALSE;
+	render_info.vsync = false;
 
 #ifdef DXMOUSE
 	if(!dx_init_mouse())
 	{
 		DebugPrintf("Could not init dx mouse\n");
-		return FALSE;
+		return false;
 	}
 #endif
 
@@ -437,7 +437,7 @@ static BOOL AppInit( char * lpCmdLine )
 
 	// initialize google breakpad crash reporting
 	if(!breakpad_init())
-		return FALSE;
+		return false;
 
 	// test breakpad by uncommenting this
 	//{ *(int*)0=0; }
@@ -454,22 +454,22 @@ static BOOL AppInit( char * lpCmdLine )
 
 	//
 	if(!sdl_init())
-		return FALSE;
+		return false;
 
 	// parse chdir from command line first
 	if(!parse_chdir(lpCmdLine))
-		return FALSE;
+		return false;
 
 	// we are now in the skeleton folder
 	// now we need to see if we are in right place
 
 	// check for missing folders
 	if(missing_folders())
-		return FALSE;
+		return false;
 
 	// startup lua
 	if( lua_init() != 0 )
-		return FALSE;
+		return false;
 
 	// copy game settings from config
 	GetGamePrefs();
@@ -479,13 +479,13 @@ static BOOL AppInit( char * lpCmdLine )
 
 	// parse the command line
 	if(!ParseCommandLine(lpCmdLine))
-		return FALSE;
+		return false;
 
 	//
 	// create and show the window
 	//
 	if(!sdl_init_video())
-		return FALSE;
+		return false;
 
 	// appears dinput has to be after init window
 
@@ -495,7 +495,7 @@ static BOOL AppInit( char * lpCmdLine )
 	if (!joysticks_init())
 	{
 		Msg("Failed to initialized joysticks!");
-		return FALSE;
+		return false;
 	}
 	
 	// this needs to come after joysticks_init
@@ -508,14 +508,14 @@ static BOOL AppInit( char * lpCmdLine )
 	MyGameStatus = STATUS_Title;
 
 	if (!InitScene())
-		return FALSE;
+		return false;
 
 	// load the view
 	if (!InitView() )
 	{
 	    Msg("InitView failed.\n");
 		//CleanUpAndPostQuit();
-        return FALSE;
+        return false;
 	}
 
 	// exclusively grab input in fullscreen mode
@@ -526,7 +526,7 @@ static BOOL AppInit( char * lpCmdLine )
 
 	// done
 	DebugPrintf("AppInit finished...\n");
-    return TRUE;
+    return true;
 
 }
 
@@ -534,23 +534,23 @@ static BOOL AppInit( char * lpCmdLine )
 // Render the next frame and update the window
 //
 
-extern BOOL RenderScene( void );
+extern _Bool RenderScene( void );
 
-static BOOL RenderLoop()
+static _Bool RenderLoop()
 {
     if ( !render_info.ok_to_render || render_info.minimized || render_info.bPaused || QuitRequested )
-		return TRUE;
+		return true;
 
     // Call the sample's RenderScene to render this frame
     if (!RenderScene())
 	{
         Msg("RenderScene failed.\n");
-        return FALSE;
+        return false;
     }
 
 	if ( quitting )
 	{
-		quitting = FALSE;
+		quitting = false;
 		CleanUpAndPostQuit();
 	}
 
@@ -565,13 +565,13 @@ static BOOL RenderLoop()
 			if (!render_flip(&render_info))
 			{
 				Msg("RenderLoop: render_flip() failed\n");
-				return FALSE;
+				return false;
 			}
 		}
 	}
 
 	//
-    return TRUE;
+    return true;
 }
 
 //
@@ -580,7 +580,7 @@ static BOOL RenderLoop()
 
 extern int DebugMathErrors( void );
 extern void network_cleanup( void );
-extern BOOL SeriousError;
+extern _Bool SeriousError;
 extern void CleanUpAndPostQuit(void);
 
 int main( int argc, char* argv[] )

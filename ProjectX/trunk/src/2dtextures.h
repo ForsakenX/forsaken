@@ -7,8 +7,8 @@
 ===================================================================*/
 #define	MAX_NAMES		8
 
-#define	DO_LOAD			TRUE
-#define	DONT_LOAD		FALSE
+#define	DO_LOAD			true
+#define	DONT_LOAD		false
 
 #define	BOX_NOFLIP		0x0000
 #define	BOX_XFLIP		0x2000
@@ -20,67 +20,67 @@
 ===================================================================*/
 typedef struct BOX_INFO {
 
-	int16	tpage;
+	int16_t	tpage;
 	float	u1;
 	float	v1;
 	float	u2;
 	float	v2;
-	int16	xsize;
-	int16	ysize;
+	int16_t	xsize;
+	int16_t	ysize;
 
 } BOX_INFO;
 
 typedef struct OFF_INFO {
 
-	int16	xoff;
-	int16	yoff;
-	uint16	box;
+	int16_t	xoff;
+	int16_t	yoff;
+	u_int16_t	box;
 
 } OFF_INFO;
 
 typedef struct BIT_INFO {
 
-	int16	startbit;
-	int16	numbits;
+	int16_t	startbit;
+	int16_t	numbits;
 
 } BIT_INFO;
 
 typedef struct FRAME_INFO {
 
-	int16			Num_Frames;
-	int8		*	File_Addr;
+	int16_t			Num_Frames;
+	int8_t		*	File_Addr;
 	BOX_INFO	*	Box_Info;
 	OFF_INFO	*	Off_Info;
 	BIT_INFO	*	Bit_Info;
 	char			tpage_name[32];		// only valid if only one t-page is associated with box file
-	int16			vid_tpage_index;		//					---"---
-	int16			sys_tpage_index;		//					---"---
-	int16			NumBoxes;
+	int16_t			vid_tpage_index;		//					---"---
+	int16_t			sys_tpage_index;		//					---"---
+	int16_t			NumBoxes;
 
 } FRAME_INFO;
 
 typedef struct OFF_FILES {
 
-	int8		*	Filename;
+	int8_t		*	Filename;
 	FRAME_INFO	**	InfoPtrAddr;
-	BOOL			LoadEnable;
-	BOOL			Scale;
+	_Bool			LoadEnable;
+	_Bool			Scale;
 	int				LoadTPages;
-	int16			xsize;
-	int16			ysize;
+	int16_t			xsize;
+	int16_t			ysize;
 } OFF_FILES;
 
 /*===================================================================
 	Prototypes
 ===================================================================*/
-FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *last_tpage, int16 xsize, int16 ysize, BOOL placeholder );
-BOOL Load_All_Off_Files( OFF_FILES * FileInfo );
+FRAME_INFO * Load_Off_File( int8_t * Filename, _Bool Scale, int LoadTPages, int16_t *last_tpage, int16_t xsize, int16_t ysize, _Bool placeholder );
+_Bool Load_All_Off_Files( OFF_FILES * FileInfo );
 void Free_All_Off_Files( OFF_FILES * FileInfo );
-int16 GetTPage( FRAME_INFO * FrameInfo, int16 Frame );
-int16 Get_Frm_Info_Index( FRAME_INFO ** Frame_Info );
-FRAME_INFO ** Get_Frm_Info_Address( int16 Index );
-void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename );
-void DisableOffFile( OFF_FILES * FileInfo, int8 * Filename );
+int16_t GetTPage( FRAME_INFO * FrameInfo, int16_t Frame );
+int16_t Get_Frm_Info_Index( FRAME_INFO ** Frame_Info );
+FRAME_INFO ** Get_Frm_Info_Address( int16_t Index );
+void EnableOffFile( OFF_FILES * FileInfo, int8_t * Filename );
+void DisableOffFile( OFF_FILES * FileInfo, int8_t * Filename );
 void EnableRelevantOffFiles( OFF_FILES * FileInfo );
 
 #endif

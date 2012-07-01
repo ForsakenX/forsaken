@@ -37,12 +37,12 @@ int load_image( texture_image_t * image, int mipmaps ) //, float gamma )
 	ilGenImages(1, &image->id);
 	ilBindImage(image->id);
 	rv = ilLoadImage(image->path);
-	if (rv == IL_FALSE)
+	if (rv == IL_false)
 		return -1;
 	if(mipmaps==0)
 	{
 		rv = iluBuildMipmaps();	
-		if (rv == IL_FALSE)
+		if (rv == IL_false)
 			return -1;
 	}
 	//else
@@ -50,7 +50,7 @@ int load_image( texture_image_t * image, int mipmaps ) //, float gamma )
 	//	// TODO - use iluScale to ensure power of two
 	//}
 	//rv = iluGammaCorrect( gamma );
-	//if (rv == IL_FALSE)
+	//if (rv == IL_false)
 	//	return -1;
 	image->w = ilGetInteger(IL_IMAGE_WIDTH);
 	image->h = ilGetInteger(IL_IMAGE_HEIGHT);

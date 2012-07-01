@@ -50,7 +50,7 @@ void AI_AIR_KILLMINE( register ENEMY * Enemy )
 
 	// Is it time to think???
 
-	AI_THINK( Enemy , FALSE , FALSE);
+	AI_THINK( Enemy , false , false);
 
 	Enemy->Timer -= framelag;
 	if( Enemy->Timer < 0.0F )
@@ -100,13 +100,13 @@ void AI_AIR_KILLMINE( register ENEMY * Enemy )
 		  
 		if( !(Enemy->Object.Flags & SHIP_Scattered ) && (Enemy->PrimaryFireTimer == 0.0F) && ( EnemyTypes[Enemy->Type].PrimaryWeaponType != NO_PRIMARY )  )
 		{
-			Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].PrimaryFireRate );
+			Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (u_int16_t) EnemyTypes[Enemy->Type].PrimaryFireRate );
 
 			Weapon = BodgePrimaryWeapon( EnemyTypes[Enemy->Type].PrimaryWeaponType, Enemy->PickupHeld );
 
 			EnemyFirePrimary( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Weapon,
 				Enemy->Object.Group, &Enemy->Object.Pos, &TempOffset, &TempVector, &TempUpVector,
-				EnemyTypes[Enemy->Type].PowerLevel, 0.0F, FALSE, NULL );
+				EnemyTypes[Enemy->Type].PowerLevel, 0.0F, false, NULL );
 		}
 	}
 	Enemy->AI_Angle = AimData.Angle;

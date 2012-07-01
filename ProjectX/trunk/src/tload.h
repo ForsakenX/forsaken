@@ -32,16 +32,16 @@
 
 typedef struct TLOADHEADER{
 	int		state;
-	uint16 num_texture_files;
-	uint16				Xsize[MAXTPAGESPERTLOAD];		// the Xsize now
-	uint16				Ysize[MAXTPAGESPERTLOAD];		// the Ysize now
-	BOOL				Scale[MAXTPAGESPERTLOAD];		// Can I Be Scaled....???
-	uint16				CurScale[MAXTPAGESPERTLOAD];	// 0 normal...1 X half 2 X and Y half..
-	BOOL				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
+	u_int16_t num_texture_files;
+	u_int16_t				Xsize[MAXTPAGESPERTLOAD];		// the Xsize now
+	u_int16_t				Ysize[MAXTPAGESPERTLOAD];		// the Ysize now
+	_Bool				Scale[MAXTPAGESPERTLOAD];		// Can I Be Scaled....???
+	u_int16_t				CurScale[MAXTPAGESPERTLOAD];	// 0 normal...1 X half 2 X and Y half..
+	_Bool				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
     char                ImageFile[MAXTPAGESPERTLOAD][256]; /* files */
     LPTEXTURE			lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
-	BOOL				MipMap[MAXTPAGESPERTLOAD];
-	BOOL				PlaceHolder[MAXTPAGESPERTLOAD];	// is the texture a placeholder ( for subsequent dynamic loading of textures? )
+	_Bool				MipMap[MAXTPAGESPERTLOAD];
+	_Bool				PlaceHolder[MAXTPAGESPERTLOAD];	// is the texture a placeholder ( for subsequent dynamic loading of textures? )
 	char				*PlaceHolderFile[MAXTPAGESPERTLOAD];	// current full path of file occupying placeholder ( needed to restore surface )
 	int					LOD[MAXTPAGESPERTLOAD];
 }TLOADHEADER;
@@ -49,21 +49,21 @@ typedef struct TLOADHEADER{
 /*
  * fn prototypes
  */
-BOOL InitTload( TLOADHEADER * Tloadheader  );
-BOOL Tload( TLOADHEADER * Tloadheader );
-BOOL TloadGetTextureHandle(TLOADHEADER * Tloadheader , int n);
+_Bool InitTload( TLOADHEADER * Tloadheader  );
+_Bool Tload( TLOADHEADER * Tloadheader );
+_Bool TloadGetTextureHandle(TLOADHEADER * Tloadheader , int n);
 void TloadReleaseTexture(TLOADHEADER * Tloadheader, int n);
 void ReleaseTloadheader( TLOADHEADER * Tloadheader );
 
-BOOL TloadAllTextures(TLOADHEADER * Tloadheader);
+_Bool TloadAllTextures(TLOADHEADER * Tloadheader);
 
-int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
+int16_t	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 
 void GetLevelTexturePath( char * destination, char * file, char * level );
-int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
-int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
+int16_t	AddTexture( TLOADHEADER * Tloadheader , char * Name , u_int16_t ColourKey , _Bool Scale , _Bool MipMap, int16_t xsize, int16_t ysize );
+int16_t	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 
-BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n );
+_Bool TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16_t n );
 
 #endif	//TLOAD_INCLUDED
 

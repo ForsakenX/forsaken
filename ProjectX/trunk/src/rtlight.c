@@ -38,7 +38,7 @@
 		rt_lights = 0;\
 		fclose( F );\
 		Msg( "LoadRTLights() error reading '" #V "' from Real-Time Lights (.RTL) file " );\
-		return FALSE;\
+		return false;\
 	}
 
 
@@ -58,7 +58,7 @@ extern	XLIGHT			XLights[ MAXXLIGHTS ];
 /******************************************************************************************
 	Globals
 *******************************************************************************************/
-uint16 rt_lights = 0;
+u_int16_t rt_lights = 0;
 RT_LIGHT *rt_light = NULL;
 
 
@@ -67,17 +67,17 @@ RT_LIGHT *rt_light = NULL;
 /******************************************************************************************
 	Load real-time game lights for level
 *******************************************************************************************/
-extern int16		LevelNum;
-BOOL LoadRTLights( void )
+extern int16_t		LevelNum;
+_Bool LoadRTLights( void )
 {
 	FILE	*	fp;
-	int8		Filename[ 256 ];
+	int8_t		Filename[ 256 ];
 	char	*	NewExt = ".RTL";
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 	int			j;
 	RT_LIGHT *	light;
-	uint16		type;
+	u_int16_t		type;
 	XLIGHT	*	xlight;
 	RT_FIXED_LIGHT		*fixed;
 	RT_PULSING_LIGHT	*pulse;
@@ -98,7 +98,7 @@ BOOL LoadRTLights( void )
 		{
 			fclose( fp );
 			Msg( "LoadRTLights() Incompatible Real-Time Lights (.RTL) file %s", &Filename[ 0 ] );
-			return( FALSE );
+			return( false );
 		}
 
 		fread_var( fp, rt_lights );
@@ -111,13 +111,13 @@ BOOL LoadRTLights( void )
 				fclose( fp );
 				Msg( "LoadRTLights() malloc failed for %d Real-Time Lights ", rt_lights );
 				rt_lights = 0;
-				return FALSE ;
+				return false ;
 			}
 
 			for ( j = 0; j < rt_lights; j++ )
 			{
-				rt_light[ j ].xlight = (uint16) -1;
-				rt_light[ j ].enabled = FALSE;
+				rt_light[ j ].xlight = (u_int16_t) -1;
+				rt_light[ j ].enabled = false;
 			}
 
 			for ( j = 0; j < rt_lights; j++ )
@@ -198,23 +198,23 @@ BOOL LoadRTLights( void )
 				switch ( light->generation_type )
 				{
 				case GENTYPE_Initialised:
-					light->enabled = TRUE;
+					light->enabled = true;
 					light->state = STATE_TURNING_ON;
 					light->delay = 0.0F;
 					break;
 				case GENTYPE_Time:
-					light->enabled = FALSE;
+					light->enabled = false;
 					light->state = STATE_OFF;
 					light->delay = light->generation_delay * ANIM_SECOND;
 					break;
 				case GENTYPE_Trigger:
-					light->enabled = FALSE;
+					light->enabled = false;
 					light->state = STATE_OFF;
 					light->delay = 0.0F;
 					break;
 				}
 				light->xlight = FindFreeXLight();
-				if ( light->xlight != (uint16) -1 )
+				if ( light->xlight != (u_int16_t) -1 )
 				{
 					xlight = &XLights[ light->xlight ];
 					xlight->Pos = light->pos;
@@ -224,7 +224,7 @@ BOOL LoadRTLights( void )
 					xlight->g = light->g;
 					xlight->b = light->b;
 					xlight->Group = light->group;
-					xlight->Visible = FALSE;
+					xlight->Visible = false;
 					if ( light->type == LIGHT_SPOT )
 					{
 						xlight->Type = SPOT_LIGHT;
@@ -236,14 +236,14 @@ BOOL LoadRTLights( void )
 		fclose( fp );
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 /******************************************************************************************
 	Release real-time game lights for level
 *******************************************************************************************/
-BOOL ReleaseRTLights( void )
+_Bool ReleaseRTLights( void )
 {
 	int j;
 	RT_LIGHT *light;
@@ -253,10 +253,10 @@ BOOL ReleaseRTLights( void )
 		for ( j = 0; j < rt_lights; j++ )
 		{
 			light = &rt_light[ j ];
-			if ( light->xlight != (uint16) -1 )
+			if ( light->xlight != (u_int16_t) -1 )
 			{
 				KillUsedXLight( light->xlight );
-				light->xlight = (uint16) -1;
+				light->xlight = (u_int16_t) -1;
 			}
 		}
 
@@ -265,7 +265,7 @@ BOOL ReleaseRTLights( void )
 	rt_light = NULL;
 	rt_lights = 0;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -292,7 +292,7 @@ static void InterpLightOn( RT_LIGHT *light, float t, PULSETYPE type )
 	xlight->r = t * light->r;
 	xlight->g = t * light->g;
 	xlight->b = t * light->b;
-	xlight->Visible = ( t > 0.0F ) ? TRUE : FALSE;
+	xlight->Visible = ( t > 0.0F ) ? true : false;
 	light->intensity = t;
 }
 
@@ -320,7 +320,7 @@ static void InterpLightOff( RT_LIGHT *light, float t, PULSETYPE type )
 	xlight->r = t * light->r;
 	xlight->g = t * light->g;
 	xlight->b = t * light->b;
-	xlight->Visible = ( t > 0.0F ) ? TRUE : FALSE;
+	xlight->Visible = ( t > 0.0F ) ? true : false;
 	light->intensity = t;
 }
 
@@ -391,7 +391,7 @@ void ProcessRTLights( void )
 	for ( j = 0; j < rt_lights; j++ )
 	{
 		light = &rt_light[ j ];
-		if ( light->xlight == (uint16) -1 )
+		if ( light->xlight == (u_int16_t) -1 )
 			continue; // only happens if run out of XLIGHTs
 		xlight = &XLights[ light->xlight ];
 		if ( light->delay > 0.0F )
@@ -399,7 +399,7 @@ void ProcessRTLights( void )
 			light->delay -= framelag;
 			if ( light->delay <= 0.0F )
 			{
-				light->enabled = TRUE;
+				light->enabled = true;
 			}
 		}
 		if ( light->enabled )
@@ -412,7 +412,7 @@ void ProcessRTLights( void )
 				{
 				case STATE_OFF:
 					light->now_time = 0.0F;
-					xlight->Visible = FALSE;
+					xlight->Visible = false;
 					light->intensity = 0.0F;
 					break;
 				case STATE_TURNING_ON:
@@ -423,7 +423,7 @@ void ProcessRTLights( void )
 					}
 					else
 						light->now_time += framelag;
-					xlight->Visible = TRUE;
+					xlight->Visible = true;
 					if ( light->now_time < fixed->on_time )
 					{
 						InterpLightOn( light, light->now_time / fixed->on_time, fixed->on_type );
@@ -433,7 +433,7 @@ void ProcessRTLights( void )
 						xlight->r = light->r;
 						xlight->g = light->g;
 						xlight->b = light->b;
-						xlight->Visible = TRUE;
+						xlight->Visible = true;
 						light->state = STATE_ON;
 					}
 					break;
@@ -441,11 +441,11 @@ void ProcessRTLights( void )
 					xlight->r = light->r;
 					xlight->g = light->g;
 					xlight->b = light->b;
-					xlight->Visible = TRUE;
+					xlight->Visible = true;
 					break;
 				case STATE_TURNING_OFF:
 					light->now_time += framelag;
-					xlight->Visible = TRUE;
+					xlight->Visible = true;
 					if ( light->now_time < fixed->off_time )
 					{
 						InterpLightOff( light, light->now_time / fixed->off_time, fixed->off_type );
@@ -454,7 +454,7 @@ void ProcessRTLights( void )
 					{
 						light->state = STATE_OFF;
 						light->now_time = 0.0F;
-						xlight->Visible = FALSE;
+						xlight->Visible = false;
 					}
 					break;
 				}
@@ -477,7 +477,7 @@ void ProcessRTLights( void )
 					// light is turning on
 					light->state = STATE_TURNING_ON;
 					InterpLightOn( light, light->now_time / pulse->on_time, pulse->type );
-					xlight->Visible = TRUE;
+					xlight->Visible = true;
 				}
 				else if ( light->now_time < pulse->stay_on_point )
 				{
@@ -486,20 +486,20 @@ void ProcessRTLights( void )
 					xlight->r = light->r;
 					xlight->g = light->g;
 					xlight->b = light->b;
-					xlight->Visible = TRUE;
+					xlight->Visible = true;
 				}
 				else if ( light->now_time < pulse->off_point )
 				{
 					// light is turning off
 					light->state = STATE_TURNING_OFF;
 					InterpLightOff( light, ( light->now_time - pulse->stay_on_point ) / pulse->off_time, pulse->type );
-					xlight->Visible = TRUE;
+					xlight->Visible = true;
 				}
 				else // light->now_time < pulse->total_time
 				{
 					// light is staying off
 					light->state = STATE_OFF;
-					xlight->Visible = FALSE;
+					xlight->Visible = false;
 				}
 				break;
 			case LIGHT_FLICKERING:
@@ -520,7 +520,7 @@ void ProcessRTLights( void )
 					{
 						light->state = STATE_OFF;
 						light->now_time = 0.0F;
-						xlight->Visible = FALSE;
+						xlight->Visible = false;
 					}
 				}
 				else // light is off
@@ -531,7 +531,7 @@ void ProcessRTLights( void )
 					{
 						light->state = STATE_ON;
 						light->now_time = 0.0F;
-						xlight->Visible = TRUE;
+						xlight->Visible = true;
 					}
 				}
 				break;
@@ -555,7 +555,7 @@ void ProcessRTLights( void )
 					NormaliseVector( &xlight->Dir );
 				}
 				light->state = STATE_ON;
-				xlight->Visible = TRUE;
+				xlight->Visible = true;
 				break;
 			}
 		}
@@ -572,13 +572,13 @@ void ProcessRTLights( void )
 					if ( light->now_time < fixed->off_time )
 					{
 						InterpLightOff( light, light->now_time / fixed->off_time, fixed->off_type );
-						xlight->Visible = TRUE;
+						xlight->Visible = true;
 					}
 					else
 					{
 						light->state = STATE_OFF;
 						light->now_time = 0.0F;
-						xlight->Visible = FALSE;
+						xlight->Visible = false;
 					}
 					break;
 				case LIGHT_PULSING:
@@ -587,29 +587,29 @@ void ProcessRTLights( void )
 					if ( light->now_time < pulse->off_time )
 					{
 						InterpLightOff( light, light->now_time / pulse->off_time, pulse->type );
-						xlight->Visible = TRUE;
+						xlight->Visible = true;
 					}
 					else
 					{
 						light->state = STATE_OFF;
 						light->now_time = 0.0F;
-						xlight->Visible = FALSE;
+						xlight->Visible = false;
 					}
 					break;
 				case LIGHT_FLICKERING:
 					light->state = STATE_OFF;
-					xlight->Visible = FALSE;
+					xlight->Visible = false;
 					break;
 				case LIGHT_SPOT:
 					light->state = STATE_OFF;
-					xlight->Visible = FALSE;
+					xlight->Visible = false;
 					break;
 				}
 			}
 			else if ( light->delay <= 0.0F )
 			{
 				light->state = STATE_OFF;
-				xlight->Visible = FALSE;
+				xlight->Visible = false;
 			}
 		}
 	}
@@ -620,7 +620,7 @@ void ProcessRTLights( void )
 /******************************************************************************************
 	Enable real-time game light
 *******************************************************************************************/
-void EnableRTLight( uint16 *data )
+void EnableRTLight( u_int16_t *data )
 {
 	int id;
 	RT_LIGHT *light;
@@ -633,7 +633,7 @@ void EnableRTLight( uint16 *data )
 	{
 		light->delay = light->generation_delay * ANIM_SECOND;
 		if ( !light->delay )
-			light->enabled = TRUE;
+			light->enabled = true;
 	}
 	switch ( light->state )
 	{
@@ -669,7 +669,7 @@ void EnableRTLight( uint16 *data )
 /******************************************************************************************
 	Disable real-time game light
 *******************************************************************************************/
-void DisableRTLight( uint16 *data )
+void DisableRTLight( u_int16_t *data )
 {
 	int id;
 	RT_LIGHT *light;
@@ -678,7 +678,7 @@ void DisableRTLight( uint16 *data )
 	if ( id >= rt_lights )
 		return;
 	light = &rt_light[ id ];
-	light->enabled = FALSE;
+	light->enabled = false;
 	switch ( light->state )
 	{
 	case STATE_OFF:
@@ -717,14 +717,14 @@ FILE * SaveRealTimeLights( FILE * fp )
 
 	if( fp )
 	{
-		fwrite( &rt_lights, sizeof( uint16 ), 1, fp );
+		fwrite( &rt_lights, sizeof( u_int16_t ), 1, fp );
 
 		RTLPtr = rt_light;
 		
 		for( i = 0; i < rt_lights; i++ )
 		{
-			fwrite( &RTLPtr->xlight, sizeof( uint16 ), 1, fp );
-			fwrite( &RTLPtr->enabled, sizeof( BOOL ), 1, fp );
+			fwrite( &RTLPtr->xlight, sizeof( u_int16_t ), 1, fp );
+			fwrite( &RTLPtr->enabled, sizeof( _Bool ), 1, fp );
 			fwrite( &RTLPtr->state, sizeof( LIGHTSTATE ), 1, fp );
 			fwrite( &RTLPtr->now_time, sizeof( float ), 1, fp );
 			fwrite( &RTLPtr->delay, sizeof( float ), 1, fp );
@@ -745,11 +745,11 @@ FILE * LoadRealTimeLights( FILE * fp )
 {
 	int			i;
 	RT_LIGHT *	RTLPtr;
-	uint16		NumLights;
+	u_int16_t		NumLights;
 
 	if( fp )
 	{
-		fread( &NumLights, sizeof( uint16 ), 1, fp );
+		fread( &NumLights, sizeof( u_int16_t ), 1, fp );
 
 		if( NumLights != rt_lights )
 		{
@@ -761,8 +761,8 @@ FILE * LoadRealTimeLights( FILE * fp )
 		
 		for( i = 0; i < rt_lights; i++ )
 		{
-			fread( &RTLPtr->xlight, sizeof( uint16 ), 1, fp );
-			fread( &RTLPtr->enabled, sizeof( BOOL ), 1, fp );
+			fread( &RTLPtr->xlight, sizeof( u_int16_t ), 1, fp );
+			fread( &RTLPtr->enabled, sizeof( _Bool ), 1, fp );
 			fread( &RTLPtr->state, sizeof( LIGHTSTATE ), 1, fp );
 			fread( &RTLPtr->now_time, sizeof( float ), 1, fp );
 			fread( &RTLPtr->delay, sizeof( float ), 1, fp );

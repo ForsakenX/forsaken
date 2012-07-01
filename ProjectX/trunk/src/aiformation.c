@@ -53,7 +53,7 @@ void AI_AIR_FORMATION( register ENEMY * Enemy )
 
 	SObject = &Enemy->Object;
 	// Is it time to think???
-	AI_THINK( Enemy , FALSE ,FALSE);
+	AI_THINK( Enemy , false ,false);
 
 	LinkEnemy = Enemy->FormationLink;
 
@@ -93,10 +93,10 @@ void AI_AIR_FORMATION( register ENEMY * Enemy )
 
 			if( (Enemy->PrimaryFireTimer == 0.0F) && ( EnemyTypes[Enemy->Type].PrimaryWeaponType != NO_PRIMARY )  )
 			{
-				Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].PrimaryFireRate );
+				Enemy->PrimaryFireTimer = EnemyTypes[Enemy->Type].PrimaryFireRate + (float) Random_Range( (u_int16_t) EnemyTypes[Enemy->Type].PrimaryFireRate );
 				EnemyFirePrimary( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, EnemyTypes[Enemy->Type].PrimaryWeaponType,
 					Enemy->Object.Group, &Enemy->Object.Pos, &TempOffset, &TempVector, &TempUpVector,
-					EnemyTypes[Enemy->Type].PowerLevel, 0.0F, FALSE, NULL );
+					EnemyTypes[Enemy->Type].PowerLevel, 0.0F, false, NULL );
 			}
 		}
 	}
@@ -230,7 +230,7 @@ void AI_LITTLEGEEK_FORMATION( register ENEMY * Enemy )
 	ENEMY * LinkEnemy;
 	SObject = &Enemy->Object;
 	// Is it time to think???
-	AI_THINK( Enemy , FALSE ,FALSE);
+	AI_THINK( Enemy , false ,false);
 
 	LinkEnemy = Enemy->FormationLink;
 

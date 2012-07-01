@@ -35,7 +35,7 @@ extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
 extern	RENDERMATRIX  TempWorld;	
 extern	RENDERMATRIX identity;
-extern	uint32	AnimOncePerFrame;// used for stuff that is displayed more than once in a single frame..
+extern	u_int32_t	AnimOncePerFrame;// used for stuff that is displayed more than once in a single frame..
 extern TRIGGERMOD	*	TrigMods;
 
 /*===================================================================
@@ -48,12 +48,12 @@ extern TRIGGERMOD	*	TrigMods;
 ===================================================================*/
 float WATER_CELLSIZE = 64.0F;
 
-uint16	NumOfWaterObjects = 0;
-uint16	WaterTPage = 0;
+u_int16_t	NumOfWaterObjects = 0;
+u_int16_t	WaterTPage = 0;
 WATEROBJECT	* FirstWaterObject = NULL;
 char	* WaterBuffer = NULL;
 char	* OrgWaterBuffer = NULL;
-uint16	GroupWaterInfo[MAXGROUPS];
+u_int16_t	GroupWaterInfo[MAXGROUPS];
 
 float	GroupDamageInfo[MAXGROUPS];
 
@@ -67,7 +67,7 @@ float	Fc[MAXMESHX*MAXMESHY];
 
 void UpdateWaterMesh( WATEROBJECT * WO );
 void DisplayWaterObject(WATEROBJECT * WO);
-BOOL InitWaterObject(WATEROBJECT * WO);
+_Bool InitWaterObject(WATEROBJECT * WO);
 
 VECTOR	WaterNormal = { 0.0F, 1.0F, 0.0F };
 
@@ -77,23 +77,23 @@ float WaterFade = 1.0F;
 /*===================================================================
 	Procedure	:	Pre Water Load..
 	Input		:	char * filename....
-	Output		:	BOOL
+	Output		:	_Bool
 ===================================================================*/
 extern char ShortLevelNames[MAXLEVELS][32];
-extern int16 LevelNum;
-BOOL PreWaterLoad( char * Filename )
+extern int16_t LevelNum;
+_Bool PreWaterLoad( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
-	uint16 * Uint16Pnt;
-	uint32 * Uint32Pnt;
+	u_int16_t * Uint16Pnt;
+	u_int32_t * Uint32Pnt;
 	char	*	FileNamePnt;
 	char buf[256];
 	int i;
-	uint32	MagicNumber;
-	uint32	VersionNumber;
-	int8		TempFilename[ 256 ];
+	u_int32_t	MagicNumber;
+	u_int32_t	VersionNumber;
+	int8_t		TempFilename[ 256 ];
 
 	for( i = 0 ; i < MAXGROUPS ; i++ )
 	{
@@ -111,7 +111,7 @@ BOOL PreWaterLoad( char * Filename )
 	if( !File_Size )
 	{
 		// dont need water...
-		return TRUE;
+		return true;
 	}
 	Buffer = malloc( File_Size );
 	OrgWaterBuffer = Buffer;
@@ -119,16 +119,16 @@ BOOL PreWaterLoad( char * Filename )
 	if( !Buffer )
 	{
 		Msg( "Pre Water Load : Unable to allocate file buffer\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 	if( Read_Size != File_Size )
 	{
 		Msg( "Pre Water Load Error reading %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	Uint32Pnt = (uint32 *) Buffer;
+	Uint32Pnt = (u_int32_t *) Buffer;
 	MagicNumber = *Uint32Pnt++;
 	VersionNumber = *Uint32Pnt++;
 	Buffer = (char *) Uint32Pnt;
@@ -136,10 +136,10 @@ BOOL PreWaterLoad( char * Filename )
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != WAT_VERSION_NUMBER  ) )
 	{
 		Msg( "PreWaterLoad() Incompatible water( .WAT ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 
 	NumOfWaterObjects = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;		
@@ -151,26 +151,26 @@ BOOL PreWaterLoad( char * Filename )
 	
 	DebugPrintf("loading water texture: %s\n",TempFilename);
 
-	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , TRUE , TRUE, 0, 0 );		// dont colourkey
+	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], true , true , true, 0, 0 );		// dont colourkey
 	WaterBuffer = Buffer;
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:	Water Load..
 	Input		:	char * filename....
-	Output		:	BOOL
+	Output		:	_Bool
 ===================================================================*/
-BOOL WaterLoad( void )
+_Bool WaterLoad( void )
 {
 	char		*	Buffer;
 	char		*	OrgBuffer;
 	int			i;
 	WATEROBJECT	* WO;
 	float * FloatPnt;
-	uint16 * Uint16Pnt;
-	int16 * int16Pnt;
-	uint16 NumOfGroups = 0;
+	u_int16_t * Uint16Pnt;
+	int16_t * int16Pnt;
+	u_int16_t NumOfGroups = 0;
 	COLOR col;
 	COLOR * D3DColourPnt;
 
@@ -179,15 +179,15 @@ BOOL WaterLoad( void )
 	OrgBuffer = OrgWaterBuffer;
 
 	if( !Buffer )
-		return TRUE;
+		return true;
 
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 	NumOfGroups = *Uint16Pnt++;
 	Buffer = (char*) Uint16Pnt;
 
 	for( i = 0 ; i < NumOfGroups ; i++ )
 	{
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		GroupWaterInfo[i] = *Uint16Pnt++;
 		Buffer = (char*) Uint16Pnt;
 
@@ -207,7 +207,7 @@ BOOL WaterLoad( void )
 	if( !FirstWaterObject )
 	{
 		Msg( "Water Load : Unable to allocate buffer" );
-		return( FALSE );
+		return( false );
 	}
 	
 	memset(FirstWaterObject, 0, NumOfWaterObjects * sizeof(FirstWaterObject));	
@@ -218,7 +218,7 @@ BOOL WaterLoad( void )
 	for( i = 0 ; i < NumOfWaterObjects ; i++ )
 	{
 		WO->Status = WATERSTATUS_STATIC;
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		WO->Group = *Uint16Pnt++;
 		FloatPnt = (float*) Uint16Pnt;
 
@@ -247,18 +247,18 @@ BOOL WaterLoad( void )
 			DebugPrintf("Not loading water, either xVerts or yVerts was less than 1\n");
 			DebugPrintf("xVerts=%d, yVerts=%d, xSize=%d, ySize=%d, cellSize=%d\n",
 				WO->XVerts,WO->YVerts,WO->XSize,WO->YSize,WATER_CELLSIZE);
-			return FALSE;
+			return false;
 		}
 
 		if( ( WO->XVerts * WO->YVerts ) > 1024)
 		{
 			Msg( "Water Load : Water is to big\n" );
-			return( FALSE );
+			return( false );
 		}
 		if( !InitWaterObject( WO ) )
 		{
 			Msg( "Water Load : Unable to init water object\n" );
-			return( FALSE );
+			return( false );
 
 		}
 		AddWaterLink(WO);
@@ -281,17 +281,17 @@ BOOL WaterLoad( void )
 		WO->MaxWaveSize = *FloatPnt++;
 		Buffer = (char *) FloatPnt;		
 
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		WO->Trigger_WhenFilled = *Uint16Pnt++;
 		WO->Trigger_WhenDrained = *Uint16Pnt++;
-		int16Pnt = (int16*) Uint16Pnt;
+		int16Pnt = (int16_t*) Uint16Pnt;
 		WO->Damage = (((float) *int16Pnt++) / 60.0F);
 		Buffer = (char *) int16Pnt;
 
 		WO++;
 	}
 	free( OrgBuffer );
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -344,9 +344,9 @@ void AddWaterLink(WATEROBJECT * WO)
 /*===================================================================
 	Procedure	:		Init Everything to do with a Water Mesh...
 	Input		:		Nothing
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL InitWaterObject(WATEROBJECT * WO)
+_Bool InitWaterObject(WATEROBJECT * WO)
 {
 	int x,y;
 	LPTRIANGLE	FacePnt = NULL;
@@ -363,7 +363,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	if (!FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts))
 	{
 		DebugPrintf("water FSCreateVertexBuffer failed\n");
-		return FALSE;
+		return false;
 	}
 
 	// pre-count the number of tris so we know how big to make the index buffer
@@ -375,19 +375,19 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	if (!FSCreateIndexBuffer(&WO->renderObject, ntris*3 )) // 3 vertexes in a triangle
 	{
 		DebugPrintf("water FSCreateIndexBuffer failed\n");
-		return FALSE;
+		return false;
 	}
 
 	if (!FSLockVertexBuffer(&WO->renderObject, &lpLVERTEX))
 	{
 		DebugPrintf("water FSLockVertexBuffer failed\n");
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSLockIndexBuffer(&WO->renderObject, &lpIndices)))
 	{
 		DebugPrintf("water FSLockIndexBuffer failed\n");
-		return FALSE;
+		return false;
 	}
 
 	FacePnt =  (LPTRIANGLE) lpIndices;
@@ -433,13 +433,13 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	if (!(FSUnlockVertexBuffer(&WO->renderObject)))
 	{
 		DebugPrintf( "water FSUnlockVertexBuffer failed\n");
-		return FALSE;
+		return false;
 	}
 	
 	if (!(FSUnlockIndexBuffer(&WO->renderObject)))
 	{
 		DebugPrintf( "water FSUnlockIndexBuffer failed\n");
-		return FALSE ;
+		return false ;
 	}
 
 	/*	set the data for the execute buffer	*/
@@ -451,7 +451,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage]; 
 	WO->renderObject.textureGroups[0].colourkey = Tloadheader.ColourKey[WaterTPage];
 
-	return TRUE;
+	return true;
 }
 
 #ifdef OPT_ON
@@ -459,13 +459,13 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 #endif
 /*===================================================================
 	Procedure	:	Process Water Based on Group..
-	Input		:	uint16 group
+	Input		:	u_int16_t group
 	Output		:	NOTHING
 ===================================================================*/
-void GroupWaterProcessDisplay( uint16 group )
+void GroupWaterProcessDisplay( u_int16_t group )
 {
 	WATEROBJECT	* WO;
-	uint16 i;
+	u_int16_t i;
 	float r, g, b;
 
 	WO = FirstWaterObject;
@@ -570,7 +570,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 //	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
 //		return; // bjd
 //	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
-//		return FALSE;
+//		return false;
 
 	if (!(FSLockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject, &lpLVERTEX)))
 	{
@@ -655,7 +655,7 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 	Output		:		Nothing
 ===================================================================*/
 
-BOOL WaterObjectCollide( uint16 group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage )
+_Bool WaterObjectCollide( u_int16_t group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage )
 {
 	WATEROBJECT * Wo;
 
@@ -665,11 +665,11 @@ BOOL WaterObjectCollide( uint16 group , VECTOR *Origin, VECTOR *Offset, VECTOR *
 	{
 		if( SingleWaterObjectCollide( Wo, Origin, Offset, CollidePos ,  Damage) )
 		{
-			return TRUE;
+			return true;
 		}
 		Wo = Wo->GroupLink;
 	}
-	return FALSE;
+	return false;
 }
 /*===================================================================
 	Procedure	:		Am I In The Water..
@@ -677,14 +677,14 @@ BOOL WaterObjectCollide( uint16 group , VECTOR *Origin, VECTOR *Offset, VECTOR *
 	Output		:		Nothing
 ===================================================================*/
 
-BOOL InWater( uint16 group , VECTOR *OrgPos , float * Damage)
+_Bool InWater( u_int16_t group , VECTOR *OrgPos , float * Damage)
 {
 	WATEROBJECT * Wo;
 
 	if( GroupWaterInfo[group] == WATERSTATE_ALLWATER )
 	{
 		*Damage += GroupDamageInfo[group] * framelag;
-		return TRUE;
+		return true;
 	}
 
 	Wo = WaterObjectLink[group];
@@ -694,12 +694,12 @@ BOOL InWater( uint16 group , VECTOR *OrgPos , float * Damage)
 		if( OrgPos->y < ( Wo->Pos.y + Wo->offset ) )
 		{
 			*Damage += Wo->Damage * framelag;
-			return TRUE;
+			return true;
 		}
 
 		Wo = Wo->GroupLink;
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -710,7 +710,7 @@ BOOL InWater( uint16 group , VECTOR *OrgPos , float * Damage)
 	Input		:		Nothing
 	Output		:		Nothing
 ===================================================================*/
-BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage)
+_Bool SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage)
 {
 	float	WaterOffset;
 	float	Div;
@@ -741,7 +741,7 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 	Div = ( Offset->x * WaterNormal.x) + 
 		  ( Offset->y * WaterNormal.y) + 
 		  ( Offset->z * WaterNormal.z);
-	if( Div == 0.0F ) return FALSE;		/* Reject, Parallel */
+	if( Div == 0.0F ) return false;		/* Reject, Parallel */
 	Num = ( ( Origin->x * WaterNormal.x ) +
 		    ( Origin->y * WaterNormal.y ) +
 		    ( Origin->z * WaterNormal.z ) ) + WaterOffset ; 
@@ -751,8 +751,8 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 	Do Polygon collision
 ===================================================================*/
 
-	if( t < 0.0F ) return FALSE;		/* Intersection behind origin */
-	if( t > 1.0F ) return FALSE;		/* Intersection Greater then ray length */
+	if( t < 0.0F ) return false;		/* Intersection behind origin */
+	if( t > 1.0F ) return false;		/* Intersection Greater then ray length */
 
 	CollidePos->x = ( Origin->x + ( Offset->x * t ) );
 	CollidePos->y = ( Origin->y + ( Offset->y * t ) );
@@ -771,11 +771,11 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 	IWaterX = (int) floor( WaterX );
 	IWaterY = (int) floor( WaterY );
 	if ( IWaterX < 0 || IWaterX >= Wo->XVerts || IWaterY < 0 || IWaterY >= Wo->YVerts )
-		return FALSE;
+		return false;
 
 	if( Damage == 0.0F )
 	{
-		return TRUE;
+		return true;
 	}
 	else
 	{
@@ -867,7 +867,7 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 	}
 #endif
 	
-	return TRUE;
+	return true;
 }
 
 
@@ -920,7 +920,7 @@ void WaterProcess( void )
 	Input		:	NOTHING
 	Output		:	NOTHING
 ===================================================================*/
-void TriggerWaterDrain( uint16 * Data )
+void TriggerWaterDrain( u_int16_t * Data )
 {
 	WATEROBJECT	* WO;
 
@@ -935,7 +935,7 @@ void TriggerWaterDrain( uint16 * Data )
 	Input		:	NOTHING
 	Output		:	NOTHING
 ===================================================================*/
-void TriggerWaterFill( uint16 * Data )
+void TriggerWaterFill( u_int16_t * Data )
 {
 	WATEROBJECT	* WO;
 
@@ -949,17 +949,17 @@ void TriggerWaterFill( uint16 * Data )
 
 /*===================================================================
 	Procedure	:	Get Water Colour in group
-	Input		:	uint16		Group
-				:	uint8	*	Red;
-				:	uint8	*	Green;
-				:	uint8	*	Blue;
+	Input		:	u_int16_t		Group
+				:	u_int8_t	*	Red;
+				:	u_int8_t	*	Green;
+				:	u_int8_t	*	Blue;
 	Output		:	Nothing
 ===================================================================*/
-void GetWaterColour( uint16 Group, uint8 * Red, uint8 * Green, uint8 * Blue )
+void GetWaterColour( u_int16_t Group, u_int8_t * Red, u_int8_t * Green, u_int8_t * Blue )
 {
-	*Red	= (uint8) ( GroupWaterIntensity_Red[ Group ] * 255.0F );
-	*Green	= (uint8) ( GroupWaterIntensity_Green[ Group ] * 255.0F );
-	*Blue	= (uint8) ( GroupWaterIntensity_Blue[ Group ] * 255.0F );
+	*Red	= (u_int8_t) ( GroupWaterIntensity_Red[ Group ] * 255.0F );
+	*Green	= (u_int8_t) ( GroupWaterIntensity_Green[ Group ] * 255.0F );
+	*Blue	= (u_int8_t) ( GroupWaterIntensity_Blue[ Group ] * 255.0F );
 }
 
 #ifdef OPT_ON

@@ -28,23 +28,23 @@
 ===================================================================*/
 typedef struct MY_RGB {
 
-	uint8		R;
-	uint8		G;
-	uint8		B;
+	u_int8_t		R;
+	u_int8_t		G;
+	u_int8_t		B;
 
 } MY_RGB;
 
 typedef struct LINE {
 
-	uint16		Next;
-	uint16		Prev;
+	u_int16_t		Next;
+	u_int16_t		Prev;
 	VECTOR		StartPos;			// Start Position
 	VECTOR		EndPos;				// End Position
 	MY_RGB		StartCol;			// Start Colour
 	MY_RGB		EndCol;				// End Colour
-	uint8		StartTrans;			// Start Transparency
-	uint8		EndTrans;			// End Transparency
-	uint16		Group;				// Group ImIn
+	u_int8_t		StartTrans;			// Start Transparency
+	u_int8_t		EndTrans;			// End Transparency
+	u_int16_t		Group;				// Group ImIn
 
 } LINE;
 
@@ -53,9 +53,9 @@ typedef struct LINE {
 	Protptypes
 ===================================================================*/
 void InitLines( void );
-BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject );
-void KillUsedLine( uint16 i );
-uint16 FindFreeLine( void );
+_Bool ExecuteLines( u_int16_t group, RENDEROBJECT *renderObject );
+void KillUsedLine( u_int16_t i );
+u_int16_t FindFreeLine( void );
 
 #endif
 

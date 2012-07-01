@@ -28,8 +28,8 @@
 /*===================================================================
 	External Variables
 ===================================================================*/
-extern	int16			NextNewModel;
-extern	int16			LevelNum;
+extern	int16_t			NextNewModel;
+extern	int16_t			LevelNum;
 extern	char			LevelNames[ MAXLEVELS ][ 128 ];
 extern	float			framelag;
 extern	MLOADHEADER		Mloadheader;
@@ -44,26 +44,26 @@ extern	VECTOR			SlideRight;
 extern	BYTE			ChangeLevel_MyGameStatus;
 extern	BYTE			MyGameStatus;
 extern	MATRIX			MATRIX_Identity;
-extern	uint16			num_start_positions;
+extern	u_int16_t			num_start_positions;
 extern	GAMESTARTPOS	StartPositions[ MAXSTARTPOSITIONS ];
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	FRAME_INFO	*	Restart_Header;
-extern	uint16			last_start_position;
+extern	u_int16_t			last_start_position;
 extern	MODELNAME	*	ModNames;
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
-extern	uint16	FirstStartPositionInGroup[MAXGROUPS];
+extern	u_int16_t	FirstStartPositionInGroup[MAXGROUPS];
 
 /*===================================================================
 	Global Variables
 ===================================================================*/
-int16		RestartType = RESTARTTYPE_FACEME;
-uint16		RestartModel = (uint16) -1;
+int16_t		RestartType = RESTARTTYPE_FACEME;
+u_int16_t		RestartModel = (u_int16_t) -1;
 RESTART	*	FirstRestartUsed = NULL;
 RESTART	*	FirstRestartFree = NULL;
 RESTART		RestartPoints[ MAXRESTARTPOINTS ];
 RESTART	*	RestartPointGroups[ MAXGROUPS ];
-int16		NumRestartPointsPerGroup[ MAXGROUPS ];
-BOOL		ShowStartPoints = FALSE;
+int16_t		NumRestartPointsPerGroup[ MAXGROUPS ];
+_Bool		ShowStartPoints = false;
 
 ANIM_SEQ	RestartSeqs[] = {
 
@@ -80,7 +80,7 @@ ANIM_SEQ	RestartSeqs[] = {
 ===================================================================*/
 void InitRestartPoints( void )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	if( !ENABLE_RESTART ) return;
 
@@ -99,7 +99,7 @@ void InitRestartPoints( void )
 		RestartPoints[ i ].PrevFree = &RestartPoints[ i - 1 ];
 		RestartPoints[ i ].NextInGroup = NULL;
 		RestartPoints[ i ].PrevInGroup = NULL;
-		RestartPoints[ i ].FmPoly = (uint16) -1;
+		RestartPoints[ i ].FmPoly = (u_int16_t) -1;
 		RestartPoints[ i ].Index = i;
 	}
 
@@ -201,10 +201,10 @@ void KillUsedRestartPoint( RESTART * Object )
 				break;
 
 			case RESTARTTYPE_FACEME:
-				if( Object->FmPoly != (uint16) -1 )
+				if( Object->FmPoly != (u_int16_t) -1 )
 				{
 					KillUsedFmPoly( Object->FmPoly );
-					Object->FmPoly = (uint16) -1;
+					Object->FmPoly = (u_int16_t) -1;
 				}
 				break;
 		}
@@ -240,17 +240,17 @@ void ReleaseAllRestartPoints( void )
 /*===================================================================
 	Procedure	:	Load StartPoints
 	Input		:	Nothing
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL LoadStartPoints( void )
+_Bool LoadStartPoints( void )
 {
 	FILE	*	fp;
-	int16		Count;
+	int16_t		Count;
 	char	*	NewExt = ".STP";
 	char		NewFilename[ 256 ];
-	uint32		MagicNumber;
-	uint32		VersionNumber;
-	int16		OllyPad;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
+	int16_t		OllyPad;
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
 
@@ -259,23 +259,23 @@ BOOL LoadStartPoints( void )
 
 	if( fp != NULL )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != RESTART_VERSION_NUMBER  ) )
 		{
 			fclose( fp );
 			Msg( "LoadStartPoints() Incompatible start point file %s", &NewFilename[ 0 ] );
-			return( FALSE );
+			return( false );
 		}
 
 		for( Count = 0 ; Count < MAXGROUPS ; Count++ )
 		{
-			FirstStartPositionInGroup[Count] = (uint16) -1;
+			FirstStartPositionInGroup[Count] = (u_int16_t) -1;
 		}
 
 		
-		fread( &num_start_positions, sizeof( int16 ), 1, fp );
+		fread( &num_start_positions, sizeof( int16_t ), 1, fp );
 
 		for( Count = 0; Count < num_start_positions; Count++ )
 		{
@@ -288,13 +288,13 @@ BOOL LoadStartPoints( void )
 			fread( &StartPositions[ Count ].Up.x, sizeof( float ), 1, fp );
 			fread( &StartPositions[ Count ].Up.y, sizeof( float ), 1, fp );
 			fread( &StartPositions[ Count ].Up.z, sizeof( float ), 1, fp );
-			fread( &StartPositions[ Count ].Group, sizeof( uint16 ), 1, fp );
-			fread( &OllyPad, sizeof( int16 ), 1, fp );
+			fread( &StartPositions[ Count ].Group, sizeof( u_int16_t ), 1, fp );
+			fread( &OllyPad, sizeof( int16_t ), 1, fp );
 			Mloadheader.Group[ StartPositions[ Count ].Group ].StartPosInThisGroup = Count;
 
-			if( FirstStartPositionInGroup[StartPositions[Count].Group] == (uint16) -1 )
+			if( FirstStartPositionInGroup[StartPositions[Count].Group] == (u_int16_t) -1 )
 			{
-				StartPositions[Count].NextInGroup = (uint16) -1;
+				StartPositions[Count].NextInGroup = (u_int16_t) -1;
 				FirstStartPositionInGroup[StartPositions[Count].Group] = Count;
 			}else{
 				StartPositions[Count].NextInGroup = FirstStartPositionInGroup[StartPositions[Count].Group];
@@ -306,24 +306,24 @@ BOOL LoadStartPoints( void )
 		fclose( fp );
 	}
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	PreLoad Restart Points
 	Input		:	Nothing
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL PreLoadRestartPoints( void )
+_Bool PreLoadRestartPoints( void )
 {
 	char	*	RestartFilename = "data\\bgobjects\\Restart.cob";
-	int16		TempModel;
+	int16_t		TempModel;
 
-	if( !ENABLE_RESTART ) return( TRUE );
+	if( !ENABLE_RESTART ) return( true );
 
 	if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
 		  ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
-		  ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) ) return TRUE;
+		  ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) ) return true;
 
 	ModNames = &ModelNames[ 0 ];
 
@@ -333,10 +333,10 @@ BOOL PreLoadRestartPoints( void )
 			RestartModel = NextNewModel;
 			TempModel = NextNewModel;
 
-			if( !PreLoadCompObj( RestartFilename, &TempModel, FALSE ) )
+			if( !PreLoadCompObj( RestartFilename, &TempModel, false ) )
 			{
 				Msg( "PreLoadRestart() Error preloading restart point\n" );
-				return( FALSE );
+				return( false );
 			}
 
 			NextNewModel = TempModel;
@@ -346,29 +346,29 @@ BOOL PreLoadRestartPoints( void )
 			break;
 	}
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Load RestartPoints
 	Input		:	Nothing
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL LoadRestartPoints( void )
+_Bool LoadRestartPoints( void )
 {
-	int16		Count;
+	int16_t		Count;
 	char	*	RestartFilename = "data\\bgobjects\\Restart.cob";
-	uint16		Group;
+	u_int16_t		Group;
 	VECTOR		Pos;
 	VECTOR		DirVector;
 	VECTOR		UpVector;
-	int16		TempModel;
+	int16_t		TempModel;
 	COMP_OBJ *	Comp = NULL;
 	float		OverallTime, MidTime;
-	uint16		Int_Group;
+	u_int16_t		Int_Group;
 	VECTOR		Int_Point;
 	NORMAL		Int_Normal;
-	uint16		Int_Group2;
+	u_int16_t		Int_Group2;
 	VECTOR		Int_Point2;
 	NORMAL		Int_Normal2;
 	VECTOR		TempVector;
@@ -377,11 +377,11 @@ BOOL LoadRestartPoints( void )
 	VECTOR		TopLeft, BottomRight;
 	VECTOR		TempPos = { 0.0F, 0.0F, 0.0F };
 
-	if( !ENABLE_RESTART ) return( TRUE );
+	if( !ENABLE_RESTART ) return( true );
 
 	if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
 		  ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
-		  ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) ) return TRUE;
+		  ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) ) return true;
 
 
 	switch( RestartType )
@@ -405,10 +405,10 @@ BOOL LoadRestartPoints( void )
 				RayVector.z = ( SlideUp.z * MaxColDistance );
 
 				if( !BackgroundCollide( &MCloadheadert0, &Mloadheader, &Pos, Group, &RayVector, &Int_Point, &Int_Group,
-										&Int_Normal, &TempVector, FALSE, NULL ) )
+										&Int_Normal, &TempVector, false, NULL ) )
 				{
 					Msg( "LoadRestartPoijnts() Restart point didn't collide with ceiling()\n" );
-					return( FALSE );
+					return( false );
 				}
 
 				RayVector.x = ( SlideDown.x * MaxColDistance );
@@ -416,10 +416,10 @@ BOOL LoadRestartPoints( void )
 				RayVector.z = ( SlideDown.z * MaxColDistance );
 
 				if( !BackgroundCollide( &MCloadheadert0, &Mloadheader, &Pos, Group, &RayVector, &Int_Point2, &Int_Group2,
-										&Int_Normal2, &TempVector, FALSE, NULL ) )
+										&Int_Normal2, &TempVector, false, NULL ) )
 				{
 					Msg( "LoadRestartPoijnts() Restart point didn't collide with floor()\n" );
-					return( FALSE );
+					return( false );
 				}
 
 				RayVector.x = ( Int_Point.x - Int_Point2.x );
@@ -444,7 +444,7 @@ BOOL LoadRestartPoints( void )
 				if( !Comp )
 				{
 					Msg( "LoadRestartPoints() Error loading restart point\n" );
-					return( FALSE );
+					return( false );
 				}
 				else
 				{
@@ -457,7 +457,7 @@ BOOL LoadRestartPoints( void )
 					if( !Object )
 					{
 						Msg( "LoadRestartPoints() Couldn't find free restart point\n" );
-						return( FALSE );
+						return( false );
 					}
 					else
 					{
@@ -495,7 +495,7 @@ BOOL LoadRestartPoints( void )
 				if( !Object )
 				{
 					Msg( "LoadRestartPoints() Couldn't find free restart point\n" );
-					return( FALSE );
+					return( false );
 				}
 				else
 				{
@@ -503,7 +503,7 @@ BOOL LoadRestartPoints( void )
 					{
 						Object->Sequence = RESTARTSEQ_Active;
 
-						if( Object->FmPoly != (uint16) -1 )
+						if( Object->FmPoly != (u_int16_t) -1 )
 						{
 							FmPolys[ Object->FmPoly ].SeqNum = FM_RESTART_ACTIVE;
 							FmPolys[ Object->FmPoly ].R = 64;
@@ -519,21 +519,21 @@ BOOL LoadRestartPoints( void )
 			break;
 	}
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Setup FaceMe RestartPoint
-	Input		:	uint16		Group
+	Input		:	u_int16_t		Group
 				:	VECTOR	*	Pos
 				:	VECTOR	*	DirVector
 				:	VECTOR	*	UpVector
 	Output		:	RESTART	*	Restart Point ( Null if None )
 ===================================================================*/
-RESTART * InitOneFaceMeRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector )
+RESTART * InitOneFaceMeRestartPoint( u_int16_t Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector )
 {
 	RESTART	*	Object;
-	uint16		FmPoly;
+	u_int16_t		FmPoly;
 
 	Object = FindFreeRestartPoint();
 
@@ -547,7 +547,7 @@ RESTART * InitOneFaceMeRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVec
 
 		FmPoly = FindFreeFmPoly();					// Faceme polygon attached
 
-		if( FmPoly != (uint16 ) -1 )
+		if( FmPoly != (u_int16_t ) -1 )
 		{
 			FmPolys[ FmPoly ].LifeCount = 1000.0F;
 			FmPolys[ FmPoly ].Pos = *Pos;
@@ -575,7 +575,7 @@ RESTART * InitOneFaceMeRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVec
 		}
 		else
 		{
-			Object->FmPoly = (uint16) -1;
+			Object->FmPoly = (u_int16_t) -1;
 		}
 	}
 	return( Object );
@@ -583,7 +583,7 @@ RESTART * InitOneFaceMeRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVec
 
 /*===================================================================
 	Procedure	:	Setup RestartPoint
-	Input		:	uint16		Group
+	Input		:	u_int16_t		Group
 				:	VECTOR	*	Pos
 				:	VECTOR	*	DirVector
 				:	VECTOR	*	UpVector
@@ -591,7 +591,7 @@ RESTART * InitOneFaceMeRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVec
 				:	float		OverallTime
 	Output		:	RESTART	*	Restart Point ( Null if None )
 ===================================================================*/
-RESTART * InitOneRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector, COMP_OBJ * CompObj, float OverallTime )
+RESTART * InitOneRestartPoint( u_int16_t Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector, COMP_OBJ * CompObj, float OverallTime )
 {
 	RESTART	*	Object;
 	QUAT		TempQuat;
@@ -684,7 +684,7 @@ void ProcessRestartPoints( void )
 						break;
 
 					case RESTARTSEQ_Activating:
-						if( Object->FmPoly != (uint16) -1 )
+						if( Object->FmPoly != (u_int16_t) -1 )
 						{
 							FmPolys[ Object->FmPoly ].SeqNum = FM_RESTART_ACTIVE;
 							FmPolys[ Object->FmPoly ].Start_R = 64;
@@ -698,7 +698,7 @@ void ProcessRestartPoints( void )
 						break;
 
 					case RESTARTSEQ_Deactivating:
-						if( Object->FmPoly != (uint16) -1 )
+						if( Object->FmPoly != (u_int16_t) -1 )
 						{
 							FmPolys[ Object->FmPoly ].SeqNum = FM_RESTART_INACTIVE;
 							FmPolys[ Object->FmPoly ].Start_R = 128;
@@ -717,11 +717,11 @@ void ProcessRestartPoints( void )
 
 /*===================================================================
 	Procedure	:	Setup RestartPoint group link list
-	Input		:	uint16		New RestartPoint
-				:	uint16		Old RestartPoint
+	Input		:	u_int16_t		New RestartPoint
+				:	u_int16_t		Old RestartPoint
 	Output		:	Nothing
 ===================================================================*/
-void ActivateRestartPoint( uint16 NewStartPos, uint16 OldStartPos )
+void ActivateRestartPoint( u_int16_t NewStartPos, u_int16_t OldStartPos )
 {
 	if( !ENABLE_RESTART ) return;
 
@@ -752,7 +752,7 @@ void ActivateRestartPoint( uint16 NewStartPos, uint16 OldStartPos )
 ===================================================================*/
 void SetupRestartPointGroups( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < MAXGROUPS; Count++ )
 	{
@@ -764,10 +764,10 @@ void SetupRestartPointGroups( void )
 /*===================================================================
 	Procedure	:	Add RestartPoint to group link list
 	Input		:	RESTART	*	RestartPoint
-				:	uint16		Group
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void AddRestartPointToGroup( RESTART * Object, uint16 Group )
+void AddRestartPointToGroup( RESTART * Object, u_int16_t Group )
 {
 	Object->PrevInGroup = NULL;
 	Object->NextInGroup = RestartPointGroups[ Group ];
@@ -779,10 +779,10 @@ void AddRestartPointToGroup( RESTART * Object, uint16 Group )
 /*===================================================================
 	Procedure	:	Remove RestartPoint from group link list
 	Input		:	RESTART	*	RestartPoint
-				:	uint16		Group
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void RemoveRestartPointFromGroup( RESTART * Object, uint16 Group )
+void RemoveRestartPointFromGroup( RESTART * Object, u_int16_t Group )
 {
 	if( Object->PrevInGroup ) Object->PrevInGroup->NextInGroup = Object->NextInGroup;
 	else RestartPointGroups[ Group ] = Object->NextInGroup;
@@ -795,11 +795,11 @@ void RemoveRestartPointFromGroup( RESTART * Object, uint16 Group )
 /*===================================================================
 	Procedure	:	Move RestartPoint from 1 group to another
 	Input		:	RESTART	*	Retart Point
-				:	uint16		OldGroup
-				:	uint16		NewGroup
+				:	u_int16_t		OldGroup
+				:	u_int16_t		NewGroup
 	Output		:	Nothing
 ===================================================================*/
-void MoveRestartPointToGroup( RESTART * Object, uint16 OldGroup, uint16 NewGroup )
+void MoveRestartPointToGroup( RESTART * Object, u_int16_t OldGroup, u_int16_t NewGroup )
 {
 	RemoveRestartPointFromGroup( Object, OldGroup );
     AddRestartPointToGroup( Object, NewGroup );
@@ -814,7 +814,7 @@ FILE * SaveStartRestartPoints( FILE * fp )
 {
 	if( fp )
 	{
-		fwrite( &last_start_position, sizeof( uint16 ), 1, fp );
+		fwrite( &last_start_position, sizeof( u_int16_t ), 1, fp );
 	}
 
 	return( fp );
@@ -829,7 +829,7 @@ FILE * LoadStartRestartPoints( FILE * fp )
 {
 	if( fp )
 	{
-		fread( &last_start_position, sizeof( uint16 ), 1, fp );
+		fread( &last_start_position, sizeof( u_int16_t ), 1, fp );
 	}
 
 	return( fp );
@@ -837,12 +837,12 @@ FILE * LoadStartRestartPoints( FILE * fp )
 
 /*===================================================================
 	Procedure	:	Display StartPoints
-	Input		:	uint16 Group
+	Input		:	u_int16_t Group
 	Output		:	Nothing
 ===================================================================*/
 void DisplayStartPoints( void )
 {
-	int16	Count;
+	int16_t	Count;
 	VECTOR	TopLeft;
 	VECTOR	BottomRight;
 

@@ -31,8 +31,8 @@ extern MLOADHEADER Mloadheader;
 static int luacoll_bgcollide(lua_State *L)
 {
 	VECTOR *startpos, *move_off, *endpos, *normal, *newtarget;
-	uint16 startgroup, endgroup;
-	BOOL bgcol;
+	u_int16_t startgroup, endgroup;
+	_Bool bgcol;
 
 	/* get input parameters */
 	startpos = luaL_checkudata(L, 1, "VECTOR");

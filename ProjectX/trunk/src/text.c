@@ -34,28 +34,28 @@
 		Externals ...
 ===================================================================*/
 
-extern BOOL Debug;
-extern BOOL	CanDoDamage[MAX_PLAYERS+1];
-extern BOOL	PlayDemo;
+extern _Bool Debug;
+extern _Bool	CanDoDamage[MAX_PLAYERS+1];
+extern _Bool	PlayDemo;
 extern px_timer_t LastPacketTime[MAX_PLAYERS+1];
-extern BOOL	CTF;
-extern BOOL CaptureTheFlag;
-extern BOOL BountyHunt;
+extern _Bool	CTF;
+extern _Bool CaptureTheFlag;
+extern _Bool BountyHunt;
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
 extern float	real_framelag;
 extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 
-extern	BOOL	TeamGame;
+extern	_Bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
-extern	BOOL	ShowTeamInfo;
+extern	_Bool	ShowTeamInfo;
 extern	MLOADHEADER Mloadheader;
-extern	int16			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
-extern	int16					Lives;
-extern	int16					MaxKills;
-extern	BOOL                    IsHost;
-extern	int16			NewLevelNum;
-extern	int16			NumLevels;
+extern	int16_t			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
+extern	int16_t					Lives;
+extern	int16_t					MaxKills;
+extern	_Bool                    IsHost;
+extern	int16_t			NewLevelNum;
+extern	int16_t			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
 
 extern render_info_t render_info;
@@ -64,7 +64,7 @@ extern render_info_t render_info;
 extern int SwitchedToWatchMode;
 
 // color names are defined in text.h colors_t
-uint8 Colourtrans[MAXFONTCOLOURS][3] = {
+u_int8_t Colourtrans[MAXFONTCOLOURS][3] = {
 	// r, g, b   values...
 	{ 192,192,192 },	// gray
 	{ 255,64,64 },		// red 
@@ -99,8 +99,8 @@ float MaxMessageTime = 5.0f;
 
 int ReliabilityTab[MAX_PLAYERS+1];
 
-int16	TextActivatedOrder = 0;
-int16	CurrentTextActivated = 0;
+int16_t	TextActivatedOrder = 0;
+int16_t	CurrentTextActivated = 0;
 int	TeamCol[MAX_TEAMS] = { 1, 2, 3, 4 };
 char *TeamName[ MAX_TEAMS ] = // team colour names should match TeamCol[] colours (given in Colourtrans[][] below)
 {
@@ -115,11 +115,11 @@ int FontHeight = 8;
 int FontSourceWidth = 8;
 int FontSourceHeight = 8;
 
-int16	NumOfActivePlayers = 0;
+int16_t	NumOfActivePlayers = 0;
 
 int	PermX;
-uint16 big[4] = { 10000 , 1000 , 100 , 10 };
-uint16 little[4] = { 1000 , 100 , 10 , 1 };
+u_int16_t big[4] = { 10000 , 1000 , 100 , 10 };
+u_int16_t little[4] = { 1000 , 100 , 10 , 1 };
 
 // player text messages
 float PlayerMessageTime[MAX_MESSAGES] = { 0.0F , 0.0F , 0.0F , 0.0F };
@@ -133,9 +133,9 @@ char MessageBank[MAX_MESSAGES][MAXPERLINE];
 char MessageBankLong[MAX_MESSAGES_LONG][MAXPERLINE];
 int MessageColourLong[MAX_MESSAGES_LONG];
 
-uint8	CharTrans[256];
+u_int8_t	CharTrans[256];
 
-uint16 NumOfTextMessages = 0;
+u_int16_t NumOfTextMessages = 0;
 char * TextMessagesPnt[MAXTEXTMESSAGES];
 char * TextMessages = NULL;
 TEXTMSGINFO * TextMsgInfo = NULL;
@@ -146,12 +146,12 @@ STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 
 
 /*===================================================================
-	Procedure	:		Print a int16 number in small 4x4 chars..
-	Input		:		int16 num, uint16 x , uint16 y
+	Procedure	:		Print a int16_t number in small 4x4 chars..
+	Input		:		int16_t num, u_int16_t x , u_int16_t y
 	Output		:		nothing
 ===================================================================*/
 
-int Printint16( int16 num , int x , int y , int color )
+int Printint16_t( int16_t num , int x , int y , int color )
 {
 	static char buf[ 128 ];
 
@@ -167,17 +167,17 @@ int Printint16( int16 num , int x , int y , int color )
 
 
 /*===================================================================
-	Procedure	:		Print a uint16 number in small 4x4 chars..
-	Input		:		uint16 num, uint16 x , uint16 y
+	Procedure	:		Print a u_int16_t number in small 4x4 chars..
+	Input		:		u_int16_t num, u_int16_t x , u_int16_t y
 	Output		:		nothing
 ===================================================================*/
 
-void Printuint16( uint16 tempnum , int x , int y , int col )
+void Printu_int16_t( u_int16_t tempnum , int x , int y , int col )
 {
 	int i;
 	int num;
 	int	Zeros= 0 ;
-	uint8 r , g , b;
+	u_int8_t r , g , b;
 
 	if( (y + FontHeight ) >= render_info.window_size.cy )
 		return;
@@ -193,7 +193,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 		if( ( num + Zeros != 0 ) || ( i == 3 ) )
 		{
 			Zeros = 1;
-			AddScreenPolyText( (uint16) (num+1), (float) x , (float) y, r, g, b, 255 );
+			AddScreenPolyText( (u_int16_t) (num+1), (float) x , (float) y, r, g, b, 255 );
 			x += FontWidth;
 		}
 	}
@@ -201,7 +201,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 
 /*===================================================================
 	Procedure	:		Print some Centered text at a specified Y
-	Input		:		char * Text, uint16 y
+	Input		:		char * Text, u_int16_t y
 	Output		:		nothing
 ===================================================================*/
 void CenterPrint4x5Text( char * Text , int y, int col )
@@ -221,7 +221,7 @@ void CenterPrint4x5Text( char * Text , int y, int col )
 
 /*===================================================================
 	Procedure	:		Print some Centered text at a specified Y
-	Input		:		char * Text, uint16 y
+	Input		:		char * Text, u_int16_t y
 	Output		:		nothing
 ===================================================================*/
 void CenterPrint4x5Text2( char * Text , int x, int y, int col )
@@ -274,13 +274,13 @@ int Print4x5TextSmall( char * Text , int x , int y , int color )
 
 /*===================================================================
 	Procedure	:		Print some text at a specified or the last pos
-	Input		:		char * Text, uint16 x , uint16 y
+	Input		:		char * Text, u_int16_t x , u_int16_t y
 	Output		:		last x position
 ===================================================================*/
 int Print4x5Text( char * Text , int x , int y , int color )
 {
-	uint8 num;
-	uint8 r , g , b;
+	u_int8_t num;
+	u_int8_t r , g , b;
 
 	if( (y + FontHeight ) >= render_info.window_size.cy )
 		return PermX;
@@ -298,7 +298,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 		num = CharTrans[num];
 
 		if ( num )
-				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
+				AddScreenPolyText( (u_int16_t) num, (float) PermX , (float) y, r , g , b, 255 );
 	
 		PermX += FontWidth;
 	}
@@ -309,13 +309,13 @@ int Print4x5Text( char * Text , int x , int y , int color )
 
 /*===================================================================
 	Procedure	:		Print some text at a specified or the last pos
-	Input		:		char * Text, uint16 x , uint16 y
+	Input		:		char * Text, u_int16_t x , u_int16_t y
 	Output		:		last x position
 ===================================================================*/
 void PrintClipped4x5Text( char * Text , int x , int y , int col )
 {
-	uint8 num;
-	uint8 r , g , b;
+	u_int8_t num;
+	u_int8_t r , g , b;
 	int dummy;
 
 
@@ -333,7 +333,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 		num = CharTrans[num];
 
 		if ( num )
-			AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
+			AddScreenPolyText( (u_int16_t) num, (float) PermX , (float) y, r , g , b, 255 );
 	
 		PermX += FontWidth;
 	}
@@ -640,26 +640,26 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 ===================================================================*/
 #define	FLASH_RATE	( 15.0F )
 float	FlashSpeed = 0.0F;
-BOOL	FlashToggle = FALSE;
+_Bool	FlashToggle = false;
 
 // (stats.c)
 extern int GetScoreStats(int Player);
 
 
-extern BOOL ShowPlayersOnHUD;
-extern BOOL ShowPlayersOnHUDbyKills;
+extern _Bool ShowPlayersOnHUD;
+extern _Bool ShowPlayersOnHUDbyKills;
 extern BYTE MyGameStatus;
 void PrintScoreSort( void )
 {
-	BOOL teamOK[MAX_TEAMS];
-	BOOL teamleft[MAX_TEAMS];
+	_Bool teamOK[MAX_TEAMS];
+	_Bool teamleft[MAX_TEAMS];
 	int i,e, pos;
-	int16 TeamBounty[MAX_TEAMS];
+	int16_t TeamBounty[MAX_TEAMS];
 	int TeamBadConnection[MAX_TEAMS];
 	char buf[256];
 	int col;
-	uint16 scorewidth = 1;
-	uint16 tempwidth = 0;
+	u_int16_t scorewidth = 1;
+	u_int16_t tempwidth = 0;
 
 	NumOfActivePlayers = 0;
 
@@ -667,7 +667,7 @@ void PrintScoreSort( void )
 	if( MyGameStatus == STATUS_SinglePlayer )
 	{
 		Print4x5Text( LIVES , 8 , FontHeight , 2 );
-		Printuint16( (uint16) Lives , 8+(8*FontWidth) , FontHeight , 1 );
+		Printu_int16_t( (u_int16_t) Lives , 8+(8*FontWidth) , FontHeight , 1 );
 		return;
 	}
 
@@ -691,7 +691,7 @@ void PrintScoreSort( void )
 			{
 				for(i=0; i<MAX_PLAYERS; i++)
 				{
-					tempwidth = (uint16) log10(abs(GetKills(i)))+1;
+					tempwidth = (u_int16_t) log10(abs(GetKills(i)))+1;
 					if(GetKills(i) < 0)	tempwidth++;
 					if(tempwidth > scorewidth) scorewidth = tempwidth;			
 				}
@@ -700,7 +700,7 @@ void PrintScoreSort( void )
 			{
 				for(i=0; i<MAX_PLAYERS; i++)
 				{
-					tempwidth = (uint16) log10(abs(GetRealScore(i)))+1;
+					tempwidth = (u_int16_t) log10(abs(GetRealScore(i)))+1;
 					if(GetRealScore(i) < 0)	tempwidth++;
 					if(tempwidth > scorewidth) scorewidth = tempwidth;
 				}
@@ -734,9 +734,9 @@ void PrintScoreSort( void )
 				// print real score
 				{
 					if(ShowPlayersOnHUDbyKills)
-						Printint16( GetKills(GetPlayerByRank(i)), left_offset, top_offset, GRAY ); // kills - suacides - friendly
+						Printint16_t( GetKills(GetPlayerByRank(i)), left_offset, top_offset, GRAY ); // kills - suacides - friendly
 					else
-						Printint16( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
+						Printint16_t( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
 				}
 
 				left_offset += scorewidth+8.0F; // give a padding space
@@ -746,7 +746,7 @@ void PrintScoreSort( void )
 				{
 					if( Ships[GetPlayerByRank(i)].network_player != NULL )
 					{
-						sprintf( (char*) &buf[0] ,"%*dms", 4, (uint16) Ships[GetPlayerByRank(i)].network_player->ping );
+						sprintf( (char*) &buf[0] ,"%*dms", 4, (u_int16_t) Ships[GetPlayerByRank(i)].network_player->ping );
 						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 
 				/*		sprintf( (char*) &buf[0] ,"IP: %s PING: %d LOSS: %d LOST: %d BW IN: %d BW OUT: %d PORT: %d", 
@@ -772,8 +772,8 @@ void PrintScoreSort( void )
 	else
 	{
 		for (i = 0; i < MAX_TEAMS; i++)
-		{	teamOK[i] = FALSE;
-			teamleft[i] = TRUE;
+		{	teamOK[i] = false;
+			teamleft[i] = true;
 			TeamCol[i] = i + 1;
 			TeamBounty[ i ] = 0;
 			TeamBadConnection[ i ] = 0;
@@ -783,14 +783,14 @@ void PrintScoreSort( void )
 		{
 			if ( (TeamNumber[i] < MAX_TEAMS) && (GameStatus[i] == STATUS_Normal ) )
 			{
-				teamOK[TeamNumber[i]] = TRUE;
+				teamOK[TeamNumber[i]] = true;
 				switch (GameStatus[i] )
 				{
 				case STATUS_Left:
 				case STATUS_LeftCrashed:
 					break;
 				default:
-					teamleft[TeamNumber[i]] = FALSE;
+					teamleft[TeamNumber[i]] = false;
 					if( ReliabilityTab[i] > TeamBadConnection[ TeamNumber[ i ] ] )
 						TeamBadConnection[ TeamNumber[ i ] ] = ReliabilityTab[i];
 					if ( Ships[ i ].Object.Flags & SHIP_CarryingBounty )
@@ -806,32 +806,32 @@ void PrintScoreSort( void )
 		{
 			if (teamOK[i])
 			{
-				BOOL show;
+				_Bool show;
 
-				show = FALSE;
+				show = false;
 				if ( CaptureTheFlag || CTF )
 				{
 					if ( !TeamFlag[ i ] || FlashToggle )
-						show = TRUE;
+						show = true;
 				}
 				else if ( BountyHunt )
 				{
 					if ( !TeamBounty[ i ] || FlashToggle )
-						show = TRUE;
+						show = true;
 				}
 				else
-					show = TRUE;
+					show = true;
 				if ( show )
 				{
 					col = ( teamleft[i] ) ? 8 :
 						  ( TeamNumber[ WhoIAm ] == i && FlashToggle ) ? 0 : TeamCol[i] ;
 #ifdef TEAM_NUMBERS
 					Print4x5Text( TEAM, 8 , pos*(FontHeight+1)+FontHeight , col );
-					Printuint16( (uint16)(i + 1) , 8+(5*FontWidth) , pos*(FontHeight+1)+FontHeight , col );
+					Printu_int16_t( (u_int16_t)(i + 1) , 8+(5*FontWidth) , pos*(FontHeight+1)+FontHeight , col );
 #else
 					Print4x5Text( TeamName[ i ] , 8 , pos*(FontHeight+1)+FontHeight , col );
 #endif
-					Printint16( GetTeamScoreByTeamNumber(i) , 8+(7*FontWidth) , pos*(FontHeight+1)+FontHeight , col );
+					Printint16_t( GetTeamScoreByTeamNumber(i) , 8+(7*FontWidth) , pos*(FontHeight+1)+FontHeight , col );
 				}
 				pos++;
 			}
@@ -870,9 +870,9 @@ void PrintScoreSort( void )
 /*===================================================================
 	Procedure	:		Read in the level specific text messages.......
 	Input		:		char *Filename
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL ReadTxtFile( char *Filename )
+_Bool ReadTxtFile( char *Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -891,19 +891,19 @@ BOOL ReadTxtFile( char *Filename )
 	if( !File_Size )
 	{
 		// dont need water...
-		return TRUE;
+		return true;
 	}
 	Buffer = calloc( File_Size+1 , 1 );
 	if( !Buffer )
 	{
 		Msg( "ReadTxtFile : Unable to allocate file buffer\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 	if( Read_Size != File_Size )
 	{
 		Msg( "ReadTxtFile Load Error reading %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	TextMessages = Buffer;
 
@@ -918,7 +918,7 @@ BOOL ReadTxtFile( char *Filename )
 
 		TextMessagesPnt[++NumOfTextMessages] = strtok( NULL , "\n" );
 	}
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:		Free level specific text messages.......
@@ -936,13 +936,13 @@ void FreeTxtFile( void )
 }
 /*===================================================================
 	Procedure	:		Trigger text message.......
-	Input		:		uint16 * Data
+	Input		:		u_int16_t * Data
 	Output		:		void
 ===================================================================*/
-void TriggerTextMessage( uint16 * Data )
+void TriggerTextMessage( u_int16_t * Data )
 {
 	TEXTMSGINFO * Tmi;
-	BOOL	DoneBefore = FALSE;
+	_Bool	DoneBefore = false;
 
 	Tmi = TextMsgInfo;
 	if( Tmi )
@@ -951,7 +951,7 @@ void TriggerTextMessage( uint16 * Data )
 		if( Tmi->Type )
 		{
 			DoneBefore = Tmi->Activated;
-			Tmi->Activated = TRUE;
+			Tmi->Activated = true;
 		}
 	}
 
@@ -1032,10 +1032,10 @@ void InitStatsMessages( void )
 /*
 typedef struct
 {
-	BOOL valid;
-	BOOL valid_this_time;
-	uint16 num_variations;
-	uint16 current_variation;
+	_Bool valid;
+	_Bool valid_this_time;
+	u_int16_t num_variations;
+	u_int16_t current_variation;
 	char text[MAX_STATS_MESSAGE_VARIATIONS][MAX_STATS_MESSAGE_LENGTH];
 	void *variable_ptr[MAX_STATS_MESSAGE_VARIATIONS];
 } STATSMESSAGE;
@@ -1105,7 +1105,7 @@ typedef struct
 			k = 0;
 			if ( fscanf( f, " %80s", token ) != 1 )
 				break;
-			IgnoreMessage = FALSE;
+			IgnoreMessage = false;
 			while ( _strcmp( token, "EndVars" ) )
 			{
 	 			for ( j = 0; MessageVarLookup[ j ].keyword; j++ )
@@ -1119,7 +1119,7 @@ typedef struct
 				StatsMessages[MessageNum].variable_ptr[num_variations][ k++ ] = MessageVarLookup[ j ].var_ptr;
 				if ( fscanf( f, " %80s", token ) != 1 )
 				{
-				 	IgnoreMessage = TRUE;
+				 	IgnoreMessage = true;
 					break;				
 				}
 			}
@@ -1140,18 +1140,18 @@ typedef struct
 /*===================================================================
 	Procedure	:		Read in the level specific text message Info.......
 	Input		:		char *Filename
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL ReadMsgFile( char *Filename )
+_Bool ReadMsgFile( char *Filename )
 {
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
 	char		*	OrgBuffer;
-	int16		*	int16Pnt;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
-	uint32		* uint32Pnt;
+	int16_t		*	int16Pnt;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
+	u_int32_t		* u_int32Pnt;
 	TEXTMSGINFO * Tmi;
 	int i;
 
@@ -1159,44 +1159,44 @@ BOOL ReadMsgFile( char *Filename )
 	CurrentTextActivated = 0;
 	TextMsgInfo = NULL;
 	if( !NumOfTextMessages)
-		return TRUE;
+		return true;
 	
 	File_Size = Get_File_Size( Filename );
 	if( !File_Size )
 	{
 		// dont need water...
-		return TRUE;
+		return true;
 	}
 	Buffer = calloc( File_Size+1 , 1 );
 	if( !Buffer )
 	{
 		Msg( "ReadMsgFile : Unable to allocate file buffer\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 	if( Read_Size != File_Size )
 	{
 		Msg( "ReadMsgFile Load Error reading %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	OrgBuffer = Buffer;
 
-	uint32Pnt = (uint32*) Buffer;
-	MagicNumber = *uint32Pnt++;
-	VersionNumber = *uint32Pnt++;
+	u_int32Pnt = (u_int32_t*) Buffer;
+	MagicNumber = *u_int32Pnt++;
+	VersionNumber = *u_int32Pnt++;
 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != MSG_VERSION_NUMBER  ) )
 	{
 		Msg( "ReadMsgFile() Incompatible msg file %s", Filename );
 		free( OrgBuffer );
-		return( FALSE );
+		return( false );
 	}
 
-	int16Pnt = (int16*) uint32Pnt;
+	int16Pnt = (int16_t*) u_int32Pnt;
 	if( *int16Pnt++ != NumOfTextMessages )
 	{
 		Msg( "ReadMsgFile : .Msg not compatible with .Txt\n" );
-		return( FALSE );
+		return( false );
 	}
 #ifdef DEBUG_TEXT_MESSAGES
 	TextMsgInfo = (TEXTMSGINFO*) malloc( ( NumOfTextMessages + 1024 ) * sizeof(TEXTMSGINFO) );
@@ -1206,13 +1206,13 @@ BOOL ReadMsgFile( char *Filename )
 	if( !TextMsgInfo )
 	{
 		Msg( "ReadMsgFile : Unable to allocate memory buffer\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 	Tmi = TextMsgInfo;
 
 	for( i = 0 ; i < NumOfTextMessages ; i++ )
 	{
-		Tmi->Activated = FALSE;
+		Tmi->Activated = false;
 		Tmi->Type = *int16Pnt++;
 		Tmi->ActivatedOrder = -1;
 		Tmi++;
@@ -1223,7 +1223,7 @@ BOOL ReadMsgFile( char *Filename )
 	Tmi = TextMsgInfo;
 	for( i = 0 ; i < NumOfTextMessages ; i++ )
 	{
-		Tmi->Activated = TRUE;
+		Tmi->Activated = true;
 		Tmi->ActivatedOrder = i;
 		Tmi++;
 	}
@@ -1644,7 +1644,7 @@ BOOL ReadMsgFile( char *Filename )
 	TextActivatedOrder = i;
 #endif
 	free( OrgBuffer );
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:		Free level specific text message info.......
@@ -1663,13 +1663,13 @@ void FreeMsgFile( void )
 
 /*===================================================================
 	Procedure	:		Trigger text message.......
-	Input		:		uint16 * Data
+	Input		:		u_int16_t * Data
 	Output		:		void
 ===================================================================*/
 void DisplayOldTextMessage( void )
 {
 	TEXTMSGINFO * Tmi;
-	int16	i;
+	int16_t	i;
 
 	Tmi = TextMsgInfo;
 	if( !Tmi )
@@ -1727,7 +1727,7 @@ void LastTextMessage( void )
 /*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
-	Output		:		BOOL
+	Output		:		_Bool
 ===================================================================*/
 FILE * SaveAllText( FILE * fp )
 {
@@ -1754,13 +1754,13 @@ FILE * SaveAllText( FILE * fp )
 /*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
-	Output		:		BOOL
+	Output		:		_Bool
 ===================================================================*/
 FILE *	LoadAllText( FILE * fp )
 {
 	TEXTMSGINFO * Tmi;
 	int i;
-	uint16 TempNumOfTextMessages = 0;
+	u_int16_t TempNumOfTextMessages = 0;
 
 
 	fread( &TempNumOfTextMessages, sizeof( NumOfTextMessages ), 1, fp );
@@ -1936,7 +1936,7 @@ void DisplayConnectionStatus( int num , int x , int y)
 
 	num--;
 
-	AddScreenPolyText( (uint16) (83+num), (float) x , (float) y+2, 255, 255, 255, 255 );
+	AddScreenPolyText( (u_int16_t) (83+num), (float) x , (float) y+2, 255, 255, 255, 255 );
 }
 
 
@@ -1947,8 +1947,8 @@ void DisplayConnectionStatus( int num , int x , int y)
 ===================================================================*/
 void InitFont( void )
 {
-	uint16 i;
-	uint8 e;
+	u_int16_t i;
+	u_int8_t e;
 
 	for( i = 0; i < 0x100 ; i++ )
 		CharTrans[i] = 0;
@@ -1975,37 +1975,37 @@ void InitFont( void )
 
 	CharTrans['.'] = e++;
 	e = 73;
-	CharTrans[(uint8)','] = e++;
-	CharTrans[(uint8)';'] = e++;
-	CharTrans[(uint8)'['] = e;
-	CharTrans[(uint8)'('] = e++;
-	CharTrans[(uint8)']'] = e;
-	CharTrans[(uint8)')'] = e++;
-	CharTrans[(uint8)'*'] = e++;
-	CharTrans[(uint8)'/'] = e++;
-	CharTrans[(uint8)'+'] = e++;
-	CharTrans[(uint8)'-'] = e++;
-	CharTrans[(uint8)'='] = e++;
+	CharTrans[(u_int8_t)','] = e++;
+	CharTrans[(u_int8_t)';'] = e++;
+	CharTrans[(u_int8_t)'['] = e;
+	CharTrans[(u_int8_t)'('] = e++;
+	CharTrans[(u_int8_t)']'] = e;
+	CharTrans[(u_int8_t)')'] = e++;
+	CharTrans[(u_int8_t)'*'] = e++;
+	CharTrans[(u_int8_t)'/'] = e++;
+	CharTrans[(u_int8_t)'+'] = e++;
+	CharTrans[(u_int8_t)'-'] = e++;
+	CharTrans[(u_int8_t)'='] = e++;
 
 	e++;
 	e = 86;
-	CharTrans[(uint8)'?'] = e++;
-	CharTrans[(uint8)'!'] = e++;
-	CharTrans[(uint8)'"'] = e++;
-	CharTrans[(uint8)'#'] = e++;
-	CharTrans[(uint8)'$'] = e++;
-//	CharTrans[(uint8)'%'] =
+	CharTrans[(u_int8_t)'?'] = e++;
+	CharTrans[(u_int8_t)'!'] = e++;
+	CharTrans[(u_int8_t)'"'] = e++;
+	CharTrans[(u_int8_t)'#'] = e++;
+	CharTrans[(u_int8_t)'$'] = e++;
+//	CharTrans[(u_int8_t)'%'] =
  e++;
-	CharTrans[(uint8)'&'] = e++;
-	CharTrans[(uint8)':'] = e++;
-	CharTrans[(uint8)'@'] = e++;
-	CharTrans[(uint8)'\\'] = e++;
-	CharTrans[(uint8)'<'] = e++;
-	CharTrans[(uint8)'>'] = e++;
-	CharTrans[(uint8)'{'] = e++;
-	CharTrans[(uint8)'}'] = e++;
-	CharTrans[(uint8)'^'] = e++;
-	CharTrans[(uint8)'_'] = e++;
-	CharTrans[(uint8)'`'] = e++;
-	CharTrans[(uint8)'~'] = e++;
+	CharTrans[(u_int8_t)'&'] = e++;
+	CharTrans[(u_int8_t)':'] = e++;
+	CharTrans[(u_int8_t)'@'] = e++;
+	CharTrans[(u_int8_t)'\\'] = e++;
+	CharTrans[(u_int8_t)'<'] = e++;
+	CharTrans[(u_int8_t)'>'] = e++;
+	CharTrans[(u_int8_t)'{'] = e++;
+	CharTrans[(u_int8_t)'}'] = e++;
+	CharTrans[(u_int8_t)'^'] = e++;
+	CharTrans[(u_int8_t)'_'] = e++;
+	CharTrans[(u_int8_t)'`'] = e++;
+	CharTrans[(u_int8_t)'~'] = e++;
 }

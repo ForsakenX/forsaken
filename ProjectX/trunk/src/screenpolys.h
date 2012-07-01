@@ -67,34 +67,34 @@
 ===================================================================*/
 typedef	struct SCRPOLY_RGB {
 
-	uint8	R;
-	uint8	G;
-	uint8	B;
-	uint8	Trans;
+	u_int8_t	R;
+	u_int8_t	G;
+	u_int8_t	B;
+	u_int8_t	Trans;
 
 } SCRPOLY_RGB;
 
 typedef struct SCRPOLY {
 
-	uint16			Next;
-	uint16			Prev;
+	u_int16_t			Next;
+	u_int16_t			Prev;
 
-	uint16			NextInTPage;
-	uint16			PrevInTPage;
+	u_int16_t			NextInTPage;
+	u_int16_t			PrevInTPage;
 
-	uint16			Type;				// Type
-	uint16			Flags;				// Flags
+	u_int16_t			Type;				// Type
+	u_int16_t			Flags;				// Flags
 	VECTOR			Pos;				// Position
-	uint8			R;					// Colour
-	uint8			G;					// Colour
-	uint8			B;					// Colour
-	uint8			Trans;				// Amount of transparency
+	u_int8_t			R;					// Colour
+	u_int8_t			G;					// Colour
+	u_int8_t			B;					// Colour
+	u_int8_t			Trans;				// Amount of transparency
 	float			Xscale;				// XScale
 	float			Yscale;				// XScale
 	float			Frame;				// Animation Frame
 	float			FrameRate;			// FrameRate
 	FRAME_INFO	**	Frm_Info;			// Offset Info
-	int16			SeqNum;				// FrameRate
+	int16_t			SeqNum;				// FrameRate
 	float			LifeCount;			// LifeCount
 	float			FadeRed;			// Red
 	float			FadeGreen;			// Green
@@ -119,51 +119,51 @@ typedef struct SCRPOLY {
 	Protptypes
 ===================================================================*/
 void InitScrPolys( void );
-void KillUsedScrPoly( uint16 i );
-uint16 FindFreeScrPoly( void );
+void KillUsedScrPoly( u_int16_t i );
+u_int16_t FindFreeScrPoly( void );
 void ScreenPolyProcess( void );
 void DoLensflareEffect( void );
 void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
-BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
+_Bool ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
 void KillScrOneFramers( void );
-//bjd - CHECK BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright );
+//bjd - CHECK _Bool ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright );
 void DoAllSecBullLensflare( void );
-void SecBullLensflare( uint16 i );
+void SecBullLensflare( u_int16_t i );
 void CreateCountdownDigits( void );
 void DeleteCountdownDigits( void );
-void CreateDigit( uint16 * DigitArray, float XPos, float YPos );
+void CreateDigit( u_int16_t * DigitArray, float XPos, float YPos );
 void UpdateCountdownDigits( void );
-void UpdateDigit( uint16 * DigitArray, float XPos, float YPos, int16 Number, float Scale, float Col ,FRAME_INFO	** Graphics );
-void CreateSeperatorDigit( uint16 * DigitArray, float XPos, float YPos );
-void DeleteDigit( uint16 * DigitArray );
-void DeleteSeperatorDigit( uint16 * DigitArray );
-void StartCountDown( int16 Minutes, int16 Seconds );
+void UpdateDigit( u_int16_t * DigitArray, float XPos, float YPos, int16_t Number, float Scale, float Col ,FRAME_INFO	** Graphics );
+void CreateSeperatorDigit( u_int16_t * DigitArray, float XPos, float YPos );
+void DeleteDigit( u_int16_t * DigitArray );
+void DeleteSeperatorDigit( u_int16_t * DigitArray );
+void StartCountDown( int16_t Minutes, int16_t Seconds );
 void ClearCountdownBuffers( void );
-void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans );
-void AddScreenPolyTextColor( uint16 Frame, float XPos, float YPos, int Color, uint8 Trans );
-void AddScreenPolyTextScale( uint16 Frame, float XPos, float YPos, float XScale, float YScale, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans );
+void AddScreenPolyText( u_int16_t Frame, float XPos, float YPos, u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans );
+void AddScreenPolyTextColor( u_int16_t Frame, float XPos, float YPos, int Color, u_int8_t Trans );
+void AddScreenPolyTextScale( u_int16_t Frame, float XPos, float YPos, float XScale, float YScale, u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans );
 void ShowScreenMultiples( void );
-void MakeScreenFlash( uint8 Red, uint8 Green, uint8 Blue, uint8 Trans, uint16 *ScreenPolyStore, int16 SeqNum );
+void MakeScreenFlash( u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans, u_int16_t *ScreenPolyStore, int16_t SeqNum );
 void InitThermo( void );
 void KillThermo( void );
 void ResetCountDownBombTag( float Amount );
 void InitScrPolyTPages( void );
-void AddScrPolyToTPage( uint16 i, int16 TPage );
-void RemoveScrPolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject );
-BOOL DisplayNonSolidScrPolys( RENDEROBJECT *renderObject );
-BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly );
-BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly );
+void AddScrPolyToTPage( u_int16_t i, int16_t TPage );
+void RemoveScrPolyFromTPage( u_int16_t i, int16_t TPage );
+_Bool DisplaySolidScrPolys( RENDEROBJECT *renderObject );
+_Bool DisplayNonSolidScrPolys( RENDEROBJECT *renderObject );
+_Bool ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly );
+_Bool ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly );
 void FreeAllLastAFrameScrPolys( void );
 void LoadTimeForLevel( void );
 FILE * SaveScreenPolys( FILE * fp );
 FILE * LoadScreenPolys( FILE * fp );
-void ShowFlagOnShip( uint16 Ship );
-void ShowFlag( uint16 Ship );
-void ShowBountyOnShip( uint16 Ship );
-void ShowBounty( uint16 Ship );
-void ShowCTFFlagsOnShip( uint16 Ship );
-void ShowCTFFlags( uint16 Ship );
+void ShowFlagOnShip( u_int16_t Ship );
+void ShowFlag( u_int16_t Ship );
+void ShowBountyOnShip( u_int16_t Ship );
+void ShowBounty( u_int16_t Ship );
+void ShowCTFFlagsOnShip( u_int16_t Ship );
+void ShowCTFFlags( u_int16_t Ship );
 
 #endif
 

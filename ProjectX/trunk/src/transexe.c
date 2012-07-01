@@ -24,7 +24,7 @@ extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 /*===================================================================
 		Globals...
 ===================================================================*/
-int16	NumOfTransExe = 0;
+int16_t	NumOfTransExe = 0;
 TRANSEXE TransExe[MAXTRANSEXE];
 
 
@@ -34,7 +34,7 @@ TRANSEXE TransExe[MAXTRANSEXE];
 			  lpExBuf... Pointer to Execution Buffer
 			  int UseIdentity....set to 0 for normal background...1 for Bikes etc..
 ===================================================================*/
-void AddTransExe( /*LPD3DMATRIX Matrix*/RENDERMATRIX *Matrix , /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject , int UseIdentity, uint16 Model, uint16 group, int16 NumVerts )
+void AddTransExe( /*LPD3DMATRIX Matrix*/RENDERMATRIX *Matrix , /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject , int UseIdentity, u_int16_t Model, u_int16_t group, int16_t NumVerts )
 {
 	if( NumOfTransExe < MAXTRANSEXE	)
 	{
@@ -68,17 +68,17 @@ void AddTransExe( /*LPD3DMATRIX Matrix*/RENDERMATRIX *Matrix , /*LPDIRECT3DEXECU
 /*===================================================================
 		Execute Translucent Execute Buffers for specific group...
 ===================================================================*/
-void ExecuteTransExe( uint16 group )
+void ExecuteTransExe( u_int16_t group )
 {
-	int16	i;
-	uint16	Model;
-	BOOL	Display;
+	int16_t	i;
+	u_int16_t	Model;
+	_Bool	Display;
 
 	for( i = 0 ; i < NumOfTransExe ; i++ )
 	{
 		if ( TransExe[i].group == group )
 		{
-			Display = TRUE;
+			Display = true;
 
 	    render_lighting_enabled = TransExe[i].render_lighting_enabled;
 	    render_lighting_use_only_light_color_and_blend = TransExe[i].render_lighting_use_only_light_color_and_blend;
@@ -90,7 +90,7 @@ void ExecuteTransExe( uint16 group )
  		  render_color_blend_green = TransExe[i].render_color_blend_green;
    		render_color_blend_blue = TransExe[i].render_color_blend_blue;
 
-			if( TransExe[i].Model != (uint16) -1 )
+			if( TransExe[i].Model != (u_int16_t) -1 )
 			{
 				Model = TransExe[i].Model;
 				if( !( Models[ Model ].Flags & MODFLAG_Clip ) )
@@ -98,7 +98,7 @@ void ExecuteTransExe( uint16 group )
 
 				if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 				{
-					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = false;
 				}
 
 				switch( Models[ Model ].Func )
@@ -116,13 +116,13 @@ void ExecuteTransExe( uint16 group )
 						break;
 
 					case MODFUNC_SphereZone:
-						ProcessSphereZoneModelExec( /*TransExe[i].lpExBuf*/&TransExe[i].renderObject, TransExe[i].NumVerts, (uint8) Models[ Model ].Red, (uint8) Models[ Model ].Green, (uint8) Models[ Model ].Blue );
+						ProcessSphereZoneModelExec( /*TransExe[i].lpExBuf*/&TransExe[i].renderObject, TransExe[i].NumVerts, (u_int8_t) Models[ Model ].Red, (u_int8_t) Models[ Model ].Green, (u_int8_t) Models[ Model ].Blue );
 						break;
 
 					case MODFUNC_OrbitPulsar:
 						if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 						{
-							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = FALSE;
+							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = false;
 						}
 						break;
 
@@ -156,17 +156,17 @@ void ExecuteTransExe( uint16 group )
 }
 
 
-void ExecuteTransExeUnclipped( uint16 group )
+void ExecuteTransExeUnclipped( u_int16_t group )
 {
-	int16	i;
-	uint16	Model;
-	BOOL	Display;
+	int16_t	i;
+	u_int16_t	Model;
+	_Bool	Display;
 
 	for( i = 0 ; i < NumOfTransExe ; i++ )
 	{
 		if ( TransExe[i].group == group )
 		{
-			Display = TRUE;
+			Display = true;
 
 	    render_lighting_enabled = TransExe[i].render_lighting_enabled;
 	    render_lighting_use_only_light_color_and_blend = TransExe[i].render_lighting_use_only_light_color_and_blend;
@@ -178,7 +178,7 @@ void ExecuteTransExeUnclipped( uint16 group )
  		  render_color_blend_green = TransExe[i].render_color_blend_green;
    		render_color_blend_blue = TransExe[i].render_color_blend_blue;
 
-			if( TransExe[i].Model != (uint16) -1 )
+			if( TransExe[i].Model != (u_int16_t) -1 )
 			{
 				Model = TransExe[i].Model;
 				if( ( Models[ Model ].Flags & MODFLAG_Clip ) )
@@ -186,7 +186,7 @@ void ExecuteTransExeUnclipped( uint16 group )
 
 				if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 				{
-					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = false;
 				}
 
 				switch( Models[ Model ].Func )
@@ -204,13 +204,13 @@ void ExecuteTransExeUnclipped( uint16 group )
 						break;
 
 					case MODFUNC_SphereZone:
-						ProcessSphereZoneModelExec( /*TransExe[i].lpExBuf*/&TransExe[i].renderObject, TransExe[i].NumVerts, (uint8) Models[ Model ].Red, (uint8) Models[ Model ].Green, (uint8) Models[ Model ].Blue );
+						ProcessSphereZoneModelExec( /*TransExe[i].lpExBuf*/&TransExe[i].renderObject, TransExe[i].NumVerts, (u_int8_t) Models[ Model ].Red, (u_int8_t) Models[ Model ].Green, (u_int8_t) Models[ Model ].Blue );
 						break;
 
 					case MODFUNC_OrbitPulsar:
 						if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 						{
-							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = FALSE;
+							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = false;
 						}
 						break;
 

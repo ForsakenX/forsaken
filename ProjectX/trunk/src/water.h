@@ -18,9 +18,9 @@
 #define	WATERSTATUS_FILLING		2
 
 typedef struct WATEROBJECT{
-	uint32	AnimOncePerFrame;	// used for stuff that is displayed more than once in a single frame..or maybe called for multiple cameras..
-	uint16	Status;
-	uint16	Group;
+	u_int32_t	AnimOncePerFrame;	// used for stuff that is displayed more than once in a single frame..or maybe called for multiple cameras..
+	u_int16_t	Status;
+	u_int16_t	Group;
 	VECTOR	Pos;
 	float	offset;
 	float	XSize;
@@ -51,8 +51,8 @@ typedef struct WATEROBJECT{
 	float	DrainRate;
 	float	Density;
 	float	MaxWaveSize;
-	uint16	Trigger_WhenFilled;
-	uint16	Trigger_WhenDrained;
+	u_int16_t	Trigger_WhenFilled;
+	u_int16_t	Trigger_WhenDrained;
 	float	Damage;
 
 
@@ -64,18 +64,18 @@ typedef struct WATEROBJECT{
 //--------------------------------------------------------------------------
 // Prototypes
 //--------------------------------------------------------------------------
-void GroupWaterProcessDisplay( uint16 group );
-BOOL PreWaterLoad( char * Filename );
-BOOL WaterLoad( void );
-BOOL PreWaterLoad( char * Filename );
+void GroupWaterProcessDisplay( u_int16_t group );
+_Bool PreWaterLoad( char * Filename );
+_Bool WaterLoad( void );
+_Bool PreWaterLoad( char * Filename );
 void WaterRelease( void );
 void AddWaterLink(WATEROBJECT * WO);
 void WaterProcess( void );
-void TriggerWaterDrain( uint16 * Data );
-void TriggerWaterFill( uint16 * Data );
-BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage);
-BOOL InWater( uint16 group , VECTOR *OrgPos , float * Damage);
-BOOL WaterObjectCollide( uint16 group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage );
-void GetWaterColour( uint16 Group, uint8 * Red, uint8 * Green, uint8 * Blue );
+void TriggerWaterDrain( u_int16_t * Data );
+void TriggerWaterFill( u_int16_t * Data );
+_Bool SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage);
+_Bool InWater( u_int16_t group , VECTOR *OrgPos , float * Damage);
+_Bool WaterObjectCollide( u_int16_t group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage );
+void GetWaterColour( u_int16_t Group, u_int8_t * Red, u_int8_t * Green, u_int8_t * Blue );
 
 #endif // WATER_H

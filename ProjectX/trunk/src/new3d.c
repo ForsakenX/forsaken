@@ -10,8 +10,8 @@
 /*===================================================================
 	Globals
 ===================================================================*/
-uint16	Seed1 = 0x1234;
-uint16	Seed2 = 0x4321;
+u_int16_t	Seed1 = 0x1234;
+u_int16_t	Seed2 = 0x4321;
 
 MATRIX	MATRIX_Identity = {
 			1.0F, 0.0F, 0.0F, 0.0F,
@@ -531,12 +531,12 @@ void MatrixTranspose( MATRIX * m1, MATRIX * m2 )
 
 /*===================================================================
 	Function	:	Calculate Random Number within range
-	Input		:	uint16		Max
+	Input		:	u_int16_t		Max
 	Output		:	Nothing
 ===================================================================*/
-uint16	Random_Range( uint16 Max )
+u_int16_t	Random_Range( u_int16_t Max )
 {
-	uint16	bit1, bit2;
+	u_int16_t	bit1, bit2;
 
 	if ( !Max )
 		return 0;

@@ -30,8 +30,8 @@ extern	float framelag;
 extern	AIMDATA AimData;
 extern	VECTOR	Forward;
 extern	VECTOR	SlideUp;
-void CreateSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );
-extern	BOOL ShowNode;
+void CreateSparks( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
+extern	_Bool ShowNode;
 /*===================================================================
 	Procedure	:	AIR Move to a Target
 	Input		:	ENEMY * Enemy
@@ -49,7 +49,7 @@ void AI_AIR_MOVETOTARGET( register ENEMY * Enemy )
 
 	// Is it time to think???
 
-	AI_THINK( Enemy , FALSE , FALSE);
+	AI_THINK( Enemy , false , false);
 
 	TObject = (OBJECT*) Enemy->TShip;
 

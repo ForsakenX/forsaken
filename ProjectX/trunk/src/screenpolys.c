@@ -68,25 +68,25 @@ extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
-extern	uint16		FirstSecBullUsed;
-extern	int16			NewLevelNum;
-extern	int16			NumLevels;
+extern	u_int16_t		FirstSecBullUsed;
+extern	int16_t			NewLevelNum;
+extern	int16_t			NumLevels;
 extern	MODEL		Models[ MAXNUMOFMODELS ];
 extern	int				FontWidth;
 extern	int				FontHeight;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	BOOL			CountDownOn;
-extern	int16			LevelNum;
+extern	_Bool			CountDownOn;
+extern	int16_t			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
-extern	int16			Lives;
-extern	BOOL			DebugInfo;
+extern	int16_t			Lives;
+extern	_Bool			DebugInfo;
 extern	TRIGGERVAR	*	DecreaseTemperature;
 extern	FRAME_INFO	*	Flag_Header;
 extern	FRAME_INFO	*	Flags_Header;
 extern	int				outside_map;
-extern	uint16			HitBox;
-extern	uint16			TargScrPolys[ 4 ];
-extern	uint32			TeamFlagMask[ MAX_TEAMS ];
+extern	u_int16_t			HitBox;
+extern	u_int16_t			TargScrPolys[ 4 ];
+extern	u_int32_t			TeamFlagMask[ MAX_TEAMS ];
 extern	TRIGGERVAR	*	TimeLimitTrigger;
 
 // message colours (Title.c)
@@ -101,8 +101,8 @@ extern int PlayerMessageColour;
 /*===================================================================
 	Globals
 ===================================================================*/
-		BOOL		CountDownOn = FALSE;
-static 	BOOL		Toggle = FALSE;
+		_Bool		CountDownOn = false;
+static 	_Bool		Toggle = false;
 static 	float		ScaleInc = 0.0F;
 static	float		Interp_Time = 0.0F;
 static	float		CountDown_X = TIMERSTARTSCREENX;
@@ -115,30 +115,30 @@ static	float		CountDown_Scale = TIMERSTARTSCALE;
 static	float		CountDown_Wanted_Scale = TIMERSTARTSCALE;
 static	float		CountDown_Col = 1.0F;
 
-uint16	ScreenMultiples[ MAXMULTIPLES ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
+u_int16_t	ScreenMultiples[ MAXMULTIPLES ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 int		SinglePlayerTimeLimit = 0;
-uint16	ThermoScrPoly = (uint16) -1;
-uint16	FlashScreenPoly	= (uint16) -1;
-uint32	TotalScrPolysInUse = 0;
+u_int16_t	ThermoScrPoly = (u_int16_t) -1;
+u_int16_t	FlashScreenPoly	= (u_int16_t) -1;
+u_int32_t	TotalScrPolysInUse = 0;
 SCRPOLY	ScrPolys[ MAXNUMOFSCRPOLYS ];
-uint16	FirstScrPolyUsed;
-uint16	FirstScrPolyFree;
+u_int16_t	FirstScrPolyUsed;
+u_int16_t	FirstScrPolyFree;
 float	Countdown_Float = 3000.0F;	// 30 Seconds
 float	ZValue;
 float	RHWValue;
-BOOL	BilinearSolidScrPolys = FALSE;
+_Bool	BilinearSolidScrPolys = false;
 float	ThermalTemp = 0.0F;
 float	WantedThermalTemp = 0.0F;
 float	ThermalMinimum = 0.0F;
 
 FRAME_INFO	**	CountDownFontGraphics[ 2 ] = { &Numbers2_Header, &Numbers_Header };
 float	CountDownFontWidth[ 2 ] = { 16.0F, 23.0F };
-int16	CurrentCountDownFont = 1;
+int16_t	CurrentCountDownFont = 1;
 float		Time_Diff= 0.0F;
-BOOL		KilledPlayer = FALSE;
-BOOL		IllegalTime = FALSE;
+_Bool		KilledPlayer = false;
+_Bool		IllegalTime = false;
 
-int16	NumberSegments[ 11 ][ 7 ] = {
+int16_t	NumberSegments[ 11 ][ 7 ] = {
 //		  0   1   2   3   4   5   6 
 		{ -1, -1, -1, -1, -1, -1,  0 },	// 0
 		{  0, -1, -1,  0,  0,  0,  0 },	// 1
@@ -153,17 +153,17 @@ int16	NumberSegments[ 11 ][ 7 ] = {
 		{  0,  0,  0,  0,  0,  0,  0 },	// Blank
 };
 
-uint16	Min1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
-uint16	Min0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
-uint16	Bit0Digit[ 1 ] = { 0xffff };
-uint16	Sec1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
-uint16	Sec0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
-uint16	Bit1Digit[ 1 ] = { 0xffff };
-uint16	Hun1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
-uint16	Hun0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
+u_int16_t	Min1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
+u_int16_t	Min0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
+u_int16_t	Bit0Digit[ 1 ] = { 0xffff };
+u_int16_t	Sec1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
+u_int16_t	Sec0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
+u_int16_t	Bit1Digit[ 1 ] = { 0xffff };
+u_int16_t	Hun1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
+u_int16_t	Hun0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 
 // defaults a screen poly
-void InitScrPoly( uint16 i )
+void InitScrPoly( u_int16_t i )
 {
 		ScrPolys[i].Flags = SCRFLAG_Nothing;
 		ScrPolys[i].Type = SCRTYPE_Normal;
@@ -178,12 +178,12 @@ void InitScrPoly( uint16 i )
 		ScrPolys[i].Xscale = 1.0F;
 		ScrPolys[i].Yscale = 1.0F;
 
-		ScrPolys[i].NextInTPage = (uint16) -1;
-		ScrPolys[i].PrevInTPage = (uint16) -1;
+		ScrPolys[i].NextInTPage = (u_int16_t) -1;
+		ScrPolys[i].PrevInTPage = (u_int16_t) -1;
 
 		// do not clear these they are set by caller
-		//ScrPolys[i].Next = (uint16) -1;
-		//ScrPolys[i].Prev = (uint16) -1;
+		//ScrPolys[i].Next = (u_int16_t) -1;
+		//ScrPolys[i].Prev = (u_int16_t) -1;
 
 		ScrPolys[i].x1 = 0.0F;
 		ScrPolys[i].y1 = 0.0F;
@@ -223,25 +223,25 @@ void InitScrPoly( uint16 i )
 
 void InitScrPolys( void )
 {
-	uint16	i;
+	u_int16_t	i;
 
-	FlashScreenPoly = (uint16) -1;
-	HitBox = (uint16) -1;
-	for( i = 0; i < 4; i++ ) TargScrPolys[ i ] = (uint16) -1;
-	for( i = 0; i < MAXMULTIPLES; i++ ) ScreenMultiples[ i ] = (uint16) -1;
+	FlashScreenPoly = (u_int16_t) -1;
+	HitBox = (u_int16_t) -1;
+	for( i = 0; i < 4; i++ ) TargScrPolys[ i ] = (u_int16_t) -1;
+	for( i = 0; i < MAXMULTIPLES; i++ ) ScreenMultiples[ i ] = (u_int16_t) -1;
 	ClearCountdownBuffers();
 
-	FirstScrPolyUsed = (uint16) -1;
+	FirstScrPolyUsed = (u_int16_t) -1;
 	FirstScrPolyFree = 0;
 	
 	for( i = 0; i < MAXNUMOFSCRPOLYS; i++ )
 	{
 		ScrPolys[i].Next = i + 1;
-		ScrPolys[i].Prev = (uint16) -1;
+		ScrPolys[i].Prev = (u_int16_t) -1;
 		InitScrPoly(i);
 	}
 
-	ScrPolys[ MAXNUMOFSCRPOLYS-1 ].Next = (uint16) -1;
+	ScrPolys[ MAXNUMOFSCRPOLYS-1 ].Next = (u_int16_t) -1;
 
 	InitScrPolyTPages();
 
@@ -252,18 +252,18 @@ void InitScrPolys( void )
 	Procedure	:	Find a free ScrPoly and move it from the free
 				:	list to	the used list
 	Input		:	Nothing
-	Output		:	uint16	Number of the free ScrPoly
+	Output		:	u_int16_t	Number of the free ScrPoly
 ===================================================================*/
-uint16 FindFreeScrPoly( void )
+u_int16_t FindFreeScrPoly( void )
 {
-	uint16 i;
+	u_int16_t i;
 
 	i = FirstScrPolyFree;
-	if( i == (uint16) -1 ) return i;
+	if( i == (u_int16_t) -1 ) return i;
  
 	ScrPolys[i].Prev = FirstScrPolyUsed;
 							 
-	if ( FirstScrPolyUsed != (uint16) -1)
+	if ( FirstScrPolyUsed != (u_int16_t) -1)
 	{
 		ScrPolys[ FirstScrPolyUsed ].Next = i;
 	}
@@ -279,22 +279,22 @@ uint16 FindFreeScrPoly( void )
 /*===================================================================
 	Procedure	:	Kill a used ScrPoly and move it from the used
 				:	list to the free list
-	Input		:	uint16		Number of ScrPoly to free....
+	Input		:	u_int16_t		Number of ScrPoly to free....
 	Output		:	Nothing
 ===================================================================*/
-void KillUsedScrPoly( uint16 i )
+void KillUsedScrPoly( u_int16_t i )
 {
-	uint16	its_prev;
-	uint16	its_next;
+	u_int16_t	its_prev;
+	u_int16_t	its_next;
 
-	if( i == (uint16) -1 ) return;
+	if( i == (u_int16_t) -1 ) return;
 	
 	its_prev = ScrPolys[i].Prev;
 	its_next = ScrPolys[i].Next;
 
 	if ( i == FirstScrPolyUsed ) FirstScrPolyUsed = ScrPolys[ i ].Prev;
-	if( its_prev != (uint16) -1) ScrPolys[ its_prev ].Next = its_next;
-	if( its_next != (uint16) -1) ScrPolys[ its_next ].Prev = its_prev;
+	if( its_prev != (u_int16_t) -1) ScrPolys[ its_prev ].Next = its_next;
+	if( its_next != (u_int16_t) -1) ScrPolys[ its_next ].Prev = its_prev;
 
 	TotalScrPolysInUse--;
 
@@ -307,7 +307,7 @@ void KillUsedScrPoly( uint16 i )
 		RemoveScrPolyFromTPage( i, GetTPage( NULL, 0 ) );
 	}
 
-	ScrPolys[i].Prev = (uint16) -1;
+	ScrPolys[i].Prev = (u_int16_t) -1;
 	ScrPolys[i].Next = FirstScrPolyFree;
 	FirstScrPolyFree = i;
 
@@ -326,12 +326,12 @@ void KillUsedScrPoly( uint16 i )
 ===================================================================*/
 void FreeAllLastAFrameScrPolys( void )
 {
-	uint16	i;
-	uint16	NextScrPoly;
+	u_int16_t	i;
+	u_int16_t	NextScrPoly;
 
 	i = FirstScrPolyUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		NextScrPoly = ScrPolys[i].Prev;
 
@@ -359,13 +359,13 @@ void FreeAllLastAFrameScrPolys( void )
 ===================================================================*/
 void ScreenPolyProcess( void )
 {
-	uint16	i;
-	uint16	NextScrPoly;
+	u_int16_t	i;
+	u_int16_t	NextScrPoly;
 	float	Speed;
 
 	i = FirstScrPolyUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		NextScrPoly = ScrPolys[i].Prev;
 
@@ -394,7 +394,7 @@ void ScreenPolyProcess( void )
 						if( ScrPolys[i].LifeCount <= 0.0F )
 						{
 				   			KillUsedScrPoly( i );
-							FlashScreenPoly = (uint16) -1;
+							FlashScreenPoly = (u_int16_t) -1;
 						}
 						else
 						{
@@ -406,10 +406,10 @@ void ScreenPolyProcess( void )
 							if( ScrPolys[i].FadeBlue < 0.0F ) ScrPolys[i].FadeBlue = 0.0F;
 							ScrPolys[i].FadeTrans -= Speed;
 							if( ScrPolys[i].FadeTrans < 0.0F ) ScrPolys[i].FadeTrans = 0.0F;
-							ScrPolys[i].R = (uint8) ScrPolys[i].FadeRed;
-							ScrPolys[i].G = (uint8) ScrPolys[i].FadeGreen;
-							ScrPolys[i].B = (uint8) ScrPolys[i].FadeBlue;
-							ScrPolys[i].Trans = (uint8) ScrPolys[i].FadeTrans;
+							ScrPolys[i].R = (u_int8_t) ScrPolys[i].FadeRed;
+							ScrPolys[i].G = (u_int8_t) ScrPolys[i].FadeGreen;
+							ScrPolys[i].B = (u_int8_t) ScrPolys[i].FadeBlue;
+							ScrPolys[i].Trans = (u_int8_t) ScrPolys[i].FadeTrans;
 						}
 						break;
 				   	case SCRSEQ_FadeUp:								// Fade
@@ -419,10 +419,10 @@ void ScreenPolyProcess( void )
 							ScrPolys[i].LifeCount = 1.0F;
 						}
 
-						ScrPolys[i].R = (uint8) ((float)ScrPolys[i].FadeRed * ScrPolys[i].LifeCount);
-						ScrPolys[i].G = (uint8) ((float)ScrPolys[i].FadeGreen * ScrPolys[i].LifeCount);
-						ScrPolys[i].B = (uint8) ((float)ScrPolys[i].FadeBlue * ScrPolys[i].LifeCount);
-						ScrPolys[i].Trans = (uint8) ((float)ScrPolys[i].FadeTrans * ScrPolys[i].LifeCount);
+						ScrPolys[i].R = (u_int8_t) ((float)ScrPolys[i].FadeRed * ScrPolys[i].LifeCount);
+						ScrPolys[i].G = (u_int8_t) ((float)ScrPolys[i].FadeGreen * ScrPolys[i].LifeCount);
+						ScrPolys[i].B = (u_int8_t) ((float)ScrPolys[i].FadeBlue * ScrPolys[i].LifeCount);
+						ScrPolys[i].Trans = (u_int8_t) ((float)ScrPolys[i].FadeTrans * ScrPolys[i].LifeCount);
 						break;
 				   	case SCRSEQ_Thermo:								// Explosion?
 						if( CheckDecreaseTemperature() )
@@ -476,7 +476,7 @@ void ScreenPolyProcess( void )
 											AddColourMessageToQue(SystemMessageColour, GET_OUT_OF_THE_KITCHEN );
 											Ships[WhoIAm].Timer = 0.0F;
 
-											KilledPlayer = TRUE;
+											KilledPlayer = true;
 										}
 									}
 								}
@@ -530,10 +530,10 @@ void ScreenPolyProcess( void )
 							}
 						}
 
-						ScrPolys[i].R = (uint8) ScrPolys[i].FadeRed;
-						ScrPolys[i].G = (uint8) ScrPolys[i].FadeGreen;
-						ScrPolys[i].B = (uint8) ScrPolys[i].FadeBlue;
-						ScrPolys[i].Trans = (uint8) ScrPolys[i].FadeTrans;
+						ScrPolys[i].R = (u_int8_t) ScrPolys[i].FadeRed;
+						ScrPolys[i].G = (u_int8_t) ScrPolys[i].FadeGreen;
+						ScrPolys[i].B = (u_int8_t) ScrPolys[i].FadeBlue;
+						ScrPolys[i].Trans = (u_int8_t) ScrPolys[i].FadeTrans;
 						break;
 						
 					case SCRSEQ_Nothing:
@@ -564,11 +564,11 @@ void DoLensflareEffect( void )
 	VECTOR		NewVert;
 	MATRIX		TempMatrix;
 	MATRIX		FinalMatrix;
-	int16		Count;
+	int16_t		Count;
 	float		Center_X;
 	float		Center_Y;
 	VECTOR		Int_Point;
-	uint16		Int_Group;
+	u_int16_t		Int_Group;
 	NORMAL		Int_Normal;
 	VECTOR		ShipVector;
 	VECTOR		TempVector;
@@ -576,8 +576,8 @@ void DoLensflareEffect( void )
 	float		Cos, Cos2, Angle, Angle2;
 	float		DistToShip;
 	float		DistFactor;
-	uint8		Int;
-	uint16		i;
+	u_int8_t		Int;
+	u_int16_t		i;
 
 	Trans.x = -CurrentCamera.Pos.x;
 	Trans.y = -CurrentCamera.Pos.y;
@@ -635,7 +635,7 @@ void DoLensflareEffect( void )
 					if( DistToShip < CUTOFF ) DistFactor = 1.0F;
 					else DistFactor = ( 1.0F - ( ( DistToShip - CUTOFF ) / CUTOFF ) );
 					
-					Int = (uint8) ( ( Cos * Cos2 * DistFactor ) * 255.0F );
+					Int = (u_int8_t) ( ( Cos * Cos2 * DistFactor ) * 255.0F );
 					
 					if( ( Angle < 45.0F ) && ( Angle2 < 90.0F ) && ( DistToShip < ( 2.0F * CUTOFF ) ) )
 					{
@@ -643,14 +643,14 @@ void DoLensflareEffect( void )
 									&CurrentCamera.Pos,
 									CurrentCamera.GroupImIn,
 									&ShipVector, &Int_Point, &Int_Group, &Int_Normal,
-									&TempVector, TRUE, NULL ) )
+									&TempVector, true, NULL ) )
 						{
 							Conv3DTo2D( &Vert, &NewVert, &FinalMatrix );
 							DirVector.x = ( NewVert.x - Center_X );
 							DirVector.y = ( NewVert.y - Center_Y );
 					
 							i = FindFreeScrPoly();
-							if( i != (uint16) -1 )
+							if( i != (u_int16_t) -1 )
 							{
 								ScrPolys[ i ].Flags = SCRFLAG_Scale;
 								ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -670,7 +670,7 @@ void DoLensflareEffect( void )
 							}
 					
 							i = FindFreeScrPoly();
-							if( i != (uint16) -1 )
+							if( i != (u_int16_t) -1 )
 							{
 								ScrPolys[ i ].Flags = SCRFLAG_Scale;
 								ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -690,7 +690,7 @@ void DoLensflareEffect( void )
 							}
 					
 							i = FindFreeScrPoly();
-							if( i != (uint16) -1 )
+							if( i != (u_int16_t) -1 )
 							{
 								ScrPolys[ i ].Flags = SCRFLAG_Scale;
 								ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -710,7 +710,7 @@ void DoLensflareEffect( void )
 							}
 					
 							i = FindFreeScrPoly();
-							if( i != (uint16) -1 )
+							if( i != (u_int16_t) -1 )
 							{
 								ScrPolys[ i ].Flags = SCRFLAG_Scale;
 								ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -730,7 +730,7 @@ void DoLensflareEffect( void )
 							}
 					
 							i = FindFreeScrPoly();
-							if( i != (uint16) -1 )
+							if( i != (u_int16_t) -1 )
 							{
 								ScrPolys[ i ].Flags = SCRFLAG_Scale;
 								ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -750,7 +750,7 @@ void DoLensflareEffect( void )
 							}
 					
 							i = FindFreeScrPoly();
-							if( i != (uint16) -1 )
+							if( i != (u_int16_t) -1 )
 							{
 								ScrPolys[ i ].Flags = SCRFLAG_Scale;
 								ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -798,9 +798,9 @@ void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	Input		:	VECTOR	*	Vertex
 				:	VECTOR	*	2D Vertex
 				:	MATRIX	*	Final View Matrix
-	Output		:	BOOL		True/False
+	Output		:	_Bool		True/False
 ===================================================================*/
-BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
+_Bool ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 {
 	DWORD	Flags;
 	VECTOR	TempVert;
@@ -846,18 +846,18 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	DstVert->x = CurrentCamera.Viewport.X + ( ( CurrentCamera.Viewport.Width / 2 ) + ( CurrentCamera.Viewport.ScaleX * TempVert.x ) );
 	DstVert->y = CurrentCamera.Viewport.Y + ( ( CurrentCamera.Viewport.Height / 2 ) - ( CurrentCamera.Viewport.ScaleY * TempVert.y ) );
 	DstVert->z = TempVert.z;
-	if( Flags ) return( TRUE );
-	return( FALSE );
+	if( Flags ) return( true );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Clip box to viewport
 	Input		:	LPTLVERTEX	Vert1
 				:	LPTLVERTEX	Vert3
-	Output		:	FALSE if box is inside viewport, TRUE if outside
+	Output		:	false if box is inside viewport, true if outside
 ===================================================================*/
 
-BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
+_Bool ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
 {
 	float xmin = 0.0f, ymin = 0.0f, xmax = 0.0f, ymax = 0.0f;
 	int clip_topleft, clip_bottomright;
@@ -872,22 +872,22 @@ BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
 	if ( topleft->sx < xmin )
 		clip_topleft = CLIP_LEFT;
 	else if ( topleft->sx >= xmax )
-		return TRUE;
+		return true;
 	else
 		clip_topleft = 0;
 	if ( topleft->sy < ymin )
 		clip_topleft |= CLIP_TOP;
 	else if ( topleft->sy >= ymax )
-		return TRUE;
+		return true;
 
 	if ( bottomright->sx < xmin )
-		return TRUE;
+		return true;
 	else if ( bottomright->sx > xmax )
 		clip_bottomright = CLIP_RIGHT;
 	else
 		clip_bottomright = 0;
 	if ( bottomright->sy < ymin )
-		return TRUE;
+		return true;
 	else if ( bottomright->sy > ymax )
 		clip_bottomright |= CLIP_BOTTOM;
 
@@ -918,7 +918,7 @@ BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
 		bottomright->sy = ymax;
 	}
 
-	return FALSE;
+	return false;
 }
 
 /*===================================================================
@@ -928,11 +928,11 @@ BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
 ===================================================================*/
 void DoAllSecBullLensflare( void )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	i = FirstSecBullUsed;
 
-	while( i != (uint16) -1 )
+	while( i != (u_int16_t) -1 )
 	{
 		if( !SoundInfo[ SecBulls[i].GroupImIn ][ CurrentCamera.GroupImIn ] )
 		{
@@ -944,10 +944,10 @@ void DoAllSecBullLensflare( void )
 
 /*===================================================================
 	Procedure	:	Create Lensflare effect on missiles
-	Input		:	uint16	Secondary bullet index
+	Input		:	u_int16_t	Secondary bullet index
 	Output		:	Nothing
 ===================================================================*/
-void SecBullLensflare( uint16 i )
+void SecBullLensflare( u_int16_t i )
 {
 	VECTOR		DirVector;
 	VECTOR		LeftVector;
@@ -961,7 +961,7 @@ void SecBullLensflare( uint16 i )
 	float		Center_X;
 	float		Center_Y;
 	VECTOR		Int_Point;
-	uint16		Int_Group;
+	u_int16_t		Int_Group;
 	NORMAL		Int_Normal;
 	VECTOR		BullVector;
 	VECTOR		TempVector;
@@ -969,7 +969,7 @@ void SecBullLensflare( uint16 i )
 	float		Cos, Cos2, Angle, Angle2;
 	float		DistToBull;
 	float		DistFactor;
-	uint8		Int;
+	u_int8_t		Int;
 
 	Trans.x = -CurrentCamera.Pos.x;
 	Trans.y = -CurrentCamera.Pos.y;
@@ -1019,7 +1019,7 @@ void SecBullLensflare( uint16 i )
 	if( DistToBull < CUTOFF ) DistFactor = 1.0F;
 	else DistFactor = ( 1.0F - ( ( DistToBull - CUTOFF ) / CUTOFF ) );
 
-	Int = (uint8) ( ( Cos * Cos2 * DistFactor ) * 255.0F );
+	Int = (u_int8_t) ( ( Cos * Cos2 * DistFactor ) * 255.0F );
 
 	if( ( Angle < 45.0F ) && ( Angle2 < 90.0F ) && ( DistToBull < ( 2.0F * CUTOFF ) ) )
 	{
@@ -1027,14 +1027,14 @@ void SecBullLensflare( uint16 i )
 					&CurrentCamera.Pos,
 					CurrentCamera.GroupImIn,
 					&BullVector, &Int_Point, &Int_Group, &Int_Normal,
-					&TempVector, TRUE, NULL ) )
+					&TempVector, true, NULL ) )
 		{
 			Conv3DTo2D( &Vert, &NewVert, &FinalMatrix );
 			DirVector.x = ( NewVert.x - Center_X );
 			DirVector.y = ( NewVert.y - Center_Y );
 	
 			i = FindFreeScrPoly();
-			if( i != (uint16) -1 )
+			if( i != (u_int16_t) -1 )
 			{
 				ScrPolys[ i ].Flags = SCRFLAG_Scale;
 				ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -1054,7 +1054,7 @@ void SecBullLensflare( uint16 i )
 			}
 
 			i = FindFreeScrPoly();
-			if( i != (uint16) -1 )
+			if( i != (u_int16_t) -1 )
 			{
 				ScrPolys[ i ].Flags = SCRFLAG_Scale;
 				ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -1074,7 +1074,7 @@ void SecBullLensflare( uint16 i )
 			}
 	
 			i = FindFreeScrPoly();
-			if( i != (uint16) -1 )
+			if( i != (u_int16_t) -1 )
 			{
 				ScrPolys[ i ].Flags = SCRFLAG_Scale;
 				ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -1094,7 +1094,7 @@ void SecBullLensflare( uint16 i )
 			}
 	
 			i = FindFreeScrPoly();
-			if( i != (uint16) -1 )
+			if( i != (u_int16_t) -1 )
 			{
 				ScrPolys[ i ].Flags = SCRFLAG_Scale;
 				ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -1114,7 +1114,7 @@ void SecBullLensflare( uint16 i )
 			}
 	
 			i = FindFreeScrPoly();
-			if( i != (uint16) -1 )
+			if( i != (u_int16_t) -1 )
 			{
 				ScrPolys[ i ].Flags = SCRFLAG_Scale;
 				ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -1134,7 +1134,7 @@ void SecBullLensflare( uint16 i )
 			}
 
 			i = FindFreeScrPoly();
-			if( i != (uint16) -1 )
+			if( i != (u_int16_t) -1 )
 			{
 				ScrPolys[ i ].Flags = SCRFLAG_Scale;
 				ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -1202,7 +1202,7 @@ void UpdateCountdownDigits( void )
 		CountDown_Wanted_X = TIMERENDSCREENX;
 		CountDown_Wanted_Y = TIMERENDSCREENY;
 		CountDown_Wanted_Scale = TIMERENDSCALE;
-		Toggle = TRUE;
+		Toggle = true;
 	}
 
 	Countdown_Float -= Time_Diff;
@@ -1235,7 +1235,7 @@ void UpdateCountdownDigits( void )
 				AddColourMessageToQue(SystemMessageColour, OUT_OF_TIME );
 				Ships[WhoIAm].Timer = 0.0F;
 
-				KilledPlayer = TRUE;
+				KilledPlayer = true;
 			}
 		}
 
@@ -1249,7 +1249,7 @@ void UpdateCountdownDigits( void )
 		CountDown_Xoff = ( ( CountDown_Wanted_X - CountDown_X ) / 420.0F );
 		CountDown_Yoff = ( ( CountDown_Wanted_Y - CountDown_Y ) / 420.0F );
 		Interp_Time = 420.0F;
-		Toggle = FALSE;
+		Toggle = false;
 	}
 
 	if( Interp_Time )
@@ -1289,12 +1289,12 @@ void UpdateCountdownDigits( void )
 	Number -= ( DigitNumber * 60000 );
 	XPos = Center_X - ( ( Width * 4.173913F ) * Scale );
 	YPos = Center_Y;
-	UpdateDigit( &Min1Digit[ 0 ], XPos, YPos, (int16) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
+	UpdateDigit( &Min1Digit[ 0 ], XPos, YPos, (int16_t) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
 	
 	DigitNumber = ( Number / 6000 );
 	Number -= ( DigitNumber * 6000 );
 	XPos = Center_X - ( ( Width * 2.7826F ) * Scale );
-	UpdateDigit( &Min0Digit[ 0 ], XPos, YPos, (int16) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
+	UpdateDigit( &Min0Digit[ 0 ], XPos, YPos, (int16_t) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
 
 	XPos = Center_X - ( ( Width * 1.73913F ) * Scale );
 	UpdateDigit( &Bit0Digit[ 0 ], XPos, YPos, 10, Scale, CountDown_Col, Graphics );
@@ -1302,12 +1302,12 @@ void UpdateCountdownDigits( void )
 	DigitNumber = ( Number / 1000 );
 	Number -= ( DigitNumber * 1000 );
 	XPos = Center_X - ( ( Width * 0.695652F ) * Scale );
-	UpdateDigit( &Sec1Digit[ 0 ], XPos, YPos, (int16) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
+	UpdateDigit( &Sec1Digit[ 0 ], XPos, YPos, (int16_t) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
 
 	DigitNumber = ( Number / 100 );
 	Number -= ( DigitNumber * 100 );
 	XPos = Center_X + ( ( Width * 0.695652F ) * Scale );
-	UpdateDigit( &Sec0Digit[ 0 ], XPos, YPos, (int16) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
+	UpdateDigit( &Sec0Digit[ 0 ], XPos, YPos, (int16_t) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
 
 	XPos = Center_X + ( ( Width * 1.73813F ) * Scale );
 	UpdateDigit( &Bit1Digit[ 0 ], XPos, YPos, 10, Scale, CountDown_Col, Graphics );
@@ -1315,36 +1315,36 @@ void UpdateCountdownDigits( void )
 	DigitNumber = ( Number / 10 );
 	Number -= ( DigitNumber * 10 );
 	XPos = Center_X + ( ( Width * 2.7826F ) * Scale );
-	UpdateDigit( &Hun1Digit[ 0 ], XPos, YPos, (int16) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
+	UpdateDigit( &Hun1Digit[ 0 ], XPos, YPos, (int16_t) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
 
 	DigitNumber = Number;
 	XPos = Center_X + ( ( Width * 4.173913F ) * Scale );
-	UpdateDigit( &Hun0Digit[ 0 ], XPos, YPos, (int16) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
+	UpdateDigit( &Hun0Digit[ 0 ], XPos, YPos, (int16_t) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
 }
 
 /*===================================================================
 	Procedure	:	Update Digit Position and Number
-	Input		:	uint16	*	Digit Segmnent Array
+	Input		:	u_int16_t	*	Digit Segmnent Array
 				:	float		X Pos
 				:	float		Y Pos
-				:	int16		Number
+				:	int16_t		Number
 				:	float		Scale
 				:	float		Colour Brightness;
 	Output		:	Nothing
 ===================================================================*/
-void UpdateDigit( uint16 * DigitArray, float XPos, float YPos, int16 Number, float Scale, float Col ,FRAME_INFO	** Graphics )
+void UpdateDigit( u_int16_t * DigitArray, float XPos, float YPos, int16_t Number, float Scale, float Col ,FRAME_INFO	** Graphics )
 {
-	uint16	i;
-	int16	Count;
-	uint8	Red, Green, Blue, Trans;
-	int16	NumSegments;
+	u_int16_t	i;
+	int16_t	Count;
+	u_int8_t	Red, Green, Blue, Trans;
+	int16_t	NumSegments;
 
 	XPos = ( XPos * ( MainCamera.Viewport.Width / 320.0F ) );
 	YPos = ( YPos * ( MainCamera.Viewport.Height / 240.0F ) );
 
 	Green = 0;
 	Blue = 0;
-	Trans = (uint8) ( 255.0F * Col );
+	Trans = (u_int8_t) ( 255.0F * Col );
 
 	if( Number == 10 ) NumSegments = 1;
 	else NumSegments = 7;
@@ -1353,16 +1353,16 @@ void UpdateDigit( uint16 * DigitArray, float XPos, float YPos, int16 Number, flo
 	{
 		i = DigitArray[ Count ];
 
-		if( i != (uint16) -1 )
+		if( i != (u_int16_t) -1 )
 		{
 			if( Number == 10 )
 			{
-				Red = (uint8) ( 255.0F * Col );
+				Red = (u_int8_t) ( 255.0F * Col );
 			}
 			else
 			{
-				if( NumberSegments[ Number ][ Count ] ) Red = (uint8) ( 255.0F * Col );
-				else Red = (uint8) ( 80.0F * Col );
+				if( NumberSegments[ Number ][ Count ] ) Red = (u_int8_t) ( 255.0F * Col );
+				else Red = (u_int8_t) ( 80.0F * Col );
 			}
 
 			ScrPolys[i].Pos.x = XPos;
@@ -1427,33 +1427,33 @@ void DeleteCountdownDigits( void )
 ===================================================================*/
 void ClearCountdownBuffers( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < 7; Count++ )
 	{
-		Min1Digit[ Count ] = (uint16) -1;
-		Min0Digit[ Count ] = (uint16) -1;
-		Sec1Digit[ Count ] = (uint16) -1;
-		Sec0Digit[ Count ] = (uint16) -1;
-		Hun1Digit[ Count ] = (uint16) -1;
-		Hun0Digit[ Count ] = (uint16) -1;
+		Min1Digit[ Count ] = (u_int16_t) -1;
+		Min0Digit[ Count ] = (u_int16_t) -1;
+		Sec1Digit[ Count ] = (u_int16_t) -1;
+		Sec0Digit[ Count ] = (u_int16_t) -1;
+		Hun1Digit[ Count ] = (u_int16_t) -1;
+		Hun0Digit[ Count ] = (u_int16_t) -1;
 	}
 
-	Bit0Digit[ 0 ] = (uint16) -1;
-	Bit1Digit[ 0 ] = (uint16) -1;
+	Bit0Digit[ 0 ] = (u_int16_t) -1;
+	Bit1Digit[ 0 ] = (u_int16_t) -1;
 }
 
 /*===================================================================
 	Procedure	:	Create Digit
-	Input		:	uint16	*	Digit Array ( 7 )
+	Input		:	u_int16_t	*	Digit Array ( 7 )
 				:	float		X Position
 				:	float		Y Position
 	Output		:	Nothing
 ===================================================================*/
-void CreateDigit( uint16 * DigitArray, float XPos, float YPos )
+void CreateDigit( u_int16_t * DigitArray, float XPos, float YPos )
 {
-	uint16	i;
-	int16	Count;
+	u_int16_t	i;
+	int16_t	Count;
 
 	for( Count = 0; Count < 7; Count++ )
 	{
@@ -1461,7 +1461,7 @@ void CreateDigit( uint16 * DigitArray, float XPos, float YPos )
 
 		DigitArray[ Count ] = i;
 
-		if( i != (uint16) -1 )
+		if( i != (u_int16_t) -1 )
 		{
 			ScrPolys[ i ].Flags = SCRFLAG_Scale;
 			ScrPolys[ i ].Type = SCRTYPE_Normal;
@@ -1485,20 +1485,20 @@ void CreateDigit( uint16 * DigitArray, float XPos, float YPos )
 
 /*===================================================================
 	Procedure	:	Create ":" Seperator Digit
-	Input		:	uint16	*	Digit Array ( 7 )
+	Input		:	u_int16_t	*	Digit Array ( 7 )
 				:	float		X Position
 				:	float		Y Position
 	Output		:	Nothing
 ===================================================================*/
-void CreateSeperatorDigit( uint16 * DigitArray, float XPos, float YPos )
+void CreateSeperatorDigit( u_int16_t * DigitArray, float XPos, float YPos )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	i = FindFreeScrPoly();
 
 	DigitArray[ 0 ] = i;
 
-	if( i != (uint16) -1 )
+	if( i != (u_int16_t) -1 )
 	{
 		ScrPolys[ i ].Flags = SCRFLAG_Scale;
 		ScrPolys[ i ].Type = SCRTYPE_Normal;
@@ -1521,51 +1521,51 @@ void CreateSeperatorDigit( uint16 * DigitArray, float XPos, float YPos )
 
 /*===================================================================
 	Procedure	:	Delete Digit
-	Input		:	uint16	*	Digit Array[ 7 ]
+	Input		:	u_int16_t	*	Digit Array[ 7 ]
 	Output		:	Nothing
 ===================================================================*/
-void DeleteDigit( uint16 * DigitArray )
+void DeleteDigit( u_int16_t * DigitArray )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < 7; Count++ )
 	{
-		if( DigitArray[ Count ] != (uint16) -1 )
+		if( DigitArray[ Count ] != (u_int16_t) -1 )
 		{
 			KillUsedScrPoly( DigitArray[ Count ] );
-			DigitArray[ Count ] = (uint16) -1;
+			DigitArray[ Count ] = (u_int16_t) -1;
 		}
 	}
 }
 
 /*===================================================================
 	Procedure	:	Delete ":" Seperator Digit
-	Input		:	uint16	*	Digit Array[ 1 ]
+	Input		:	u_int16_t	*	Digit Array[ 1 ]
 	Output		:	Nothing
 ===================================================================*/
-void DeleteSeperatorDigit( uint16 * DigitArray )
+void DeleteSeperatorDigit( u_int16_t * DigitArray )
 {
-	if( DigitArray[ 0 ] != (uint16) -1 )
+	if( DigitArray[ 0 ] != (u_int16_t) -1 )
 	{
 		KillUsedScrPoly( DigitArray[ 0 ] );
-		DigitArray[ 0 ] = (uint16) -1;
+		DigitArray[ 0 ] = (u_int16_t) -1;
 	}
 }
 
 /*===================================================================
 	Procedure	:	Start CountDown Timer
-	Input		:	int16	Minutes
-				:	int16	Seconds
+	Input		:	int16_t	Minutes
+				:	int16_t	Seconds
 	Output		:	Nothing
 ===================================================================*/
-void StartCountDown( int16 Minutes, int16 Seconds )
+void StartCountDown( int16_t Minutes, int16_t Seconds )
 {
 	CurrentCountDownFont = 0;
 	Countdown_Float = ( ( Minutes * 6000.0F ) + ( Seconds * 100.0F ) );
 
 	timer_clear( &countdown_timer );
 
-	Toggle = FALSE;
+	Toggle = false;
 	ScaleInc = 0.0F;
 	Interp_Time = 0.0F;
 	CountDown_X = TIMERSTARTSCREENX;
@@ -1581,33 +1581,33 @@ void StartCountDown( int16 Minutes, int16 Seconds )
 
 /*===================================================================
 	Procedure	:	Add Solid ScreenPoly Text
-	Input		:	uint16	BoxNumber
+	Input		:	u_int16_t	BoxNumber
 				:	float	XPos
 				:	float	YPos
-				:	uint8	Red
-				:	uint8	Green
-				:	uint8	Blue
-				:	uint8	Trans
+				:	u_int8_t	Red
+				:	u_int8_t	Green
+				:	u_int8_t	Blue
+				:	u_int8_t	Trans
 	Output		:	void
 ===================================================================*/
 
-extern uint8 Colourtrans[MAXFONTCOLOURS][3];
-void AddScreenPolyTextColor( uint16 Frame, float XPos, float YPos, int Color, uint8 Trans )
+extern u_int8_t Colourtrans[MAXFONTCOLOURS][3];
+void AddScreenPolyTextColor( u_int16_t Frame, float XPos, float YPos, int Color, u_int8_t Trans )
 {
-	uint8 r,g,b;
+	u_int8_t r,g,b;
 	r = Colourtrans[Color][0];
 	g = Colourtrans[Color][1];
 	b = Colourtrans[Color][2];
 	AddScreenPolyText( Frame, XPos, YPos, r, g, b, Trans );
 }
 
-void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
+void AddScreenPolyText( u_int16_t Frame, float XPos, float YPos, u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	i = FindFreeScrPoly();
 
-	if( i != (uint16) -1 )
+	if( i != (u_int16_t) -1 )
 	{
 		if( Trans == 255 ) ScrPolys[ i ].Flags = SCRFLAG_Solid;
 		else ScrPolys[ i ].Flags = SCRFLAG_Nothing;
@@ -1645,8 +1645,8 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 
 /*===================================================================
 	Procedure	:	Start CountDown Timer
-	Input		:	int16	Minutes
-				:	int16	Seconds
+	Input		:	int16_t	Minutes
+				:	int16_t	Seconds
 	Output		:	Nothing
 ===================================================================*/
 void ResetCountDownBombTag( float Amount )
@@ -1656,7 +1656,7 @@ void ResetCountDownBombTag( float Amount )
 
 	timer_clear( &countdown_timer );
 
-	Toggle = FALSE;
+	Toggle = false;
 	ScaleInc = 0.0F;
 	Interp_Time = 0.0F;
 	CountDown_X = TIMERSTARTSCREENX;
@@ -1700,24 +1700,24 @@ void ResetCountDownBombTag( float Amount )
 
 /*===================================================================
 	Procedure	:	Add Solid ScreenPoly Text
-	Input		:	uint16	BoxNumber
+	Input		:	u_int16_t	BoxNumber
 				:	float	XPos
 				:	float	YPos
 				:	float	XScale
 				:	float	YScale
-				:	uint8	Red
-				:	uint8	Green
-				:	uint8	Blue
-				:	uint8	Trans
+				:	u_int8_t	Red
+				:	u_int8_t	Green
+				:	u_int8_t	Blue
+				:	u_int8_t	Trans
 	Output		:	void
 ===================================================================*/
-void AddScreenPolyTextScale( uint16 Frame, float XPos, float YPos, float XScale, float YScale, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
+void AddScreenPolyTextScale( u_int16_t Frame, float XPos, float YPos, float XScale, float YScale, u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	i = FindFreeScrPoly();
 
-	if( i != (uint16) -1 )
+	if( i != (u_int16_t) -1 )
 	{
 		if( Trans == 255 ) ScrPolys[ i ].Flags = SCRFLAG_Solid;
 		else ScrPolys[ i ].Flags = SCRFLAG_Nothing;
@@ -1751,9 +1751,9 @@ void AddScreenPolyTextScale( uint16 Frame, float XPos, float YPos, float XScale,
 ===================================================================*/
 void ShowScreenMultiples( void )
 {
-	uint16	i;
-	uint16	Model;
-	int16	Count;
+	u_int16_t	i;
+	u_int16_t	Model;
+	int16_t	Count;
 	VECTOR	Rotation;
 	float	Center_X;
 	float	Center_Y;
@@ -1767,7 +1767,7 @@ void ShowScreenMultiples( void )
 	{
 		Model = Ships[ WhoIAm ].OrbModels[ Count ];
 
-		if( Model != (uint16) -1 )
+		if( Model != (u_int16_t) -1 )
 		{
 			Rotation.x = (float) sin( D2R( Models[ Model ].AxisRot + 180.0F ) );
 			Rotation.y = (float) cos( D2R( Models[ Model ].AxisRot + 180.0F ) );
@@ -1776,7 +1776,7 @@ void ShowScreenMultiples( void )
 	
 			ScreenMultiples[ Count ] = i;
 	
-			if( i != (uint16) -1 )
+			if( i != (u_int16_t) -1 )
 			{
 				ScrPolys[ i ].Flags = SCRFLAG_Nothing;
 				ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -1800,17 +1800,17 @@ void ShowScreenMultiples( void )
 
 /*===================================================================
 	Procedure	:	Make Screen Flash
-				:	uint8	Red
-				:	uint8	Green
-				:	uint8	Blue
-				:	uint8	Trans
+				:	u_int8_t	Red
+				:	u_int8_t	Green
+				:	u_int8_t	Blue
+				:	u_int8_t	Trans
 	Output		:	Nothing
 ===================================================================*/
-void MakeScreenFlash( uint8 Red, uint8 Green, uint8 Blue, uint8 Trans, uint16 *ScreenPolyStore, int16 SeqNum )
+void MakeScreenFlash( u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans, u_int16_t *ScreenPolyStore, int16_t SeqNum )
 {
-	uint16	i;
+	u_int16_t	i;
 
-	if( *ScreenPolyStore != (uint16) -1 )
+	if( *ScreenPolyStore != (u_int16_t) -1 )
 	{
 		i = *ScreenPolyStore;
 
@@ -1844,7 +1844,7 @@ void MakeScreenFlash( uint8 Red, uint8 Green, uint8 Blue, uint8 Trans, uint16 *S
 	{
 		i = FindFreeScrPoly();
 	
-		if( i != (uint16) -1 )
+		if( i != (u_int16_t) -1 )
 		{
 			*ScreenPolyStore = i;
 	
@@ -1903,7 +1903,7 @@ void MakeScreenFlash( uint8 Red, uint8 Green, uint8 Blue, uint8 Trans, uint16 *S
 ===================================================================*/
 void InitThermo( void )
 {
-	uint16	i;
+	u_int16_t	i;
 	float	Center_X;
 	float	Center_Y;
 
@@ -1913,11 +1913,11 @@ void InitThermo( void )
 	WantedThermalTemp = 0.0F;
 	ThermalMinimum = 0.0F;
 
-	if( ThermoScrPoly == (uint16) -1 )
+	if( ThermoScrPoly == (u_int16_t) -1 )
 	{
 		i = FindFreeScrPoly();
 	
-		if( i != (uint16) -1 )
+		if( i != (u_int16_t) -1 )
 		{
 			ThermoScrPoly = i;
 
@@ -1963,10 +1963,10 @@ void InitThermo( void )
 ===================================================================*/
 void KillThermo( void )
 {
-	if( ThermoScrPoly != (uint16) -1 )
+	if( ThermoScrPoly != (u_int16_t) -1 )
 	{
 		KillUsedScrPoly( ThermoScrPoly );
-		ThermoScrPoly = (uint16) -1;
+		ThermoScrPoly = (u_int16_t) -1;
 	}
 }
 	
@@ -1974,9 +1974,9 @@ void KillThermo( void )
 /*===================================================================
 	Procedure	:	Check if MMX present
 	Input		:	Nothing
-	Output		:	BOOL	TRUE/FALSE
+	Output		:	_Bool	true/false
 ===================================================================*/
-BOOL IsMMX( void )
+_Bool IsMMX( void )
 {
 	int MMX = 0;
     SYSTEM_INFO si;
@@ -2009,28 +2009,28 @@ TPAGEINFO	ScrPolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 ===================================================================*/
 void InitScrPolyTPages( void )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	for( i = 0; i <= MAXTPAGESPERTLOAD; i++ )
 	{
-		ScrPolyTPages[ i ].FirstPoly = (uint16) -1;
+		ScrPolyTPages[ i ].FirstPoly = (u_int16_t) -1;
 	}
 }
 
 /*===================================================================
 	Procedure	:	Add ScreenPoly To TPage Link List
-	Input		:	uint16		ScreenPoly Index
-				:	uint16		TPage to add to
+	Input		:	u_int16_t		ScreenPoly Index
+				:	u_int16_t		TPage to add to
 	Output		:	Nothing
 ===================================================================*/
-void AddScrPolyToTPage( uint16 i, int16 TPage )
+void AddScrPolyToTPage( u_int16_t i, int16_t TPage )
 {
 	if( TPage == -1 ) TPage = MAXTPAGESPERTLOAD;
 
-	ScrPolys[ i ].PrevInTPage = (uint16) -1;
+	ScrPolys[ i ].PrevInTPage = (u_int16_t) -1;
 	ScrPolys[ i ].NextInTPage = ScrPolyTPages[ TPage ].FirstPoly;
 
-	if( ScrPolys[ i ].NextInTPage != (uint16) -1 )
+	if( ScrPolys[ i ].NextInTPage != (u_int16_t) -1 )
 	{
 		ScrPolys[ ScrPolys[ i ].NextInTPage ].PrevInTPage = i;
 	}
@@ -2040,15 +2040,15 @@ void AddScrPolyToTPage( uint16 i, int16 TPage )
 
 /*===================================================================
 	Procedure	:	Remove ScreenPoly From TPage Link List
-	Input		:	uint16		ScreenPoly Index
-				:	uint16		TPage to add to
+	Input		:	u_int16_t		ScreenPoly Index
+				:	u_int16_t		TPage to add to
 	Output		:	Nothing
 ===================================================================*/
-void RemoveScrPolyFromTPage( uint16 i, int16 TPage )
+void RemoveScrPolyFromTPage( u_int16_t i, int16_t TPage )
 {
 	if( TPage == -1 ) TPage = MAXTPAGESPERTLOAD;
 
-	if( ScrPolys[ i ].PrevInTPage != (uint16) -1 )
+	if( ScrPolys[ i ].PrevInTPage != (u_int16_t) -1 )
 	{
 		ScrPolys[ ScrPolys[ i ].PrevInTPage ].NextInTPage = ScrPolys[ i ].NextInTPage;
 	}
@@ -2057,19 +2057,19 @@ void RemoveScrPolyFromTPage( uint16 i, int16 TPage )
 		ScrPolyTPages[ TPage ].FirstPoly = ScrPolys[ i ].NextInTPage;
 	}
 
-	if( ScrPolys[ i ].NextInTPage != (uint16) -1 )
+	if( ScrPolys[ i ].NextInTPage != (u_int16_t) -1 )
 	{
 		ScrPolys[ ScrPolys[ i ].NextInTPage ].PrevInTPage = ScrPolys[ i ].PrevInTPage;
 	}
 
-	ScrPolys[ i ].PrevInTPage = (uint16) -1;
-	ScrPolys[ i ].NextInTPage = (uint16) -1;
+	ScrPolys[ i ].PrevInTPage = (u_int16_t) -1;
+	ScrPolys[ i ].NextInTPage = (u_int16_t) -1;
 }
 
-BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject )
+_Bool DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 {
-	int16	TPage;
-	uint16	i;
+	int16_t	TPage;
+	u_int16_t	i;
 
 	TPage = 0;
 	i = ScrPolyTPages[ 0 ].FirstPoly;
@@ -2077,23 +2077,23 @@ BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 	while( 1 )
 	{
  		if( !ScrPolyDispSolid( renderObject, &TPage, &i ) )
-			return( TRUE );
+			return( true );
 
 		disable_zbuff();
 
 		if (!draw_2d_object(renderObject))
-			return FALSE;
+			return false;
 
 		reset_zbuff();
 	}
 
-	return( FALSE );
+	return( false );
 }
 
-BOOL DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
+_Bool DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
 {
-	int16	TPage;
-	uint16	i;
+	int16_t	TPage;
+	u_int16_t	i;
 
 	TPage = 0;
 	i = ScrPolyTPages[ 0 ].FirstPoly;
@@ -2101,35 +2101,35 @@ BOOL DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
 	while( 1 )
 	{
  		if( !ScrPolyDispNonSolid( renderObject, &TPage, &i ) )
-			return( TRUE );
+			return( true );
 
 		disable_zbuff();
 
 		if (!draw_2d_object(renderObject))
-			return FALSE;
+			return false;
 
 		reset_zbuff();
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Display All Solid Screen Polygons
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	int16	*					Current TPage List
-				:	uint16	*					Current ScrPoly
+				:	int16_t	*					Current TPage List
+				:	u_int16_t	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
+_Bool ScrPolyDispSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly )
 {
-	uint16			i;
-	int16			Count;
-	int16			BitCount;
-	int16			TotalVerts;
-	int16			StartVert;
-	int16			NumVerts;
-	int16			NumTris;
+	u_int16_t			i;
+	int16_t			Count;
+	int16_t			BitCount;
+	int16_t			TotalVerts;
+	int16_t			StartVert;
+	int16_t			NumVerts;
+	int16_t			NumTris;
 	float			Xoff;
 	float			Yoff;
 	float			Xsize;
@@ -2143,7 +2143,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
     LPTLVERTEX	lpBufStart;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
-	BOOL			Textured;
+	_Bool			Textured;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -2158,13 +2158,13 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		NumVerts = 0;
 		NumTris = 0;
 
-		if( Count == MAXTPAGESPERTLOAD ) Textured = FALSE;
-		else Textured = TRUE;
+		if( Count == MAXTPAGESPERTLOAD ) Textured = false;
+		else Textured = true;
 
 		if( Count == *TPage ) i = *NextScrPoly;
 		else i = ScrPolyTPages[ Count ].FirstPoly;
 
-		while( ( i != (uint16) -1 ) && ( ( StartVert + NumVerts ) < MAXSCREENPOLYVERTS ) )
+		while( ( i != (u_int16_t) -1 ) && ( ( StartVert + NumVerts ) < MAXSCREENPOLYVERTS ) )
 		{
 			if( ScrPolys[ i ].Flags & SCRFLAG_Solid )
 			{
@@ -2172,7 +2172,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 				{
 					if( ScrPolys[i].Frm_Info && (*ScrPolys[i].Frm_Info ) )
 					{
-						Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16) ScrPolys[ i ].Frame );
+						Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16_t) ScrPolys[ i ].Frame );
 						NumTris += ( 2 * Bit_Ptr->numbits );
 						NumVerts += ( 4 * Bit_Ptr->numbits );
 					}
@@ -2195,7 +2195,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		if( TotalVerts >= MAXSCREENPOLYVERTS ) break;
 	}
 
-	if( !TotalVerts ) return( FALSE );
+	if( !TotalVerts ) return( false );
 
 	renderObject->numTextureGroups = 0;
 
@@ -2208,12 +2208,12 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	if (!(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
-		return FALSE;
+		return false;
 	}	
 
 	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	ScrPolyFacePnt = (LPTRIANGLE) lpIndices;
@@ -2226,8 +2226,8 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	for( Count = *TPage; Count <= MAXTPAGESPERTLOAD; Count++ )
 	{
-		if( Count == MAXTPAGESPERTLOAD ) Textured = FALSE;
-		else Textured = TRUE;
+		if( Count == MAXTPAGESPERTLOAD ) Textured = false;
+		else Textured = true;
 
 		StartVert = ScrPolyTPages[ Count ].StartVert;
 		NumVerts = ScrPolyTPages[ Count ].NumVerts;
@@ -2238,7 +2238,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 			if( !Textured )
 			{
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
+				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = false;
 			}
 			else
 			{	
@@ -2249,13 +2249,13 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 			if( Count == *TPage ) i = *NextScrPoly;
 			else i = ScrPolyTPages[ Count ].FirstPoly;
 	
-			while( ( i != (uint16) -1 ) && ( StartVert < MAXSCREENPOLYVERTS ) )
+			while( ( i != (u_int16_t) -1 ) && ( StartVert < MAXSCREENPOLYVERTS ) )
 			{
 				if( ScrPolys[ i ].Flags & SCRFLAG_Solid )
 				{
 					if( Textured && ScrPolys[i].Frm_Info && (*ScrPolys[i].Frm_Info ) )
 					{
-	   					Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16) ScrPolys[ i ].Frame );
+	   					Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16_t) ScrPolys[ i ].Frame );
 	   					Off_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
       		
 		  				for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
@@ -2556,7 +2556,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = false;
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
@@ -2578,37 +2578,37 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	if (!FSUnlockVertexBuffer(renderObject))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
-		return FALSE ;
+		return false ;
 	}
 
 	*TPage = Count;
 	*NextScrPoly = i;
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Display All NonSolid Screen Polygons
 	Input		:	RENDEROBJECT  *				RenderObject struct pointer
-				:	int16	*					Current TPage List
-				:	uint16	*					Current ScrPoly
+				:	int16_t	*					Current TPage List
+				:	u_int16_t	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
+_Bool ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly )
 {
-	uint16			i;
-	int16			Count;
-	int16			BitCount;
-	int16			TotalVerts;
-	int16			StartVert;
-	int16			NumVerts;
-	int16			NumTris;
+	u_int16_t			i;
+	int16_t			Count;
+	int16_t			BitCount;
+	int16_t			TotalVerts;
+	int16_t			StartVert;
+	int16_t			NumVerts;
+	int16_t			NumTris;
 	float			Xoff;
 	float			Yoff;
 	float			Xsize;
@@ -2622,7 +2622,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
     LPTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
-	BOOL			Textured;
+	_Bool			Textured;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -2637,13 +2637,13 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		NumVerts = 0;
 		NumTris = 0;
 
-		if( Count == MAXTPAGESPERTLOAD ) Textured = FALSE;
-		else Textured = TRUE;
+		if( Count == MAXTPAGESPERTLOAD ) Textured = false;
+		else Textured = true;
 
 		if( Count == *TPage ) i = *NextScrPoly;
 		else i = ScrPolyTPages[ Count ].FirstPoly;
 
-		while( ( i != (uint16) -1 ) && ( ( StartVert + NumVerts ) < MAXSCREENPOLYVERTS ) )
+		while( ( i != (u_int16_t) -1 ) && ( ( StartVert + NumVerts ) < MAXSCREENPOLYVERTS ) )
 		{
 			if( !( ScrPolys[ i ].Flags & SCRFLAG_Solid ) )
 			{
@@ -2651,7 +2651,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 				{
 					if( ScrPolys[i].Frm_Info && (*ScrPolys[i].Frm_Info ) )
 					{
-						Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16) ScrPolys[ i ].Frame );
+						Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16_t) ScrPolys[ i ].Frame );
 						NumTris += ( 2 * Bit_Ptr->numbits );
 						NumVerts += ( 4 * Bit_Ptr->numbits );
 					}
@@ -2674,7 +2674,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		if( TotalVerts >= MAXSCREENPOLYVERTS ) break;
 	}
 
-	if( !TotalVerts ) return( FALSE );
+	if( !TotalVerts ) return( false );
 
 	renderObject->numTextureGroups = 0;
 
@@ -2687,12 +2687,12 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 	if (!(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	ScrPolyFacePnt = (LPTRIANGLE) lpIndices;
@@ -2707,8 +2707,8 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 ===================================================================*/
 	for( Count = *TPage; Count <= MAXTPAGESPERTLOAD; Count++ )
 	{
-		if( Count == MAXTPAGESPERTLOAD ) Textured = FALSE;
-		else Textured = TRUE;
+		if( Count == MAXTPAGESPERTLOAD ) Textured = false;
+		else Textured = true;
 
 		StartVert = ScrPolyTPages[ Count ].StartVert;
 		NumVerts = ScrPolyTPages[ Count ].NumVerts;
@@ -2719,7 +2719,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 			if( !Textured )
 			{
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
+				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = false;
 /* bjd - CHECK
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
 			        PROCESSVERTICES_DATA( D3DPROCESSVERTICES_COPY, StartVert, NumVerts, lpPointer );
@@ -2746,13 +2746,13 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 			if( Count == *TPage ) i = *NextScrPoly;
 			else i = ScrPolyTPages[ Count ].FirstPoly;
 	
-			while( ( i != (uint16) -1 ) && ( i < MAXNUMOFSCRPOLYS ) && ( StartVert < MAXSCREENPOLYVERTS ) )
+			while( ( i != (u_int16_t) -1 ) && ( i < MAXNUMOFSCRPOLYS ) && ( StartVert < MAXSCREENPOLYVERTS ) )
 			{
 				if( !( ScrPolys[ i ].Flags & SCRFLAG_Solid ) )
 				{
 					if( Textured && ScrPolys[i].Frm_Info && (*ScrPolys[i].Frm_Info ) )
 					{
-	   					Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16) ScrPolys[ i ].Frame );
+	   					Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16_t) ScrPolys[ i ].Frame );
 	   					Off_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
       		
 		  				for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
@@ -3071,7 +3071,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = false;
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
@@ -3097,19 +3097,19 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 	if (!FSUnlockVertexBuffer(renderObject))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
-		return FALSE ;
+		return false ;
 	}
 
 	*TPage = Count;
 	*NextScrPoly = i;
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
@@ -3134,13 +3134,13 @@ void LoadTimeForLevel( void )
 	{
 		if ( fscanf( f, " %d", &Minutes ) == 1 )
 		{
-			CountDownOn = TRUE;
+			CountDownOn = true;
 			SinglePlayerTimeLimit = Minutes;
-			KilledPlayer = FALSE;
+			KilledPlayer = false;
 		}
 		else
 		{
-			CountDownOn = FALSE;
+			CountDownOn = false;
 			SinglePlayerTimeLimit = 0;
 		}
 
@@ -3148,13 +3148,13 @@ void LoadTimeForLevel( void )
 	}
 	else
 	{
-		CountDownOn = FALSE;
+		CountDownOn = false;
 		SinglePlayerTimeLimit = 0;
 	}
 
 #else
 
-	CountDownOn = FALSE;
+	CountDownOn = false;
 	SinglePlayerTimeLimit = 0;
 
 #endif
@@ -3198,8 +3198,8 @@ FILE * LoadScreenPolys( FILE * fp )
 
 		if( CountDownOn )
 		{
-			CountDownOn = TRUE;
-			KilledPlayer = FALSE;
+			CountDownOn = true;
+			KilledPlayer = false;
 			CreateCountdownDigits();
 			StartCountDown( 1, 0 );
 			TimeLimitTrigger = NULL;
@@ -3211,12 +3211,12 @@ FILE * LoadScreenPolys( FILE * fp )
 
 /*===================================================================
 	Procedure	:	Create Flag Above Players Head
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void ShowFlagOnShip( uint16 Ship )
+void ShowFlagOnShip( u_int16_t Ship )
 {
-	uint16			i;
+	u_int16_t			i;
 	MATRIX			FinalMatrix;
 	VECTOR			TempPos;
 	VECTOR			Pos;
@@ -3275,7 +3275,7 @@ void ShowFlagOnShip( uint16 Ship )
 	Conv3DTo2D( &TempPos, &Pos, &FinalMatrix );
 
 	i = FindFreeScrPoly();
-	if( i != (uint16) -1 )
+	if( i != (u_int16_t) -1 )
 	{
 		ScrPolys[ i ].Flags = SCRFLAG_Nothing;
 		ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -3297,12 +3297,12 @@ void ShowFlagOnShip( uint16 Ship )
 
 /*===================================================================
 	Procedure	:	Create Bounty Above Players Head
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void ShowBountyOnShip( uint16 Ship )
+void ShowBountyOnShip( u_int16_t Ship )
 {
-	uint16			i;
+	u_int16_t			i;
 	MATRIX			FinalMatrix;
 	VECTOR			TempPos;
 	VECTOR			Pos;
@@ -3361,7 +3361,7 @@ void ShowBountyOnShip( uint16 Ship )
 	Conv3DTo2D( &TempPos, &Pos, &FinalMatrix );
 
 	i = FindFreeScrPoly();
-	if( i != (uint16) -1 )
+	if( i != (u_int16_t) -1 )
 	{
 		ScrPolys[ i ].Flags = SCRFLAG_Nothing;
 		ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -3383,7 +3383,7 @@ void ShowBountyOnShip( uint16 Ship )
 
 /*===================================================================
 	Procedure	:	Create Flag(s) Above Players Head
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
 VECTOR	TeamOffsets[ MAX_TEAMS ][ MAX_TEAMS ] = {
@@ -3409,10 +3409,10 @@ VECTOR	TeamOffsets[ MAX_TEAMS ][ MAX_TEAMS ] = {
 	  { +15.0F, +15.0F, 0.0F } },
 };
 
-void ShowCTFFlagsOnShip( uint16 Ship )
+void ShowCTFFlagsOnShip( u_int16_t Ship )
 {
-	uint16			i;
-	int16			NumFlags;
+	u_int16_t			i;
+	int16_t			NumFlags;
 	MATRIX			FinalMatrix;
 	VECTOR			TempPos;
 	VECTOR			Pos;
@@ -3425,8 +3425,8 @@ void ShowCTFFlagsOnShip( uint16 Ship )
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	int16			Count;
-	int16			Team;
+	int16_t			Count;
+	int16_t			Team;
 
 	NumFlags = 0;
 
@@ -3495,7 +3495,7 @@ void ShowCTFFlagsOnShip( uint16 Ship )
 
 				i = FindFreeScrPoly();
 
-				if( i != (uint16) -1 )
+				if( i != (u_int16_t) -1 )
 				{
 					ScrPolys[ i ].Flags = SCRFLAG_Solid;
 					ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -3522,18 +3522,18 @@ void ShowCTFFlagsOnShip( uint16 Ship )
 
 /*===================================================================
 	Procedure	:	Show Flag on screen for player who has flag
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void ShowFlag( uint16 Ship )
+void ShowFlag( u_int16_t Ship )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	if( !( Ships[ Ship ].Object.Flags & SHIP_CarryingFlag ) )
 		return;
 
 	i = FindFreeScrPoly();
-	if( i != (uint16) -1 )
+	if( i != (u_int16_t) -1 )
 	{
 		ScrPolys[ i ].Flags = SCRFLAG_Nothing;
 		ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -3555,18 +3555,18 @@ void ShowFlag( uint16 Ship )
 
 /*===================================================================
 	Procedure	:	Show Bounty on screen for player who has flag
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void ShowBounty( uint16 Ship )
+void ShowBounty( u_int16_t Ship )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	if( !( Ships[ Ship ].Object.Flags & SHIP_CarryingBounty ) )
 		return;
 
 	i = FindFreeScrPoly();
-	if( i != (uint16) -1 )
+	if( i != (u_int16_t) -1 )
 	{
 		ScrPolys[ i ].Flags = SCRFLAG_Nothing;
 		ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
@@ -3588,17 +3588,17 @@ void ShowBounty( uint16 Ship )
 
 /*===================================================================
 	Procedure	:	Show Flag(s) on screen for player who has flag
-	Input		:	uint16		Ship
+	Input		:	u_int16_t		Ship
 	Output		:	Nothing
 ===================================================================*/
-void ShowCTFFlags( uint16 Ship )
+void ShowCTFFlags( u_int16_t Ship )
 {
-	uint16	i;
-	int16	Count;
+	u_int16_t	i;
+	int16_t	Count;
 	VECTOR	Pos;
 	VECTOR	CenterPos;
-	int16	NumFlags;
-	int16	Team;
+	int16_t	NumFlags;
+	int16_t	Team;
 
 	NumFlags = 0;
 
@@ -3626,7 +3626,7 @@ void ShowCTFFlags( uint16 Ship )
 
 				i = FindFreeScrPoly();
 
-				if( i != (uint16) -1 )
+				if( i != (u_int16_t) -1 )
 				{
 					ScrPolys[ i ].Flags = SCRFLAG_Solid;
 					ScrPolys[ i ].Type = SCRTYPE_LastAFrame;

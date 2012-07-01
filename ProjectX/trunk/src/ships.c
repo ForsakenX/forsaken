@@ -61,12 +61,12 @@
 #define BOB_YFREQ		(2.0F * PI / BOB_YPERIOD)
 
 
-BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
-BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject );
-BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off );
-BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i);
+_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
+_Bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject );
+_Bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off );
+_Bool CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i);
 
-BOOL	IsStartPosVacant( int16 i , uint16 startpos );
+_Bool	IsStartPosVacant( int16_t i , u_int16_t startpos );
 void SpecialDestroyGame( void );
 void MultiSfxHandle( void );
 
@@ -74,18 +74,18 @@ void MultiSfxHandle( void );
 		Externals ...
 ===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
-extern BOOL SeriousError;
+extern _Bool SeriousError;
 
 extern float LevelTimeTaken;
-extern	BOOL			CaptureTheFlag;
-extern	BOOL			CTF;
-extern	BOOL			BountyHunt;
-extern BOOL	NeedFlagAtHome;
-extern int8 TeamFlagPickup[ MAX_TEAMS ];
-extern uint16	FlashScreenPoly;
+extern	_Bool			CaptureTheFlag;
+extern	_Bool			CTF;
+extern	_Bool			BountyHunt;
+extern _Bool	NeedFlagAtHome;
+extern int8_t TeamFlagPickup[ MAX_TEAMS ];
+extern u_int16_t	FlashScreenPoly;
 
-BOOL TeamFlagAtHome[ MAX_TEAMS ];
-uint32 TeamFlagMask[ MAX_TEAMS ] = {
+_Bool TeamFlagAtHome[ MAX_TEAMS ];
+u_int32_t TeamFlagMask[ MAX_TEAMS ] = {
 	SHIP_CarryingFlag1,
 	SHIP_CarryingFlag2,
 	SHIP_CarryingFlag3,
@@ -93,28 +93,28 @@ uint32 TeamFlagMask[ MAX_TEAMS ] = {
 };
 
 extern int GoalScore;
-extern int16 PickupsGot[ MAXPICKUPTYPES ];
+extern int16_t PickupsGot[ MAXPICKUPTYPES ];
 extern int FlagsToGenerate;
 extern char *TeamName[ MAX_TEAMS ];
-extern BOOL	bSoundEnabled;
-extern	BOOL ShowNode;
-extern	int16	SelectedBike;
-extern uint16	num_start_positions;
-extern uint16	last_start_position;
+extern _Bool	bSoundEnabled;
+extern	_Bool ShowNode;
+extern	int16_t	SelectedBike;
+extern u_int16_t	num_start_positions;
+extern u_int16_t	last_start_position;
 extern GAMESTARTPOS		StartPositions[MAXSTARTPOSITIONS];			// pos and group info...
-extern	int16					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
-extern	int16					Lives;
+extern	int16_t					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
+extern	int16_t					Lives;
 extern int  no_collision;
 extern	XLIGHT	XLights[MAXXLIGHTS];
-extern	BOOL	flush_input;
+extern	_Bool	flush_input;
 extern	MATRIX TempMatrix;
 extern USERCONFIG *player_config;
 extern char MyName[];
 extern char NickName[];
 extern	MLOADHEADER ModelHeaders[MAXMODELHEADERS];
 extern	MXALOADHEADER MxaModelHeaders[MAXMXAMODELHEADERS];
-extern	BOOL	DebugInfo;
-extern	BOOL	GodMode;
+extern	_Bool	DebugInfo;
+extern	_Bool	GodMode;
 extern MLOADHEADER Mloadheader;
 extern MCLOADHEADER MCloadheader;
 extern MCLOADHEADER MCloadheadert0;
@@ -138,16 +138,16 @@ extern	LONGLONG	GameElapsedTime;
 #endif
 
 extern	PICKUP	Pickups[ MAXPICKUPS ];
-extern	uint16	FirstPickupUsed;
+extern	u_int16_t	FirstPickupUsed;
 extern	float	PickupMessageCount;
-extern	int16	PickupMessageIndex;
-extern	BOOL	RemoteCameraActive;
-extern	uint16	RandomStartPosModify;
-extern	BOOL	DrawPanel;
-extern	BOOL	OldDrawPanel;
-extern	uint16 IsGroupVisible[MAXGROUPS];
-extern	int16	NumStealths;
-extern	int16	NumInvuls;
+extern	int16_t	PickupMessageIndex;
+extern	_Bool	RemoteCameraActive;
+extern	u_int16_t	RandomStartPosModify;
+extern	_Bool	DrawPanel;
+extern	_Bool	OldDrawPanel;
+extern	u_int16_t IsGroupVisible[MAXGROUPS];
+extern	int16_t	NumStealths;
+extern	int16_t	NumInvuls;
 extern	float	GeneralAmmo;
 extern	float	PowerLevel;
 
@@ -155,17 +155,17 @@ extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 											// this tells the drones what status the host thinks hes in..
 
 extern	int		outside_group;
-extern	BOOL	PickupInvulnerability;
+extern	_Bool	PickupInvulnerability;
 
-extern	int16	BikeModels[ MAXBIKETYPES ];
+extern	int16_t	BikeModels[ MAXBIKETYPES ];
 
-extern	BOOL	TeamGame;
+extern	_Bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	int		CrystalsFound;
-extern	int16	NumGoldBars;
-extern	uint16	FirstStartPositionInGroup[MAXGROUPS];
-extern	BOOL		JustGenerated;
-extern	BOOL		JustPickedUpShield;
+extern	int16_t	NumGoldBars;
+extern	u_int16_t	FirstStartPositionInGroup[MAXGROUPS];
+extern	_Bool		JustGenerated;
+extern	_Bool		JustPickedUpShield;
 
 // watch mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
@@ -626,12 +626,12 @@ int		ShieldHit = 0;
 /*===================================================================
 		Globals ...
 ===================================================================*/
-uint32 UnderwaterSfxID;
+u_int32_t UnderwaterSfxID;
 float BountyTime = 0.0F;
 extern int BountyBonusInterval;
 
-BOOL ShieldCritical = FALSE;
-BOOL HullCritical = FALSE;
+_Bool ShieldCritical = false;
+_Bool HullCritical = false;
 
 RENDERMATRIX  TempWorld;	
 
@@ -640,25 +640,25 @@ float	RandomBubbleTimer = 0.0F;
 long debug_long = 0;
 long max_mouse_move = 0;
 DWORD max_time;
-uint16	NumCollides;
+u_int16_t	NumCollides;
 
 SHIPCONTROL control;
 float	NitroFuel = 0.0F;
 float	NitroFuelUsed = 0.0F;
 extern	CAMERA			CurrentCamera;
-extern	BOOL	PlayDemo;
-extern	BOOL	PauseDemo;
-float AutoLevelRot( uint16 ship, float autolevel_rate );
-void BobShip( uint16 ship, VECTOR *bob );
+extern	_Bool	PlayDemo;
+extern	_Bool	PauseDemo;
+float AutoLevelRot( u_int16_t ship, float autolevel_rate );
+void BobShip( u_int16_t ship, VECTOR *bob );
 void	UpdateStartPos( void );
-void CreateSteam( VECTOR * Pos, VECTOR * Dir, uint16 Group );
+void CreateSteam( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
 float	SteamTime = 0.0F;
-BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos );
-BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos );
-BOOL ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius );
-BOOL SwitchedToWatchMode =FALSE;
+_Bool	IsStartPosVacantMutualyVisibleGroup( int16_t i , u_int16_t startpos );
+_Bool	IsStartPosVacantVisibleGroup( int16_t i , u_int16_t startpos );
+_Bool ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius );
+_Bool SwitchedToWatchMode =false;
 
-BOOL	RearCameraDisable = FALSE;
+_Bool	RearCameraDisable = false;
 
 /*===================================================================
 	Function		:			Ship Control Mode Jump Table
@@ -685,13 +685,13 @@ void (* RemoteCameraModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		Init All Ships ...
 ===================================================================*/
 
-BOOL SetUpShips()
+_Bool SetUpShips()
 {
 	sprintf( NickName, "%s", player_config->name );
 
 	sprintf( MyName, "%s's game", player_config->name );
 
-	return TRUE;
+	return true;
 }
 
 #ifdef DEMO_SUPPORT
@@ -702,7 +702,7 @@ static	LONGLONG	TempTime2;
 static	float	Interp;	
 extern  BYTE          MyGameStatus;
 
-BOOL ProcessShips()
+_Bool ProcessShips()
 {
 	BYTE	i;
 #if 0
@@ -722,23 +722,23 @@ BOOL ProcessShips()
 	VECTOR	Bob;
 	VECTOR	StartPos;
 	BGOBJECT * BGObject;
-	uint16	NumToDo;
-	uint16	OldGroup;
+	u_int16_t	NumToDo;
+	u_int16_t	OldGroup;
 	VECTOR	ExtForce;
-	BOOL HasBeenExternal;
+	_Bool HasBeenExternal;
 	float	ShieldModifier;
-	uint32	OldInWater;
-	BOOL	Object2Object;
+	u_int32_t	OldInWater;
+	_Bool	Object2Object;
 	NODE * NodePnt;
 	OBJECT * ShipObjPnt;
 	GLOBALSHIP * ShipPnt;
 	int		goalcheck;
-	BOOL OldWaterOneshot;
+	_Bool OldWaterOneshot;
 
 	UpdateStartPos();
 	MultiSfxHandle();
 
-	RearCameraDisable = FALSE;
+	RearCameraDisable = false;
 
 #if 0
 	for( i = 0 ; i < 10 ; i ++ )
@@ -811,11 +811,11 @@ BOOL ProcessShips()
 					(ShipObjPnt->Mode != DEATH_MODE || Random_Range(2))       // blink 50% while dieing
 				)
 				{
-					if( ShipObjPnt->light == (uint16) -1 )
+					if( ShipObjPnt->light == (u_int16_t) -1 )
 					{
 						ShipObjPnt->light = FindFreeXLight();
 					}
-					if( ShipObjPnt->light != (uint16) -1 )
+					if( ShipObjPnt->light != (u_int16_t) -1 )
 					{
 						ShipObjPnt->Flags |= SHIP_Light;
 
@@ -832,10 +832,10 @@ BOOL ProcessShips()
 					}
 				}else{
 					ShipObjPnt->Flags &= ~SHIP_Light;
-					if( ShipObjPnt->light != (uint16) -1 )
+					if( ShipObjPnt->light != (u_int16_t) -1 )
 					{
 						KillUsedXLight( ShipObjPnt->light );
-						ShipObjPnt->light = (uint16) -1;
+						ShipObjPnt->light = (u_int16_t) -1;
 					}
 				}
 
@@ -873,16 +873,16 @@ BOOL ProcessShips()
 						}
 						else
 						{
-							ShipPnt->Invul = TRUE;
+							ShipPnt->Invul = true;
 						}
 					}
 					else
 					{
-						ShipPnt->Invul = FALSE;
+						ShipPnt->Invul = false;
 						if( PickupInvulnerability )
 						{
 							NumInvuls++;
-							PickupInvulnerability = FALSE;
+							PickupInvulnerability = false;
 						}
 					}
 					if ( BountyHunt && ShipObjPnt->Flags & SHIP_CarryingBounty )
@@ -891,7 +891,7 @@ BOOL ProcessShips()
 						if ( BountyBonusInterval > 0 && BountyTime >= BountyBonusInterval )
 						{
 							// update bonus 4 (stats.c) -- bounty hunt points
-							UpdateBonusStats(i,(int16) floor( BountyTime / BountyBonusInterval ));
+							UpdateBonusStats(i,(int16_t) floor( BountyTime / BountyBonusInterval ));
 							BountyTime = FMOD( BountyTime, BountyBonusInterval );
 						}
 					}
@@ -1024,7 +1024,7 @@ BOOL ProcessShips()
 					Move_Off.y += ShipObjPnt->ExternalForce.y * framelag;
 					Move_Off.z += ShipObjPnt->ExternalForce.z * framelag;
 
-					Object2Object = FALSE;
+					Object2Object = false;
 					if( (i != MAX_PLAYERS) && (ShipObjPnt->Mode != LIMBO_MODE) )
 					{
 						Object2Object |= Ship2ShipCollide( i , &Move_Off );
@@ -1037,7 +1037,7 @@ BOOL ProcessShips()
 					if( !no_collision )
 					{
 						NumCollides = 0;
-						if ( ShipObjPnt->Group != (uint16) -1 )
+						if ( ShipObjPnt->Group != (u_int16_t) -1 )
 #ifdef MULTI_RAY_COLLISION
 						{
 #ifdef MULTI_RAY_SLIDE
@@ -1080,7 +1080,7 @@ BOOL ProcessShips()
 								}
 								else
 								{
-									uint16 g;
+									u_int16_t g;
 									
 									for ( g = 0; g < Mloadheader.num_groups; g++ )
 									{
@@ -1098,7 +1098,7 @@ BOOL ProcessShips()
 						{
 							while ( BackgroundCollide( &MCloadheader, &Mloadheader,
 														&ShipObjPnt->Pos, ShipObjPnt->Group, &Move_Off,
-														&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, TRUE, &BGObject ) )
+														&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, true, &BGObject ) )
 							{
 								if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
 						
@@ -1175,7 +1175,7 @@ BOOL ProcessShips()
 
 					if ( CTF && ShipObjPnt->Flags & SHIP_CarryingFlags )
 					{
-						static BOOL IKnowINeedFlag = FALSE;
+						static _Bool IKnowINeedFlag = false;
 
 						goalcheck = GoalCheckTeam( &StartPos, &ShipObjPnt->Pos, ShipObjPnt->Group, TeamNumber[ i ] );
 						if ( goalcheck == GOAL_SCORED )
@@ -1217,7 +1217,7 @@ BOOL ProcessShips()
 										SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ReturnedFlag, 0);
 									}
 								
-								IKnowINeedFlag = FALSE;
+								IKnowINeedFlag = false;
 							}
 							else
 							{
@@ -1225,7 +1225,7 @@ BOOL ProcessShips()
 								{
 									AddColourMessageToQue(FlagMessageColour, YOU_NEED_FLAG,
 										TeamName[ TeamNumber[ i ] ] );
-									IKnowINeedFlag = TRUE;
+									IKnowINeedFlag = true;
 								}
 							}
 						}
@@ -1236,7 +1236,7 @@ BOOL ProcessShips()
 								AddColourMessageToQue(FlagMessageColour, TAKE_FLAG_TO_GOAL,
 									TeamName[ TeamNumber[ i ] ] );
 							}
-							IKnowINeedFlag = FALSE;
+							IKnowINeedFlag = false;
 						}
 					}
 
@@ -1264,7 +1264,7 @@ BOOL ProcessShips()
 					{
 						if( MyGameStatus == STATUS_SinglePlayer )
 						{
-							SetBikeMods( (uint16) (SelectedBike+2) );
+							SetBikeMods( (u_int16_t) (SelectedBike+2) );
 						}
 						else
 						{
@@ -1437,7 +1437,7 @@ BOOL ProcessShips()
 							if ( BountyBonusInterval > 0 && BountyTime >= BountyBonusInterval )
 							{
 								// update bonus 7 (stats.c) -- bounty hunt points
-								UpdateBonusStats(i,(int16) floor( BountyTime / BountyBonusInterval ));
+								UpdateBonusStats(i,(int16_t) floor( BountyTime / BountyBonusInterval ));
 								BountyTime = FMOD( BountyTime, BountyBonusInterval );
 							}
 						}					
@@ -1445,7 +1445,7 @@ BOOL ProcessShips()
 				}
 				else
 				{
-					ShipPnt->JustRecievedPacket = FALSE;
+					ShipPnt->JustRecievedPacket = false;
 				}
 			}
 // End of Special Stuff for other players Ship Movement..Carries on even if no new packet arrives..
@@ -1457,11 +1457,11 @@ BOOL ProcessShips()
 			QuatToMatrix( &ShipObjPnt->FinalQuat, &ShipObjPnt->FinalMat );
 			MatrixTranspose( &ShipObjPnt->FinalMat, &ShipObjPnt->FinalInvMat );
 #if 0
-			if( ShipObjPnt->light == (uint16) -1 )
+			if( ShipObjPnt->light == (u_int16_t) -1 )
 			{
 				ShipObjPnt->light = FindFreeXLight();
 			}
-			if( ShipObjPnt->light != (uint16) -1 )
+			if( ShipObjPnt->light != (u_int16_t) -1 )
 			{
 				XLights[ShipObjPnt->light].Size = (4096.0F+2048.0F)*GLOBAL_SCALE;
 				XLights[ShipObjPnt->light].CosArc = (float)cos(D2R(35));
@@ -1477,11 +1477,11 @@ BOOL ProcessShips()
 #endif
 
 #if 0
-			if( ShipObjPnt->light == (uint16) -1 )
+			if( ShipObjPnt->light == (u_int16_t) -1 )
 			{
 				ShipObjPnt->light = FindFreeXLight();
 			}
-			if( ShipObjPnt->light != (uint16) -1 )
+			if( ShipObjPnt->light != (u_int16_t) -1 )
 			{
 				XLights[ShipObjPnt->light].Size = SHIP_RADIUS * 2;
 				XLights[ShipObjPnt->light].r = 0.0F;
@@ -1532,10 +1532,10 @@ BOOL ProcessShips()
 
 	SetPosVelDir_Listner( &Ships[WhoIAm].Object.Pos , &Ships[WhoIAm].Move_Off , &Ships[WhoIAm].Object.Mat );
 	
-	return TRUE;
+	return true;
 }
 
-void ForceExternal( uint16 ship, VECTOR *force )
+void ForceExternal( u_int16_t ship, VECTOR *force )
 {
 	Ships[ ship ].Object.ExternalForce.x += ( force->x * framelag );
 	Ships[ ship ].Object.ExternalForce.y += ( force->y * framelag );
@@ -1543,7 +1543,7 @@ void ForceExternal( uint16 ship, VECTOR *force )
 }
 
 
-void ForceInternal( uint16 ship, VECTOR *force )
+void ForceInternal( u_int16_t ship, VECTOR *force )
 {
 	VECTOR	NewForce;
 
@@ -1555,7 +1555,7 @@ void ForceInternal( uint16 ship, VECTOR *force )
 
 }
 
-void ForceExternalOneOff( uint16 ship, VECTOR *force )
+void ForceExternalOneOff( u_int16_t ship, VECTOR *force )
 {
 	Ships[ ship ].Object.ExternalForce.x += force->x;
 	Ships[ ship ].Object.ExternalForce.y += force->y;
@@ -1572,7 +1572,7 @@ void ObjForceExternalOneOff( OBJECT *Obj, VECTOR *force )
 
 
 
-void ForceInternalOneOff( uint16 ship, VECTOR *force )
+void ForceInternalOneOff( u_int16_t ship, VECTOR *force )
 {
 	VECTOR	NewForce;
 
@@ -1585,7 +1585,7 @@ void ForceInternalOneOff( uint16 ship, VECTOR *force )
 }
 
 
-void RotateExternal( uint16 ship, VECTOR *point, VECTOR *dir, float force )
+void RotateExternal( u_int16_t ship, VECTOR *point, VECTOR *dir, float force )
 {
 	VECTOR to_ship;
 	VECTOR axis;
@@ -1609,7 +1609,7 @@ void RotateExternal( uint16 ship, VECTOR *point, VECTOR *dir, float force )
 }
 
 
-void RotateInternal( uint16 ship, float xrot, float yrot, float zrot )
+void RotateInternal( u_int16_t ship, float xrot, float yrot, float zrot )
 {
 	QUAT rot;
 
@@ -1627,7 +1627,7 @@ void RotateInternal( uint16 ship, float xrot, float yrot, float zrot )
 #define AUTOLEVEL_RATE					(0.1F)
 
 
-float AutoLevelRot( uint16 ship, float autolevel_rate )
+float AutoLevelRot( u_int16_t ship, float autolevel_rate )
 {
 	VECTOR up;
 	VECTOR dir;
@@ -1678,7 +1678,7 @@ float AutoLevelRot( uint16 ship, float autolevel_rate )
 }
 
 
-void BobShip( uint16 ship, VECTOR *bob )
+void BobShip( u_int16_t ship, VECTOR *bob )
 {
 	VECTOR move;
 	float move_len;
@@ -1705,10 +1705,10 @@ void BobShip( uint16 ship, VECTOR *bob )
 
 void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 {
-	uint16	i;
-	uint16	spos;
-	int16	Count;
-	JustGenerated = TRUE;
+	u_int16_t	i;
+	u_int16_t	spos;
+	int16_t	Count;
+	JustGenerated = true;
 
 	for( i = 0 ; i < (MAX_PLAYERS+1) ; i++ )
 	{
@@ -1716,7 +1716,7 @@ void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 		{
 			Ships[i].enable = 0;
 		}else{
-			Ships[i].enable = TRUE;
+			Ships[i].enable = true;
 		}
 
 		Ships[i].Object.NodeNetwork = 1;
@@ -1726,7 +1726,7 @@ void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 		Ships[i].Object.Flags = 0;		// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 		Ships[i].StealthTime = 0.0F; // Stealth Mode Time Limit
 		Ships[i].InvulTimer = 0.0F;	// HowLong am I Invulnerable
-		Ships[i].Invul = FALSE;		// Am I Invulnerable...
+		Ships[i].Invul = false;		// Am I Invulnerable...
 		Ships[i].Object.Speed.x = 0.0F;
 		Ships[i].Object.Speed.y = 0.0F;
 		Ships[i].Object.Speed.z = 0.0F;
@@ -1743,15 +1743,15 @@ void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 		Ships[i].SecBullIdCount	= 0;
 		Ships[i].Object.Shield	= Start_Shield;
 		Ships[i].Object.Hull	= Start_Hull;
-		Ships[i].Object.light = (uint16) -1;
-		Ships[i].headlights = FALSE;
+		Ships[i].Object.light = (u_int16_t) -1;
+		Ships[i].headlights = false;
 
-		for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
+		for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (u_int16_t) -1;
 		Ships[i].NumMultiples = 0;
 		
 		MakeQuat( 0.0F, 0.0F, 0.0F, &Ships[i].Object.Quat );
 		
-		if ( Mloadheader->state == TRUE)
+		if ( Mloadheader->state == true)
 		{
 			spos = (i+RandomStartPosModify) % num_start_positions;
 			InitShipStartPos( i, spos );
@@ -1783,13 +1783,13 @@ void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 /*===================================================================
 		True EnviroMent Mapping for an Mloadheader...
 ===================================================================*/
-BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
+_Bool	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 {
 	VECTOR Temp;
 //	D3DEXECUTEBUFFERDESC	debDesc;
-	uint16 group;
-	uint16 vert;
-	uint16 execbuf;
+	u_int16_t group;
+	u_int16_t vert;
+	u_int16_t execbuf;
 	LPLVERTEX	lpLVERTEX = NULL;
 	float	u,v;
 
@@ -1804,12 +1804,12 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 //				debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 
 //				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//					return FALSE ; // bjd
+//					return false ; // bjd
 //				if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//					return FALSE;
+//					return false;
 				if (!(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 				{
-					return FALSE;
+					return false;
 				}
 
 //				lpLVERTEX = ( LPLVERTEX ) debDesc.lpData;
@@ -1829,15 +1829,15 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 
 				/*	unlock the execute buffer	*/
 //				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-//					return FALSE ;
+//					return false ;
 				if (!(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -1847,11 +1847,11 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 			Input : Nothing....Ships[WhoIAm].Damage must be set
 			Output: 0 no kill...1 last hit killed me...
 /*===================================================================ÄÄÄ*/
-int16 DoDamage( BOOL OverrideInvul )
+int16_t DoDamage( _Bool OverrideInvul )
 {
-	uint8	Message[ 128 ];
-	int16	MessageSFX = -1;
-	int16	TriggerSFX = -1;
+	u_int8_t	Message[ 128 ];
+	int16_t	MessageSFX = -1;
+	int16_t	TriggerSFX = -1;
 
 	Message[ 0 ] = 0;
 			
@@ -1886,14 +1886,14 @@ int16 DoDamage( BOOL OverrideInvul )
 						MessageSFX = SFX_BIKECOMP_SC;
 						TriggerSFX = SFX_BIKER_LE;
 						sprintf( &Message[0], SHIELD_CRITICAL );
-						ShieldCritical = TRUE;
+						ShieldCritical = true;
 					}
 
 					if ( ( Ships[ WhoIAm].Object.Hull < HULL_CRITICAL_LEVEL ) && !HullCritical )
 					{
 						MessageSFX = SFX_BIKECOMP_HC;
 						sprintf( &Message[0], HULL_CRITICAL );
-						HullCritical = TRUE;
+						HullCritical = true;
 					}
 				}
 			}
@@ -1912,8 +1912,8 @@ int16 DoDamage( BOOL OverrideInvul )
 					if( Ships[WhoIAm].Object.Hull <= 0 )
 					{
 						// reset shield & hull critical flags...
-						ShieldCritical = FALSE;
-						HullCritical = FALSE;
+						ShieldCritical = false;
+						HullCritical = false;
 
 						PlaySfx( SFX_Die, 1.0F );
 						Ships[WhoIAm].Object.Hull = 0.0F;
@@ -1950,23 +1950,23 @@ int16 DoDamage( BOOL OverrideInvul )
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	InitShipRandomStartPos
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
-void InitShipRandomPos( int16 i )
+void InitShipRandomPos( int16_t i )
 {
-	int16	e;
-	int16	Count;
-	int16	orgtry;
-	int16	trys;
-	uint16	startpos;
+	int16_t	e;
+	int16_t	Count;
+	int16_t	orgtry;
+	int16_t	trys;
+	u_int16_t	startpos;
 	VECTOR	MineVec;
 
 	Ships[i].Object.NodeNetwork = 1;
 	Ships[i].Object.NearestNode = NULL;
 	Ships[i].Object.Type = OBJECT_TYPE_SHIP;
 
-	JustGenerated = TRUE;
+	JustGenerated = true;
 	Ships[i].Object.Shield = Start_Shield;
 	Ships[i].Object.Hull	= Start_Hull;
 	Ships[i].Object.Angle.x = 0.0F;
@@ -1982,13 +1982,13 @@ void InitShipRandomPos( int16 i )
 	Ships[i].NumMultiples = 0;
 	Ships[i].Primary = PULSAR;
 	Ships[i].Secondary = MUGMISSILE;
-	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
+	for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (u_int16_t) -1;
 	Ships[i].NumMultiples = 0;
 
 	RestoreWeapons();
 	RestoreAmmo();
 
-	if( Mloadheader.state == TRUE )
+	if( Mloadheader.state == true )
 	{
 		if( num_start_positions >= 2 )
 		{
@@ -2061,13 +2061,13 @@ void InitShipRandomPos( int16 i )
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	InitShipStartPos
-	Input		:	int16 which Ship
-					int16 which pos
+	Input		:	int16_t which Ship
+					int16_t which pos
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
-void InitShipStartPos( int16 i, int16 pos )
+void InitShipStartPos( int16_t i, int16_t pos )
 {
-	uint16 startpos;
+	u_int16_t startpos;
 	VECTOR	MineVec;
 	VECTOR	Start_Dir;
 	VECTOR	Start_Up;
@@ -2079,7 +2079,7 @@ void InitShipStartPos( int16 i, int16 pos )
 	int		j;
 	float	autolevel;
 #endif
-	JustGenerated = TRUE;
+	JustGenerated = true;
 
 	if( (MyGameStatus==STATUS_SinglePlayer) || (MyGameStatus==STATUS_StartingSinglePlayer) )
 	{
@@ -2100,7 +2100,7 @@ void InitShipStartPos( int16 i, int16 pos )
 	Ships[i].StealthTime = 0.0F;
 	Ships[i].Primary = PULSAR;
 	Ships[i].Secondary = MUGMISSILE;
-	Ships[i].light = (uint16) -1;
+	Ships[i].light = (u_int16_t) -1;
 	RestoreWeapons();
 	RestoreAmmo();
 #endif
@@ -2110,7 +2110,7 @@ void InitShipStartPos( int16 i, int16 pos )
 	Start_Dir.y = 0.0F;
 	Start_Dir.z = -1.0F;
 
-	if( Mloadheader.state == TRUE )
+	if( Mloadheader.state == true )
 	{
 		startpos = pos % num_start_positions;
 		MineVec.x = StartPositions[startpos].Pos.x;
@@ -2180,13 +2180,13 @@ void InitShipStartPos( int16 i, int16 pos )
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	GotoRoom
-	Input		:	int16	which ship
+	Input		:	int16_t	which ship
 					char *	roomname
-	Output		:	TRUE if room found, FALSE otherwise
+	Output		:	true if room found, false otherwise
 /*===================================================================ÄÄÄ*/
-BOOL GotoRoom( int16 i, char *roomname )
+_Bool GotoRoom( int16_t i, char *roomname )
 {
-	uint16 startpos;
+	u_int16_t startpos;
 	VECTOR	MineVec;
 	VECTOR	Start_Pos;
 	VECTOR	Start_Dir;
@@ -2194,9 +2194,9 @@ BOOL GotoRoom( int16 i, char *roomname )
 	VECTOR	Start_Right;
 	VECTOR	Ship_Up;
 	QUAT	ZQuat;
-	int16	group;
+	int16_t	group;
 
-	if( Mloadheader.state == TRUE )
+	if( Mloadheader.state == true )
 	{
 		for ( group = 0; group < Mloadheader.num_groups; group++ )
 		{
@@ -2204,7 +2204,7 @@ BOOL GotoRoom( int16 i, char *roomname )
 				break;
 		}
 		if ( group >= Mloadheader.num_groups )
-			return FALSE;
+			return false;
 		group = ( Ships[i].Object.Group + group ) % Mloadheader.num_groups;
 		for ( startpos = 0; startpos < num_start_positions; startpos++ )
 		{
@@ -2241,7 +2241,7 @@ BOOL GotoRoom( int16 i, char *roomname )
 #endif
 		Ships[i].Object.Group = group;
 	}else{
-		return FALSE;
+		return false;
 	}
 	MineVec.x = Start_Pos.x;
 	MineVec.y = Start_Pos.y;
@@ -2268,14 +2268,14 @@ BOOL GotoRoom( int16 i, char *roomname )
 	Ships[i].Object.Autolevel = 0.0F;
 	Ships[i].Object.BobCount = 0.0F;
 
-	return TRUE;
+	return true;
 }
 
 
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 0	Normal Ship...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 void ShipMode0( GLOBALSHIP * ShipPnt , BYTE i )
@@ -2338,7 +2338,7 @@ void ShipMode0( GLOBALSHIP * ShipPnt , BYTE i )
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 1	Death Mode...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 #include "input.h"
@@ -2347,9 +2347,9 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 	VECTOR	Move_Dir;
 	VECTOR	Move_Off;
 	VECTOR	ScatterDir;
-	BOOL	Impact = FALSE;
+	_Bool	Impact = false;
 
-	input_grab(FALSE);
+	input_grab(false);
 
 	control_ship( NULL, &control );
 	// fudge to stop you turboing while your dieing...
@@ -2405,8 +2405,8 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 
 		Current_Camera_View = MAX_PLAYERS;
 		OldDrawPanel = DrawPanel;
-		DrawPanel = FALSE;
-		RearCameraDisable = TRUE;
+		DrawPanel = false;
+		RearCameraDisable = true;
 	}
 	
 	ShipPnt->Timer -= real_framelag;
@@ -2441,13 +2441,13 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 }
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 2	Limbo Mode...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 extern void clear_last_mouse_state(void);
 void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 {
-	input_grab(FALSE);
+	input_grab(false);
 	if( GodMode )
 	{
 		Current_Camera_View = WhoIAm;		// set it back to me...
@@ -2470,7 +2470,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 		// hit respawn key
 		if( ( ShipPnt->Timer < RESPAWN_TIMER ) && ( AnyKeyReleased() != 0 ) )
 		{
-			input_grab(TRUE);
+			input_grab(true);
 
 			// single player
 			if( MyGameStatus == STATUS_SinglePlayer )
@@ -2498,17 +2498,17 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 			// reset watch mode
 			if(SwitchedToWatchMode)	
 			{
-				SwitchedToWatchMode = FALSE;
+				SwitchedToWatchMode = false;
 				// send a message to everybody saying im in watch mode
 				SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ExitedWatchMode, 0);
 			}
 
 			WhiteOut = 0.0F;
 			InitShipRandomPos( i );
-			JustGenerated = TRUE;
+			JustGenerated = true;
 			ShipPnt->Object.Mode = NORMAL_MODE;
 			ShipPnt->InvulTimer = RGENINVULTIME;		// approx 1 second of invulnerability...			
-			ShipPnt->Invul = TRUE;
+			ShipPnt->Invul = true;
 			PlaySfx( SFX_PlayerGenerate, 1.0F );
 			
 			// play a general biker phrase on respawning, but only in single player
@@ -2519,7 +2519,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 
 			Ships[MAX_PLAYERS].enable = 0;		// Turn Off the remote camera...
 			Current_Camera_View = WhoIAm;		// set it back to me...
-			flush_input = TRUE;
+			flush_input = true;
 			control_ship( player_config, &control );
 
 			// so we don't fire from birth
@@ -2535,12 +2535,12 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 }
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 4	Game over mode...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 {
-	input_grab(FALSE);
+	input_grab(false);
 	Current_Camera_View = MAX_PLAYERS;	// set it back to Remote Camera..
 	Ships[MAX_PLAYERS].enable = 1;		// Turn On the remote camera...
 	ShipPnt->Timer -= real_framelag;
@@ -2560,14 +2560,14 @@ void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Watch Mode 5	enables watching other players...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	VECTOR	ScatterDir;
 
-	input_grab(FALSE);
+	input_grab(false);
 
 	// clear any white out
 	WhiteOut = 0.0F;
@@ -2584,7 +2584,7 @@ void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i )
 		SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_EnteredWatchMode, 0);
 
 		// set flag so we don't redo this
-		SwitchedToWatchMode = TRUE;
+		SwitchedToWatchMode = true;
 	}
 
 	//	Handle all the Input Stuff
@@ -2606,7 +2606,7 @@ void Process_Remote_Camera( void )
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Remote Camera Mode 0	Normal Ship...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
@@ -2619,7 +2619,7 @@ void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
 	VECTOR	ImpactPoint;
 	VECTOR	Move_Off;	
 	VECTOR	Pos_New;	
-	uint16	ImpactGroup;
+	u_int16_t	ImpactGroup;
 	NORMAL	FaceNormal;
 
 	if( !DebugInfo )
@@ -2638,11 +2638,11 @@ void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
 		Move_Dir.y = ShipPnt->Object.Pos.y - Ships[WhoIAm].Object.Pos.y ;
 		Move_Dir.z = ShipPnt->Object.Pos.z - Ships[WhoIAm].Object.Pos.z ;
 		
-		if ( Ships[WhoIAm].Object.Group != (uint16) -1 )
+		if ( Ships[WhoIAm].Object.Group != (u_int16_t) -1 )
 		{
 			if( BackgroundCollide( &MCloadheadert0, &Mloadheader,
    										&Ships[WhoIAm].Object.Pos, Ships[WhoIAm].Object.Group, &Move_Dir,
-										&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, TRUE, NULL ) == TRUE )
+										&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, true, NULL ) == true )
 			{
 				ShipPnt->Object.Pos.x = ImpactPoint.x;
 				ShipPnt->Object.Pos.y = ImpactPoint.y;
@@ -2662,11 +2662,11 @@ void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
 		temp = Ships[WhoIAm].Object.Pos;
 		NumCollides = 0;
 		ImpactGroup = Ships[WhoIAm].Object.Group;
-		if ( Ships[WhoIAm].Object.Group != (uint16) -1 )
+		if ( Ships[WhoIAm].Object.Group != (u_int16_t) -1 )
 		{
 			while ( BackgroundCollide( &MCloadheader, &Mloadheader,
    										&temp, ImpactGroup, &Move_Dir,
-   										&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, TRUE, NULL ) )
+   										&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, true, NULL ) )
 			{
 				temp = ImpactPoint;
 				Move_Dir.x = Pos_New.x - temp.x; 
@@ -2709,7 +2709,7 @@ void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
 }
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Remote Camera Mode 1	Death Mode...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
@@ -2753,14 +2753,14 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 /*===================================================================
 	Procedure	:	Is there a Bike near this restart point...
 	Input		:	nothing
-	Output		:	FALSE/TRUE
+	Output		:	false/true
 ===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
 __inline
 #endif
 #endif
-BOOL	IsStartPosVacant( int16 i , uint16 startpos )
+_Bool	IsStartPosVacant( int16_t i , u_int16_t startpos )
 {
 	int	e;
 	for( e = 0 ; e < MAX_PLAYERS ; e++ )
@@ -2771,24 +2771,24 @@ BOOL	IsStartPosVacant( int16 i , uint16 startpos )
 			{
 				if( DistanceVector2Vector( &StartPositions[startpos].Pos , &Ships[e].Object.Pos ) < ( BLOCKSIZE * 6.0F ) )
 				{
-					return TRUE;
+					return true;
 				}
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 /*===================================================================
 	Procedure	:	Is there a Bike in a Mutually visible Group from this restart point...
 	Input		:	nothing
-	Output		:	FALSE/TRUE
+	Output		:	false/true
 ===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
 __inline
 #endif
 #endif
-BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos )
+_Bool	IsStartPosVacantMutualyVisibleGroup( int16_t i , u_int16_t startpos )
 {
 	int	e;
 	for( e = 0 ; e < MAX_PLAYERS ; e++ )
@@ -2799,24 +2799,24 @@ BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos )
 			{
 				if( VisibleOverlap( Ships[ e ].Object.Group, StartPositions[startpos].Group , NULL ) )
 				{
-					return TRUE;
+					return true;
 				}
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 /*===================================================================
 	Procedure	:	Is there a Bike in a visible group from this restart point...
 	Input		:	nothing
-	Output		:	FALSE/TRUE
+	Output		:	false/true
 ===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
 __inline
 #endif
 #endif
-BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos )
+_Bool	IsStartPosVacantVisibleGroup( int16_t i , u_int16_t startpos )
 {
 	int	e;
 	for( e = 0 ; e < MAX_PLAYERS ; e++ )
@@ -2827,18 +2827,18 @@ BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos )
 			{
 				if( GroupsAreVisible( Ships[ e ].Object.Group, StartPositions[startpos].Group ) )
 				{
-					return TRUE;
+					return true;
 				}
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 
 /*===================================================================ÄÄÄÄ
 	Procedure	:	Remote Camera Mode 3	Demo Playback...
-	Input		:	int16 which Ship
+	Input		:	int16_t which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
 void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
@@ -2847,10 +2847,10 @@ void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
 	if ( DemoEyesSelect.value != MAX_PLAYERS )
 	{
 		int j, k;
-		BOOL ok;
+		_Bool ok;
 
 		// make sure we are looking through the eyes of a valid player in demo playback
-		ok = FALSE;
+		ok = false;
 		for ( j = 0; j < MAX_PLAYERS; j++ )
 		{
 			k = ( DemoEyesSelect.value + j ) % MAX_PLAYERS;
@@ -2867,7 +2867,7 @@ void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
 				default:
 					// any other mode is OK to use for demo playback
 					DemoEyesSelect.value = k;
-					ok = TRUE;
+					ok = true;
 				}
 				if ( ok )
 					break;
@@ -2887,7 +2887,7 @@ void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
 void	UpdateStartPos( void )
 {
 	VECTOR	Temp;
-	uint16	startpos;
+	u_int16_t	startpos;
 	
 	if( (MyGameStatus==STATUS_SinglePlayer) || (MyGameStatus==STATUS_StartingSinglePlayer) )
 	{
@@ -2899,7 +2899,7 @@ void	UpdateStartPos( void )
 
 		startpos = FirstStartPositionInGroup[Ships[WhoIAm].Object.Group];
 		
-		while( startpos != (uint16) -1 )
+		while( startpos != (u_int16_t) -1 )
 		{
 			if( ( startpos != last_start_position ) &&
 				( StartPositions[startpos].Group != StartPositions[last_start_position].Group ) )
@@ -2955,7 +2955,7 @@ void StopShipScreenShake( void )
 	Input		:	BikeNumber..
 	Output		:	nothing
 ===================================================================*/
-void SetBikeMods( uint16 Bike )
+void SetBikeMods( u_int16_t Bike )
 {
 	if( Bike >= MAXBIKETYPES+3 )
 		return;
@@ -2984,9 +2984,9 @@ void SetBikeMods( uint16 Bike )
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
 ===================================================================*/
-BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
+_Bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off )
 {
-	uint16 Count;
+	u_int16_t Count;
 	float Move_Length;
 	float Next_Move_Length;
 	VECTOR Move_Dir;
@@ -2996,9 +2996,9 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 	VECTOR	Norm_Move_Off;
 	VECTOR	Temp_Move_Off;
 	VECTOR	NewPos;
-	BOOL	HasBeen = FALSE;
-	BOOL	ok;
-	uint16	NewGroup;
+	_Bool	HasBeen = false;
+	_Bool	ok;
+	u_int16_t	NewGroup;
 	
 	Norm_Move_Off = *Move_Off;
 	NormaliseVector( &Norm_Move_Off );
@@ -3010,7 +3010,7 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 		if ( (Ships[Count].enable != 0) && (Ships[Count].Object.Mode != LIMBO_MODE) && (Ships[Count].Object.Mode != GAMEOVER_MODE) && ((GameStatus[Count] == STATUS_Normal )||(GameStatus[Count] == STATUS_SinglePlayer ) ) &&
 			 ( Count != i ) )//&& ( VectorLength( &Ships[Count].Move_Off) <= OldMove) && !( ( OldMove == 0.0F ) && (VectorLength( &Ships[Count].Move_Off) == 0.0F ) ) )
 		{
-			ok = FALSE;
+			ok = false;
 			if( Ships[Count].Object.Group != Ships[i].Object.Group )
 			{
 				// if ship are in different groups then we must do a move group to see if they end up in the same group...
@@ -3019,9 +3019,9 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 				Move_Dir.z = Ships[Count].Object.Pos.z - Ships[i].Object.Pos.z;
 				NewGroup = MoveGroup( &Mloadheader, &Ships[i].Object.Pos, Ships[i].Object.Group, &Move_Dir );
 				if( NewGroup == Ships[Count].Object.Group )
-					ok = TRUE;
+					ok = true;
 			}else{
-				ok = TRUE;
+				ok = true;
 			}
 
 			if( ok )
@@ -3050,7 +3050,7 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 	//				if( Move_Length >= (SHIP_RADIUS * 0.1F) )
 	//					Move_Length = (SHIP_RADIUS * 0.1F);
 					if( Move_Dir.x == 0.0F && Move_Dir.y == 0.0F && Move_Dir.z == 0.0F )
-						return FALSE;
+						return false;
 					Move_Off->x = Move_Dir.x * Move_Length;
 					Move_Off->y = Move_Dir.y * Move_Length;
 					Move_Off->z = Move_Dir.z * Move_Length;
@@ -3059,7 +3059,7 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 	//				Ships[i].Object.Speed.z = 0.0F;
 
 
-					return TRUE;
+					return true;
 				}else{
 	#if 1
 					if( RaytoSphere2( &Ships[Count].Object.Pos, (SHIP_RADIUS*2.0F)-2.0F, &Ships[i].Object.Pos, &Norm_Move_Off, &inter, &inter2 ) )
@@ -3072,7 +3072,7 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 							*Move_Off = Temp_Move_Off;
 							Norm_Move_Off = *Move_Off;
 							NormaliseVector( &Norm_Move_Off );
-							HasBeen = TRUE;
+							HasBeen = true;
 						}
 					}
 	#endif
@@ -3083,14 +3083,14 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 	return HasBeen;
 }
 #if 1
-BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
+_Bool CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 {
 	VECTOR	Move_Off;	
 	QUAT	StepQuat;	
 	BGOBJECT * BGObject;
 	float	ShieldModifier;
-	uint32	OldInWater;
-	BOOL Impact = FALSE;
+	u_int32_t	OldInWater;
+	_Bool Impact = false;
 
 	AccellDecell( &ShipPnt->Object.Angle.y , TurnDecell );
 	AccellDecell( &ShipPnt->Object.Angle.x , TurnDecell );
@@ -3114,17 +3114,17 @@ BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 	if( (i != MAX_PLAYERS) && (ShipPnt->Object.Mode != LIMBO_MODE) )
 	{
 		if( Ship2ShipCollide(  i , &Move_Off ) )
-			Impact = TRUE;
+			Impact = true;
 	}
 	// Collide with the enemies....
 	if( Ship2EnemyCollide( i , &Move_Off ) )
 	{
-		Impact = TRUE;
+		Impact = true;
 	}
 		
 	BGObject = NULL;
 	if( ObjectCollide( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject ) )
-		Impact = TRUE;
+		Impact = true;
 	if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
 
 	OldInWater = ShipPnt->Object.Flags & SHIP_InWater;
@@ -3173,32 +3173,32 @@ BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 #define	CAMPINGTIME 45			// how long you have to stay in 1 approx position...
 #define	CAMPINGRANGE ( 1024.0F * GLOBAL_SCALE * 4.0F )	// Range for camping
 
-BOOL MultiSfxTaunt1Off = FALSE;
+_Bool MultiSfxTaunt1Off = false;
 
-uint16 CurrentKillPos = 0;
+u_int16_t CurrentKillPos = 0;
 px_timer_t	KillMemoryTime[MAXKILLMEMORY];
-int16	KillMemory[MAXKILLMEMORY];
+int16_t	KillMemory[MAXKILLMEMORY];
 
 px_timer_t	camping_time;
 VECTOR		CampingPos;
-BOOL	CampingPos1Off = FALSE;
+_Bool	CampingPos1Off = false;
 
 
-int16 OldKills = 0;
+int16_t OldKills = 0;
 
 void MultiSfxHandle( void )
 {
-	int16	KillIndex;
-	BOOL	NewKill;
+	int16_t	KillIndex;
+	_Bool	NewKill;
 
 	if( MyGameStatus != STATUS_Normal || WhoIAm >= MAX_PLAYERS )
 		return;
 
-	NewKill = FALSE;
+	NewKill = false;
 
 	if( GetTotalKills(WhoIAm) > OldKills )
 	{
-		NewKill = TRUE;
+		NewKill = true;
 		OldKills = GetTotalKills(WhoIAm);
 	}
 
@@ -3232,7 +3232,7 @@ void MultiSfxHandle( void )
 		}
 		else
 		{
-			MultiSfxTaunt1Off = TRUE;
+			MultiSfxTaunt1Off = true;
 		}
 		timer_run( &KillMemoryTime[KillIndex] );
 	}
@@ -3240,7 +3240,7 @@ void MultiSfxHandle( void )
 	if( !CampingPos1Off )
 	{
 		timer_run( &camping_time );
-		CampingPos1Off = TRUE;
+		CampingPos1Off = true;
 		CampingPos = Ships[WhoIAm].Object.Pos;
 	}
 	else
@@ -3286,9 +3286,9 @@ void InitMultiSfxHandle( void )
 		timer_run( &KillMemoryTime[i] );
 	}
 	CurrentKillPos = 0;
-	MultiSfxTaunt1Off = FALSE;
+	MultiSfxTaunt1Off = false;
 
-	CampingPos1Off = FALSE;
+	CampingPos1Off = false;
 }
 
 /*===================================================================
@@ -3298,7 +3298,7 @@ void InitMultiSfxHandle( void )
 ===================================================================*/
 void ReleaseComponentedShips( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < MAX_PLAYERS; Count++ )
 	{
@@ -3307,11 +3307,11 @@ void ReleaseComponentedShips( void )
 			FreeCompObjChildren( Ships[ Count ].Object.Components, 1 );
 			free( Ships[ Count ].Object.Components );
 			Ships[ Count ].Object.Components = NULL;
-			Ships[ Count ].ModelNum = (uint16) -1;
+			Ships[ Count ].ModelNum = (u_int16_t) -1;
 		}
 		else
 		{
-			Ships[ Count ].ModelNum = (uint16) -1;
+			Ships[ Count ].ModelNum = (u_int16_t) -1;
 		}
 	}
 }
@@ -3323,7 +3323,7 @@ void ReleaseComponentedShips( void )
 ===================================================================*/
 FILE * SaveShips( FILE * fp )
 {
-	uint16			i;
+	u_int16_t			i;
 	COMP_OBJ	*	TempPtr = NULL;
 
 	if( fp )
@@ -3444,7 +3444,7 @@ FILE * SaveShips( FILE * fp )
 ===================================================================*/
 FILE * LoadShips( FILE * fp )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	if( fp )
 	{

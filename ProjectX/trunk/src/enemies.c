@@ -50,14 +50,14 @@ extern	FMPOLY			FmPolys[ MAXNUMOF2DPOLYS ];
 extern	MODEL			Models[ MAXNUMOFMODELS ];
 extern	float			framelag;
 extern	MATRIX			MATRIX_Identity;
-extern	int16			LevelNum;
+extern	int16_t			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
 extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	BYTE			GameStatus[MAX_PLAYERS];
 extern	BYTE			Current_Camera_View;
-extern	int16			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
+extern	int16_t			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	TRIGGERMOD	*	TrigMods;
-extern	uint16	IsGroupVisible[MAXGROUPS];
+extern	u_int16_t	IsGroupVisible[MAXGROUPS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
 extern	VECTOR			SlideUp;
@@ -66,9 +66,9 @@ extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
 extern USERCONFIG *player_config;
 extern	SHIPCONTROL control;
-extern	int16	NextNewModel;
+extern	int16_t	NextNewModel;
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
-extern	BOOL			IsHost;
+extern	_Bool			IsHost;
 extern	MXALOADHEADER	MxaModelHeaders[ MAXMXAMODELHEADERS ];
 extern	MXLOADHEADER	ModelHeaders[MAXMODELHEADERS];
 extern	AIMDATA AimData;
@@ -97,8 +97,8 @@ extern	float	NmeDamageModifier;
 extern	VECTOR	FleshmorphPos;
 extern	MODELNAME	*	ModNames;
 
-BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
-BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup );
+_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
+_Bool FindPointAboveGround( VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup );
 void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy );
 
 /*===================================================================
@@ -112,7 +112,7 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy );
 	Global Variables
 ===================================================================*/
 int		EnemiesActive = 0;
-BOOL	ShowUntriggeredNMEs = FALSE;
+_Bool	ShowUntriggeredNMEs = false;
 int		Exogenon_Num_StartPos = 0;
 VECTOR	Exogenon_StartPos[6];
 
@@ -124,7 +124,7 @@ float	Difficulty = 1.0F;
 float	DifficlutyTab[4] = { 0.25F , 1.0F , 1.75F , 2.75F }; // easy medium hard deathwish....
 float	NmeDamageModifierTab[4] = { 0.25F, 0.5F , 0.95F , 1.9F }; // easy medium hard deathwish....
 char	EnemyNotFreedString[] = "Nowhere.c";
-int8 * EnemyNames[] =	{
+int8_t * EnemyNames[] =	{
  	"BeamTurret",			// 0
 	"DuelTurret",			// 1
 	"PulseTurret",			// 2
@@ -198,9 +198,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		FALSE,	// FALSE for Primary TRUE for Secondary...
+		false,	// false for Primary true for Secondary...
 		LASER,		//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Duel
 		2.625F,	//MaxTurnSpeed
@@ -216,9 +216,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		FALSE,	// FALSE for Primary TRUE for Secondary...
+		false,	// false for Primary true for Secondary...
 		PULSAR,		//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Pulse
 		2.00F,	//MaxTurnSpeed
@@ -234,9 +234,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		FALSE,	// FALSE for Primary TRUE for Secondary...
+		false,	// false for Primary true for Secondary...
 		NME_BULLET1,	//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 
 	{//	GUN_Missile
@@ -253,9 +253,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		FALSE,	// FALSE for Primary TRUE for Secondary...
+		false,	// false for Primary true for Secondary...
 		MUGMISSILE,		//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 
 	{//	GUN_Snub
@@ -272,9 +272,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		MULTIPLEMISSILE,		//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Levi
 		2.625F,	//MaxTurnSpeed
@@ -290,9 +290,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		FALSE,	// FALSE for Primary TRUE for Secondary...
+		false,	// false for Primary true for Secondary...
 		PULSAR,		//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Sec
 		2.625F,	//MaxTurnSpeed
@@ -308,9 +308,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		4.0F * 1024.0F * GLOBAL_SCALE,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		GRAVGONMISSILE,	//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Legz
 		2.00F,	//MaxTurnSpeed
@@ -326,9 +326,9 @@ GUNTYPE	GunTypes[] = {
 		45.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		SOLARISMISSILE,	//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Pulse_Turret
 		2.00F,	//MaxTurnSpeed
@@ -344,9 +344,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		ENEMYSPIRALMISSILE,	//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Mekton
 		2.00F,	//MaxTurnSpeed
@@ -362,9 +362,9 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		FALSE,	// FALSE for Primary TRUE for Secondary...
+		false,	// false for Primary true for Secondary...
 		NME_BULLET1,	//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_MetaTank
 		2.00F,	//MaxTurnSpeed
@@ -380,9 +380,9 @@ GUNTYPE	GunTypes[] = {
 		45.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		MULTIPLEMISSILE,	//WeaponType
-		TRUE,	//PreciseRotation
+		true,	//PreciseRotation
 	},
 	{//	GUN_MetaTankMain
 		2.00F,	//MaxTurnSpeed
@@ -398,9 +398,9 @@ GUNTYPE	GunTypes[] = {
 		90.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		ENEMYHOMINGMISSILE,	//WeaponType
-		TRUE,	//PreciseRotation
+		true,	//PreciseRotation
 	},
 	{//	GUN_Avatar
 		2.00F,	//MaxTurnSpeed
@@ -416,9 +416,9 @@ GUNTYPE	GunTypes[] = {
 		90.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		MULTIPLEMISSILE,	//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 	{//	GUN_Avatar2
 		2.00F,	//MaxTurnSpeed
@@ -434,22 +434,22 @@ GUNTYPE	GunTypes[] = {
 		0.0F,	//YRotMax
 		0.0F,		// Range
 		0,		//PowerLevel
-		TRUE,	// FALSE for Primary TRUE for Secondary...
+		true,	// false for Primary true for Secondary...
 		SOLARISMISSILE,	//WeaponType
-		FALSE,	//PreciseRotation
+		false,	//PreciseRotation
 	},
 
 
 
 };
 
-//	BOOL	OnlyOnce = TRUE;// Use this to display an enemy...
+//	_Bool	OnlyOnce = true;// Use this to display an enemy...
 
-	int16		NumInitEnemies;
-	int16		NumKilledEnemies = 0;
+	int16_t		NumInitEnemies;
+	int16_t		NumKilledEnemies = 0;
 	ENEMY		Enemies[ MAXENEMIES ];
 	ENEMY	*	EnemyGroups[ MAXGROUPS ];
-	uint16		NumEnemiesPerGroup[ MAXGROUPS ];
+	u_int16_t		NumEnemiesPerGroup[ MAXGROUPS ];
 	ENEMY	*	FirstEnemyUsed = NULL;
 	ENEMY	*	FirstEnemyFree = NULL;
 
@@ -962,8 +962,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_TURRET_AI,
 		AIMODE_IDLE,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Beam},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Beam},	// u_int16_t	GunType;			// What type of gun???
 		{&BeamTurretFirePos},
 		{&BeamTurretAimPos},
 		0.065F,		// TurnRateAccell
@@ -980,17 +980,17 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1010,8 +1010,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_TURRET_AI,
 		AIMODE_IDLE,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Duel},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Duel},	// u_int16_t	GunType;			// What type of gun???
 		{&DuelTurretFirePos},
 		{&DuelTurretAimPos},
 
@@ -1029,18 +1029,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.9F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1061,8 +1061,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_TURRET_AI,
 		AIMODE_IDLE,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse_Turret},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse_Turret},	// u_int16_t	GunType;			// What type of gun???
 		{&PulseTurretFirePos},
 		{&PulseTurretAimPos},
 
@@ -1080,18 +1080,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1111,8 +1111,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_TURRET_AI,
 		AIMODE_IDLE,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Missile},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Missile},	// u_int16_t	GunType;			// What type of gun???
 		{&MislTurretFirePos},
 		{&MislTurretAimPos},
 
@@ -1130,18 +1130,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.9F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1162,8 +1162,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_TURRET_AI,
 		AIMODE_IDLE,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&SnubTurretFirePos},
 		{&SnubTurretAimPos},
 
@@ -1181,18 +1181,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		600.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.9F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1213,8 +1213,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&LazbotFirePos},
 		{&LazbotAimPos},
 
@@ -1232,18 +1232,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1264,8 +1264,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH, //FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Snub},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Snub},	// u_int16_t	GunType;			// What type of gun???
 		{&SnubotFirePos},
 		{&SnubotAimPos},
 		0.065F,		// TurnRateAccell
@@ -1282,17 +1282,17 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1314,8 +1314,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 //		ENEMY_CONTROLTYPE_SPLINE,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1333,18 +1333,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1365,8 +1365,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_NONE,
 		AIMODE_IDLE,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1384,18 +1384,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1416,8 +1416,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Levi},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Levi},	// u_int16_t	GunType;			// What type of gun???
 		{&LevitankFirePos},
 		{&LevitankAimPos},
 
@@ -1435,18 +1435,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ICANTPITCH | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ICANTPITCH | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.2F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			2.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			2.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			2.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			2.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1467,8 +1467,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1486,17 +1486,17 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 		{
-			AI_BEHAVIOUR_PRECISECONTROL,				// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_PRECISECONTROL,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1517,8 +1517,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH, //FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Mekton},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Mekton},	// u_int16_t	GunType;			// What type of gun???
 		{&MektonTurretFirePos},
 		{&MektonTurretAimPos},
 
@@ -1536,18 +1536,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		500.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1568,8 +1568,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_NONE,
 		AIMODE_IDLE,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1587,18 +1587,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1619,8 +1619,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&SupresFirePos},
 		{&SupresAimPos},
 		0.065F,		// TurnRateAccell
@@ -1637,18 +1637,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
     	{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			5.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			5.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			5.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			5.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1669,8 +1669,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1688,18 +1688,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NME_LIGHTNING,				//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,				// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			1.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			1.0F,				// uint16	Avoid_Secondary;				//
-			100.0F,			// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			1.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			1.0F,				// u_int16_t	Avoid_Secondary;				//
+			100.0F,			// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1723,8 +1723,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 //		ENEMY_CONTROLTYPE_SPLINE,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1742,18 +1742,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_LEAVENETWORK | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_LEAVENETWORK | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1775,8 +1775,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 //		ENEMY_CONTROLTYPE_SPLINE,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1795,18 +1795,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			8.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			5.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			8.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			5.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1827,8 +1827,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,	
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -1847,18 +1847,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		120.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		PURGEMINE,					//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_DROPMINES | AI_BEHAVIOUR_AVOIDMINES,				// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_DROPMINES | AI_BEHAVIOUR_AVOIDMINES,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1880,8 +1880,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 //		ENEMY_CONTROLTYPE_SPLINE,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 		0.065F,		// TurnRateAccell
@@ -1898,17 +1898,17 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			8.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			8.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			8.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			8.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1929,8 +1929,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Legz},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Legz},	// u_int16_t	GunType;			// What type of gun???
 		{&LegzFirePos},
 		{&LegzAimPos},
 
@@ -1948,18 +1948,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE,				// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -1980,8 +1980,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Sec},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Sec},	// u_int16_t	GunType;			// What type of gun???
 		{&GuardBotFirePos},
 		{&GuardBotAimPos},
 
@@ -1999,18 +1999,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2031,8 +2031,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_SPLINE,
 		AIMODE_FOLLOWPATH,
-		4,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_MetaTank,GUN_MetaTank,GUN_MetaTank,GUN_MetaTankMain},	// uint16	GunType;			// What type of gun???
+		4,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_MetaTank,GUN_MetaTank,GUN_MetaTank,GUN_MetaTankMain},	// u_int16_t	GunType;			// What type of gun???
 		{&MetaTank1FirePos,&MetaTank2FirePos,&MetaTank3FirePos,&MetaTank4FirePos},
 		{&MetaTank1AimPos,&MetaTank2AimPos,&MetaTank3AimPos,&MetaTank4AimPos},
 
@@ -2050,17 +2050,17 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		600.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2081,8 +2081,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_IDLE,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2100,16 +2100,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		900.0F * GLOBAL_SCALE,		//	float	Radius;
 		120.0F,						//	float	PrimaryFireRate;
 		60.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,					//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		ENEMYBLUEHOMINGMISSILE,		//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_RANDSECONDARYFIREPOS | AI_BEHAVIOUR_NOBOB | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_AVOIDMINES | AI_BEHAVIOUR_PRECISECONTROL,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_RANDSECONDARYFIREPOS | AI_BEHAVIOUR_NOBOB | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_AVOIDMINES | AI_BEHAVIOUR_PRECISECONTROL,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			(ONE_SECOND * 1.0F),			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 1.0F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2130,8 +2130,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		5,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Avatar2,GUN_Avatar2,GUN_Avatar,GUN_Avatar,GUN_Avatar},	// uint16	GunType;			// What type of gun???
+		5,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Avatar2,GUN_Avatar2,GUN_Avatar,GUN_Avatar,GUN_Avatar},	// u_int16_t	GunType;			// What type of gun???
 		{&Avatar1FirePos,&Avatar2FirePos,&Avatar3FirePos,&Avatar4FirePos,&Avatar5FirePos},
 		{&Avatar1AimPos,&Avatar2AimPos,&Avatar3AimPos,&Avatar4AimPos,&Avatar5AimPos},
 		0.065F,		// TurnRateAccell
@@ -2148,18 +2148,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		900.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			AI_BEHAVIOUR_ICANTPITCH | AI_BEHAVIOUR_NOBOB | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ICANTPITCH | AI_BEHAVIOUR_NOBOB | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			5.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			3.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			5.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			3.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			(ONE_SECOND * 1.0F),			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.1F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2180,8 +2180,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLESHMORPH,
 		AIMODE_FLESHMORPH_IDLE,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2200,17 +2200,17 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		0.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		60.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		ENEMYTENTACLE,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-//			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_NOTURN ,		// uint32	Flags;	// flags to show what stuff I can Do..
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_NOTURN | AI_BEHAVIOUR_RANDSECONDARYFIREPOS,		// uint32	Flags;	// flags to show what stuff I can Do..
+//			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_NOTURN ,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_NOTURN | AI_BEHAVIOUR_RANDSECONDARYFIREPOS,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			(ONE_SECOND * 1.0F),			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 1.0F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2231,8 +2231,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_EXOGENON,
 		AIMODE_EXOGENON_IDLE,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2250,18 +2250,18 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		2,							//	int16	PowerLevel;
+		2,							//	int16_t	PowerLevel;
 		NME_POWERLASER,				//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
 
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2282,8 +2282,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2301,7 +2301,7 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
@@ -2309,9 +2309,9 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2333,8 +2333,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2352,16 +2352,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2383,8 +2383,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2402,16 +2402,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2433,8 +2433,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2452,16 +2452,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2483,8 +2483,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2502,16 +2502,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2533,8 +2533,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2552,16 +2552,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2583,8 +2583,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2602,16 +2602,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2633,8 +2633,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2652,16 +2652,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2683,8 +2683,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2702,16 +2702,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2733,8 +2733,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2752,16 +2752,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2783,8 +2783,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2802,16 +2802,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2833,8 +2833,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2852,16 +2852,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2883,8 +2883,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2902,16 +2902,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2932,8 +2932,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -2951,16 +2951,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -2982,8 +2982,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3001,16 +3001,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3032,8 +3032,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3051,16 +3051,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		60.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		1,							//	int16	PowerLevel;
+		1,							//	int16_t	PowerLevel;
 		TROJAX,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
 			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 			0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3081,8 +3081,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 		0.065F,		// TurnRateAccell
@@ -3099,16 +3099,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_LEAVENETWORK | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_LEAVENETWORK | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3129,8 +3129,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3148,16 +3148,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			8.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			8.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			8.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			8.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3178,8 +3178,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH, //FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Mekton},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Mekton},	// u_int16_t	GunType;			// What type of gun???
 		{&MektonTurretFirePos},
 		{&MektonTurretAimPos},
 
@@ -3197,16 +3197,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		500.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3226,8 +3226,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH, //FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Snub},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Snub},	// u_int16_t	GunType;			// What type of gun???
 		{&SnubotFirePos},
 		{&SnubotAimPos},
 
@@ -3245,16 +3245,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3275,8 +3275,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_CRAWL_AI,
 		AIMODE_FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Legz},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Legz},	// u_int16_t	GunType;			// What type of gun???
 		{&LegzFirePos},
 		{&LegzAimPos},
 
@@ -3294,16 +3294,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE,				// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3324,8 +3324,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3343,16 +3343,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			8.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			5.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			8.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			5.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3373,8 +3373,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&SupresFirePos},
 		{&SupresAimPos},
 		0.065F,		// TurnRateAccell
@@ -3391,16 +3391,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
     	{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			5.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			5.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			5.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			5.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3421,8 +3421,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		1,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Levi},	// uint16	GunType;			// What type of gun???
+		1,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Levi},	// u_int16_t	GunType;			// What type of gun???
 		{&LevitankFirePos},
 		{&LevitankAimPos},
 
@@ -3440,16 +3440,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ICANTPITCH | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ICANTPITCH | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.2F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			2.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			2.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			2.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			2.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3470,8 +3470,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_NONE,
 		AIMODE_IDLE,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&LazbotFirePos},
 		{&LazbotAimPos},
 
@@ -3489,16 +3489,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			0,				// uint32	Flags;							// flags to show what stuff I can Do..
+			0,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3519,8 +3519,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3538,16 +3538,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_PRECISECONTROL,				// uint32	Flags;							// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_PRECISECONTROL,				// u_int32_t	Flags;							// flags to show what stuff I can Do..
 			0.0F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			0.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			0.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			0.0F,			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3568,8 +3568,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_FLY_AI,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3587,16 +3587,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		PULSAR,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_DONTSTOPANDTURN | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			0.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			0.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3617,8 +3617,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_SPLINE,
 		AIMODE_FOLLOWPATH,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3636,16 +3636,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		300.0F * GLOBAL_SCALE,		//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		30.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		NO_SECONDARY,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_LEAVENETWORK | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_LEAVENETWORK | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_ATTACKMINES | AI_BEHAVIOUR_AVOIDMINES,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			0.0F,			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3666,8 +3666,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		&DummyAimPos,
 		ENEMY_CONTROLTYPE_LITTLEGEEK,
 		AIMODE_FORMATION,
-		0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-		{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+		0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+		{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 		{&DummyFirePos},
 		{&DummyAimPos},
 
@@ -3685,16 +3685,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 		0.0F,						//	float	Radius;
 		13.0F,						//	float	PrimaryFireRate;
 		45.0F,						//	float	SecondaryFireRate;
-		0,							//	int16	PowerLevel;
+		0,							//	int16_t	PowerLevel;
 		NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 		MULTIPLEMISSILE,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 		{
-			AI_BEHAVIOUR_NOBOB | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_AVOIDMINES | AI_BEHAVIOUR_PRECISECONTROL,		// uint32	Flags;	// flags to show what stuff I can Do..
+			AI_BEHAVIOUR_NOBOB | AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_AVOIDMINES | AI_BEHAVIOUR_PRECISECONTROL,		// u_int32_t	Flags;	// flags to show what stuff I can Do..
 			0.5F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 			0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-			10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-			20.0F,				// uint16	Avoid_Secondary;				//
-			30.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+			10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+			20.0F,				// u_int16_t	Avoid_Secondary;				//
+			30.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 			(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 			(ONE_SECOND * 1.0F),			// float	ScanTime;						// How long do I Scan For...
 			(ONE_SECOND * 1.0F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3715,8 +3715,8 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 	&DummyAimPos,
 	ENEMY_CONTROLTYPE_FLY_AI,
 	AIMODE_FOLLOWPATH,
-	0,			// uint16	NumOfGuns;			// How many Guns do I Have???
-	{GUN_Pulse},	// uint16	GunType;			// What type of gun???
+	0,			// u_int16_t	NumOfGuns;			// How many Guns do I Have???
+	{GUN_Pulse},	// u_int16_t	GunType;			// What type of gun???
 	{&DummyFirePos},
 	{&DummyAimPos},
 
@@ -3734,16 +3734,16 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 	300.0F * GLOBAL_SCALE,		//	float	Radius;
 	60.0F,						//	float	PrimaryFireRate;
 	30.0F,						//	float	SecondaryFireRate;
-	2,							//	int16	PowerLevel;
+	2,							//	int16_t	PowerLevel;
 	NO_PRIMARY,						//	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 	ENEMYFIREBALL,				//	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 	{
 		AI_BEHAVIOUR_ATTACK_ONSITE | AI_BEHAVIOUR_ATTACK_PROVOKE | AI_BEHAVIOUR_AVOID_PRIMARY | AI_BEHAVIOUR_AVOID_SECONDARY | AI_BEHAVIOUR_ANTICIPATE_MOVE | AI_BEHAVIOUR_NOFRIENDLYFIRE | AI_BEHAVIOUR_ATTACK_FIND | AI_BEHAVIOUR_WEAPONKNOWLEDGE | AI_BEHAVIOUR_PRECISECONTROL | AI_BEHAVIOUR_LEAVENETWORK,
 		0.7F,			// float	Anticipate_Move;				// when targeting the player how far ahead can I predict where he will be....
 		0.0F,			// float	NetworkRange;					// how far from my net work do I Wander...
-		10.0F,				// uint16	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
-		20.0F,				// uint16	Avoid_Secondary;				//
-		0.0F,				// uint16	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
+		10.0F,				// u_int16_t	Avoid_Primary;					// if player fires at me and I can see it check to see if I should avoid...
+		20.0F,				// u_int16_t	Avoid_Secondary;				//
+		0.0F,				// u_int16_t	Avoid_Mines;					// If I move towards a mine should I try to avoid it...
 		(ONE_SECOND * 1.0F),			// float	IdleTime;						// How long do I Stay Idle...
 		0.0F,			// float	ScanTime;						// How long do I Scan For...
 		(ONE_SECOND * 0.25F),			// float	ThinkTime;						// How often do I Update my Think Status...
@@ -3762,16 +3762,16 @@ ENEMY * TestEnemy = NULL;
 	Enemy Control Routines...
 ===================================================================*/
 ENEMY * PutEnemiesAtNodes(void);
-void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore );
+void AutoMovement( OBJECT * Object , ENEMY * Enemy , _Bool AngleDecellBefore );
 void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy );
 void AutoDisplay( OBJECT * Object );
 void CarryOutAIMovementCommands( ENEMY * Enemy );
 void CarryOutPreciseAIMovementCommands( ENEMY * Enemy );
 void CarryOutGUN_AIMovementCommands( GUNOBJECT * Object );
 void CarryOutGUN_PreciseAIMovementCommands( GUNOBJECT * GObject );
-void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  );
+void GunRotation( GUNOBJECT * Object, _Bool AngleDecellBefore  );
 void RestrictMovement( ENEMY * Enemy , VECTOR * Move );
-BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy );
+_Bool SplineAutoMovement( OBJECT * Object , ENEMY * Enemy );
 void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy );
 
 void EnemyFlyUnderPlayerControl( ENEMY * Enemy );
@@ -3784,10 +3784,10 @@ void EnemyUnderSplineControl( ENEMY * Enemy );
 void EnemyUnderExogenonControl( ENEMY * Enemy );
 void EnemyUnderFleshMorphControl( ENEMY * Enemy );
 void EnemyUnderLittleGeekControl( ENEMY * Enemy );
-void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object );
-void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, uint16 Group , uint16 * DestGroup );
-BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move );
-BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos);
+void InitGuns( BYTE how_many_guns , u_int16_t * GunType , OBJECT * Object );
+void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, u_int16_t Group , u_int16_t * DestGroup );
+_Bool Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move );
+_Bool Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos);
 void AutoDisplayMatrix( OBJECT * Object );
 
 	
@@ -3908,7 +3908,7 @@ float ObjectAutoLevelRot( OBJECT * Object, float autolevel_rate )
 ===================================================================*/
 void InitEnemies( void )
 {
-	uint16	i;
+	u_int16_t	i;
 
 	SetupEnemyGroups();
 
@@ -3919,7 +3919,7 @@ void InitEnemies( void )
 	{
 		memset( &Enemies[ i ], 0, sizeof( ENEMY ) );
 
-		Enemies[ i ].Used = FALSE;
+		Enemies[ i ].Used = false;
 		Enemies[ i ].NextUsed = NULL;
 		Enemies[ i ].PrevUsed = NULL;
 		Enemies[ i ].NextFree = &Enemies[ i + 1 ];
@@ -3973,7 +3973,7 @@ ENEMY * FindFreeEnemy( void )
 
 		Object->PrevUsed = NULL;
 		FirstEnemyUsed = Object;
-		Object->Used = TRUE;
+		Object->Used = true;
 
 	}
 
@@ -3997,7 +3997,7 @@ void KillUsedEnemy( ENEMY * Object )
 	VECTOR		Dir = { 0.0F, 0.0F, 0.0F };
 	float		Speed;
 	float		LifeCount;
-	int16		Pickup;
+	int16_t		Pickup;
 
 	if( Object )
 	{
@@ -4028,7 +4028,7 @@ void KillUsedEnemy( ENEMY * Object )
 
 		NumKilledEnemies++;
 		StopEnemyBikerTaunt( Object );
-		Object->Alive = FALSE;
+		Object->Alive = false;
 		RemoveEnemyFromGroup( Object, Object->Object.Group );
 
 		if( Object->Object.FirstGun )
@@ -4052,13 +4052,13 @@ void KillUsedEnemy( ENEMY * Object )
 				NormaliseVector( &Dir );
 				if( MyGameStatus != STATUS_SinglePlayer ) LifeCount = (float) ( Random_Range( 600 ) + 600 );
 				else LifeCount = -1.0F;
-				Speed = ( (float) Random_Range( (uint16) ( PICKUP_SPEED / 2.0F ) ) ) + ( PICKUP_SPEED / 2.0F );
-				InitOnePickup( &Object->Object.Pos, Object->Object.Group, &Dir, Speed, Pickup, (uint16) -1, ++Ships[WhoIAm].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
-				if( IsHost ) DropPickupSend( &Object->Object.Pos, Object->Object.Group, &Dir, 0.0F, Object->PickupHeld, ++Ships[WhoIAm].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
+				Speed = ( (float) Random_Range( (u_int16_t) ( PICKUP_SPEED / 2.0F ) ) ) + ( PICKUP_SPEED / 2.0F );
+				InitOnePickup( &Object->Object.Pos, Object->Object.Group, &Dir, Speed, Pickup, (u_int16_t) -1, ++Ships[WhoIAm].PickupIdCount, -1, false, LifeCount, (u_int16_t) -1 );
+				if( IsHost ) DropPickupSend( &Object->Object.Pos, Object->Object.Group, &Dir, 0.0F, Object->PickupHeld, ++Ships[WhoIAm].PickupIdCount, -1, false, LifeCount, (u_int16_t) -1 );
 			}
 		}
 
-		if( ( Object->PickupHeld != (uint16) -1 ) && !( Object->Object.Flags & SHIP_Scattered ) )
+		if( ( Object->PickupHeld != (u_int16_t) -1 ) && !( Object->Object.Flags & SHIP_Scattered ) )
 		{
 	   		Dir.x = ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F );
 	   		Dir.y = ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F );
@@ -4066,9 +4066,9 @@ void KillUsedEnemy( ENEMY * Object )
 			NormaliseVector( &Dir );
 			if( MyGameStatus != STATUS_SinglePlayer ) LifeCount = (float) ( Random_Range( 600 ) + 600 );
 			else LifeCount = -1.0F;
-			Speed = ( (float) Random_Range( (uint16) ( PICKUP_SPEED / 2.0F ) ) ) + ( PICKUP_SPEED / 2.0F );
-			InitOnePickup( &Object->Object.Pos, Object->Object.Group, &Dir, Speed, Object->PickupHeld, (uint16) -1, ++Ships[WhoIAm].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
-			if( IsHost ) DropPickupSend( &Object->Object.Pos, Object->Object.Group, &Dir, 0.0F, Object->PickupHeld, ++Ships[WhoIAm].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
+			Speed = ( (float) Random_Range( (u_int16_t) ( PICKUP_SPEED / 2.0F ) ) ) + ( PICKUP_SPEED / 2.0F );
+			InitOnePickup( &Object->Object.Pos, Object->Object.Group, &Dir, Speed, Object->PickupHeld, (u_int16_t) -1, ++Ships[WhoIAm].PickupIdCount, -1, false, LifeCount, (u_int16_t) -1 );
+			if( IsHost ) DropPickupSend( &Object->Object.Pos, Object->Object.Group, &Dir, 0.0F, Object->PickupHeld, ++Ships[WhoIAm].PickupIdCount, -1, false, LifeCount, (u_int16_t) -1 );
 		}
 
 		if( Object->TriggerModPtr != NULL )
@@ -4108,10 +4108,10 @@ void KillUsedEnemy( ENEMY * Object )
 			FirstEnemyFree->PrevFree = Object;
 		}
 
-		if( Object->ModelIndex != (uint16) -1 )
+		if( Object->ModelIndex != (u_int16_t) -1 )
 		{
 			KillUsedModel( Object->ModelIndex );
-			Object->ModelIndex = (uint16) -1;
+			Object->ModelIndex = (u_int16_t) -1;
 		}
 
 		if( Object->Object.Components )
@@ -4127,7 +4127,7 @@ void KillUsedEnemy( ENEMY * Object )
 		Object->NextFree = FirstEnemyFree;
 		Object->PrevFree = NULL;
 		FirstEnemyFree = Object;
-		Object->Used = FALSE;
+		Object->Used = false;
 
 	}
 }
@@ -4190,10 +4190,10 @@ void ReleaseAllEnemies( void )
 			FirstEnemyFree->PrevFree = Object;
 		}
 
-		if( Object->ModelIndex != (uint16) -1 )
+		if( Object->ModelIndex != (u_int16_t) -1 )
 		{
 			KillUsedModel( Object->ModelIndex );
-			Object->ModelIndex = (uint16) -1;
+			Object->ModelIndex = (u_int16_t) -1;
 		}
 
 		if( Object->Object.Components )
@@ -4217,32 +4217,32 @@ void ReleaseAllEnemies( void )
 /*===================================================================
 	Procedure	:	PreLoad Enemies
 	Input		:	Nothing
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
-extern	int16		LevelNum;
-BOOL PreLoadEnemies( void )
+extern	int16_t		LevelNum;
+_Bool PreLoadEnemies( void )
 {
 	FILE	*	fp;
-	int16		Count;
+	int16_t		Count;
 	char	*	NewExt = ".NME";
 	char		NewFilename[ 128 ];
 	char		TempFilename[ 256 ];
-	uint16		Group;
-	uint16		ModelNum;
-	uint16		TriggerMod;
-	uint16		GenType;
-	uint32		Network;
+	u_int16_t		Group;
+	u_int16_t		ModelNum;
+	u_int16_t		TriggerMod;
+	u_int16_t		GenType;
+	u_int32_t		Network;
 	VECTOR		Pos;
 	VECTOR		DirVector;
 	VECTOR		UpVector;
 	char		Ext[ 16 ];
-	int16		NextEnemyModel;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
-	int16		Pickup;
-	int16		Formationlink;
-	uint16		DupModel;
+	int16_t		NextEnemyModel;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
+	int16_t		Pickup;
+	int16_t		Formationlink;
+	u_int16_t		DupModel;
 	float		GenerationDelay;
 
 	ModNames = &ModelNames[ 0 ];
@@ -4253,7 +4253,7 @@ BOOL PreLoadEnemies( void )
 	if( ( ChangeLevel_MyGameStatus != STATUS_PostStartingSinglePlayer ) &&
 		( ChangeLevel_MyGameStatus != STATUS_SinglePlayer ) &&
 		( ChangeLevel_MyGameStatus != STATUS_TitleLoadGamePostStartingSinglePlayer ) )
-		return TRUE;
+		return true;
 
 	ReadEnemyTxtFile( "data\\txt\\Enemies.txt" );
 
@@ -4267,31 +4267,31 @@ BOOL PreLoadEnemies( void )
 
 	if( fp != NULL )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != NME_VERSION_NUMBER  ) )
 		{
 			fclose( fp );
 			Msg( "PreLoadEnemies() Incompatible enemy file %s", &NewFilename[ 0 ] );
-			return( FALSE );
+			return( false );
 		}
 
-		fread( &NumInitEnemies, sizeof( int16 ), 1, fp );
+		fread( &NumInitEnemies, sizeof( int16_t ), 1, fp );
 		NumKilledEnemies = 0;
 
 		for( Count = 0; Count < NumInitEnemies; Count++ )
 		{
-			fread( &Group, sizeof( uint16 ), 1, fp );
-			fread( &ModelNum, sizeof( uint16 ), 1, fp );
-			fread( &GenType, sizeof( uint16 ), 1, fp );
+			fread( &Group, sizeof( u_int16_t ), 1, fp );
+			fread( &ModelNum, sizeof( u_int16_t ), 1, fp );
+			fread( &GenType, sizeof( u_int16_t ), 1, fp );
 			fread( &Pos, sizeof( VECTOR ), 1, fp );
 			fread( &DirVector, sizeof( VECTOR ), 1, fp );
 			fread( &UpVector, sizeof( VECTOR ), 1, fp );
-			fread( &TriggerMod, sizeof( uint16 ), 1, fp );
-			fread( &Network, sizeof( uint32 ), 1, fp );
-			fread( &Pickup, sizeof( int16 ), 1, fp );
-			fread( &Formationlink, sizeof( int16 ), 1, fp );
+			fread( &TriggerMod, sizeof( u_int16_t ), 1, fp );
+			fread( &Network, sizeof( u_int32_t ), 1, fp );
+			fread( &Pickup, sizeof( int16_t ), 1, fp );
+			fread( &Formationlink, sizeof( int16_t ), 1, fp );
 			fread( &GenerationDelay, sizeof( float ), 1, fp );
 
 			if( EnemyTypes[ ModelNum ].ModelFilename[ 0 ] )
@@ -4305,7 +4305,7 @@ BOOL PreLoadEnemies( void )
 					{
 						DupModel = FindDuplicateModel( &EnemyTypes[ ModelNum ].ModelFilename[ 0 ], NextEnemyModel );
 
-						if( DupModel != (uint16) -1 )
+						if( DupModel != (u_int16_t) -1 )
 						{
 							EnemyTypes[ ModelNum ].ModelNumber = DupModel;
 						}
@@ -4314,13 +4314,13 @@ BOOL PreLoadEnemies( void )
 							strcpy( &ModelNames[ NextEnemyModel ].Name[ 0 ], EnemyTypes[ ModelNum ].ModelFilename );
 
 							ModelNames[ NextEnemyModel ].LOD = 0;
-							ModelNames[ NextEnemyModel ].Panel = FALSE;
-							ModelNames[ NextEnemyModel ].DoIMorph = TRUE;
+							ModelNames[ NextEnemyModel ].Panel = false;
+							ModelNames[ NextEnemyModel ].DoIMorph = true;
 							ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
-							ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
+							ModelNames[ NextEnemyModel ].StoreTriangles = false;
 							ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 							ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
-							ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
+							ModelNames[ NextEnemyModel ].LoadEnable = true;
 							EnemyTypes[ ModelNum ].ModelNumber = NextEnemyModel;
 							NextEnemyModel++;
 
@@ -4329,13 +4329,13 @@ BOOL PreLoadEnemies( void )
 								ModelNames[ NextEnemyModel ].Name[ 0 ] = 'S';
 								strcpy( &ModelNames[ NextEnemyModel ].Name[ 1 ], EnemyTypes[ ModelNum ].ModelFilename );
 								ModelNames[ NextEnemyModel ].LOD = 0;
-								ModelNames[ NextEnemyModel ].Panel = FALSE;
-								ModelNames[ NextEnemyModel ].DoIMorph = TRUE;
+								ModelNames[ NextEnemyModel ].Panel = false;
+								ModelNames[ NextEnemyModel ].DoIMorph = true;
 								ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
-								ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
+								ModelNames[ NextEnemyModel ].StoreTriangles = false;
 								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 								ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
-								ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
+								ModelNames[ NextEnemyModel ].LoadEnable = true;
 								NextEnemyModel++;
 							}
 						}
@@ -4349,7 +4349,7 @@ BOOL PreLoadEnemies( void )
 						{
 							DupModel = FindDuplicateModel( &EnemyTypes[ ModelNum ].ModelFilename[ 0 ], NextEnemyModel );
 
-							if( DupModel != (uint16) -1 )
+							if( DupModel != (u_int16_t) -1 )
 							{
 								EnemyTypes[ ModelNum ].ModelNumber = DupModel;
 							}
@@ -4358,13 +4358,13 @@ BOOL PreLoadEnemies( void )
 								strcpy( &ModelNames[ NextEnemyModel ].Name[ 0 ], EnemyTypes[ ModelNum ].ModelFilename );
 
 								ModelNames[ NextEnemyModel ].LOD = 0;
-								ModelNames[ NextEnemyModel ].Panel = FALSE;
-								ModelNames[ NextEnemyModel ].DoIMorph = FALSE;
+								ModelNames[ NextEnemyModel ].Panel = false;
+								ModelNames[ NextEnemyModel ].DoIMorph = false;
 								ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
-								ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
+								ModelNames[ NextEnemyModel ].StoreTriangles = false;
 								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 								ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
-								ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
+								ModelNames[ NextEnemyModel ].LoadEnable = true;
 								EnemyTypes[ ModelNum ].ModelNumber = NextEnemyModel;
 								NextEnemyModel++;
 
@@ -4373,13 +4373,13 @@ BOOL PreLoadEnemies( void )
 									ModelNames[ NextEnemyModel ].Name[ 0 ] = 'S';
 									strcpy( &ModelNames[ NextEnemyModel ].Name[ 1 ], EnemyTypes[ ModelNum ].ModelFilename );
 									ModelNames[ NextEnemyModel ].LOD = 0;
-									ModelNames[ NextEnemyModel ].Panel = FALSE;
-									ModelNames[ NextEnemyModel ].DoIMorph = FALSE;
+									ModelNames[ NextEnemyModel ].Panel = false;
+									ModelNames[ NextEnemyModel ].DoIMorph = false;
 									ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
-									ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
+									ModelNames[ NextEnemyModel ].StoreTriangles = false;
 									ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 									ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
-									ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
+									ModelNames[ NextEnemyModel ].LoadEnable = true;
 									NextEnemyModel++;
 								}
 							}
@@ -4404,7 +4404,7 @@ BOOL PreLoadEnemies( void )
 
 								if( !PreLoadCompObj( &TempFilename[ 0 ], &NextEnemyModel, EnemyTypes[ ModelNum ].LevelSpecific ) )
 								{
-									return( FALSE );
+									return( false );
 								}
 							}
 						}
@@ -4422,43 +4422,43 @@ BOOL PreLoadEnemies( void )
 
 		fclose( fp );
 	}
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Load Enemies
 	Input		:	Nothing
-	Output		:	BOOL	True/False
+	Output		:	_Bool	True/False
 ===================================================================*/
-BOOL LoadEnemies( void )
+_Bool LoadEnemies( void )
 {
 	FILE	*	fp;
-	int16		Count;
-	int16		CompCount;
+	int16_t		Count;
+	int16_t		CompCount;
 	char	*	NewExt = ".NME";
 	char		NewFilename[ 128 ];
 	char		TempFilename[ 256 ];
-	uint16		Group;
-	uint16		ModelNum;
-	uint16		TriggerMod;
-	uint16		GenType;
-	uint32		Network;
+	u_int16_t		Group;
+	u_int16_t		ModelNum;
+	u_int16_t		TriggerMod;
+	u_int16_t		GenType;
+	u_int32_t		Network;
 	VECTOR		Pos;
 	VECTOR		DirVector;
 	VECTOR		UpVector;
 	ENEMY	*	Enemy;
-	int16		TempNum;
+	int16_t		TempNum;
 	char		Ext[ 16 ];
 	COMP_OBJ *	Comp = NULL;
 	COMP_OBJ *	TempComp = NULL;
 	float		OverallTime, MidTime;
-	uint16		EnemyType;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	u_int16_t		EnemyType;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 	ENEMY * LinkEnemy;
 	VECTOR	Offset;
-	int16		Pickup;
-	int16		Formationlink;
+	int16_t		Pickup;
+	int16_t		Formationlink;
 	VECTOR		TempVector = { 0.0F, 0.0F, 0.0F };
 	float		GenerationDelay;
 
@@ -4470,7 +4470,7 @@ BOOL LoadEnemies( void )
 	if( ChangeLevel_MyGameStatus != STATUS_PostStartingSinglePlayer && ChangeLevel_MyGameStatus != STATUS_SinglePlayer && ChangeLevel_MyGameStatus != STATUS_TitleLoadGamePostStartingSinglePlayer )
 	{
 		NumInitEnemies = 0;
-		return TRUE;
+		return true;
 	}
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
@@ -4479,30 +4479,30 @@ BOOL LoadEnemies( void )
 
 	if( fp != NULL )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != NME_VERSION_NUMBER  ) )
 		{
 			fclose( fp );
 			Msg( "LoadEnemies() Incompatible enemy (.NME) file %s", &NewFilename[ 0 ] );
-			return( FALSE );
+			return( false );
 		}
 
-		fread( &NumInitEnemies, sizeof( int16 ), 1, fp );
+		fread( &NumInitEnemies, sizeof( int16_t ), 1, fp );
 
 		for( Count = 0; Count < NumInitEnemies; Count++ )
 		{
-			fread( &Group, sizeof( uint16 ), 1, fp );
-			fread( &EnemyType, sizeof( uint16 ), 1, fp );
-			fread( &GenType, sizeof( uint16 ), 1, fp );
+			fread( &Group, sizeof( u_int16_t ), 1, fp );
+			fread( &EnemyType, sizeof( u_int16_t ), 1, fp );
+			fread( &GenType, sizeof( u_int16_t ), 1, fp );
 			fread( &Pos, sizeof( VECTOR ), 1, fp );
 			fread( &DirVector, sizeof( VECTOR ), 1, fp );
 			fread( &UpVector, sizeof( VECTOR ), 1, fp );
-			fread( &TriggerMod, sizeof( uint16 ), 1, fp );
-			fread( &Network, sizeof( uint32 ), 1, fp );
-			fread( &Pickup, sizeof( int16 ), 1, fp );
-			fread( &Formationlink, sizeof( int16 ), 1, fp );
+			fread( &TriggerMod, sizeof( u_int16_t ), 1, fp );
+			fread( &Network, sizeof( u_int32_t ), 1, fp );
+			fread( &Pickup, sizeof( int16_t ), 1, fp );
+			fread( &Formationlink, sizeof( int16_t ), 1, fp );
 			fread( &GenerationDelay, sizeof( float ), 1, fp );
 
 			ModelNum = EnemyType;
@@ -4523,7 +4523,7 @@ BOOL LoadEnemies( void )
 						else
 						{
 							Msg( "Error loading enemy %s\n", &NewFilename[ 0 ] );
-							return( FALSE );
+							return( false );
 						}
 					}
 					else
@@ -4538,7 +4538,7 @@ BOOL LoadEnemies( void )
 							else
 							{
 								Msg( "Error loading enemy %s\n", &NewFilename[ 0 ] );
-								return( FALSE );
+								return( false );
 							}
 						}
 						else
@@ -4562,19 +4562,19 @@ BOOL LoadEnemies( void )
 														&OverallTime, &MidTime, &TempNum, OWNER_ENEMY, Count );
 									if( Comp )
 									{
-										ModelNum = (uint16) -1;
+										ModelNum = (u_int16_t) -1;
 									}
 									else
 									{
 										Msg( "Error loading enemy %s\n", &NewFilename[ 0 ] );
-										return( FALSE );
+										return( false );
 									}
 								}
 							}
 							else
 							{
 								Msg( "Error loading enemy %s\n", &NewFilename[ 0 ] );
-								return( FALSE );
+								return( false );
 							}
 						}
 					}
@@ -4584,7 +4584,7 @@ BOOL LoadEnemies( void )
 					DebugPrintf( "Enemy %d has no model\n", ModelNum );
 				}
 
-				Enemy = InitOneEnemy( GenType, &Pos, &DirVector, &UpVector, Group, ModelNum, TriggerMod ,EnemyType , Network , Pickup , (uint16) Formationlink , GenerationDelay ); //-1);
+				Enemy = InitOneEnemy( GenType, &Pos, &DirVector, &UpVector, Group, ModelNum, TriggerMod ,EnemyType , Network , Pickup , (u_int16_t) Formationlink , GenerationDelay ); //-1);
 
 				if( Enemy != NULL )
 				{
@@ -4605,7 +4605,7 @@ BOOL LoadEnemies( void )
 
 						if( !( Enemy->Status & ENEMY_STATUS_Enable ) )
 						{
-							SetCompObjModelsState( Comp, 1, FALSE );
+							SetCompObjModelsState( Comp, 1, false );
 						}
 					}
 					else
@@ -4633,7 +4633,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4647,7 +4647,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4666,7 +4666,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4680,7 +4680,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4705,7 +4705,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4719,7 +4719,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4744,7 +4744,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4758,7 +4758,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4783,7 +4783,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4797,7 +4797,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4823,7 +4823,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4837,7 +4837,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4869,7 +4869,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4889,7 +4889,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4903,7 +4903,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4930,7 +4930,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4944,7 +4944,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Gun ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Gun ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 1.0F;
@@ -4971,7 +4971,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -4990,7 +4990,7 @@ BOOL LoadEnemies( void )
 							if( Enemy->Object.UserContComps[ TURRETCOMP_Base ] )
 							{
 								TempComp = Enemy->Object.UserContComps[ TURRETCOMP_Base ];
-								TempComp->UserControl = TRUE;
+								TempComp->UserControl = true;
 								if( !GetCompObjAxis( TempComp ) )
 								{
 									TempComp->UserAxis.x = 0.0F;
@@ -5018,7 +5018,7 @@ BOOL LoadEnemies( void )
 								if( Enemy->Object.UserContComps[ CompCount * 2 ] )
 								{
 									TempComp = Enemy->Object.UserContComps[ CompCount * 2 ];
-									TempComp->UserControl = TRUE;
+									TempComp->UserControl = true;
 									if( !GetCompObjAxis( TempComp ) )
 									{
 										TempComp->UserAxis.x = 0.0F;
@@ -5049,7 +5049,7 @@ BOOL LoadEnemies( void )
 								if( Enemy->Object.UserContComps[ CompCount * 2 ] )
 								{
 									TempComp = Enemy->Object.UserContComps[ CompCount * 2 ];
-									TempComp->UserControl = TRUE;
+									TempComp->UserControl = true;
 									if( !GetCompObjAxis( TempComp ) )
 									{
 										TempComp->UserAxis.x = 0.0F;
@@ -5077,13 +5077,13 @@ BOOL LoadEnemies( void )
 				{
 					fclose( fp );
 					Msg( "Error loading Enemies\n %s\n Unable to init enemy\n", &NewFilename[ 0 ] );
-					return( FALSE );
+					return( false );
 				}
 			}else{
 				// we must fill in an enemy for the exogenon placeholder....
-				Enemy = InitOneEnemy( ENEMY_STATUS_Nothing, &Pos, &DirVector, &UpVector, Group, (uint16) -1, (uint16) -1 ,EnemyType , 0 , -1 , (uint16) -1 , 0.0F );
+				Enemy = InitOneEnemy( ENEMY_STATUS_Nothing, &Pos, &DirVector, &UpVector, Group, (u_int16_t) -1, (u_int16_t) -1 ,EnemyType , 0 , -1 , (u_int16_t) -1 , 0.0F );
 				Enemy->Status &= ~ENEMY_STATUS_Enable;
-				Enemy->Alive = FALSE;
+				Enemy->Alive = false;
 			}
 			if( EnemyType == ENEMY_Boss_Exogenon )
 			{
@@ -5132,31 +5132,31 @@ BOOL LoadEnemies( void )
 		}
 		Enemy = Enemy->NextUsed;
 	}
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Init Enemy
-	Input		:	uint16		GenType
+	Input		:	u_int16_t		GenType
 				:	VECTOR	*	Pos
 				:	VECTOR	*	Dir Vector
 				:	VECTOR	*	Up Vector
-				:	uint16		Group
-				:	uint16		ModelNum
-				:	uint16		TriggerMod
-				:	uint16		EnemyType
-				:	uint32		Network
-				:	int32		PickupHeld
-				:	uint16		FormationLink
+				:	u_int16_t		Group
+				:	u_int16_t		ModelNum
+				:	u_int16_t		TriggerMod
+				:	u_int16_t		EnemyType
+				:	u_int32_t		Network
+				:	int32_t		PickupHeld
+				:	u_int16_t		FormationLink
 	Output		:	ENEMY	*	Enemy
 ===================================================================*/
-ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, uint16 Group, uint16 ModelNum, uint16 TriggerMod , uint16 EnemyType , uint32 Network , int32 PickupHeld , uint16 FormationLink , float GenerationDelay)
+ENEMY * InitOneEnemy( u_int16_t GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u_int16_t Group, u_int16_t ModelNum, u_int16_t TriggerMod , u_int16_t EnemyType , u_int32_t Network , int32_t PickupHeld , u_int16_t FormationLink , float GenerationDelay)
 {
-	int16		Count;
+	int16_t		Count;
 	ENEMY	*	Enemy;
-	uint16		ModelIndex;
+	u_int16_t		ModelIndex;
 	VECTOR		TempPos;
-	uint16		TempGroup;
+	u_int16_t		TempGroup;
 
 	Enemy = FindFreeEnemy();
 
@@ -5190,8 +5190,8 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 			Enemy->GenerationDelay = 0.0F;
 		}
 		
-		Enemy->Alive = TRUE;
-		Enemy->CompCollision = FALSE;
+		Enemy->Alive = true;
+		Enemy->CompCollision = false;
 
 		Enemy->Type	= EnemyType;
 		Enemy->BulletID = 0;
@@ -5218,14 +5218,14 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 		Enemy->Object.Shield = Difficulty * EnemyTypes[EnemyType].Shield;
 		Enemy->Object.NodeNetwork = Network;
 		Enemy->Object.NearestNode = NULL;
-		Enemy->PickupHeld = (uint16) PickupHeld;
+		Enemy->PickupHeld = (u_int16_t) PickupHeld;
 
 		Enemy->FirePosCount = 0;
 
 		Enemy->NextTNode = NULL;
 		Enemy->LastTNode = NULL;
-		Enemy->ImInNodeTransition = FALSE;
-		Enemy->PickNewNodeNow = FALSE;
+		Enemy->ImInNodeTransition = false;
+		Enemy->PickNewNodeNow = false;
 		Enemy->SmokeTime = 0.0F;
 		
 		Enemy->SplineNode1 = NULL;
@@ -5235,7 +5235,7 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 		
 		Enemy->Object.AI_Mode = EnemyTypes[EnemyType].AiMode;
 
-		if( (FormationLink != (uint16) -1) && (EnemyTypes[EnemyType].ControlType == ENEMY_CONTROLTYPE_FLY_AI) )
+		if( (FormationLink != (u_int16_t) -1) && (EnemyTypes[EnemyType].ControlType == ENEMY_CONTROLTYPE_FLY_AI) )
 		{
 			Enemy->FormationLink = &Enemies[FormationLink];
 		}else{
@@ -5286,21 +5286,21 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 		
 
 		Enemy->TriggerMod = TriggerMod;
-		if( TriggerMod == (uint16) -1 ) Enemy->TriggerModPtr = NULL;
+		if( TriggerMod == (u_int16_t) -1 ) Enemy->TriggerModPtr = NULL;
 		else Enemy->TriggerModPtr = &TrigMods[ TriggerMod ];
 
-		if( ModelNum != (uint16) -1 )
+		if( ModelNum != (u_int16_t) -1 )
 		{
 			ModelIndex = FindFreeModel();
 	
-			if( ModelIndex != (uint16) -1 )
+			if( ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ ModelIndex ].ModelNum = ( ModelNum );
 				Models[ ModelIndex ].Type = MODTYPE_Field;
 				Models[ ModelIndex ].Flags = MODFLAG_Nothing;
 
-				if( ( Enemy->Status & ENEMY_STATUS_Enable ) ) Models[ ModelIndex ].Visible = TRUE;
-				else Models[ ModelIndex ].Visible = FALSE;
+				if( ( Enemy->Status & ENEMY_STATUS_Enable ) ) Models[ ModelIndex ].Visible = true;
+				else Models[ ModelIndex ].Visible = false;
 
 				Models[ ModelIndex ].OwnerType = OWNER_ENEMY;
 				Models[ ModelIndex ].Owner = Enemy->Index;
@@ -5343,7 +5343,7 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 		}
 		else
 		{
-			ModelIndex = (uint16) -1;
+			ModelIndex = (u_int16_t) -1;
 		}
 
 		Enemy->ModelIndex = ModelIndex;
@@ -5364,10 +5364,10 @@ void ProcessEnemies( void )
 	GUNOBJECT	*	GunObject;
 	ENEMY		*	Enemy;
 	ENEMY		*	NextEnemy;
-	uint16			Model;
-	uint16			OldGroup;
+	u_int16_t			Model;
+	u_int16_t			OldGroup;
 	VECTOR			OldPos;
-	BOOL			OldComponentCollide;
+	_Bool			OldComponentCollide;
 
 #if ENABLEENEMYCOLLISIONS
 	VECTOR			PushVector;
@@ -5422,7 +5422,7 @@ void ProcessEnemies( void )
 				Enemy->AI_Angle.y = 0.0F;
 				Enemy->AI_Angle.z = 0.0F;
 				OldComponentCollide = Enemy->CompCollision;
-				Enemy->CompCollision = FALSE;
+				Enemy->CompCollision = false;
 				( * EnemyControlType[ Enemy->Object.ControlType ] )(Enemy);		//go off and do his thing...
 				Enemy->CompCollision = OldComponentCollide;
 
@@ -5445,10 +5445,10 @@ void ProcessEnemies( void )
 						if( GunTypes[GunObject->Type].PreciseRotation )
 						{
 							CarryOutGUN_PreciseAIMovementCommands( GunObject );
-							GunRotation( GunObject , FALSE );
+							GunRotation( GunObject , false );
 						}else{
 							CarryOutGUN_AIMovementCommands( GunObject );
-							GunRotation( GunObject , TRUE );
+							GunRotation( GunObject , true );
 						}
 						SetTurretVector( &Enemy->Object, &GunObject->Dir , GunObject->GunNum );
 						
@@ -5467,11 +5467,11 @@ void ProcessEnemies( void )
 
 
 			
-//			if( ( Ships[WhoIAm].Object.Group == (uint16) -1 ) || VisibleOverlap( Ships[WhoIAm].Object.Group, Enemy->Object.Group , NULL ) )
+//			if( ( Ships[WhoIAm].Object.Group == (u_int16_t) -1 ) || VisibleOverlap( Ships[WhoIAm].Object.Group, Enemy->Object.Group , NULL ) )
 			{
 				UpdateObjectAmbientColour( &Enemy->Object );
   
-				if( Model != (uint16) -1 )
+				if( Model != (u_int16_t) -1 )
 				{
 					Models[ Model ].Pos = Enemy->Object.Pos;
 					Models[ Model ].Mat = Enemy->Object.FinalMat;
@@ -5496,7 +5496,7 @@ void ProcessEnemies( void )
 							Enemy->Object.AnimSeqs[ Enemy->Object.CurAnimSeq ].EndTime )
 						{
 							Enemy->Object.Time = Enemy->Object.AnimSeqs[ Enemy->Object.CurAnimSeq ].StartTime;
-							Enemy->Object.Animating = FALSE;
+							Enemy->Object.Animating = false;
 						}
 						else
 						{
@@ -5504,13 +5504,13 @@ void ProcessEnemies( void )
 							if( Enemy->Object.Time > Enemy->Object.AnimSeqs[ Enemy->Object.CurAnimSeq ].EndTime )
 							{
 								Enemy->Object.Time = Enemy->Object.AnimSeqs[ Enemy->Object.CurAnimSeq ].EndTime;
-								Enemy->Object.Animating = FALSE;
+								Enemy->Object.Animating = false;
 							}
 						}
 					}
 					else
 					{
-						Enemy->Object.Animating = TRUE;
+						Enemy->Object.Animating = true;
 						Enemy->Object.Time += ( framelag * Enemy->Object.AnimSpeed );
 						if( Enemy->Object.Time > Enemy->Object.OverallTime )
 						{
@@ -5553,12 +5553,12 @@ void ProcessEnemies( void )
 				{
 					if( Enemy->Object.Components )
 					{
-						SetCompObjModelsState( Enemy->Object.Components, 1, TRUE );
+						SetCompObjModelsState( Enemy->Object.Components, 1, true );
 					}
 
-					if( Enemy->ModelIndex != (uint16) -1 )
+					if( Enemy->ModelIndex != (u_int16_t) -1 )
 					{
-						Models[ Enemy->ModelIndex ].Visible = TRUE;
+						Models[ Enemy->ModelIndex ].Visible = true;
 					}
 
 					Enemy->Status &= ~ENEMY_STATUS_Generating;
@@ -5619,34 +5619,34 @@ void DispUntriggeredNMEs( void )
 
 /*===================================================================
 	Procedure	:	Set Current Anim Seq
-	Input		:	int16	Seq Number
+	Input		:	int16_t	Seq Number
 				:	OBJECT * Object
 	Output		:	Nothing
 ===================================================================*/
-void SetCurAnimSeq( int16 Seq, OBJECT * Object )
+void SetCurAnimSeq( int16_t Seq, OBJECT * Object )
 {
 	if( Seq != -1 && Object->AnimSeqs )
 	{
 		Object->Time = Object->AnimSeqs[ Seq ].StartTime;
 		Object->CurAnimSeq = Seq;
-		Object->Animating = TRUE;
+		Object->Animating = true;
 	}
 
 }
 
 /*===================================================================
 	Procedure	:	Enable Enemy
-	Input		:	uint16	EnemyIndex
+	Input		:	u_int16_t	EnemyIndex
 	Output		:	Nothing
 ===================================================================*/
-void EnableEnemy( uint16 EnemyIndex )
+void EnableEnemy( u_int16_t EnemyIndex )
 {
 	ENEMY	*	Enemy;
 	VECTOR		TempVector;
 	VECTOR		DirVector;
 	VECTOR		Int_Point;
 	NORMAL		Int_Normal;
-	uint16		Int_Group;
+	u_int16_t		Int_Group;
 
 	if( EnemyIndex < NumInitEnemies )
 	{
@@ -5671,16 +5671,16 @@ void EnableEnemy( uint16 EnemyIndex )
 			DirVector.z = ( Enemy->Object.Pos.z - Ships[ WhoIAm ].Object.Pos.z );
 
 			if( BackgroundCollide( &MCloadheadert0, &Mloadheader, &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group,
-							   &DirVector, &Int_Point, &Int_Group, &Int_Normal, &TempVector, TRUE, NULL ) && !outside_map )
+							   &DirVector, &Int_Point, &Int_Group, &Int_Normal, &TempVector, true, NULL ) && !outside_map )
 			{
 				if( Enemy->Object.Components )
 				{
-					SetCompObjModelsState( Enemy->Object.Components, 1, TRUE );
+					SetCompObjModelsState( Enemy->Object.Components, 1, true );
 				}
 
-				if( Enemy->ModelIndex != (uint16) -1 )
+				if( Enemy->ModelIndex != (u_int16_t) -1 )
 				{
-					Models[ Enemy->ModelIndex ].Visible = TRUE;
+					Models[ Enemy->ModelIndex ].Visible = true;
 				}
 
 				Enemy->Status &= ~ENEMY_STATUS_Generating;
@@ -5717,8 +5717,8 @@ void DisableEnemy( ENEMY * Enemy )
 
 /*===================================================================
 	Procedure	:	Check if hit Enemy
-	Input		:	uint16		OwnerType
-				:	uint16		Owner of weapon
+	Input		:	u_int16_t		OwnerType
+				:	u_int16_t		Owner of weapon
 				:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
 				:	VECTOR	*	UpDir
@@ -5727,11 +5727,11 @@ void DisableEnemy( ENEMY * Enemy )
 				:	VECTOR	*	Int_Point2;
 				:	float	*	Dist to Int_Point
 				:	float		Weapon Radius;
-				:	uint16		Colision Type
+				:	u_int16_t		Colision Type
 	Output		:	ENEMY	*	Enemy Address ( NULL If none hit )
 ===================================================================*/
-ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point,
-						VECTOR * Int_Point2, float * Dist, float WeaponRadius, uint16 ColType )
+ENEMY * CheckHitEnemy( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point,
+						VECTOR * Int_Point2, float * Dist, float WeaponRadius, u_int16_t ColType )
 {
 	VECTOR		TempVector;
 	VECTOR		Int_Temp;
@@ -5893,7 +5893,7 @@ void EnemyFlyUnderPlayerControl( ENEMY * Enemy )
 	Enemy->Object.Speed.x += control.right;
 	Enemy->Object.Speed.y += control.up;
 	Enemy->Object.Speed.z += control.forward;
-	AutoMovement( &Enemy->Object , Enemy , TRUE);
+	AutoMovement( &Enemy->Object , Enemy , true);
 }
 /*===================================================================
 	Procedure	:	Flying Enemy Under Ai Control...
@@ -5922,10 +5922,10 @@ void EnemyFlyUnderAiControl( ENEMY * Enemy )
 		if( EnemyTypes[Enemy->Type].Behave.Flags & AI_BEHAVIOUR_PRECISECONTROL )
 		{
 			CarryOutPreciseAIMovementCommands( Enemy );
-			AutoMovement( &Enemy->Object , Enemy ,FALSE );
+			AutoMovement( &Enemy->Object , Enemy ,false );
 		}else{
 			CarryOutAIMovementCommands( Enemy );
-			AutoMovement( &Enemy->Object , Enemy ,TRUE);
+			AutoMovement( &Enemy->Object , Enemy ,true);
 		}
 	}
 				
@@ -6026,7 +6026,7 @@ void EnemyUnderSplineControl( ENEMY * Enemy )
 {
 	OBJECT * Object;
 	VECTOR	StartPos;
-	uint16	OldGroup;
+	u_int16_t	OldGroup;
 	Object = &Enemy->Object;
 
 	StartPos = Object->Pos;
@@ -6128,10 +6128,10 @@ void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 		if( EnemyTypes[Enemy->Type].Behave.Flags & AI_BEHAVIOUR_PRECISECONTROL )
 		{
 			CarryOutPreciseAIMovementCommands( Enemy );
-			AutoMovement( &Enemy->Object , Enemy ,FALSE );
+			AutoMovement( &Enemy->Object , Enemy ,false );
 		}else{
 			CarryOutAIMovementCommands( Enemy );
-			AutoMovement( &Enemy->Object , Enemy ,TRUE);
+			AutoMovement( &Enemy->Object , Enemy ,true);
 		}
 	}
 }
@@ -6142,20 +6142,20 @@ void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 	Output		:	OBJECt * Object
 	Output		:	Nothing
 ===================================================================*/
-void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
+void AutoMovement( OBJECT * Object , ENEMY * Enemy , _Bool AngleDecellBefore )
 {
 	VECTOR	ImpactPoint;
 	float	Speed;
 	VECTOR	Move_Off;	
 	VECTOR	Move_Dir;
 	QUAT	StepQuat;	
-	uint16	ImpactGroup;
+	u_int16_t	ImpactGroup;
 	VECTOR	Bob;
 	BGOBJECT * BGObject;
 	VECTOR	ExtForce;
-	BOOL	HasBeenExternal;
+	_Bool	HasBeenExternal;
 	VECTOR	StartPos;
-	uint16	OldGroup;
+	u_int16_t	OldGroup;
 	float	ShieldModifier;
 
 
@@ -6277,7 +6277,7 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 		}
 
 		
-		if ( Object->Group != (uint16) -1 )
+		if ( Object->Group != (u_int16_t) -1 )
 		{
 			BGObject = NULL;
 			if( ObjectCollide( Object, &Move_Off, EnemyTypes[Enemy->Type].Radius, &BGObject ) )
@@ -6338,7 +6338,7 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 	VECTOR	Move_Off = { 0.0F , 0.0F , 0.0F };	
 	MATRIX	StepMat;	
 	VECTOR	StartPos;
-	uint16	OldGroup;
+	u_int16_t	OldGroup;
 	NODE	* TNode;
 	NODE	* NextTNode;
 	NODE	* LastTNode;
@@ -6478,9 +6478,9 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 					BuildRotMatrix( 0.0F, 0.0F, Object->Autolevel, &StepMat );
 					MatrixMultiply( &Object->Mat , &StepMat , &Object->Mat );
 				}
-			 	Enemy->ImInNodeTransition = TRUE;
+			 	Enemy->ImInNodeTransition = true;
 			}else{
-				Enemy->PickNewNodeNow = TRUE;
+				Enemy->PickNewNodeNow = true;
 			}
 
 
@@ -6493,7 +6493,7 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 					XRot = (AimData.Angle.x * (0.1F * framelag));
 				}
 			}
-			Enemy->ImInNodeTransition = FALSE;
+			Enemy->ImInNodeTransition = false;
 		}
 
 		Move_Off.x = Move_Off.x * Object->Speed.z * framelag;
@@ -6514,7 +6514,7 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 			ApplyMatrix( &Object->InvMat, &AimPos, &TempPos );
 			if( TempPos.z <= 0.0F )
 			{
-				Enemy->PickNewNodeNow = TRUE;
+				Enemy->PickNewNodeNow = true;
 			}
 		}
 
@@ -6582,12 +6582,12 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 				:	float yoff...length*0.5
 				:	VECTOR * Right
 				:	VECTOR * Forward
-				:	uint16	startgroup
-				:	uint16 * DestGroup
+				:	u_int16_t	startgroup
+				:	u_int16_t * DestGroup
 	Output		:	Nothing
 ===================================================================*/
 __inline
-void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, uint16 Group , uint16 * DestGroup )
+void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, u_int16_t Group , u_int16_t * DestGroup )
 {
 	VECTOR	MoveOffset;
 	MoveOffset.x = ( xoff*Right->x ) + ( zoff*Forward->x );
@@ -6879,7 +6879,7 @@ void CarryOutGUN_PreciseAIMovementCommands( GUNOBJECT * GObject )
 	Output		:	GUNOBJECT * Object
 	Output		:	Nothing
 ===================================================================*/
-void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
+void GunRotation( GUNOBJECT * Object, _Bool AngleDecellBefore  )
 {
 	GUNTYPE	* GunType;
 	GunType = &GunTypes[Object->Type];
@@ -6955,12 +6955,12 @@ void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
 				:	MATRIX	*	Matrix ( TBFI )
 				:	MATRIX	*	Transposed Matrix ( TBFI )
 				:	VECTOR	*	FirePos
-				:	int16		BaseIndex
-	Output		:	BOOL		TRUE/FALSE
+				:	int16_t		BaseIndex
+	Output		:	_Bool		true/false
 ===================================================================*/
-BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16 BaseIndex )
+_Bool GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16_t BaseIndex )
 {
-	int16	Last = -1;
+	int16_t	Last = -1;
 
 	if( Object->UserContComps[ BaseIndex + 1 ] )
 	{
@@ -6976,7 +6976,7 @@ BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, 
 
 	if( Last == -1 )
 	{
-		return( FALSE );
+		return( false );
 	}
 
 	*Matrix = Object->UserContComps[ Last ]->DisplayMatrix;
@@ -6984,17 +6984,17 @@ BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, 
 	MatrixMultiply( Matrix, &Object->UserContComps[ Last ]->InitMatrix, Matrix );
 	MatrixTranspose( Matrix, TMatrix );
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Set turret Vector
 	Input		:	OBJECT	*	Object;
 				:	VECTOR	*	Vector ( Local )
-				:	int16		BaseIndex
+				:	int16_t		BaseIndex
 	Output		:	Nothing
 ===================================================================*/
-void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
+void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16_t BaseIndex )
 {
 	if( Object->UserContComps[ BaseIndex ] )
 	{
@@ -7011,11 +7011,11 @@ void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
 
 /*===================================================================
 	Procedure	:	Init a gun..
-	Input		:	uint16 GunType
+	Input		:	u_int16_t GunType
 				:	OBJECT	*	Object;
 	Output		:	Nothing
 ===================================================================*/
-void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object )
+void InitGuns( BYTE how_many_guns , u_int16_t * GunType , OBJECT * Object )
 {
 	GUNOBJECT * GunObject;
 	int i;
@@ -7107,7 +7107,7 @@ void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 				:	VECTOR * Move offset....
 	Output		:	Nothing
 ===================================================================*/
-BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
+_Bool Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 {
 	ENEMY * TEnemy;
 	float Move_Length;
@@ -7116,7 +7116,7 @@ BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 	TEnemy = FirstEnemyUsed;
 
 	if( !EnemyTypes[SEnemy->Type].Radius )
-		return FALSE;
+		return false;
 	while( TEnemy != NULL )
 	{
 		if( TEnemy != SEnemy )
@@ -7146,14 +7146,14 @@ BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 							SEnemy->Object.ExternalForce.z += Move_Dir.z * ( EnemyTypes[SEnemy->Type].MaxMoveRate * (EnemyTypes[SEnemy->Type].MoveRateAccell * 2.1F) * framelag );
 						}
 						SEnemy->AIMoveFlags |= AI_CONTROL_COLLISION;
-						return TRUE;
+						return true;
 					}
 				}
 			}
 		}
 		TEnemy = TEnemy->NextUsed;
 	}
-	return FALSE;
+	return false;
 
 }
 /*===================================================================
@@ -7161,7 +7161,7 @@ BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
 ===================================================================*/
-BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
+_Bool Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 {
 	ENEMY * TEnemy;
 	float Move_Length;
@@ -7185,7 +7185,7 @@ BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 						if( Move_Length2 > Move_Length )
 						{
 							// If it moved closer with its last move then bounce it otherwise let it go...
-							return TRUE;
+							return true;
 						}
 					}
 				}
@@ -7193,7 +7193,7 @@ BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 		}
 		TEnemy = TEnemy->NextUsed;
 	}
-	return FALSE;
+	return false;
 
 }
 
@@ -7202,7 +7202,7 @@ BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
 ===================================================================*/
-BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
+_Bool Ship2EnemyCollide( u_int16_t i , VECTOR * Move_Off )
 {
 	float Move_Length;
 	float Next_Move_Length;
@@ -7213,7 +7213,7 @@ BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
 	VECTOR	Norm_Move_Off;
 	VECTOR	Temp_Move_Off;
 	VECTOR	NewPos;
-	BOOL	HasBeen = FALSE;
+	_Bool	HasBeen = false;
 	ENEMY * TEnemy;
 
 	Norm_Move_Off = *Move_Off;
@@ -7249,11 +7249,11 @@ BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
 					Move_Length = ( (SHIP_RADIUS+EnemyTypes[TEnemy->Type].Radius)+1.0F ) - Move_Length;
 
 					if( Move_Dir.x == 0.0F && Move_Dir.y == 0.0F && Move_Dir.z == 0.0F )
-						return FALSE;
+						return false;
 					Move_Off->x = Move_Dir.x * Move_Length;
 					Move_Off->y = Move_Dir.y * Move_Length;
 					Move_Off->z = Move_Dir.z * Move_Length;
-					return TRUE;
+					return true;
 				}else{
 					if( RaytoSphere2( &TEnemy->Object.Pos, (SHIP_RADIUS+EnemyTypes[TEnemy->Type].Radius)-2.0F, &Ships[i].Object.Pos, &Norm_Move_Off, &inter, &inter2 ) )
 					{
@@ -7265,7 +7265,7 @@ BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
 							*Move_Off = Temp_Move_Off;
 							Norm_Move_Off = *Move_Off;
 							NormaliseVector( &Norm_Move_Off );
-							HasBeen = TRUE;
+							HasBeen = true;
 						}
 					}
 				}
@@ -7284,7 +7284,7 @@ BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
 ===================================================================*/
 void SetupEnemyGroups( void )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < MAXGROUPS; Count++ )
 	{
@@ -7296,10 +7296,10 @@ void SetupEnemyGroups( void )
 /*===================================================================
 	Procedure	:	Add Enemy to group link list
 	Input		:	ENEMY	*	Enemy
-				:	uint16		Group
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void AddEnemyToGroup( ENEMY * Enemy, uint16 Group )
+void AddEnemyToGroup( ENEMY * Enemy, u_int16_t Group )
 {
 	Enemy->PrevInGroup = NULL;
 	Enemy->NextInGroup = EnemyGroups[ Group ];
@@ -7310,11 +7310,11 @@ void AddEnemyToGroup( ENEMY * Enemy, uint16 Group )
 
 /*===================================================================
 	Procedure	:	Remove Enemy from group link list
-	Input		:	uint16		Enemy Index
-				:	uint16		Group
+	Input		:	u_int16_t		Enemy Index
+				:	u_int16_t		Group
 	Output		:	Nothing
 ===================================================================*/
-void RemoveEnemyFromGroup( ENEMY * Enemy, uint16 Group )
+void RemoveEnemyFromGroup( ENEMY * Enemy, u_int16_t Group )
 {
 	if( Enemy->PrevInGroup ) Enemy->PrevInGroup->NextInGroup = Enemy->NextInGroup;
 	else EnemyGroups[ Group ] = Enemy->NextInGroup;
@@ -7327,11 +7327,11 @@ void RemoveEnemyFromGroup( ENEMY * Enemy, uint16 Group )
 /*===================================================================
 	Procedure	:	Move Enemy from 1 group to another
 	Input		:	ENEMY	*	Enemy
-				:	uint16		OldGroup
-				:	uint16		NewGroup
+				:	u_int16_t		OldGroup
+				:	u_int16_t		NewGroup
 	Output		:	Nothing
 ===================================================================*/
-void MoveEnemyToGroup( ENEMY * Enemy, uint16 OldGroup, uint16 NewGroup )
+void MoveEnemyToGroup( ENEMY * Enemy, u_int16_t OldGroup, u_int16_t NewGroup )
 {
 	RemoveEnemyFromGroup( Enemy, OldGroup );
 	AddEnemyToGroup( Enemy, NewGroup );
@@ -7346,8 +7346,8 @@ void UpdateEnemiesClipGroup( CAMERA * Camera  )
 {
 	ENEMY		*	Enemy;
 	ENEMY		*	NextEnemy;
-	uint16			Model;
-	uint16			ClipGroup;
+	u_int16_t			Model;
+	u_int16_t			ClipGroup;
 	VECTOR			TopLeft;
 	VECTOR			BottomRight;
 
@@ -7378,9 +7378,9 @@ void UpdateEnemiesClipGroup( CAMERA * Camera  )
 				{
 					Model = Enemy->ModelIndex;
 
-					if( Model != (uint16) -1 )
+					if( Model != (u_int16_t) -1 )
 					{
-						if( ClipGroup != (uint16) -1 )
+						if( ClipGroup != (u_int16_t) -1 )
 						{
 							Models[ Model ].Flags |= MODFLAG_UseClipGroup;
 							Models[ Model ].ClipGroup = ClipGroup;
@@ -7405,8 +7405,8 @@ void UpdateEnemiesClipGroup( CAMERA * Camera  )
 	Stuff to do with reading in the Enemies.txt!!!!
 ===================================================================*/
 
-uint16	CurrentEnemy = 0;
-uint16	CurrentGun = 0;
+u_int16_t	CurrentEnemy = 0;
+u_int16_t	CurrentGun = 0;
 // Read the number of Guns
 static int read_NumOfGuns( FILE *f, char *last_token )
 {
@@ -7791,7 +7791,7 @@ read_SecondaryWeaponType( FILE *f, char *last_token )
 // Read the Flags
 typedef struct {
 	char *keyword;
-	uint32 Flags;
+	u_int32_t Flags;
 } READENEMYFLAGS;
 
 static int
@@ -7847,7 +7847,7 @@ read_Flags( FILE *f, char *last_token )
 // read the enemy type.....
 typedef struct {
 	char *keyword;
-	uint16 EnemyType;
+	u_int16_t EnemyType;
 } READENEMYTYPE;
 
 static int read_EnemyType( FILE *f, char *last_token )
@@ -8037,8 +8037,8 @@ static int read_Gun_PrimarySecondary( FILE *f, char *last_token )
 	int temp;
 	if ( fscanf( f, " %d", &temp ) == 1 )
 	{
-		if( temp ) GunTypes[CurrentGun].PrimarySecondary = TRUE;
-		else GunTypes[CurrentGun].PrimarySecondary = FALSE;
+		if( temp ) GunTypes[CurrentGun].PrimarySecondary = true;
+		else GunTypes[CurrentGun].PrimarySecondary = false;
 		fscanf( f, " %80s", last_token );
 		return 1;
 	}
@@ -8051,8 +8051,8 @@ static int read_Gun_PreciseRotation( FILE *f, char *last_token )
 	int temp;
 	if ( fscanf( f, " %d", &temp ) == 1 )
 	{
-		if( temp ) GunTypes[CurrentGun].PreciseRotation = TRUE;
-		else GunTypes[CurrentGun].PreciseRotation = FALSE;
+		if( temp ) GunTypes[CurrentGun].PreciseRotation = true;
+		else GunTypes[CurrentGun].PreciseRotation = false;
 		fscanf( f, " %80s", last_token );
 		return 1;
 	}
@@ -8077,7 +8077,7 @@ static int read_Gun_WeaponType( FILE *f, char *last_token )
 /*===================================================================
 	Procedure	:	Read in the enemy txt file..
 	Input		:	char * Filename
-	Output		:	BOOL TRUE/FALSE
+	Output		:	_Bool true/false
 ===================================================================*/
 typedef int (*ReadEnemy)( FILE *, char * );
 typedef struct {
@@ -8085,7 +8085,7 @@ typedef struct {
 	ReadEnemy handle;
 } READENEMYTXTFILE;
 
-BOOL ReadEnemyTxtFile( char *Filename )
+_Bool ReadEnemyTxtFile( char *Filename )
 {
 	static READENEMYTXTFILE jumptab[] = {
 		{ "EnemyType",				read_EnemyType				},
@@ -8148,7 +8148,7 @@ BOOL ReadEnemyTxtFile( char *Filename )
 	{
 		DebugPrintf("Could not read enemy text file: %s\n", Filename);
 		Msg("Could not read enemy text file: %s\n",Filename);
-		return FALSE;
+		return false;
 	}
 
 	if ( fscanf( f, " %80s", token ) == 1 )
@@ -8170,7 +8170,7 @@ BOOL ReadEnemyTxtFile( char *Filename )
 	}
 	fclose( f );
 
-	return TRUE;
+	return true;
 }
 
 void ObjectForceExternalOneOff( OBJECT * Object, VECTOR *force )
@@ -8192,7 +8192,7 @@ void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 	VECTOR	Move_Dir;
 //	QUAT	StepQuat;	
 	VECTOR	StartPos;
-	uint16	OldGroup;
+	u_int16_t	OldGroup;
 
 
 	StartPos = Object->Pos;
@@ -8253,18 +8253,18 @@ void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 /*===================================================================
 	Procedure	:	Carry out all External force modifiers for Spline Following enemies..
 	Output		:	OBJECt * Object
-	Output		:	BOOL TURE/FALSE....Wether there was any 
+	Output		:	_Bool TURE/false....Wether there was any 
 ===================================================================*/
-BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
+_Bool SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 {
 	VECTOR	ImpactPoint;
 	VECTOR	Move_Off;	
-	uint16	ImpactGroup;
+	u_int16_t	ImpactGroup;
 	BGOBJECT * BGObject;
 	VECTOR	ExtForce;
-	BOOL	HasBeenExternal;
+	_Bool	HasBeenExternal;
 	VECTOR	StartPos;
-	uint16	OldGroup;
+	u_int16_t	OldGroup;
 	float	ShieldModifier;
 	QUAT	StepQuat;
 	NODE * Node3;
@@ -8363,7 +8363,7 @@ BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 		ImpactPoint = Object->Pos;
 		ImpactGroup = Object->Group;
 	}else{
-		if ( Object->Group != (uint16) -1 )
+		if ( Object->Group != (u_int16_t) -1 )
 		{
 			BGObject = NULL;
 			ObjectCollide( Object, &Move_Off, EnemyTypes[Enemy->Type].Radius, &BGObject );
@@ -8385,9 +8385,9 @@ BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 	}
 	
 	if( Move_Off.x + Move_Off.y + Move_Off.z )
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 
@@ -8397,10 +8397,10 @@ BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 /*===================================================================
 	Procedure	:	Crappy Bodge to fix mappers fuckup
 	Input		:	BYTE	Primary Weapon
-				:	uint16	PickupHeld
+				:	u_int16_t	PickupHeld
 	Output		:	BYTE	Primary Weapon to Fire
 ===================================================================*/
-BYTE BodgePrimaryWeapon( BYTE Weapon, uint16 Pickup )
+BYTE BodgePrimaryWeapon( BYTE Weapon, u_int16_t Pickup )
 {
 	if( Pickup <= PICKUP_Laser )
 	{
@@ -8411,13 +8411,13 @@ BYTE BodgePrimaryWeapon( BYTE Weapon, uint16 Pickup )
 
 /*===================================================================
 	Procedure	:	Find Duplicate Model ( If exists )
-	Input		:	int8	*	Filename of Model
-				:	int16		NumModels so far
-	Output		:	uint16		Model Number ( -1 if not found )
+	Input		:	int8_t	*	Filename of Model
+				:	int16_t		NumModels so far
+	Output		:	u_int16_t		Model Number ( -1 if not found )
 ===================================================================*/
-uint16 FindDuplicateModel( int8 * Filename, int16 NumModels )
+u_int16_t FindDuplicateModel( int8_t * Filename, int16_t NumModels )
 {
-	int16	Count;
+	int16_t	Count;
 
 	for( Count = 0; Count < NumModels; Count++ )
 	{
@@ -8426,18 +8426,18 @@ uint16 FindDuplicateModel( int8 * Filename, int16 NumModels )
 			return( Count );
 		}
 	}
-	return( (uint16) -1 );
+	return( (u_int16_t) -1 );
 }
 
 /*===================================================================
 	Procedure	:	Perform Damage on an Enemy....If its not in a death
 				:	MODE then put it in one or Destroy it....
 	Input		:	ENEMY * Enemy
-	Output		:	BOOL Destroyed 
+	Output		:	_Bool Destroyed 
 ===================================================================*/
-BOOL DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed , uint16 Owner , uint16 OwnerType )
+_Bool DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed , u_int16_t Owner , u_int16_t OwnerType )
 {
-	uint16 Random;
+	u_int16_t Random;
 	VECTOR	TempVector;
 	VECTOR	Pos;
 	Enemy->Object.Shield += Damage;
@@ -8509,14 +8509,14 @@ BOOL DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR *
 			 (Enemy->Object.ControlType != ENEMY_CONTROLTYPE_FLY_AI) )
 		{
 			// Die Now....
-			return TRUE;
+			return true;
 		}
 
 		if( Enemy->Object.AI_Mode < AIMODE_DEATH_CRASHNBURN )
 		{
 
 			if( !Random_Range(30) )
-				return TRUE;
+				return true;
 			Random = 0;
 			if( EnemyTypes[Enemy->Type].Radius <= 100.0F )
 			{
@@ -8561,7 +8561,7 @@ BOOL DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR *
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -8591,41 +8591,41 @@ void ObjectRotateExternal( OBJECT * Object, VECTOR * Pos , VECTOR *point, VECTOR
 
 /*===================================================================
 	Procedure	:		Find Point 75.0F above the ground...
-	Input		:		VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup
-	Output		:		BOOL FALSE/TRUE
+	Input		:		VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup
+	Output		:		_Bool false/true
 ===================================================================*/
-BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup )
+_Bool FindPointAboveGround( VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup )
 {
 	int			i;
 	NORMAL		TempNormal;
 	VECTOR		TempPos_New;
 	VECTOR		Move_Off = { 0.0F , -4000.0F , 0.0F };
-	BOOL		LegalGroup;
+	_Bool		LegalGroup;
 
 	*NewGroup = Group;
 	*NewPos = *Pos;
 
-	LegalGroup = FALSE;
+	LegalGroup = false;
 		
 	if( !PointInsideSkin( Pos, Group ) )
 	{
 		for( i = 0 ; i < Mloadheader.num_groups ; i++ )
 		{
-			if( PointInsideSkin( Pos, (uint16) i ) )
+			if( PointInsideSkin( Pos, (u_int16_t) i ) )
 			{
 				Group = i;
-				LegalGroup = TRUE;
+				LegalGroup = true;
 				break;
 			}
 		}
 	}else{
-		LegalGroup = TRUE;
+		LegalGroup = true;
 	}
 
 	if( LegalGroup )
 	{
 		if(	BackgroundCollide( &MCloadheadert0, &Mloadheader, Pos, Group, &Move_Off,
-			NewPos , NewGroup, &TempNormal, &TempPos_New, FALSE, NULL ) )
+			NewPos , NewGroup, &TempNormal, &TempPos_New, false, NULL ) )
 		{
 			VECTOR move;
 			float move_len;
@@ -8635,15 +8635,15 @@ BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint1
 			move.z = NewPos->z - Pos->z;
 			move_len = VectorLength( &move );
 			if ( move_len > 4000.0F )
-				return FALSE;
+				return false;
 			NewPos->y += 75.0F;
 		}else{
-			return FALSE;
+			return false;
 		}
 
 	}
 	
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -8653,10 +8653,10 @@ BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint1
 ===================================================================*/
 void DoNmeDamagedEffects( ENEMY * Enemy )
 {
-	uint16	fmpoly;
+	u_int16_t	fmpoly;
 	VECTOR	TempUp;
 	float	EnemySmokeInterval;
-	uint8	Colour;
+	u_int8_t	Colour;
 
 	EnemySmokeInterval = (float) 1;
 
@@ -8674,9 +8674,9 @@ void DoNmeDamagedEffects( ENEMY * Enemy )
 	
 					fmpoly = FindFreeFmPoly();
 					
-					Colour = (uint8) 128.0F; //( ( ( EnemyTypes[Enemy->Type].Shield * 0.25F ) / 192.0F ) * Enemy->Object.Shield );
+					Colour = (u_int8_t) 128.0F; //( ( ( EnemyTypes[Enemy->Type].Shield * 0.25F ) / 192.0F ) * Enemy->Object.Shield );
 
-					if( fmpoly != (uint16 ) -1 )
+					if( fmpoly != (u_int16_t ) -1 )
 					{
 						FmPolys[ fmpoly ].LifeCount = 1000.0F;
 						ApplyMatrix( &Enemy->Object.FinalMat, &Backward, &FmPolys[ fmpoly ].Dir );
@@ -8757,21 +8757,21 @@ typedef struct frame_info {
 
 typedef struct _VERYSHORTGLOBALSHIP
 {
-	uint32				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
+	u_int32_t				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 	BYTE				Status;			// tells us constantly what this ship is doing...
 	BYTE				GroupImIn;		// Group Im In
 	SHORTVECTOR			Pos;			// x , y , z position
 	SHORTVECTOR			Move_Off;		// Last MoveMent...x , y , z
 	SHORTVECTOR			Angle;			// Last Rotation..
-	int16				Bank;		// How much Am I banked....
-	uint16				Move_Off_Scalar;
+	int16_t				Bank;		// How much Am I banked....
+	u_int16_t				Move_Off_Scalar;
 	SHORTQUAT			Quat;		// Final Quat...
 	// 36 bytes norm 58
 } VERYSHORTGLOBALSHIP, *LPVERYSHORTGLOBALSHIP;
 
 typedef struct _FSHORTGLOBALSHIP
 {
-	uint32				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
+	u_int32_t				Flags;			// Flags Enable/Stealth/Turbo/PrimFire/SecFire/PrimToggle/SecToggle
 	BYTE				Primary;		// Primary weapon
 	BYTE				Secondary;		// Secondary weapon
 	BYTE				GroupImIn;		// Group Im In
@@ -8779,8 +8779,8 @@ typedef struct _FSHORTGLOBALSHIP
 	SHORTVECTOR			Pos;			// x , y , z position
 	SHORTVECTOR			Move_Off;		// Last MoveMent...x , y , z
 	SHORTVECTOR			Angle;			// Last Rotation..
-	int16				Bank;		// How much Am I banked....
-	uint16				Move_Off_Scalar;
+	int16_t				Bank;		// How much Am I banked....
+	u_int16_t				Move_Off_Scalar;
 	SHORTQUAT			Quat;		// Final Quat...
 } FSHORTGLOBALSHIP, *LPFSHORTGLOBALSHIP;
 //38 bytes norm 65
@@ -8791,9 +8791,9 @@ typedef struct _FSHORTGLOBALSHIP
 /*===================================================================
 	Procedure	:		Enemy Save...
 	Input		:		FILE * fp
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL Enemy_Save( FILE * fp )
+_Bool Enemy_Save( FILE * fp )
 {
 	int i;
 	int e;
@@ -8832,7 +8832,7 @@ BOOL Enemy_Save( FILE * fp )
 		fwrite( &Enemies[i].CompCollision, sizeof( Enemies[i].CompCollision ), 1, fp );
 
 		if( !Object_Save( fp , &Enemies[i].Object ) )
-			return FALSE;
+			return false;
 
 		fwrite( &Enemies[i].Type, sizeof( Enemies[i].Type ), 1, fp );
 		fwrite( &Enemies[i].AIMoveFlags, sizeof( Enemies[i].AIMoveFlags ), 1, fp );
@@ -8991,18 +8991,18 @@ BOOL Enemy_Save( FILE * fp )
 	}
 
 
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:		Enemy Load...
 	Input		:		FILE * fp
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL Enemy_Load( FILE * fp )
+_Bool Enemy_Load( FILE * fp )
 {
 	int i;
 	int e;
-	int16		TempNumInitEnemies;
+	int16_t		TempNumInitEnemies;
 
 
 	fread( &TempNumInitEnemies, sizeof( TempNumInitEnemies ), 1, fp );
@@ -9010,7 +9010,7 @@ BOOL Enemy_Load( FILE * fp )
 	if( NumInitEnemies != TempNumInitEnemies )
 	{
 		fclose(fp);
-		return FALSE;
+		return false;
 	}
 
 
@@ -9048,7 +9048,7 @@ BOOL Enemy_Load( FILE * fp )
 		fread( &Enemies[i].CompCollision, sizeof( Enemies[i].CompCollision ), 1, fp );
 
 		if( !Object_Load( fp, &Enemies[i].Object ) )
-			return FALSE;
+			return false;
 
 		fread( &Enemies[i].Type, sizeof( Enemies[i].Type ), 1, fp );
 		fread( &Enemies[i].AIMoveFlags, sizeof( Enemies[i].AIMoveFlags ), 1, fp );
@@ -9236,7 +9236,7 @@ BOOL Enemy_Load( FILE * fp )
 			AddEnemyToGroup( &Enemies[i] , Enemies[i].Object.Group );
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -9244,14 +9244,14 @@ BOOL Enemy_Load( FILE * fp )
 /*===================================================================
 	Procedure	:		Object Save...
 	Input		:		FILE * fp , OBJECT * Obj
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL Object_Save( FILE * fp , OBJECT * Obj )
+_Bool Object_Save( FILE * fp , OBJECT * Obj )
 {
 	int i;
 	int e;
 	NODE * Node;
-	int16	NumChildren;
+	int16_t	NumChildren;
 
 	fwrite( &Obj->Flags, sizeof( Obj->Flags ), 1, fp );
 	fwrite( &Obj->Type, sizeof( Obj->Type ), 1, fp );
@@ -9332,7 +9332,7 @@ BOOL Object_Save( FILE * fp , OBJECT * Obj )
 	if( Obj->HowManyGuns )
 	{
 		if( !Gun_Save( Obj->HowManyGuns , Obj->FirstGun , fp ) )
-			return FALSE;
+			return false;
 	}
 
 	fwrite( &Obj->Time, sizeof( Obj->Time ), 1, fp );
@@ -9360,15 +9360,15 @@ BOOL Object_Save( FILE * fp , OBJECT * Obj )
 	fwrite( &Obj->Red, sizeof( Obj->Red ), 1, fp );
 	fwrite( &Obj->Green, sizeof( Obj->Green ), 1, fp );
 	fwrite( &Obj->Blue, sizeof( Obj->Blue ), 1, fp );
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:		Gun Save...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
+_Bool Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 {
 	int i;
 
@@ -9389,17 +9389,17 @@ BOOL Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 		fwrite( &GO->GunNum, sizeof( GO->GunNum ), 1, fp );
 		GO++;
 	}
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:		Object Load...
 	Input		:		FILE * fp , OBJECT * Obj
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL Object_Load( FILE * fp , OBJECT * Obj )
+_Bool Object_Load( FILE * fp , OBJECT * Obj )
 {
 	int e;
-	int16	NumChildren;
+	int16_t	NumChildren;
 
 	fread( &Obj->Flags, sizeof( Obj->Flags ), 1, fp );
 	fread( &Obj->Type, sizeof( Obj->Type ), 1, fp );
@@ -9414,7 +9414,7 @@ BOOL Object_Load( FILE * fp , OBJECT * Obj )
 	}else
 	{
 		DebugPrintf( "LoadShips() Unknown Type %d, ID %d\n", Obj->Type, e );
-		return FALSE;
+		return false;
 	}
 	fread( &Obj->AI_Mode, sizeof( Obj->AI_Mode ), 1, fp );
 	fread( &Obj->Mode, sizeof( Obj->Mode ), 1, fp );
@@ -9474,7 +9474,7 @@ BOOL Object_Load( FILE * fp , OBJECT * Obj )
 		if( !Gun_Load( Obj->HowManyGuns , Obj->FirstGun , fp ) )
 		{
 			DebugPrintf( "LoadShips() GunLoad Failed\n" );
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -9507,15 +9507,15 @@ BOOL Object_Load( FILE * fp , OBJECT * Obj )
 	fread( &Obj->Red, sizeof( Obj->Red ), 1, fp );
 	fread( &Obj->Green, sizeof( Obj->Green ), 1, fp );
 	fread( &Obj->Blue, sizeof( Obj->Blue ), 1, fp );
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:		Gun Load...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
+_Bool Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 {
 	int i;
 
@@ -9537,7 +9537,7 @@ BOOL Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 		fread( &GO->GunNum, sizeof( GO->GunNum ), 1, fp );
 		GO++;
 	}
-	return TRUE;
+	return true;
 }
 
 #ifdef OPT_ON

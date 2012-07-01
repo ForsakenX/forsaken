@@ -17,8 +17,8 @@ void DebugState( const char * str );           // only prints if str changed
 void DebugPuts( char * str );                  // 
 
 void Change_Ext( const char * Src, char * Dest, const char * Ext );
-void Get_Ext( uint8 * Src, uint8 * Dest );
-void GetFilename( uint8 * Src, uint8 * Dest );
+void Get_Ext( u_int8_t * Src, u_int8_t * Dest );
+void GetFilename( u_int8_t * Src, u_int8_t * Dest );
 
 char* convert_path( char* _str );
 char * convert_char( char from, char to, char* in );

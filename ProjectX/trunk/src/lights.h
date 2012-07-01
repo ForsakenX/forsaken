@@ -37,8 +37,8 @@
 
  typedef struct XLIGHT{
 	int		Type;
-	BOOL	Visible;
-	uint16	Index;
+	_Bool	Visible;
+	u_int16_t	Index;
 	float	r;
 	float	g;
 	float	b;
@@ -46,11 +46,11 @@
 	float	SizeCount;
 	float	ColorCount;
 	float	CosArc;			// how wide is my light.......
-	uint16	Next;			// Next Free
-	uint16	Prev;			// Previous used...
+	u_int16_t	Next;			// Next Free
+	u_int16_t	Prev;			// Previous used...
 	VECTOR	Pos;
 	VECTOR	Dir;			// Normalised....
-	uint16	Group;
+	u_int16_t	Group;
 struct XLIGHT * NextVisible;
  }XLIGHT;
 
@@ -58,21 +58,21 @@ struct XLIGHT * NextVisible;
  * fn prototypes
  */
 
-BOOL	ProcessXLights( MLOADHEADER * Mloadheader );
+_Bool	ProcessXLights( MLOADHEADER * Mloadheader );
 void	InitXLights();
-uint16	FindFreeXLight();
-void	KillUsedXLight(uint16);
+u_int16_t	FindFreeXLight();
+void	KillUsedXLight(u_int16_t);
 
-void	SetLightDie ( uint16 light );
-BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group );
+void	SetLightDie ( u_int16_t light );
+_Bool	XLight1Group( MLOADHEADER * Mloadheader, u_int16_t group );
 
-BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
-BOOL	XLightMxaloadHeader( MXALOADHEADER * MXAloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
+_Bool	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
+_Bool	XLightMxaloadHeader( MXALOADHEADER * MXAloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
 
 
 void	CreateCellColours( MLOADHEADER * Mloadheader );
-COLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group );
-void BuildVisibleLightList( uint16 Group );
+COLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, u_int16_t group );
+void BuildVisibleLightList( u_int16_t Group );
 FILE * SaveXLights( FILE * fp );
 FILE * LoadXLights( FILE * fp );
 

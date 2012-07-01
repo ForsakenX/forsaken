@@ -44,7 +44,7 @@ void AI_AIR_RETREAT( register ENEMY * Enemy )
 
 	SObject = &Enemy->Object;
 	// Is it time to think???
-	AI_THINK( Enemy , FALSE , FALSE);
+	AI_THINK( Enemy , false , false);
 
 	TObject = (OBJECT*) Enemy->TShip;
 

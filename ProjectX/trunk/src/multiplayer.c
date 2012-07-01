@@ -41,58 +41,58 @@ extern int OldPPSValue;
 extern int OldColPerspective;
 extern int OldUseShortPackets;
 
-BOOL ResetKillsPerLevel;
-BOOL TintBikeTeamColor;
-BOOL MyResetKillsPerLevel;
-BOOL IpOnCLI = FALSE;
+_Bool ResetKillsPerLevel;
+_Bool TintBikeTeamColor;
+_Bool MyResetKillsPerLevel;
+_Bool IpOnCLI = false;
 
-extern uint8 QuickStart;
-extern BOOL BrightShips;
-extern BOOL BikeExhausts;
-extern int32 ColPerspective;
+extern u_int8_t QuickStart;
+extern _Bool BrightShips;
+extern _Bool BikeExhausts;
+extern int32_t ColPerspective;
 
-extern BOOL NoMenuBack;
-extern BOOL Debug;
+extern _Bool NoMenuBack;
+extern _Bool Debug;
 
-extern BOOL NeedFlagAtHome;
-extern BOOL OwnFlagTeleportsHome;
-extern BOOL CanCarryOwnFlag;
+extern _Bool NeedFlagAtHome;
+extern _Bool OwnFlagTeleportsHome;
+extern _Bool CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
-extern	BOOL	UseShortPackets;
-extern BOOL	Panel;
+extern	_Bool	UseShortPackets;
+extern _Bool	Panel;
 
 extern MENUITEM TeamGameHostMenuItem;
 extern BYTE	PreSynchupStatus;
-extern BOOL DemoShipInit[];
+extern _Bool DemoShipInit[];
 extern	float NetUpdateInterval;
-extern	BOOL	BrightShips;
-extern	BOOL	MyBrightShips;
+extern	_Bool	BrightShips;
+extern	_Bool	MyBrightShips;
 
 extern float Pulse;
 extern char *EmptyString;
 
-extern	BOOL					IsHost;   // is the user hosting/joining a game
-extern	int16					Lives;
+extern	_Bool					IsHost;   // is the user hosting/joining a game
+extern	int16_t					Lives;
 
-extern	BOOL	BountyHunt;
-extern	BOOL	CaptureTheFlag;
-extern	BOOL	CTF;
+extern	_Bool	BountyHunt;
+extern	_Bool	CaptureTheFlag;
+extern	_Bool	CTF;
 extern	TEXT	DemoGameName;
-extern	BOOL	RecordDemo;
+extern	_Bool	RecordDemo;
 extern	LIST	PlayersList;
 extern	LIST	LevelList;
 extern	LIST	TeamList[MAX_TEAMS];
 extern	MENUITEM	TeamItem;
 extern	MENUITEM	NewTeamItem;
-extern	BOOL	TeamGame;
+extern	_Bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	SLIDER	TimeLimit;
 extern	SLIDER	MyTimeLimit;
 extern	SLIDER	DemoSpeed;
 extern	SLIDER	MaxPlayersSlider;
 extern	SLIDER	MaxKillsSlider;
-extern	int16	MaxKills;
+extern	int16_t	MaxKills;
 extern	char	biker_name[256];
 extern	float	framelag;
 extern char MyName[];
@@ -100,27 +100,27 @@ extern char NickName[];
 extern	BYTE					Current_Camera_View;		// which object is currently using the camera view....
 extern	BYTE                    WhoIAm;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
-extern	int16					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
-extern	int16					StatsCount;
-extern	int16	SelectedBike;
+extern	int16_t					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
+extern	int16_t					StatsCount;
+extern	int16_t	SelectedBike;
 extern	SLIDER	NumOfPlayersSlider;
 extern	int MenuStackLevel;
 extern	BYTE	GameStatus[];	// Game Status for every Ship...
 extern	SLIDER  PacketsSlider;
 extern	TEXT TCPAddress;
-extern	BOOL	CountDownOn;
+extern	_Bool	CountDownOn;
 extern	float	GetPlayerNumCount1;
 extern	float	GetPlayerNumCount2;
 extern	int		GetPlayerNumCount;
 extern	FILE	*	DemoFp;
 extern	FILE	*	DemoFpClean;
-BOOL ChangeLevel( void );
-BOOL InitLevels( char *levels_list );
-extern	int16		LevelNum;
-extern	int16		NewLevelNum;
+_Bool ChangeLevel( void );
+_Bool InitLevels( char *levels_list );
+extern	int16_t		LevelNum;
+extern	int16_t		NewLevelNum;
 
 #ifdef DEMO_SUPPORT
-extern	BOOL	PlayDemo;
+extern	_Bool	PlayDemo;
 extern	LONGLONG	GameElapsedTime;		// when the game started
 extern	LIST	DemoList;
 extern	float Demoframelag;
@@ -133,20 +133,20 @@ extern  MENUITEM	WatchTeamSelectionItem;
 extern int CameraStatus;
 extern	BYTE					OverallGameStatus;
 extern char *CurrentLevelsList;
-extern	BOOL AutoSelectConnection;
+extern	_Bool AutoSelectConnection;
 extern  MENUSTATE MenuState;
 extern  char TeamCurrentScore[MAX_TEAMS][64];
 #ifdef DEMO_SUPPORT
 extern	LONGLONG	DemoStartedTime;		// when the game started
 extern	LONGLONG	DemoEndedTime;		// when the game started
-extern	int32		DemoGameLoops;
+extern	int32_t		DemoGameLoops;
 #endif
 extern	int		GameType;
-extern	uint16		Seed1;
-extern	uint16		Seed2;
-extern	uint16		CopyOfSeed1;
-extern	uint16		CopyOfSeed2;
-extern	BOOL		RandomPickups;
+extern	u_int16_t		Seed1;
+extern	u_int16_t		Seed2;
+extern	u_int16_t		CopyOfSeed1;
+extern	u_int16_t		CopyOfSeed2;
+extern	_Bool		RandomPickups;
 
 /*
  * Globals to this module
@@ -157,9 +157,9 @@ int						TeamMembers[MAX_TEAMS];
 MENU  *				GetPlayerNumMenu;
 float	Bodge	= 1.0F;
 
-BOOL	Modem2Modem = FALSE;
+_Bool	Modem2Modem = false;
 
-uint16	RandomStartPosModify = 0;							
+u_int16_t	RandomStartPosModify = 0;							
 
 void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
@@ -171,67 +171,67 @@ void SetUpGameSubType( int type )
 	switch ( CTFSlider.value )
 	{
 	case CTF_MUST_CARRY:
-		NeedFlagAtHome			= TRUE;
-		OwnFlagTeleportsHome	= FALSE;
-		CanCarryOwnFlag			= TRUE;
+		NeedFlagAtHome			= true;
+		OwnFlagTeleportsHome	= false;
+		CanCarryOwnFlag			= true;
 		break;
 	case CTF_CAN_CARRY:
-		NeedFlagAtHome			= FALSE;
-		OwnFlagTeleportsHome	= FALSE;
-		CanCarryOwnFlag			= TRUE;
+		NeedFlagAtHome			= false;
+		OwnFlagTeleportsHome	= false;
+		CanCarryOwnFlag			= true;
 		break;
 	case CTF_ONE_TOUCH:
-		NeedFlagAtHome			= FALSE;
-		OwnFlagTeleportsHome	= TRUE;
-		CanCarryOwnFlag			= FALSE;
+		NeedFlagAtHome			= false;
+		OwnFlagTeleportsHome	= true;
+		CanCarryOwnFlag			= false;
 		break;
 	case CTF_NO_RETURN:
-		NeedFlagAtHome			= FALSE;
-		OwnFlagTeleportsHome	= FALSE;
-		CanCarryOwnFlag			= FALSE;
+		NeedFlagAtHome			= false;
+		OwnFlagTeleportsHome	= false;
+		CanCarryOwnFlag			= false;
 		break;
 	case CTF_STANDARD:
 	default:
-		NeedFlagAtHome			= TRUE;
-		OwnFlagTeleportsHome	= TRUE;
-		CanCarryOwnFlag			= FALSE;
+		NeedFlagAtHome			= true;
+		OwnFlagTeleportsHome	= true;
+		CanCarryOwnFlag			= false;
 	}
 }
 
 void SetUpGameType( int type ) 
 {
-	TeamGame = FALSE;
-	CTF = FALSE;
-	NeedFlagAtHome			= FALSE;
-	OwnFlagTeleportsHome	= FALSE;
-	CanCarryOwnFlag			= FALSE;
-	CaptureTheFlag = FALSE;
-	BountyHunt = FALSE;
+	TeamGame = false;
+	CTF = false;
+	NeedFlagAtHome			= false;
+	OwnFlagTeleportsHome	= false;
+	CanCarryOwnFlag			= false;
+	CaptureTheFlag = false;
+	BountyHunt = false;
 	
 	switch ( type )
 	{
 	case GAME_Normal:
 		break;
 	case GAME_Team:
-		TeamGame = TRUE;
+		TeamGame = true;
 		break;
 	case GAME_CTF:
-		CTF = TRUE;
-		TeamGame = TRUE;
+		CTF = true;
+		TeamGame = true;
 
 		SetUpGameSubType( CTFSlider.value );
 
 		break;
 	case GAME_FlagChase:
-		CaptureTheFlag = TRUE;
-		TeamGame = TRUE;
+		CaptureTheFlag = true;
+		TeamGame = true;
 		break;
 	case GAME_BountyHunt:
-		BountyHunt = TRUE;
+		BountyHunt = true;
 		break;
 	case GAME_TeamBountyHunt:
-		BountyHunt = TRUE;
-		TeamGame = TRUE;
+		BountyHunt = true;
+		TeamGame = true;
 		break;
 	}
 }
@@ -244,12 +244,12 @@ void SetUpGameType( int type )
 ===================================================================*/
 extern void SetGamePrefs( void );
 extern TEXT local_port_str;
-extern BOOL	PickupValid[ MAXPICKUPTYPES ];
-extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
+extern _Bool	PickupValid[ MAXPICKUPTYPES ];
+extern _Bool	MyPickupValid[ MAXPICKUPTYPES ];
 extern SLIDER MyPacketsSlider;
-extern int32 MyColPerspective;
-extern BOOL MyRandomPickups;
-extern BOOL MyUseShortPackets;
+extern int32_t MyColPerspective;
+extern _Bool MyRandomPickups;
+extern _Bool MyUseShortPackets;
 
 // these settings get over ridden when you join a game
 // so we need a separate copy of them to backup our settings
@@ -272,8 +272,8 @@ extern  BYTE          MyGameStatus;
 void StartAHostSession ( MENUITEM * Item )
 {
 	int i;
-	Uint32	ms = SDL_GetTicks();
-	uint32	Seed;
+	u_int32_t	ms = SDL_GetTicks();
+	u_int32_t	Seed;
 	network_return_t rv;
 
 	SetGamePrefs();
@@ -281,22 +281,22 @@ void StartAHostSession ( MENUITEM * Item )
 	copy_in_my_settings();
 
 	Seed = SDL_GetTicks();
-	Seed1 = (uint16) ( ( Seed >> 16 ) & 0xffff );
-	Seed2 = (uint16) ( Seed & 0xffff );
+	Seed1 = (u_int16_t) ( ( Seed >> 16 ) & 0xffff );
+	Seed2 = (u_int16_t) ( Seed & 0xffff );
 	CopyOfSeed1 = Seed1;
 	CopyOfSeed2 = Seed2;
 
 	
 #ifdef DEMO_SUPPORT
-	PlayDemo = FALSE;
+	PlayDemo = false;
 #endif
 
-	IsHost = TRUE;
+	IsHost = true;
 
-	TeamGame = FALSE;
-	CaptureTheFlag = FALSE;
-	BountyHunt = FALSE;
-	CTF = FALSE;
+	TeamGame = false;
+	CaptureTheFlag = false;
+	BountyHunt = false;
+	CTF = false;
 
 	SetUpGameType( GameType );
 
@@ -305,7 +305,7 @@ void StartAHostSession ( MENUITEM * Item )
 
 	MaxKills = MaxKillsSlider.value;
 
-	RandomStartPosModify = (uint16) ( ms * 71.42857143 );
+	RandomStartPosModify = (u_int16_t) ( ms * 71.42857143 );
 
 	local_port = atoi(local_port_str.text);
 	SetGamePrefs();
@@ -376,23 +376,23 @@ void StartAHostSession ( MENUITEM * Item )
 
 	if( TimeLimit.value )
 	{
-		CountDownOn = TRUE;
+		CountDownOn = true;
 	}
 	else
 	{
-		CountDownOn = FALSE;
+		CountDownOn = false;
 	}
 
 
 #ifdef DEMO_SUPPORT
 	if( RecordDemo )
 	{
-		uint32 mp_version = MULTIPLAYER_VERSION;
-		uint32 flags;
+		u_int32_t mp_version = MULTIPLAYER_VERSION;
+		u_int32_t flags;
 		time_t now_time;
 		struct tm *now;
 
-		RecordDemo = TRUE;
+		RecordDemo = true;
 		time( &now_time );
 		now = localtime( &now_time );
 #ifndef HOST_CHOOSES_DEMO_NAME
@@ -487,7 +487,7 @@ void GetPlayersInCurrentSession( MENUITEM *Item )
 		}
 
 	if (NumOfPlayersSlider.value != NumOfPlayersSlider.oldvalue)
-		NumOfPlayersSlider.redraw_req = TRUE;
+		NumOfPlayersSlider.redraw_req = true;
 }
 
 /*===================================================================
@@ -578,7 +578,7 @@ void InitTeamLists( MENU *Menu )
 	}
 
 	for ( i = 0; i < MAX_PLAYERS; i++ )
-		PlayerReady[ i ] = FALSE;
+		PlayerReady[ i ] = false;
 }
 
 void InitExistingGameJoin( MENU *Menu )
@@ -648,11 +648,11 @@ void CheckForMenuChange(int *dummy)
 void DistributeTeamsToLists(int *dummy)
 {
 	int team, player, num_players;
-	BOOL OkayToStart = TRUE;
-	int16 TeamScore[MAX_TEAMS];
+	_Bool OkayToStart = true;
+	int16_t TeamScore[MAX_TEAMS];
 
 	UpdateSessions( NULL );
-	memset(&TeamScore, 0, sizeof(int16) * MAX_TEAMS);
+	memset(&TeamScore, 0, sizeof(int16_t) * MAX_TEAMS);
 
 	for (team = 0; team < MAX_TEAMS; team++)
 	{
@@ -689,7 +689,7 @@ void DistributeTeamsToLists(int *dummy)
 						strcpy(&TeamList[team].item[TeamList[team].items++][0], &Names[player][0]);
 					}
 
-					OkayToStart = FALSE;
+					OkayToStart = false;
 				}else
 				{
 					strcpy(&TeamList[team].item[TeamList[team].items++][0], &Names[player][0]);

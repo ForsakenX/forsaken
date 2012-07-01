@@ -36,8 +36,8 @@
 #define SHIELD_CRITICAL_LEVEL ( 10.0F )
 #define HULL_CRITICAL_LEVEL ( 64.0F )
 
-#define	OVERRIDE_INVUL		( TRUE )
-#define	DONT_OVERRIDE_INVUL	( FALSE )
+#define	OVERRIDE_INVUL		( true )
+#define	DONT_OVERRIDE_INVUL	( false )
 /*
  * Structures...
  */
@@ -69,34 +69,34 @@ typedef struct _BIKEMOD
  * fn prototypes
  */
 
-BOOL SetUpShips();
-BOOL ProcessShips();
+_Bool SetUpShips();
+_Bool ProcessShips();
 void	InitShipsChangeLevel( MLOADHEADER * Mloadheader );
-BOOL	ENV( MXLOADHEADER * Mloadheader , MATRIX * Mat ,VECTOR * Pos);
-int16 DoDamage( BOOL OverrideInvul );
+_Bool	ENV( MXLOADHEADER * Mloadheader , MATRIX * Mat ,VECTOR * Pos);
+int16_t DoDamage( _Bool OverrideInvul );
 
-void SetBikeMods( uint16 Bike );
+void SetBikeMods( u_int16_t Bike );
 
 void AddKill( void );
 void InitMultiSfxHandle( void );
 
 // force ship to move
-void ForceExternal( uint16 ship, VECTOR *force );
-void ForceInternal( uint16 ship, VECTOR *force );
-void ForceExternalOneOff( uint16 ship, VECTOR *force );
-void ForceInternalOneOff( uint16 ship, VECTOR *force );
+void ForceExternal( u_int16_t ship, VECTOR *force );
+void ForceInternal( u_int16_t ship, VECTOR *force );
+void ForceExternalOneOff( u_int16_t ship, VECTOR *force );
+void ForceInternalOneOff( u_int16_t ship, VECTOR *force );
 
 void StartShipScreenShake( float Force );
 void StopShipScreenShake( void );
 
 // force ship to rotate
-void RotateExternal( uint16 ship, VECTOR *point, VECTOR *dir, float force );
-void RotateInternal( uint16 ship, float xrot, float yrot, float zrot );
+void RotateExternal( u_int16_t ship, VECTOR *point, VECTOR *dir, float force );
+void RotateInternal( u_int16_t ship, float xrot, float yrot, float zrot );
 
 
-void InitShipRandomPos( int16 i );
-void InitShipStartPos( int16 ship, int16 pos );
-BOOL GotoRoom( int16 i, char *roomname );
+void InitShipRandomPos( int16_t i );
+void InitShipStartPos( int16_t ship, int16_t pos );
+_Bool GotoRoom( int16_t i, char *roomname );
 
 void Process_Remote_Camera( void );
 //	Mode Functions...

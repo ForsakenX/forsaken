@@ -49,13 +49,13 @@ extern	VECTOR			SlideRight;
 extern	MODEL			Models[ MAXNUMOFMODELS ];
 extern	float			framelag;
 extern	MATRIX			MATRIX_Identity;
-extern	int16			LevelNum;
+extern	int16_t			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
 extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	BYTE			GameStatus[MAX_PLAYERS];
 extern	BYTE			WhoIAm;
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
-extern	uint16			IsGroupVisible[MAXGROUPS];
+extern	u_int16_t			IsGroupVisible[MAXGROUPS];
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
 extern	TRIGGERMOD	*	TrigMods;
 extern	int				NumOfTrigMods;
@@ -64,9 +64,9 @@ extern	MXALOADHEADER	MxaModelHeaders[MAXMODELHEADERS];
 extern	LINE			Lines[ MAXLINES ];
 extern	MLOADHEADER		Mloadheader;
 
-BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+_Bool GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					   VECTOR * BottomRight );
-BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+_Bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					    VECTOR * BottomRight );
 
 //#ifdef OPT_ON
@@ -76,52 +76,52 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 /*===================================================================
 	Global Variables
 ===================================================================*/
-int8 * CompObjPath = "data\\bgobjects\\";
+int8_t * CompObjPath = "data\\bgobjects\\";
 MODELNAME	*	ModNames = &ModelNames[ 0 ];
 
 /*===================================================================
 	Procedure	:	PreLoad Componented Object Data
-	Input		:	int8		*	Filename of .COB data
-				:	uint16		*	BaseModel
-				:	BOOL			Level Specific?
-	Output		:	BOOL			TRUE/FALSE
+	Input		:	int8_t		*	Filename of .COB data
+				:	u_int16_t		*	BaseModel
+				:	_Bool			Level Specific?
+	Output		:	_Bool			true/false
 ===================================================================*/
-BOOL PreLoadCompObj( int8 * path, uint16 * BaseModel, BOOL LevelSpecific )
+_Bool PreLoadCompObj( int8_t * path, u_int16_t * BaseModel, _Bool LevelSpecific )
 {
-	int16		i;
+	int16_t		i;
 	FILE	*	fp;
-	int16		Count;
-	int16		NumModels;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	int16_t		Count;
+	int16_t		NumModels;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 
 	fp = file_open( path, "rb" );
 
 	if( fp != NULL )
 	{
-		if( fread( &MagicNumber, sizeof( uint32 ), 1, fp ) != 1 )
+		if( fread( &MagicNumber, sizeof( u_int32_t ), 1, fp ) != 1 )
 		{
 			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
-			return( FALSE );
+			return( false );
 		}
 
-		if( fread( &VersionNumber, sizeof( uint32 ), 1, fp ) != 1 )
+		if( fread( &VersionNumber, sizeof( u_int32_t ), 1, fp ) != 1 )
 		{
 			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
-			return( FALSE );
+			return( false );
 		}
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != COB_VERSION_NUMBER  ) )
 		{
 			fclose( fp );
 			Msg( "PreLoadCompObj() Incompatible Componented Object (.COB) file %s", path );
-			return( FALSE );
+			return( false );
 		}
 
-		if( fread( &NumModels, sizeof( int16 ), 1, fp ) != 1 )
+		if( fread( &NumModels, sizeof( int16_t ), 1, fp ) != 1 )
 		{
 			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
-			return( FALSE );
+			return( false );
 		}
    	
 		if( ( (*BaseModel) + NumModels + 1 ) < MAXMODELHEADERS )
@@ -132,20 +132,20 @@ BOOL PreLoadCompObj( int8 * path, uint16 * BaseModel, BOOL LevelSpecific )
 		
 				do
 				{
-					if( fread( &ModNames[ (*BaseModel) + Count ].Name[ i ], sizeof( int8 ), 1, fp ) != 1 )
+					if( fread( &ModNames[ (*BaseModel) + Count ].Name[ i ], sizeof( int8_t ), 1, fp ) != 1 )
 					{
 						Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
-						return( FALSE );
+						return( false );
 					}
 					i++;
 				}
 				while( ModNames[ (*BaseModel) + Count ].Name[ ( i - 1 ) ] );
 
 				ModNames[ (*BaseModel) + Count ].LOD = 0;
-				ModNames[ (*BaseModel) + Count ].Panel = FALSE;
-				ModNames[ (*BaseModel) + Count ].DoIMorph = FALSE;
+				ModNames[ (*BaseModel) + Count ].Panel = false;
+				ModNames[ (*BaseModel) + Count ].DoIMorph = false;
 				ModNames[ (*BaseModel) + Count ].ModelIndex = (*BaseModel) + Count;
-				ModNames[ (*BaseModel) + Count ].StoreTriangles = FALSE;
+				ModNames[ (*BaseModel) + Count ].StoreTriangles = false;
 				ModNames[ (*BaseModel) + Count ].AllocateTpage = LOAD_TPAGES;
 				ModNames[ (*BaseModel) + Count ].LevelSpecific = LevelSpecific;
 				ModNames[ (*BaseModel) + Count ].LoadEnable = DO_LOAD;
@@ -153,10 +153,10 @@ BOOL PreLoadCompObj( int8 * path, uint16 * BaseModel, BOOL LevelSpecific )
  		
 			ModNames[ (*BaseModel) + NumModels ].Name[0] = 0;
 			ModNames[ (*BaseModel) + NumModels ].LOD = 0;
-			ModNames[ (*BaseModel) + NumModels ].Panel = FALSE;
-			ModNames[ (*BaseModel) + NumModels ].DoIMorph = FALSE;
+			ModNames[ (*BaseModel) + NumModels ].Panel = false;
+			ModNames[ (*BaseModel) + NumModels ].DoIMorph = false;
 			ModNames[ (*BaseModel) + NumModels ].ModelIndex = (*BaseModel) + NumModels;
-			ModNames[ (*BaseModel) + NumModels ].StoreTriangles = FALSE;
+			ModNames[ (*BaseModel) + NumModels ].StoreTriangles = false;
 			ModNames[ (*BaseModel) + NumModels ].AllocateTpage = LOAD_TPAGES;
 			ModNames[ (*BaseModel) + NumModels ].LevelSpecific = LevelSpecific;
 			ModNames[ (*BaseModel) + NumModels ].LoadEnable = DO_LOAD;
@@ -167,45 +167,45 @@ BOOL PreLoadCompObj( int8 * path, uint16 * BaseModel, BOOL LevelSpecific )
 		{
 			fclose( fp );
 	        Msg( "PreLoadCompObj() Too many models in %s\n", path );
-			return( FALSE );
+			return( false );
 		}
  	}
 	else
 	{
         Msg( "PreLoadCompObj() Unable to open %s\n", path );
-		return( FALSE );
+		return( false );
 	}
 
  	fclose( fp );
 
-	return( TRUE );
+	return( true );
 }
 
 /*===================================================================
 	Procedure	:	Load Componented Object Data
-	Input		:	int8		*	Filename of .COB data ( Including Path )
+	Input		:	int8_t		*	Filename of .COB data ( Including Path )
 				:	VECTOR		*	Pos
 				:	VECTOR		*	Dir
-				:	uint16			Group
+				:	u_int16_t			Group
 				:	float		*	Overall Anim Time
 				:	float		*	Mid Time
-				:	uint16		*	BaseModel
-				:	BOOL			Level Specific?
-				:	uint16			OwnerType
-				:	uint16			OwnerID
+				:	u_int16_t		*	BaseModel
+				:	_Bool			Level Specific?
+				:	u_int16_t			OwnerType
+				:	u_int16_t			OwnerID
 	Output		:	COMP_OBJ	*	Components
 ===================================================================*/
-COMP_OBJ * LoadCompObj( int8 * path, VECTOR * Pos, VECTOR * Dir, uint16 Group,
-					    float * OverallTime, float * MidTime, uint16 * BaseModel,
-						uint16 OwnerType, uint16 OwnerID )
+COMP_OBJ * LoadCompObj( int8_t * path, VECTOR * Pos, VECTOR * Dir, u_int16_t Group,
+					    float * OverallTime, float * MidTime, u_int16_t * BaseModel,
+						u_int16_t OwnerType, u_int16_t OwnerID )
 {
 	FILE		*	fp;
-	int16			Count;
-	int16			NumModels;
+	int16_t			Count;
+	int16_t			NumModels;
 	COMP_OBJ	*	CompsPtr;
 	char			TempChar;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
 
 	*OverallTime = 0.0F;
 	*MidTime = 0.0F;
@@ -214,8 +214,8 @@ COMP_OBJ * LoadCompObj( int8 * path, VECTOR * Pos, VECTOR * Dir, uint16 Group,
 
 	if( fp != NULL )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != COB_VERSION_NUMBER  ) )
 		{
@@ -228,13 +228,13 @@ COMP_OBJ * LoadCompObj( int8 * path, VECTOR * Pos, VECTOR * Dir, uint16 Group,
 
 		if( CompsPtr )
 		{
-			fread( &NumModels, sizeof( int16 ), 1, fp );
+			fread( &NumModels, sizeof( int16_t ), 1, fp );
 		
 			for( Count = 0; Count < NumModels; Count++ )
 			{
 				do
 				{
-					fread( &TempChar, sizeof( int8 ), 1, fp );		// Skip model filenames
+					fread( &TempChar, sizeof( int8_t ), 1, fp );		// Skip model filenames
 				}
 				while( TempChar );
 			}
@@ -275,44 +275,44 @@ COMP_OBJ * LoadCompObj( int8 * path, VECTOR * Pos, VECTOR * Dir, uint16 Group,
 	Procedure	:	Load and allocate background object children
 	Input		:	FILE		*	File Ptr
 				:	COMP_OBJ	*	Components Address
-				:	int16			Number of Components
+				:	int16_t			Number of Components
 				:	VECTOR		*	Pos
 				:	VECTOR		*	Direction
-				:	uint16			Group
+				:	u_int16_t			Group
 				:	float		*	Overall Time ( TBFI )
 				:	float		*	Mid Time ( TBFI )
-				:	uint16		*	BaseModel ( TBU )
-				:	uint16			OwnerType
-				:	uint16			OwnerID
+				:	u_int16_t		*	BaseModel ( TBU )
+				:	u_int16_t			OwnerType
+				:	u_int16_t			OwnerID
 	Output		:	FILE		*	Updated File Pointer
 ===================================================================*/
-FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
-						    VECTOR * Pos, VECTOR * Dir, uint16 Group,
-							float * Time, float * MidTime, uint16 * BaseModel,
-							uint16 OwnerType, uint16 OwnerID )
+FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16_t NumComp,
+						    VECTOR * Pos, VECTOR * Dir, u_int16_t Group,
+							float * Time, float * MidTime, u_int16_t * BaseModel,
+							u_int16_t OwnerType, u_int16_t OwnerID )
 {
-	int16				ID;
-	int16				Count;
-	int16				CompCount;
-	int16				NumTrans;
+	int16_t				ID;
+	int16_t				Count;
+	int16_t				CompCount;
+	int16_t				NumTrans;
 	float				TransStart;
 	float				TransDuration;
-	int16				NumMorphs;
+	int16_t				NumMorphs;
 	QUAT				TempQuat;
-	uint16				ModelIndex;
+	u_int16_t				ModelIndex;
 	COMP_OBJ		*	CompsPtr;
 	ANI_TRANS		*	TransPtr;
 	ANI_TRANSLATE	*	AniTransPtr;
 	ANI_ROTATE		*	AniRotPtr;
 	ANI_MORPH		*	AniMorphPtr;
 	ANI_PROPERTY	*	AniPropPtr;
-	int16				NumColZones;
-	int16				ColZoneType;
-	int16				ColZoneSensitive;
+	int16_t				NumColZones;
+	int16_t				ColZoneType;
+	int16_t				ColZoneSensitive;
 	float				ColZoneDamage;
-	int16				Zone;
-	int16				Side;
-	int16				NumSides;
+	int16_t				Zone;
+	int16_t				Side;
+	int16_t				NumSides;
 	ANI_ZONES		*	ZonesPtr;
 	ANI_ZONE_SPHERE *	AniZoneSpherePtr;
 	ANI_ZONE_BOX	*	AniZoneBoxPtr;
@@ -320,12 +320,12 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 	VECTOR				BoxCenter;
 	VECTOR				BoxHalfSize;
 	ZONESIDE		*	SidesPtr;
-	int16				i;
-	int8				SFXFilename[ 256 ];
+	int16_t				i;
+	int8_t				SFXFilename[ 256 ];
 
 	for( CompCount = 0; CompCount < NumComp; CompCount++ )
 	{
-		fread( &ID, sizeof( int16 ), 1, fp );
+		fread( &ID, sizeof( int16_t ), 1, fp );
 
 		Comp->Flags = COMPFLAG_Enable;
 		Comp->ID = ID;
@@ -347,7 +347,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 		Comp->RotAngle = 0.0F;
 		Comp->LocalMatrix = MATRIX_Identity;
 
-		Comp->UserControl = FALSE;
+		Comp->UserControl = false;
 		Comp->UserAxis.x = 0.0F;
 		Comp->UserAxis.y = 1.0F;
 		Comp->UserAxis.z = 0.0F;
@@ -383,7 +383,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 
 			Comp->ModelIndex = ModelIndex;
 
-			if( ModelIndex != (uint16) -1 )
+			if( ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ ModelIndex ].ModelNum = ( (*BaseModel) + ID );
 				Models[ ModelIndex ].Func = MODFUNC_Nothing;
@@ -409,7 +409,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 
 				Models[ ModelIndex ].Type = MODTYPE_Field;
 				Models[ ModelIndex ].Flags = MODFLAG_Nothing;
-				Models[ ModelIndex ].Visible = TRUE;
+				Models[ ModelIndex ].Visible = true;
 				Models[ ModelIndex ].Pos.x = ( Pos->x + Comp->OffPos.x );
 				Models[ ModelIndex ].Pos.y = ( Pos->y + Comp->OffPos.y );
 				Models[ ModelIndex ].Pos.z = ( Pos->z + Comp->OffPos.z );
@@ -440,10 +440,10 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 		}
 		else
 		{
-			Comp->ModelIndex = (uint16) -1;
+			Comp->ModelIndex = (u_int16_t) -1;
 		}
 	
-		fread( &NumTrans, sizeof( int16 ), 1, fp );
+		fread( &NumTrans, sizeof( int16_t ), 1, fp );
 		
 		NumMorphs = 0;
 
@@ -459,7 +459,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 
 				for( Count = 0; Count < NumTrans; Count++ )
 				{
-					fread( &TransPtr[ Count ].Type, sizeof( int16 ), 1, fp );
+					fread( &TransPtr[ Count ].Type, sizeof( int16_t ), 1, fp );
 					fread( &TransStart, sizeof( float ), 1, fp );
 					fread( &TransDuration, sizeof( float ), 1, fp );
 		
@@ -478,7 +478,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 								fread( &AniTransPtr->Trans.x, sizeof( float ), 1, fp );
 								fread( &AniTransPtr->Trans.y, sizeof( float ), 1, fp );
 								fread( &AniTransPtr->Trans.z, sizeof( float ), 1, fp );
-								fread( &AniTransPtr->Local, sizeof( int16 ), 1, fp );
+								fread( &AniTransPtr->Local, sizeof( int16_t ), 1, fp );
 #ifdef DEBUG_COMP
 								DebugPrintf("	TRANSLATION	:%f:%f: %f, %f, %f\n", TransStart, ( TransStart + TransDuration ),
 												AniTransPtr->Trans.x, AniTransPtr->Trans.y, AniTransPtr->Trans.z ); 
@@ -504,7 +504,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 								fread( &AniRotPtr->Origin.y, sizeof( float ), 1, fp );
 								fread( &AniRotPtr->Origin.z, sizeof( float ), 1, fp );
 								fread( &AniRotPtr->Angle, sizeof( float ), 1, fp );
-								fread( &AniRotPtr->Local, sizeof( int16 ), 1, fp );
+								fread( &AniRotPtr->Local, sizeof( int16_t ), 1, fp );
 								AniRotPtr->Angle = D2R( AniRotPtr->Angle );
 
 								AniRotPtr->Origin.x = -AniRotPtr->Origin.x;
@@ -549,18 +549,18 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 							if( TransPtr[ Count ].Data != NULL )
 							{
 								AniPropPtr = (ANI_PROPERTY *) TransPtr[ Count ].Data;
-								fread( &AniPropPtr->Type, sizeof( int16 ), 1, fp );
+								fread( &AniPropPtr->Type, sizeof( int16_t ), 1, fp );
 
 								switch( AniPropPtr->Type )
 								{
 									case PROPTYPE_State:
-										fread( &AniPropPtr->Value, sizeof( int16 ), 1, fp );
+										fread( &AniPropPtr->Value, sizeof( int16_t ), 1, fp );
 										break;
 									case PROPTYPE_SFX:
 										i = 0;
 										do
 										{
-											fread( &SFXFilename[ i ], sizeof( int8 ), 1, fp );
+											fread( &SFXFilename[ i ], sizeof( int8_t ), 1, fp );
 											i++;
 										}
 										while( SFXFilename[ ( i - 1 ) ] != 0 );
@@ -569,12 +569,12 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 										break;
 
 									case PROPTYPE_Unknown:
-										fread( &AniPropPtr->Value, sizeof( int16 ), 1, fp );
+										fread( &AniPropPtr->Value, sizeof( int16_t ), 1, fp );
 										break;
 
 									default:
 										Msg( "Unknown AnimProperty Type %hd\n", AniPropPtr->Type );
-										fread( &AniPropPtr->Value, sizeof( int16 ), 1, fp );
+										fread( &AniPropPtr->Value, sizeof( int16_t ), 1, fp );
 										break;
 								}
 
@@ -638,7 +638,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 			Comp->Trans = NULL;
 		}
 		
-		fread( &NumColZones, sizeof( int16 ), 1, fp );
+		fread( &NumColZones, sizeof( int16_t ), 1, fp );
 
 		if( NumColZones )
 		{
@@ -648,8 +648,8 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 			{
 				for( Zone = 0; Zone < NumColZones; Zone++ )
 				{
-					fread( &ColZoneType, sizeof( int16 ), 1, fp );			// 0-sphere 1-Box 2-Convex Shape
-					fread( &ColZoneSensitive, sizeof( int16 ), 1, fp );		// 0-Do anything 1-Activate door
+					fread( &ColZoneType, sizeof( int16_t ), 1, fp );			// 0-sphere 1-Box 2-Convex Shape
+					fread( &ColZoneSensitive, sizeof( int16_t ), 1, fp );		// 0-Do anything 1-Activate door
 					fread( &ColZoneDamage, sizeof( float ), 1, fp );		// Damage ??
 					ColZoneDamage /= ANIM_SECOND;
 
@@ -692,7 +692,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 								AniZoneBoxPtr->Center = BoxCenter;
 								AniZoneBoxPtr->HalfSize = BoxHalfSize;
 	
-								fread( &NumSides, sizeof( int16 ), 1, fp );
+								fread( &NumSides, sizeof( int16_t ), 1, fp );
 	
 								AniZoneBoxPtr->NumSides = NumSides;
 								AniZoneBoxPtr->Sides = malloc( sizeof( ZONESIDE ) * NumSides );
@@ -707,7 +707,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 										fread( &SidesPtr->Normal.y, sizeof( float ), 1, fp );
 										fread( &SidesPtr->Normal.z, sizeof( float ), 1, fp );
 										fread( &SidesPtr->PlaneOffset, sizeof( float ), 1, fp );
-										fread( &SidesPtr->Sensitive, sizeof( int16 ), 1, fp );
+										fread( &SidesPtr->Sensitive, sizeof( int16_t ), 1, fp );
 										fread( &SidesPtr->Damage, sizeof( float ), 1, fp );
 										SidesPtr->Damage /= ANIM_SECOND;
 										SidesPtr++;
@@ -735,7 +735,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 								AniZonePolyPtr->Center = BoxCenter;
 								AniZonePolyPtr->HalfSize = BoxHalfSize;
 	
-								fread( &NumSides, sizeof( int16 ), 1, fp );
+								fread( &NumSides, sizeof( int16_t ), 1, fp );
 	
 								AniZonePolyPtr->NumSides = NumSides;
 								AniZonePolyPtr->Sides = malloc( sizeof( ZONESIDE ) * NumSides );
@@ -750,7 +750,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 										fread( &SidesPtr->Normal.y, sizeof( float ), 1, fp );
 										fread( &SidesPtr->Normal.z, sizeof( float ), 1, fp );
 										fread( &SidesPtr->PlaneOffset, sizeof( float ), 1, fp );
-										fread( &SidesPtr->Sensitive, sizeof( int16 ), 1, fp );
+										fread( &SidesPtr->Sensitive, sizeof( int16_t ), 1, fp );
 										fread( &SidesPtr->Damage, sizeof( float ), 1, fp );
 										SidesPtr->Damage /= ANIM_SECOND;
 										SidesPtr++;
@@ -786,7 +786,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 			Comp->ColZones = NULL;
 		}
 
-		fread( &Comp->NumChildren, sizeof( int16 ), 1, fp );
+		fread( &Comp->NumChildren, sizeof( int16_t ), 1, fp );
 	
 		if( Comp->NumChildren )
 		{
@@ -822,14 +822,14 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 /*===================================================================
 	Procedure	:	Free components of object
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	Nothing
 ===================================================================*/
-void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
+void FreeCompObjChildren( COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16			Count;
-	int16			Trans;
-	int16			ColZone;
+	int16_t			Count;
+	int16_t			Trans;
+	int16_t			ColZone;
 	ANI_ZONES		*	ZonesPtr;
 	ANI_ZONE_BOX	*	AniZoneBoxPtr;
 	ANI_ZONE_POLYGONAL * AniZonePolyPtr;
@@ -902,10 +902,10 @@ void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 				Children->NumChildren = 0;
 			}
 
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				KillUsedModel( Children->ModelIndex );
-				Children->ModelIndex = (uint16) -1;
+				Children->ModelIndex = (u_int16_t) -1;
 			}
 
 			Children++;
@@ -916,18 +916,18 @@ void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 /*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Position
 				:	float			Time
-				:	uint16			Group
+				:	u_int16_t			Group
 				:	VECTOR		*	Center
 	Output		:	Nothing
 ===================================================================*/
-void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix, VECTOR * ParentPos, float Time, uint16 Group, VECTOR * Center )
+void UpdateCompObjChildren( COMP_OBJ * Children, int16_t NumChildren, MATRIX * ParentMatrix, VECTOR * ParentPos, float Time, u_int16_t Group, VECTOR * Center )
 {
-	int16				Count;
-	int16				Trans;
+	int16_t				Count;
+	int16_t				Trans;
 	VECTOR				NewPos;
 	MATRIX				RotMatrix;
 	ANI_TRANSLATE	*	TransData;
@@ -961,7 +961,7 @@ void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * Par
 			Children->InterpFrame = 0;
 			Children->InterpTime = 0.0F;
 
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags &= ~MODFLAG_SpotFXDisabled;
 			}
@@ -1063,7 +1063,7 @@ void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * Par
 											switch( PropData->Value )
 											{
 												case PROPSTATE_Destroy:
-													if( Children->ModelIndex != (uint16) -1 )
+													if( Children->ModelIndex != (u_int16_t) -1 )
 													{
 														ApplyMatrix( &Models[ Children->ModelIndex ].Mat,
 															         &ModelHeaders[ Models[ Children->ModelIndex ].ModelNum ].Center, &TempPos );
@@ -1077,14 +1077,14 @@ void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * Par
 
 														KillUsedModel( Children->ModelIndex );
 														Children->Flags &= ~COMPFLAG_Enable;
-														Children->ModelIndex = (uint16) -1;
+														Children->ModelIndex = (u_int16_t) -1;
 													}
 													break;
 
 												case PROPSTATE_DisableSpotFX:
 													if( Scale < 1.0F )
 													{
-														if( Children->ModelIndex != (uint16) -1 )
+														if( Children->ModelIndex != (u_int16_t) -1 )
 														{
 															Models[ Children->ModelIndex ].Flags |= MODFLAG_SpotFXDisabled;
 														}
@@ -1133,7 +1133,7 @@ void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * Par
 			MatrixTranspose( &Children->DisplayMatrix, &Children->InvDisplayMatrix );
 			Children->DisplayPos = NewPos;
 
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Frame = Children->Frame;
 				Models[ Children->ModelIndex ].InterpFrame = Children->InterpFrame;
@@ -1158,12 +1158,12 @@ void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * Par
 /*===================================================================
 	Procedure	:	Undo Anim of CompObject and children
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	Nothing
 ===================================================================*/
-void UndoCompObjAnim( COMP_OBJ * Children, int16 NumChildren )
+void UndoCompObjAnim( COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
@@ -1190,14 +1190,14 @@ void UndoCompObjAnim( COMP_OBJ * Children, int16 NumChildren )
 
 /*===================================================================
 	Procedure	:	Get Component Address
-	Input		:	int16			ID
-				:	int16			Number of Children
+	Input		:	int16_t			ID
+				:	int16_t			Number of Children
 				:	COMP_OBJ	*	Start of Componented Object
 	Output		:	COMP_OBJ	*	Component
 ===================================================================*/
-COMP_OBJ * GetCompObjAddress( int16 ID, int16 NumChildren, COMP_OBJ * Children )
+COMP_OBJ * GetCompObjAddress( int16_t ID, int16_t NumChildren, COMP_OBJ * Children )
 {
-	int16			Count;
+	int16_t			Count;
 	COMP_OBJ	*	CompObj;
 
 	if( Children )
@@ -1221,11 +1221,11 @@ COMP_OBJ * GetCompObjAddress( int16 ID, int16 NumChildren, COMP_OBJ * Children )
 /*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Component
-	Output		:	BOOL			True/False
+	Output		:	_Bool			True/False
 ===================================================================*/
-BOOL GetCompObjAxis( COMP_OBJ * Comp )
+_Bool GetCompObjAxis( COMP_OBJ * Comp )
 {
-	int16				Trans;
+	int16_t				Trans;
 	ANI_ROTATE		*	RotData;
 
 	if( Comp->NumTrans )
@@ -1242,7 +1242,7 @@ BOOL GetCompObjAxis( COMP_OBJ * Comp )
 
 					Comp->UserAxisPoint = RotData->Origin;
 					Comp->UserAxis = RotData->Axis;
-					return( TRUE );
+					return( true );
 					break;
 			
 				case TRANS_MORPH:
@@ -1254,25 +1254,25 @@ BOOL GetCompObjAxis( COMP_OBJ * Comp )
 		}
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Enable Component Object models
 	Input		:	COMP_OBJ	*	Start of Componented Object
-				:	int16			Number of Children
-				:	BOOL			True/False ( Visible / Invisible )
+				:	int16_t			Number of Children
+				:	_Bool			True/False ( Visible / Invisible )
 	Output		:	Nothing
 ===================================================================*/
-void SetCompObjModelsState( COMP_OBJ * Children, int16 NumChildren, BOOL Visible )
+void SetCompObjModelsState( COMP_OBJ * Children, int16_t NumChildren, _Bool Visible )
 {
-	int16			Count;
+	int16_t			Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Visible = Visible;
 			}
@@ -1290,16 +1290,16 @@ void SetCompObjModelsState( COMP_OBJ * Children, int16 NumChildren, BOOL Visible
 /*===================================================================
 	Procedure	:	Display components collision zones
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
-				:	uint16			Group
+				:	int16_t			NumChildren
+				:	u_int16_t			Group
 	Output		:	Nothing
 ===================================================================*/
-void ShowCompObjColZones( COMP_OBJ * Children, int16 NumChildren, uint16 Group )
+void ShowCompObjColZones( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Group )
 {
-	int16					Count;
-	int16					Zone;
-	int16					NumSides;
-	int16					Side;
+	int16_t					Count;
+	int16_t					Zone;
+	int16_t					NumSides;
+	int16_t					Side;
 	ZONESIDE			*	Sides;
 	ANI_ZONES			*	ZonesPtr;
 	ANI_ZONE_SPHERE		*	AniZoneSpherePtr;
@@ -1397,18 +1397,18 @@ void ShowCompObjColZones( COMP_OBJ * Children, int16 NumChildren, uint16 Group )
 	Input		:		VECTOR	*	StartPos
 				:		VECTOR	*	EndPos
 				:		ZONESIDE *	Sides
-				:		int16		NumSides
+				:		int16_t		NumSides
 				:		VECTOR	*	Intersection Point ( TBFI )
 				:		ZONESIDE **	Intersection Side ( TBFI )
 				:		float		Collision Radius
 	Output		:		void
 ===================================================================*/
-BOOL RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16 StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius )
+_Bool RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16_t StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius )
 {
 	float		d1, d2;
 	float		DistToPlane;
 	ZONESIDE *	Sides;
-	int16		NumSides;
+	int16_t		NumSides;
 	VECTOR		TempInt;
 
 	Sides = StartSide;
@@ -1419,7 +1419,7 @@ BOOL RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int
 		d1 = DotProduct( StartPos, &Sides->Normal ) + ( Sides->PlaneOffset - Radius );
 		d2 = DotProduct( EndPos, &Sides->Normal ) + ( Sides->PlaneOffset - Radius );
 
-		if( ( d1 >= 0.0F ) && ( d2 >= 0.0F ) ) return( FALSE );
+		if( ( d1 >= 0.0F ) && ( d2 >= 0.0F ) ) return( false );
 		if( ( d1 > 0.0F ) && ( d2 < 0.0F ) )
 		{
 			DistToPlane = ( d1 / ( d1 - d2 ) );
@@ -1431,24 +1431,24 @@ BOOL RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int
 			{
 				*IntSide = Sides;
 				*IntPoint = TempInt;
-				return( TRUE );
+				return( true );
 			}
 		}
 
 		Sides++;
 	}
 
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
  	Procedure	:		Is point inside convex shape?
 	Input		:		VECTOR	*	Pos
 				:		ZONESIDE *	Sides
-				:		int16		NumSides
-	Output		:		BOOL		TRUE/FALSE
+				:		int16_t		NumSides
+	Output		:		_Bool		true/false
 ===================================================================*/
-BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, int16 Side )
+_Bool PointInside( VECTOR * Pos, ZONESIDE * Sides, int16_t NumSides, float Radius, int16_t Side )
 {
 	float		d1;
 
@@ -1457,12 +1457,12 @@ BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, 
 		if( NumSides != Side )
 		{
 			d1 = DotProduct( Pos, &Sides->Normal ) + ( Sides->PlaneOffset - Radius );
-			if( d1 > 0.0F ) return FALSE;
+			if( d1 > 0.0F ) return false;
 		}
 		Sides++;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -1470,14 +1470,14 @@ BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, 
 	Input		:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Pos
 				:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	float			OverallTime
 				:	VECTOR		*	Top Left (TBFI)
 				:	VECTOR		*	Botom Right (TBFI)
 	Output		:	Nothing
 ===================================================================*/
 void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
-						   COMP_OBJ * Children, int16 NumChildren, float OverallTime, VECTOR * TopLeft,
+						   COMP_OBJ * Children, int16_t NumChildren, float OverallTime, VECTOR * TopLeft,
 						   VECTOR * BottomRight )
 {
 	float	Time;
@@ -1509,7 +1509,7 @@ void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 /*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Position
 				:	float			Time
@@ -1517,11 +1517,11 @@ void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 				:	VECTOR		*	BottomRight
 	Output		:	Nothing
 ===================================================================*/
-void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix,
+void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16_t NumChildren, MATRIX * ParentMatrix,
 								    VECTOR * ParentPos, float Time, VECTOR * TopLeft, VECTOR * BottomRight )
 {
-	int16				Count;
-	int16				Trans;
+	int16_t				Count;
+	int16_t				Trans;
 	VECTOR				NewPos;
 	MATRIX				RotMatrix;
 	ANI_TRANSLATE	*	TransData;
@@ -1632,7 +1632,7 @@ void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATR
 			MatrixMultiply( &Children->DisplayMatrix, &Children->InitMatrix, &DisplayMatrix );
 			MatrixTranspose( &DisplayMatrix, &InvDisplayMatrix );
 
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				if( ModNames[ Models[ Children->ModelIndex ].ModelNum ].DoIMorph )
 				{
@@ -1661,21 +1661,21 @@ void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATR
 /*===================================================================
 	Procedure	:	Update components model colours
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	int				Red
 				:	int				Green
 				:	int				Blue
 	Output		:	Nothing
 ===================================================================*/
-void UpdateCompObjColours( COMP_OBJ * Children, int16 NumChildren, int Red, int Green, int Blue )
+void UpdateCompObjColours( COMP_OBJ * Children, int16_t NumChildren, int Red, int Green, int Blue )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags |= MODFLAG_AmbientLight;
 				Models[ Children->ModelIndex ].Red = Red;
@@ -1696,19 +1696,19 @@ void UpdateCompObjColours( COMP_OBJ * Children, int16 NumChildren, int Red, int 
 /*===================================================================
 	Procedure	:	Update components model Flags
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
-				:	uint16			Flags
+				:	int16_t			NumChildren
+				:	u_int16_t			Flags
 	Output		:	Nothing
 ===================================================================*/
-void UpdateCompObjFlags( COMP_OBJ * Children, int16 NumChildren, uint16 Flags )
+void UpdateCompObjFlags( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Flags )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags &= MODFLAG_SpotFXDisabled;
 				Models[ Children->ModelIndex ].Flags |= Flags;
@@ -1727,21 +1727,21 @@ void UpdateCompObjFlags( COMP_OBJ * Children, int16 NumChildren, uint16 Flags )
 /*===================================================================
 	Procedure	:	Update components model clip groups
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
-				:	uint16			Clip Group
+				:	int16_t			NumChildren
+				:	u_int16_t			Clip Group
 	Output		:	Nothing
 ===================================================================*/
-void UpdateCompObjClipGroup( COMP_OBJ * Children, int16 NumChildren, uint16 ClipGroup )
+void UpdateCompObjClipGroup( COMP_OBJ * Children, int16_t NumChildren, u_int16_t ClipGroup )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
-				if( ClipGroup != (uint16) -1 )
+				if( ClipGroup != (u_int16_t) -1 )
 				{
 					Models[ Children->ModelIndex ].Flags |= MODFLAG_UseClipGroup;
 					Models[ Children->ModelIndex ].ClipGroup = ClipGroup;
@@ -1766,19 +1766,19 @@ void UpdateCompObjClipGroup( COMP_OBJ * Children, int16 NumChildren, uint16 Clip
 /*===================================================================
 	Procedure	:	Set components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	float			Radius
 	Output		:	Nothing
 ===================================================================*/
-void SetCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren, float Radius )
+void SetCompObjRealLighting( COMP_OBJ * Children, int16_t NumChildren, float Radius )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags |= MODFLAG_RealLight;
 				Models[ Children->ModelIndex ].Radius = Radius;
@@ -1797,18 +1797,18 @@ void SetCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren, float Radiu
 /*===================================================================
 	Procedure	:	Clear components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	Nothing
 ===================================================================*/
-void ClearCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren )
+void ClearCompObjRealLighting( COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags &= ~MODFLAG_RealLight;
 			}
@@ -1849,17 +1849,17 @@ void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight )
 /*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Position
 				:	float			Time
-				:	uint16			Group
+				:	u_int16_t			Group
 	Output		:	Nothing
 ===================================================================*/
-BOOL AmIInvulnerable( COMP_OBJ * Children, int16 NumChildren, float Time )
+_Bool AmIInvulnerable( COMP_OBJ * Children, int16_t NumChildren, float Time )
 {
-	int16				Count;
-	int16				Trans;
+	int16_t				Count;
+	int16_t				Trans;
 	ANI_PROPERTY	*	PropData;
 	float				Start;
 	float				Duration;
@@ -1902,7 +1902,7 @@ BOOL AmIInvulnerable( COMP_OBJ * Children, int16 NumChildren, float Time )
 												break;
 
 											case PROPSTATE_Invulnerable:
-												return( TRUE );
+												return( true );
 												break;
 										}
 										break;
@@ -1923,33 +1923,33 @@ BOOL AmIInvulnerable( COMP_OBJ * Children, int16 NumChildren, float Time )
 			{
 				if( AmIInvulnerable( Children->Children, Children->NumChildren, Time ) )
 				{
-					return( TRUE );
+					return( true );
 				}
 			}
 
 			Children++;
 		}
 	}
-	return( FALSE );
+	return( false );
 }
 
 /*===================================================================
 	Procedure	:	Save CompObj + Children
 	Input		:	FILE		*	FilePtr
 				:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	FILE		*	Updated FilePtr
 ===================================================================*/
-FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
+FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			fwrite( &Children->Flags, sizeof( int16 ), 1, fp );
-			fwrite( &Children->ID, sizeof( int16 ), 1, fp );
+			fwrite( &Children->Flags, sizeof( int16_t ), 1, fp );
+			fwrite( &Children->ID, sizeof( int16_t ), 1, fp );
 			fwrite( &Children->DisplayPos, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->OffPos, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->Dir, sizeof( VECTOR ), 1, fp );
@@ -1961,8 +1961,8 @@ FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 			fwrite( &Children->LocalMatrix, sizeof( MATRIX ), 1, fp );
 			fwrite( &Children->DisplayMatrix, sizeof( MATRIX ), 1, fp );
 			fwrite( &Children->InvDisplayMatrix, sizeof( MATRIX ), 1, fp );
-			fwrite( &Children->Frame, sizeof( int16 ), 1, fp );
-			fwrite( &Children->InterpFrame, sizeof( int16 ), 1, fp );
+			fwrite( &Children->Frame, sizeof( int16_t ), 1, fp );
+			fwrite( &Children->InterpFrame, sizeof( int16_t ), 1, fp );
 			fwrite( &Children->InterpTime, sizeof( float ), 1, fp );
 			fwrite( &Children->OldOldTime, sizeof( float ), 1, fp );
 			fwrite( &Children->OldOldDisplayPos, sizeof( VECTOR ), 1, fp );
@@ -1972,11 +1972,11 @@ FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 			fwrite( &Children->OldDisplayPos, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->OldDisplayMatrix, sizeof( MATRIX ), 1, fp );
 			fwrite( &Children->OldInvDisplayMatrix, sizeof( MATRIX ), 1, fp );
-			fwrite( &Children->UserControl, sizeof( BOOL ), 1, fp );
+			fwrite( &Children->UserControl, sizeof( _Bool ), 1, fp );
 			fwrite( &Children->UserAxis, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->UserAxisPoint, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->UserAngle, sizeof( float ), 1, fp );
-			fwrite( &Children->ModelIndex, sizeof( uint16 ), 1, fp );
+			fwrite( &Children->ModelIndex, sizeof( u_int16_t ), 1, fp );
 
 			if( Children->NumChildren )
 			{
@@ -1993,19 +1993,19 @@ FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 	Procedure	:	Load CompObj + Children
 	Input		:	FILE		*	FilePtr
 				:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	FILE		*	Updated FilePtr
 ===================================================================*/
-FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
+FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			fread( &Children->Flags, sizeof( int16 ), 1, fp );
-			fread( &Children->ID, sizeof( int16 ), 1, fp );
+			fread( &Children->Flags, sizeof( int16_t ), 1, fp );
+			fread( &Children->ID, sizeof( int16_t ), 1, fp );
 			fread( &Children->DisplayPos, sizeof( VECTOR ), 1, fp );
 			fread( &Children->OffPos, sizeof( VECTOR ), 1, fp );
 			fread( &Children->Dir, sizeof( VECTOR ), 1, fp );
@@ -2017,8 +2017,8 @@ FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 			fread( &Children->LocalMatrix, sizeof( MATRIX ), 1, fp );
 			fread( &Children->DisplayMatrix, sizeof( MATRIX ), 1, fp );
 			fread( &Children->InvDisplayMatrix, sizeof( MATRIX ), 1, fp );
-			fread( &Children->Frame, sizeof( int16 ), 1, fp );
-			fread( &Children->InterpFrame, sizeof( int16 ), 1, fp );
+			fread( &Children->Frame, sizeof( int16_t ), 1, fp );
+			fread( &Children->InterpFrame, sizeof( int16_t ), 1, fp );
 			fread( &Children->InterpTime, sizeof( float ), 1, fp );
 			fread( &Children->OldOldTime, sizeof( float ), 1, fp );
 			fread( &Children->OldOldDisplayPos, sizeof( VECTOR ), 1, fp );
@@ -2028,11 +2028,11 @@ FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 			fread( &Children->OldDisplayPos, sizeof( VECTOR ), 1, fp );
 			fread( &Children->OldDisplayMatrix, sizeof( MATRIX ), 1, fp );
 			fread( &Children->OldInvDisplayMatrix, sizeof( MATRIX ), 1, fp );
-			fread( &Children->UserControl, sizeof( BOOL ), 1, fp );
+			fread( &Children->UserControl, sizeof( _Bool ), 1, fp );
 			fread( &Children->UserAxis, sizeof( VECTOR ), 1, fp );
 			fread( &Children->UserAxisPoint, sizeof( VECTOR ), 1, fp );
 			fread( &Children->UserAngle, sizeof( float ), 1, fp );
-			fread( &Children->ModelIndex, sizeof( uint16 ), 1, fp );
+			fread( &Children->ModelIndex, sizeof( u_int16_t ), 1, fp );
 
 			if( Children->NumChildren )
 			{
@@ -2050,14 +2050,14 @@ FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 	Input		:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Pos
 				:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	float			OverallTime
 				:	VECTOR		*	Top Left (TBFI)
 				:	VECTOR		*	Botom Right (TBFI)
 	Output		:	Nothing
 ===================================================================*/
 void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
-						   COMP_OBJ * Children, int16 NumChildren, float OverallTime, VECTOR * TopLeft,
+						   COMP_OBJ * Children, int16_t NumChildren, float OverallTime, VECTOR * TopLeft,
 						   VECTOR * BottomRight )
 {
 	float	Time;
@@ -2089,7 +2089,7 @@ void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 /*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 				:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Position
 				:	float			Time
@@ -2097,11 +2097,11 @@ void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 				:	VECTOR		*	BottomRight
 	Output		:	Nothing
 ===================================================================*/
-void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix,
+void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16_t NumChildren, MATRIX * ParentMatrix,
 								    VECTOR * ParentPos, float Time, VECTOR * TopLeft, VECTOR * BottomRight )
 {
-	int16				Count;
-	int16				Trans;
+	int16_t				Count;
+	int16_t				Trans;
 	VECTOR				NewPos;
 	MATRIX				RotMatrix;
 	ANI_TRANSLATE	*	TransData;
@@ -2237,7 +2237,7 @@ void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, M
 void GetCompObjColZoneBoundingBox( COMP_OBJ * Children, MATRIX * DisplayMatrix, VECTOR * DisplayPos,
 								   VECTOR * TopLeft, VECTOR * BottomRight )
 {
-	int16					ColZone;
+	int16_t					ColZone;
 	ANI_ZONES			*	ZonesPtr;
 	ANI_ZONE_BOX		*	AniZoneBoxPtr;
 	ANI_ZONE_POLYGONAL	*	AniZonePolyPtr;
@@ -2373,19 +2373,19 @@ void AddVertToBoundingBox( VECTOR * Vert, MATRIX * Matrix, VECTOR * Pos, VECTOR 
 /*===================================================================
 	Procedure	:	Clear components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
-				:	int16			Model Offset for stealth
+				:	int16_t			NumChildren
+				:	int16_t			Model Offset for stealth
 	Output		:	Nothing
 ===================================================================*/
-void SetStealthOffset( COMP_OBJ * Children, int16 NumChildren, uint16 Offset )
+void SetStealthOffset( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Offset )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags |= MODFLAG_StealthOffset;
 				Models[ Children->ModelIndex ].StealthOffset = Offset;
@@ -2404,18 +2404,18 @@ void SetStealthOffset( COMP_OBJ * Children, int16 NumChildren, uint16 Offset )
 /*===================================================================
 	Procedure	:	Set Stealthmode
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	Nothing
 ===================================================================*/
-void SetCompObjStealth( COMP_OBJ * Children, int16 NumChildren )
+void SetCompObjStealth( COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags &= ~MODFLAG_AmbientLight;
 				Models[ Children->ModelIndex ].Flags |= MODFLAG_Stealth;
@@ -2434,18 +2434,18 @@ void SetCompObjStealth( COMP_OBJ * Children, int16 NumChildren )
 /*===================================================================
 	Procedure	:	Set Stealthmode
 	Input		:	COMP_OBJ	*	Children
-				:	int16			NumChildren
+				:	int16_t			NumChildren
 	Output		:	Nothing
 ===================================================================*/
-void SetCompObjNonStealth( COMP_OBJ * Children, int16 NumChildren )
+void SetCompObjNonStealth( COMP_OBJ * Children, int16_t NumChildren )
 {
-	int16	Count;
+	int16_t	Count;
 
 	if( Children )
 	{
 		for( Count = 0; Count < NumChildren; Count++ )
 		{
-			if( Children->ModelIndex != (uint16) -1 )
+			if( Children->ModelIndex != (u_int16_t) -1 )
 			{
 				Models[ Children->ModelIndex ].Flags |= MODFLAG_AmbientLight;
 				Models[ Children->ModelIndex ].Flags &= ~MODFLAG_Stealth;

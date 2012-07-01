@@ -31,21 +31,21 @@
 extern	int	Depth;
 extern MLOADHEADER Mloadheader;
 
-extern BOOL AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, uint16 EndGroup );
+extern _Bool AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, u_int16_t EndGroup );
 
 /*===================================================================
 		Globals ...
 ===================================================================*/
-BOOL FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr );
+_Bool FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr );
 
 BSP_HEADER Bsp_Header[ 2 ];
 float ColRad;
 																   
 BSP_NODE *	BSP_Nodes[256];
-BSP_PORTAL_HEADER Bsp_Portal_Header = { FALSE, 0, {} };
+BSP_PORTAL_HEADER Bsp_Portal_Header = { false, 0, {} };
 
 
-BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )
+_Bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )
 {
 	int j;
 	BSP_TREE *srctree, *duptree;
@@ -59,52 +59,52 @@ BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )
 		duptree->NumNodes = srctree->NumNodes;
 		duptree->Root = (BSP_NODE *) calloc( srctree->NumNodes, sizeof( BSP_NODE ) );
 		if ( !duptree->Root )
-			return FALSE;
+			return false;
 		memmove( duptree->Root, srctree->Root, srctree->NumNodes * sizeof( BSP_NODE ) );//memcpy
 	}
-	return TRUE;
+	return true;
 }
 
 
-BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 )
+_Bool Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 )
 {
 	int j;
 	BSP_TREE *b1tree, *b2tree;
 
 	if ( b1->State != b2->State )
-		return FALSE;
+		return false;
 	if ( b1->NumGroups != b2->NumGroups )
-		return FALSE;
+		return false;
 	for ( j = 0; j < b1->NumGroups; j++ )
 	{
 		b1tree = &b1->Bsp_Tree[ j ];
 		b2tree = &b2->Bsp_Tree[ j ];
 		if ( b1tree->NumNodes != b2tree->NumNodes )
-			return FALSE;
+			return false;
 		if ( memcmp( b1tree->Root, b2tree->Root, b1tree->NumNodes * sizeof( BSP_NODE ) ) )
-			return FALSE;
+			return false;
 	}
-	return TRUE;
+	return true;
 }
 
 
-static BOOL BSP_Loadtree( BSP_TREE *t, char **Buffer )
+static _Bool BSP_Loadtree( BSP_TREE *t, char **Buffer )
 {
 	BSP_RAWNODE * Raw;
 	BSP_NODE * New;
-	int16		*	int16pnt;
-	int16		e;
+	int16_t		*	int16_tpnt;
+	int16_t		e;
 
 	// get the number of nodes and move to next pointer
-	int16pnt = ( int16 * ) *Buffer;
-	t->NumNodes = *int16pnt++;
-	*Buffer = (char * ) int16pnt;
+	int16_tpnt = ( int16_t * ) *Buffer;
+	t->NumNodes = *int16_tpnt++;
+	*Buffer = (char * ) int16_tpnt;
 	
 	// initialize the root node and set aside enough space
 	// set aside size of N BSP_NODE's
 	t->Root = (BSP_NODE * ) calloc( t->NumNodes , sizeof( BSP_NODE ) );
 	if ( !t->Root )
-		return FALSE;
+		return false;
 	
 	// cast buffer to BSP_RAWNODE for extracting values
 	Raw = (BSP_RAWNODE *) *Buffer;
@@ -136,18 +136,18 @@ static BOOL BSP_Loadtree( BSP_TREE *t, char **Buffer )
 	// rest of data is garbage
 	*Buffer = (char*) Raw;
 
-	return TRUE;
+	return true;
 }
 
 
-static BOOL BSP_LoadPortal( BSP_PORTAL *p, char **Buffer )
+static _Bool BSP_LoadPortal( BSP_PORTAL *p, char **Buffer )
 {
-	int16	*	int16pnt;
+	int16_t	*	int16_tpnt;
 	float	*	floatpnt;
 
-	int16pnt = (int16 *) *Buffer;
-	p->group = *int16pnt++;
-	floatpnt = (float *) int16pnt;
+	int16_tpnt = (int16_t *) *Buffer;
+	p->group = *int16_tpnt++;
+	floatpnt = (float *) int16_tpnt;
 	p->normal.x = *floatpnt++;
 	p->normal.y = *floatpnt++;
 	p->normal.z = *floatpnt++;
@@ -158,42 +158,42 @@ static BOOL BSP_LoadPortal( BSP_PORTAL *p, char **Buffer )
 }
 
 
-static BOOL BSP_LoadPortalGroup( BSP_PORTAL_GROUP *pg, char **Buffer )
+static _Bool BSP_LoadPortalGroup( BSP_PORTAL_GROUP *pg, char **Buffer )
 {
-	int16		*	int16pnt;
+	int16_t		*	int16_tpnt;
 	int				i;
 
-	int16pnt = (int16 *) *Buffer;
-	pg->portals = *int16pnt++;
-	*Buffer = (char *) int16pnt;
+	int16_tpnt = (int16_t *) *Buffer;
+	pg->portals = *int16_tpnt++;
+	*Buffer = (char *) int16_tpnt;
 
 	pg->portal = (BSP_PORTAL *) calloc( pg->portals, sizeof( BSP_PORTAL ) );
 	for ( i = 0; i < pg->portals; i++ )
 	{
 		if ( !BSP_LoadPortal( &pg->portal[ i ], Buffer ) )
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
-static BOOL BSP_LoadPortals( char *fname )
+static _Bool BSP_LoadPortals( char *fname )
 {
 	char	Filename[ 256 ];
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
 	char		*	OrgBuffer;
-	int16		*	int16pnt;
-	int16			i;
-	uint32		*	Uint32Pnt;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
+	int16_t		*	int16_tpnt;
+	int16_t			i;
+	u_int32_t		*	Uint32Pnt;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
 
-	Bsp_Portal_Header.state = FALSE;
+	Bsp_Portal_Header.state = false;
 
 	Change_Ext( fname, Filename, ".PBS" );
 
@@ -201,19 +201,19 @@ static BOOL BSP_LoadPortals( char *fname )
 	if( !File_Size )
 	{
 		Msg( "Bsp_Portalload() no PBS file %s", Filename );
-		return FALSE;
+		return false;
 	}
 
 	Buffer = malloc( File_Size );
 	OrgBuffer = Buffer;
 
-	if( Buffer == NULL ) return FALSE;
+	if( Buffer == NULL ) return false;
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 
-	if( Read_Size != File_Size ) return FALSE;
+	if( Read_Size != File_Size ) return false;
 
-	Uint32Pnt = (uint32 *) Buffer;
+	Uint32Pnt = (u_int32_t *) Buffer;
 	MagicNumber = *Uint32Pnt++;
 	VersionNumber = *Uint32Pnt++;
 	Buffer = (char *) Uint32Pnt;
@@ -221,65 +221,65 @@ static BOOL BSP_LoadPortals( char *fname )
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != BSP_PORTAL_VERSION_NUMBER  ) )
 	{
 		Msg( "Bsp_Portalload() Incompatible PBS file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
-	int16pnt = ( int16 * ) Buffer;
-	Bsp_Portal_Header.groups = *int16pnt++;
-	Buffer = (char * ) int16pnt;
+	int16_tpnt = ( int16_t * ) Buffer;
+	Bsp_Portal_Header.groups = *int16_tpnt++;
+	Buffer = (char * ) int16_tpnt;
 
 	for ( i = 0; i < Bsp_Portal_Header.groups; i++ )
 	{
 		if ( !BSP_LoadPortalGroup( &Bsp_Portal_Header.group[ i ], &Buffer ) )
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
 	free( OrgBuffer );
 
-	Bsp_Portal_Header.state = TRUE;
+	Bsp_Portal_Header.state = true;
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:		Load .Bsp File
 	Input		:		char	*	Filename
-	Output		:		BOOL	TRUE/FALSE
+	Output		:		_Bool	true/false
 ===================================================================*/
-BOOL Bspload( char * Filename, BSP_HEADER *Bsp_Header )
+_Bool Bspload( char * Filename, BSP_HEADER *Bsp_Header )
 {
 #ifdef BSP
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
 	char		*	OrgBuffer;
-	int16		*	int16pnt;
-	int16			i;
-	uint32		*	Uint32Pnt;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
+	int16_t		*	int16_tpnt;
+	int16_t			i;
+	u_int32_t		*	Uint32Pnt;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
 
-	Bsp_Header->State = FALSE;
+	Bsp_Header->State = false;
 
 	File_Size = Get_File_Size( Filename );	
 	if( !File_Size )
 	{
 		Msg( "Bspload() no BSP file %s", Filename );
-		return FALSE;
+		return false;
 	}
 
 	Buffer = malloc( File_Size );
 
-	if( Buffer == NULL ) return FALSE;
+	if( Buffer == NULL ) return false;
 
 	OrgBuffer = Buffer;
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
 
-	if( Read_Size != File_Size ) return FALSE;
+	if( Read_Size != File_Size ) return false;
 
-	Uint32Pnt = (uint32 *) Buffer;
+	Uint32Pnt = (u_int32_t *) Buffer;
 	MagicNumber = *Uint32Pnt++;
 	VersionNumber = *Uint32Pnt++;
 	Buffer = (char *) Uint32Pnt;
@@ -287,37 +287,37 @@ BOOL Bspload( char * Filename, BSP_HEADER *Bsp_Header )
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != BSP_VERSION_NUMBER  ) )
 	{
 		Msg( "Bspload() Incompatible BSP file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
-	int16pnt = ( int16 * ) Buffer;
-	Bsp_Header->NumGroups = *int16pnt++;
-	Buffer = (char * ) int16pnt;
+	int16_tpnt = ( int16_t * ) Buffer;
+	Bsp_Header->NumGroups = *int16_tpnt++;
+	Buffer = (char * ) int16_tpnt;
 
 	for( i = 0 ; i < Bsp_Header->NumGroups ; i++ )
 	{
 		if ( !BSP_Loadtree( &Bsp_Header->Bsp_Tree[ i ], &Buffer ) )
 		{
-			return FALSE;
+			return false;
 		}
 	}
 	free( OrgBuffer );
 
 #endif
-	Bsp_Header->State = TRUE;
+	Bsp_Header->State = true;
 
 #ifdef BSP_ONLY
 	if ( !BSP_LoadPortals( Filename ) )
-		return FALSE;
+		return false;
 #else
 	BSP_LoadPortals( Filename );
 #endif
 
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:		Free up the memory calloced by bspload..
 	Input		:		Nothing
-	Output		:		BOOL	TRUE/FALSE
+	Output		:		_Bool	true/false
 ===================================================================*/
 void Bspfree( void )
 {
@@ -338,7 +338,7 @@ void Bspfree( void )
 				}
 			}
 			Bsp_Header[ bsp_num ].NumGroups = 0;
-			Bsp_Header[ bsp_num ].State = FALSE;
+			Bsp_Header[ bsp_num ].State = false;
 		}
 	}
 
@@ -363,7 +363,7 @@ void Bspfree( void )
 			pg->portal = NULL;
 			pg->portals = 0;
 		}
-		Bsp_Portal_Header.state = FALSE;
+		Bsp_Portal_Header.state = false;
 	}
 #endif
 }
@@ -375,7 +375,7 @@ static VECTOR RayPos;
 static VECTOR RayDir;
 static float RayLength;
 float	Trick;
-BOOL Collided;
+_Bool Collided;
 float CollideDist;
 VECTOR CollidePoint;
 BSP_NODE *CollideNode;
@@ -383,9 +383,9 @@ BSP_NODE *OldCollideNode;
 VECTOR OldCollidePoint;
 float CollisionRadius = 0.0F;
 
-BOOL RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *ImpactPoint, VECTOR *ImpactNormal, float *ImpactOffset , uint16 group)
+_Bool RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *ImpactPoint, VECTOR *ImpactNormal, float *ImpactOffset , u_int16_t group)
 {
-	BOOL collided;
+	_Bool collided;
 	VECTOR EndPos;
 
  	RayLength = VectorLength( Dir );
@@ -417,11 +417,11 @@ BOOL RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *
    			*ImpactOffset = -*ImpactOffset;
    		}
 #endif
-   		return TRUE;
+   		return true;
 	}
 	else
 	{
-		return FALSE;
+		return false;
 	}
 }
 
@@ -431,9 +431,9 @@ BOOL RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *
 	Input		:		BSP_NODE * Start node
 						VECTOR * Start Position
 						VECTOR * end Position
-	Output		:		BOOL
+	Output		:		_Bool
 ===================================================================*/
-BOOL FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr )
+_Bool FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr )
 {
 	float		d1, d2;
 	VECTOR		intersection_point;
@@ -441,7 +441,7 @@ BOOL FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_
 	BSP_NODE	* far_node_ptr;
 	float div;
 	float distance2plane;
-	BOOL	side;
+	_Bool	side;
 
 	Depth++;
 
@@ -485,7 +485,7 @@ start:
 
 */
 
-	if( !start_point_ptr || !node_ptr || !end_point_ptr ) return FALSE;
+	if( !start_point_ptr || !node_ptr || !end_point_ptr ) return false;
 
 	d1 = POINT_TO_PLANE( start_point_ptr, node_ptr ) - CollisionRadius;
 	d2 = POINT_TO_PLANE(   end_point_ptr, node_ptr ) - CollisionRadius;
@@ -528,7 +528,7 @@ start:
 						CollideNode = Back_CollideNode;
 						CollidePoint = Back_CollidePoint;
 					}
-					return TRUE;
+					return true;
 				}
 				else
 				{
@@ -545,10 +545,10 @@ start:
 			}
 			else // oh shit...what do we do now???
 			{
-				return FALSE;
+				return false;
 			}
 
-			return TRUE;
+			return true;
 		}
 		d2 = 0.0F;
 	}
@@ -560,7 +560,7 @@ start:
 			goto start;
 		}
 		// Entire segment inside a solid.
-		return TRUE;
+		return true;
 	}
 	if( (d1 >= CollisionRadius) && (d2 >= CollisionRadius) )
 	{
@@ -568,7 +568,7 @@ start:
 		{
 			goto start;
 		}
-		return FALSE;
+		return false;
 	}
    	// We intersect the Plane...
 
@@ -595,15 +595,15 @@ start:
    	if( ( !near_node_ptr && ( side ) ) ||
    		( near_node_ptr && FindCollision( near_node_ptr, start_point_ptr, &intersection_point ) ) )
    	{
-   		return TRUE;
+   		return true;
    	}
 	CollideNode = node_ptr;
 	CollidePoint = intersection_point;
 	if ( !far_node_ptr )
 	{
 		if ( side )
-			return FALSE;
-		return TRUE;
+			return false;
+		return true;
 	}
 	return FindCollision( far_node_ptr, &intersection_point, end_point_ptr );
 }
@@ -615,10 +615,10 @@ start:
 /*===================================================================
 	Procedure	:		Define if a point is inside or outside
 	Input		:		VECTOR * Pos , Node *node
-	Output		:		BOOL
+	Output		:		_Bool
 ===================================================================*/
 
-BOOL PISDistRecursive( VECTOR *Pos, BSP_NODE *node)
+_Bool PISDistRecursive( VECTOR *Pos, BSP_NODE *node)
 {
 	float d;
 
@@ -633,7 +633,7 @@ start:
 	 	}
 	 	else
 	 	{
-	 		return TRUE;
+	 		return true;
 	 	}
 	}
 	if ( d < -TOLER )
@@ -643,19 +643,19 @@ start:
 			goto start;
 		}
 		OldCollideNode = node;
-		return FALSE;
+		return false;
 	}
 	// somewhere in between plane +/- TOLER (tricky case)
 	if ( !node->Front || PISDistRecursive( Pos, node->Front ) )
-		return TRUE;
+		return true;
 	if ( node->Back && PISDistRecursive( Pos, node->Back ) )
-		return TRUE;
-	return FALSE;
+		return true;
+	return false;
 }
 
 
 
-BOOL PointInsideSkin( VECTOR *Pos, uint16 Group )
+_Bool PointInsideSkin( VECTOR *Pos, u_int16_t Group )
 {
 	if( Bsp_Header[ 0 ].State )
 	{

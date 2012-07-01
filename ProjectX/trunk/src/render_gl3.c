@@ -137,20 +137,20 @@ void render_mode_fill(void)
 }
 
 // unused in opengl
-BOOL FSBeginScene(){ return TRUE; }
-BOOL FSEndScene(){ return TRUE; }
+_Bool FSBeginScene(){ return true; }
+_Bool FSEndScene(){ return true; }
 
 // prototypes
 void reset_trans( void );
 
 // TODO	- should get this from gl caps ?
-BOOL bSquareOnly = TRUE;
+_Bool bSquareOnly = true;
 
 //
 // Texture Routines
 //
 
-uchar_t gamma_table[256];
+u_int8_t gamma_table[256];
 
 void build_gamma_table( double gamma )
 {
@@ -168,7 +168,7 @@ void build_gamma_table( double gamma )
 	
 	for (i = 0; i <= 255; i++)
 	{
-		gamma_table[i] = (uchar_t)(k*(pow((double)i, 1.0/gamma)));
+		gamma_table[i] = (u_int8_t)(k*(pow((double)i, 1.0/gamma)));
 		if( i && !gamma_table[i] )
 			gamma_table[i] = 1;
 	}
@@ -184,7 +184,7 @@ void release_texture( LPTEXTURE texture ){
 	free(texture);
 }
 
-BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey)
+_Bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey)
 {
 	struct texture *texdata;
 	texture_image_t image;
@@ -193,19 +193,19 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 	if( ! File_Exists( (char*) image.path ) )
 	{
 		DebugPrintf("Could not find texture file: %s\n",path);
-		return TRUE;
+		return true;
 	}
 
 	if(load_image( &image, numMips )!=0)
 	{
 		DebugPrintf("couldn't load image\n");
-		return FALSE;
+		return false;
 	}
 
 	// return values
-	*width  = (uint16) image.w;
-	*height = (uint16) image.h;
-	(*colorkey) = (BOOL) image.colorkey;
+	*width  = (u_int16_t) image.w;
+	*height = (u_int16_t) image.h;
+	(*colorkey) = (_Bool) image.colorkey;
 
 	// employ colour key and gamma correction
 	{
@@ -222,10 +222,10 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 				DWORD index = (y*pitch)+(x*size);
 
 				// image.data is packed in rgba
-				image.data[index]   = (char) gamma_table[ (uchar_t) image.data[index]];	   // red
-				image.data[index+1] = (char) gamma_table[ (uchar_t) image.data[index+1]];  // green
-				image.data[index+2] = (char) gamma_table[ (uchar_t) image.data[index+2]];  // blue
-				image.data[index+3] = (char) gamma_table[ (uchar_t) image.data[index+3]];  // alpha
+				image.data[index]   = (char) gamma_table[ (u_int8_t) image.data[index]];	   // red
+				image.data[index+1] = (char) gamma_table[ (u_int8_t) image.data[index+1]];  // green
+				image.data[index+2] = (char) gamma_table[ (u_int8_t) image.data[index+2]];  // blue
+				image.data[index+3] = (char) gamma_table[ (u_int8_t) image.data[index+3]];  // alpha
 
 				// colour key
 				if( image.colorkey && (image.data[index] + image.data[index+1] + image.data[index+2]) == 0 )
@@ -271,7 +271,7 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 	glGenerateMipmap( GL_TEXTURE_2D );
 
 	if ( render_error_description(0) )
-		return FALSE;
+		return false;
 
 	*t = (LPTEXTURE) texdata;
 
@@ -280,16 +280,16 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 
 	destroy_image( &image );
 
-	return TRUE;
+	return true;
 }
 
-BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colorkey)
+_Bool update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey)
 {
 	create_texture(&dstTexture, fileName, width, height, numMips, colorkey);
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+_Bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colourkey)
 {	
 	return create_texture(texture, fileName, width, height, numMips, colourkey);
 }
@@ -347,7 +347,7 @@ static GLuint new_shader( GLenum type, const char *src, char **log )
 	return shader;
 }
 
-static BOOL update_shader_program( char **log )
+static _Bool update_shader_program( char **log )
 {
 	int link_ok;
 	GLsizei log_size;
@@ -375,7 +375,7 @@ static BOOL update_shader_program( char **log )
 			info_log = malloc( log_size );
 			glGetProgramInfoLog( current_program, log_size, NULL, info_log );
 			*log = info_log;
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -385,7 +385,7 @@ static BOOL update_shader_program( char **log )
 	if ( log )
 		*log = NULL;
 
-	return TRUE;
+	return true;
 }
 
 static void set_default_shaders( void )
@@ -418,7 +418,7 @@ static void set_default_shaders( void )
 		DebugPrintf( "Failed to compile fragment shader! Info log:\n-----\n%s\n-----\n", info_log );
 		return;
 	}
-	if ( update_shader_program( &info_log ) == FALSE )
+	if ( update_shader_program( &info_log ) == false )
 	{
 		DebugPrintf( "Failed to build shader program! Info log:\n-----\n%s\n-----\n", info_log );
 		return;
@@ -447,7 +447,7 @@ static resize_viewport( int width, int height )
 	FSSetViewPort(&viewport);
 }
 
-BOOL render_init( render_info_t * info )
+_Bool render_init( render_info_t * info )
 {
 	print_info();
 	detect_caps();
@@ -455,53 +455,53 @@ BOOL render_init( render_info_t * info )
 	resize_viewport(info->ThisMode.w, info->ThisMode.h);
 	if(info->wireframe)
 		render_mode_wireframe();
-	info->ok_to_render = TRUE;
-	return TRUE;
+	info->ok_to_render = true;
+	return true;
 }
 
 void render_cleanup( render_info_t * info )
 {
-	info->ok_to_render = FALSE;
+	info->ok_to_render = false;
 	// ???
 }
 
-extern BOOL sdl_init_video( void );
-BOOL render_mode_select( render_info_t * info )
+extern _Bool sdl_init_video( void );
+_Bool render_mode_select( render_info_t * info )
 {
 	render_cleanup( info );
 	if(!sdl_init_video())
-		return FALSE;
+		return false;
 	//if(!render_init( info ))
-	//	return FALSE;
-	return TRUE;
+	//	return false;
+	return true;
 }
 
 // TODO - in d3d9 render_flip would detect a lost device
 //		lost as in alt+tab (etc) which caused video memory to dump
-//		at this point we should set needs_reset = TRUE
+//		at this point we should set needs_reset = true
 
-static BOOL needs_reset = FALSE;
+static _Bool needs_reset = false;
 
-BOOL render_reset( render_info_t * info )
+_Bool render_reset( render_info_t * info )
 {
 	if(!needs_reset)
-		return FALSE;
+		return false;
 	if(!render_mode_select( info ))
-		return FALSE;
-	needs_reset = FALSE;
-	return TRUE;
+		return false;
+	needs_reset = false;
+	return true;
 }
 
-void render_set_filter( BOOL red, BOOL green, BOOL blue )
+void render_set_filter( _Bool red, _Bool green, _Bool blue )
 {
 	glColorMask(red?1:0, green?1:0, blue?1:0, 1);
 }
 
-BOOL render_flip( render_info_t * info )
+_Bool render_flip( render_info_t * info )
 {
 	SDL_GL_SwapBuffers();
 	render_error_description(0);
-	return TRUE;
+	return true;
 }
 
 void reset_trans( void )
@@ -587,7 +587,7 @@ void set_whiteout_state( void )
 //        perhaps we can automate and remove need for rect arg ?
 
 // clears color/zbuff same time to opaque black
-BOOL FSClear(XYRECT * rect)
+_Bool FSClear(XYRECT * rect)
 {
 	int width = rect->x2 - rect->x1;
 	int height = rect->y2 - rect->y1;
@@ -603,24 +603,24 @@ BOOL FSClear(XYRECT * rect)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	//
 	glDisable(GL_SCISSOR_TEST);
-	return TRUE;
+	return true;
 }
 
-BOOL FSClearBlack(void)
+_Bool FSClearBlack(void)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	return TRUE;
+	return true;
 }
 
-BOOL FSClearDepth(XYRECT * rect)
+_Bool FSClearDepth(XYRECT * rect)
 {
 	glClearDepth(1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	return TRUE;
+	return true;
 }
 
-BOOL FSGetViewPort(render_viewport_t *view)
+_Bool FSGetViewPort(render_viewport_t *view)
 {
 	GLint i[4];
 	GLfloat f[2];
@@ -635,16 +635,16 @@ BOOL FSGetViewPort(render_viewport_t *view)
 	glGetFloatv( GL_DEPTH_RANGE, f );
 	view->MinZ = f[0];
 	view->MaxZ = f[1];
-	return TRUE;
+	return true;
 }
 
 // The orthographic projection matrix depends on the viewport
 // dimensions. We don't update it right away but mark it `dirty'
 // and have the drawing routine update it when it's needed.
 
-BOOL ortho_matrix_needs_update;
+_Bool ortho_matrix_needs_update;
 
-BOOL FSSetViewPort(render_viewport_t *view)
+_Bool FSSetViewPort(render_viewport_t *view)
 {
 	// render_viewport_t x/y starts top/left
 	// but glViewport starts from bottom/left
@@ -669,8 +669,8 @@ BOOL FSSetViewPort(render_viewport_t *view)
 	// probably need some testing here to see how d3d6 worked
 	// forsaken still uses these values so we need them
 
-	ortho_matrix_needs_update = TRUE;
-	return TRUE;
+	ortho_matrix_needs_update = true;
+	return true;
 }
 
 void ortho_update ( GLuint current_program )
@@ -699,7 +699,7 @@ void ortho_update ( GLuint current_program )
 		m._44 = 1.0f;
 		glUniformMatrix4fv( u_ortho_matrix, 1, GL_TRUE, &m );
 		CHECK_GL_ERRORS;
-		ortho_matrix_needs_update = FALSE;
+		ortho_matrix_needs_update = false;
 	}
 }
 
@@ -710,38 +710,38 @@ void ortho_update ( GLuint current_program )
 // The drawing routine should call mvp_update which will update the
 // MVP matrix if needed.
 
-BOOL mvp_needs_update;
+_Bool mvp_needs_update;
 
 MATRIX proj_matrix;
 
-BOOL FSSetProjection( RENDERMATRIX *matrix )
+_Bool FSSetProjection( RENDERMATRIX *matrix )
 {
 	memmove(&proj_matrix,&matrix->m,sizeof(proj_matrix));//memcpy
-	mvp_needs_update = TRUE;
-	return TRUE;
+	mvp_needs_update = true;
+	return true;
 }
 
 MATRIX view_matrix;
 MATRIX world_matrix;
 
-BOOL FSSetView( RENDERMATRIX *matrix )
+_Bool FSSetView( RENDERMATRIX *matrix )
 {
 	memmove(&view_matrix,&matrix->m,sizeof(view_matrix));//memcpy
-	mvp_needs_update = TRUE;
-	return TRUE;
+	mvp_needs_update = true;
+	return true;
 }
 
-BOOL FSSetWorld( RENDERMATRIX *matrix )
+_Bool FSSetWorld( RENDERMATRIX *matrix )
 {	
 	memmove(&world_matrix,&matrix->m,sizeof(world_matrix));//memcpy
-	mvp_needs_update = TRUE;
-	return TRUE;
+	mvp_needs_update = true;
+	return true;
 }
 
-BOOL FSGetWorld(RENDERMATRIX *matrix)
+_Bool FSGetWorld(RENDERMATRIX *matrix)
 {
 	memmove(&matrix->m,&world_matrix,sizeof(matrix->m));//memcpy
-	return TRUE;
+	return true;
 }
 
 // This kinda sucks: MATRIX and RENDERMATRIX are supposed to be stored
@@ -767,7 +767,7 @@ static void mvp_update( GLuint current_program )
 		MatrixMultiply( &mvp,          &proj_matrix, &mvp );
 		glUniformMatrix4fv( u_mvp, 1, GL_FALSE, &mvp );
 		CHECK_GL_ERRORS;
-		mvp_needs_update = FALSE;
+		mvp_needs_update = false;
 	}
 }
 
@@ -797,37 +797,37 @@ static LPVERTEXBUFFER _create_buffer( int size, GLenum type, GLenum gettype, GLe
 #define create_buffer( size, type, usage ) \
 	_create_buffer( size, type, type ## _BINDING, usage )
 
-BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_STATIC_DRAW );
-	return TRUE;
+	return true;
 }
-BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+_Bool FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 {
 	renderObject->lpNormalBuffer = create_buffer( numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW );
-	return TRUE;
+	return true;
 }
-BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+_Bool FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 {
 	renderObject->lpNormalBuffer = create_buffer( numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
-	return TRUE;
+	return true;
 }
 
-BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+_Bool FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	renderObject->lpIndexBuffer = create_buffer( numIndices * 3 * sizeof(WORD), GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW );
-	return TRUE;
+	return true;
 }
-BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+_Bool FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	renderObject->lpIndexBuffer = create_buffer( numIndices * 3 * sizeof(WORD), GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
-	return TRUE;
+	return true;
 }
 
 // In OpenGL you can only map buffers currently bound to a predefined
@@ -842,12 +842,12 @@ BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 static GLuint old_array_buf = 0;
 static GLuint old_index_buf = 0;
 
-BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
+_Bool FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {
 	if ( old_array_buf )
 	{
 		DebugPrintf( "Tried to lock more than one vertex buffer at once\n" );
-		return FALSE;
+		return false;
 	}
 	glGetIntegerv( GL_ARRAY_BUFFER_BINDING, &old_array_buf );
 	glBindBuffer( GL_ARRAY_BUFFER, (GLuint) renderObject->lpVertexBuffer );
@@ -855,27 +855,27 @@ BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 	if(!*verts)
 	{
 		DebugPrintf("FSLockVertexBuffer: glMapBuffer returned NULL\n");
-		return FALSE;
+		return false;
 	}
 	CHECK_GL_ERRORS;
-	return TRUE;
+	return true;
 }
 
-BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
+_Bool FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 {
-	BOOL ret = ( glUnmapBuffer( GL_ARRAY_BUFFER ) == GL_TRUE );
+	_Bool ret = ( glUnmapBuffer( GL_ARRAY_BUFFER ) == GL_TRUE );
 	glBindBuffer( GL_ARRAY_BUFFER, old_array_buf );
 	old_array_buf = 0;
 	CHECK_GL_ERRORS;
 	return ret;
 }
 
-BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
+_Bool FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
 {
 	if ( old_array_buf )
 	{
 		DebugPrintf( "Tried to lock more than one vertex buffer at once\n" );
-		return FALSE;
+		return false;
 	}
 	glGetIntegerv( GL_ARRAY_BUFFER_BINDING, &old_array_buf );
 	glBindBuffer( GL_ARRAY_BUFFER, (GLuint) renderObject->lpNormalBuffer );
@@ -883,27 +883,27 @@ BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
 	if(!*normals)
 	{
 		DebugPrintf("FSLockNormalBuffer: glMapBuffer returned NULL\n");
-		return FALSE;
+		return false;
 	}
 	CHECK_GL_ERRORS;
-	return TRUE;
+	return true;
 }
 
-BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject)
+_Bool FSUnlockNormalBuffer(RENDEROBJECT *renderObject)
 {
-	BOOL ret = ( glUnmapBuffer( GL_ARRAY_BUFFER ) == GL_TRUE );
+	_Bool ret = ( glUnmapBuffer( GL_ARRAY_BUFFER ) == GL_TRUE );
 	glBindBuffer( GL_ARRAY_BUFFER, old_array_buf );
 	old_array_buf = 0;
 	CHECK_GL_ERRORS;
 	return ret;
 }
 
-BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+_Bool FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {
 	if ( old_index_buf )
 	{
 		DebugPrintf( "Tried to lock more than one index buffer at once\n" );
-		return FALSE;
+		return false;
 	}
 	glGetIntegerv( GL_ELEMENT_ARRAY_BUFFER_BINDING, &old_index_buf );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, (GLuint) renderObject->lpIndexBuffer );
@@ -911,28 +911,28 @@ BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 	if(!*indices)
 	{
 		DebugPrintf("FSLockIndexBuffer: glMapBuffer returned NULL\n");
-		return FALSE;
+		return false;
 	}
 	CHECK_GL_ERRORS;
-	return TRUE;
+	return true;
 }
 
-BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
+_Bool FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
 {
-	BOOL ret = ( glUnmapBuffer( GL_ELEMENT_ARRAY_BUFFER ) == GL_TRUE );
+	_Bool ret = ( glUnmapBuffer( GL_ELEMENT_ARRAY_BUFFER ) == GL_TRUE );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, old_index_buf );
 	old_index_buf = 0;
 	CHECK_GL_ERRORS;
 	return ret;
 }
 
-BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+_Bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(TLVERTEX), GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
-	return TRUE;
+	return true;
 }
 
-BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
+_Bool FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {
 	return FSLockVertexBuffer( renderObject, (LVERTEX **) verts );
 }
@@ -951,7 +951,7 @@ BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **ver
  *   - draw group->numVerts elements starting at group->startVert
  */
 
-static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_type, BOOL orthographic )
+static _Bool draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_type, _Bool orthographic )
 {
 	static const struct
 	{
@@ -1075,12 +1075,12 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 
 	CHECK_GL_ERRORS;
 
-	return TRUE;
+	return true;
 }
 
-BOOL draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,FALSE);}
-BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,TRUE);}
-BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,FALSE);}
+_Bool draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,false);}
+_Bool draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,true);}
+_Bool draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,false);}
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {

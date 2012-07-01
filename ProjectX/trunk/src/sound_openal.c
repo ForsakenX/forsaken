@@ -11,7 +11,7 @@
 //#include <efx-creative.h>
 #include <math.h>
 
-BOOL Sound3D = FALSE; // enable 3d sound
+_Bool Sound3D = false; // enable 3d sound
 
 struct {
 	int buffers;
@@ -29,7 +29,7 @@ struct sound_buffer_t {
 struct sound_source_t {
 	ALuint id;
 	ALuint buffer;
-	BOOL playing;
+	_Bool playing;
 	char path[MAX_PATH];
 };
 
@@ -107,23 +107,23 @@ static void print_info ( void )
 	DebugPrintf("openal: info end\n");
 }
 
-BOOL sound_init( void )
+_Bool sound_init( void )
 {
 	// TODO - disabling the ability to re-init sound system
 	// on ubuntu using "drivers = pulse" will handle in alcOpenDevice
 	// is there really even a reason we need to re-init sound?
 	static int initialized = 0;
 	if(initialized)
-		return TRUE;
+		return true;
 	initialized = 1;
 
 	Device = alcOpenDevice(NULL); // preferred device
 	if(!Device)
-		return FALSE;
+		return false;
 
 	Context = alcCreateContext(Device,NULL);
 	if(!Context)
-		return FALSE;
+		return false;
 
 	alcMakeContextCurrent(Context);
 
@@ -148,7 +148,7 @@ BOOL sound_init( void )
 
 	print_info();
 
-	return TRUE;
+	return true;
 }
 
 void sound_destroy( void )
@@ -164,26 +164,26 @@ void sound_destroy( void )
 // 3d routines
 //
 
-BOOL sound_listener_position( float x, float y, float z )
+_Bool sound_listener_position( float x, float y, float z )
 {
 	alListener3f(AL_POSITION, x, y, -z);
-	return TRUE;
+	return true;
 }
 
-BOOL sound_listener_velocity( float x, float y, float z )
+_Bool sound_listener_velocity( float x, float y, float z )
 {
 	alListener3f(AL_VELOCITY, x, y, -z);
-	return TRUE;
+	return true;
 }
 
-BOOL sound_listener_orientation( 
+_Bool sound_listener_orientation( 
 	float fx, float fy, float fz, // forward vector
 	float ux, float uy, float uz  // up vector
 )
 {
 	float vector[6] = {fx,fy,-fz,ux,uy,-uz};
 	alListenerfv(AL_ORIENTATION, &vector[0]);
-	return TRUE;
+	return true;
 }
 
 // TODO - we'll want to set velocity as well
@@ -237,7 +237,7 @@ void sound_play( sound_source_t * source )
 {
 	if(!source->playing)
 		stats.playing++;
-	source->playing = TRUE;
+	source->playing = true;
 	//
 	alSourcePlay( source->id );
 	//
@@ -249,7 +249,7 @@ void sound_play_looping( sound_source_t * source )
 {
 	if(!source->playing)
 		stats.playing++;
-	source->playing = TRUE;
+	source->playing = true;
 	//
 	alSourcei( source->id, AL_LOOPING, AL_TRUE );
 	sound_play( source );
@@ -261,14 +261,14 @@ void sound_stop( sound_source_t * source )
 {
 	if(source->playing)
 		stats.playing--;
-	source->playing = FALSE;
+	source->playing = false;
 	//
 	alSourceStop( source->id );
 	//
 	//DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
-BOOL sound_is_playing( sound_source_t * source )
+_Bool sound_is_playing( sound_source_t * source )
 {
 	ALint state;
 	alGetSourcei( source->id, AL_SOURCE_STATE, &state );
@@ -284,7 +284,7 @@ sound_buffer_t * sound_load(char *path)
 	ALenum error;
 	ALenum format;
 	SDL_AudioSpec wav_spec;
-	Uint8 *wav_buffer;
+	u_int8_t *wav_buffer;
 	sound_buffer_t * buffer;
 	char * file_path = convert_path(path);
 
@@ -341,7 +341,7 @@ sound_buffer_t * sound_load(char *path)
 		{
 			int i;
 			for(i = 0;i < (int)wav_spec.size/2;i++)
-				((Uint16*)wav_buffer)[i] ^= 0x8000; // converts U16 to S16
+				((u_int16_t*)wav_buffer)[i] ^= 0x8000; // converts U16 to S16
 			DebugPrintf("sound_buffer: converted u16 to s16\n");
 		}
 		if(wav_spec.channels == 1)
@@ -390,7 +390,7 @@ sound_source_t * sound_source( sound_buffer_t * buffer )
 		DebugPrintf("sound_source: failed to malloc source\n");
 		return 0;
 	}
-	source->playing = FALSE;
+	source->playing = false;
 	source->buffer = buffer->id;
 	strncpy(source->path,buffer->path,MAX_PATH);
 
@@ -438,7 +438,7 @@ void sound_release_source( sound_source_t * source )
 		return;
 	if(source->playing)
 		stats.playing--;
-	source->playing = FALSE;
+	source->playing = false;
 	// deleting source implicitly detaches buffer
 	alDeleteSources( 1, &source->id );
 	// clean up resources

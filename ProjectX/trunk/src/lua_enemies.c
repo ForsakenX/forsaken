@@ -72,11 +72,11 @@ static int luaenem_index(lua_State *L)
 #undef FIELD
 
 /* TODO: move to a common function file and export */
-static BOOL isudatatype(lua_State *L, int index, const char *mt)
+static _Bool isudatatype(lua_State *L, int index, const char *mt)
 {
-	BOOL ret;
+	_Bool ret;
 	if (!lua_getmetatable(L, index))
-		return FALSE;
+		return false;
 	lua_getfield(L, LUA_REGISTRYINDEX, mt);
 	ret = lua_rawequal(L, -1, -2);
 	lua_pop(L, 2);

@@ -30,7 +30,7 @@
 extern PRIMARYWEAPONBULLET PrimBulls[MAXPRIMARYWEAPONBULLETS];
 extern SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 
-static void pushprimbull(lua_State *L, uint16 index)
+static void pushprimbull(lua_State *L, u_int16_t index)
 {
 	int *id = lua_newuserdata(L, sizeof(int));
 	*id = (int) index;
@@ -38,7 +38,7 @@ static void pushprimbull(lua_State *L, uint16 index)
 	lua_setmetatable(L, -2);
 }
 
-static void pushsecbull(lua_State *L, uint16 index)
+static void pushsecbull(lua_State *L, u_int16_t index)
 {
 	int *id = lua_newuserdata(L, sizeof(int));
 	*id = (int) index;
@@ -46,7 +46,7 @@ static void pushsecbull(lua_State *L, uint16 index)
 	lua_setmetatable(L, -2);
 }
 
-static int pushentity(lua_State *L, uint16 type, uint16 index)
+static int pushentity(lua_State *L, u_int16_t type, u_int16_t index)
 {
 	const char *mt;
 	int *id;
@@ -113,12 +113,12 @@ static int luaprimbull_index(lua_State *L)
 		return 1;
 	}
 	FIELD(Used, boolean);
-	if (!strcmp(name, "Next") && bullet->Next != (uint16) -1)
+	if (!strcmp(name, "Next") && bullet->Next != (u_int16_t) -1)
 	{
 		pushprimbull(L, bullet->Next);
 		return 1;
 	}
-	else if (!strcmp(name, "Prev") && bullet->Prev != (uint16) -1)
+	else if (!strcmp(name, "Prev") && bullet->Prev != (u_int16_t) -1)
 	{
 		pushprimbull(L, bullet->Prev);
 		return 1;
@@ -211,12 +211,12 @@ static int luasecbull_index(lua_State *L)
 		return 1;
 	}
 	FIELD(Used, boolean);
-	if (!strcmp(name, "Next") && bullet->Next != (uint16) -1)
+	if (!strcmp(name, "Next") && bullet->Next != (u_int16_t) -1)
 	{
 		pushsecbull(L, bullet->Next);
 		return 1;
 	}
-	else if (!strcmp(name, "Prev") && bullet->Prev != (uint16) -1)
+	else if (!strcmp(name, "Prev") && bullet->Prev != (u_int16_t) -1)
 	{
 		pushsecbull(L, bullet->Prev);
 		return 1;
@@ -316,11 +316,11 @@ static int luasecbull_index(lua_State *L)
 #undef FIELD
 
 /* TODO: move to a common function file and export */
-static BOOL isudatatype(lua_State *L, int index, const char *mt)
+static _Bool isudatatype(lua_State *L, int index, const char *mt)
 {
-	BOOL ret;
+	_Bool ret;
 	if (!lua_getmetatable(L, index))
-		return FALSE;
+		return false;
 	lua_getfield(L, LUA_REGISTRYINDEX, mt);
 	ret = lua_rawequal(L, -1, -2);
 	lua_pop(L, 2);

@@ -26,18 +26,18 @@
  */
 typedef struct
 {
-	BOOL valid;
-	BOOL valid_this_time;
-	uint16 num_variations;
-	uint16 current_variation;
+	_Bool valid;
+	_Bool valid_this_time;
+	u_int16_t num_variations;
+	u_int16_t current_variation;
 	char text[MAX_STATS_MESSAGE_VARIATIONS][MAX_STATS_MESSAGE_LENGTH];
 	void *variable_ptr[MAX_STATS_MESSAGE_VARIATIONS][MAX_STATS_FORMATING_VARS];
 } STATSMESSAGE;
 typedef struct
 {
-	BOOL	Activated;
-	int16	ActivatedOrder;
-	int16	Type;
+	_Bool	Activated;
+	int16_t	ActivatedOrder;
+	int16_t	Type;
 } TEXTMSGINFO;
 
 
@@ -51,7 +51,7 @@ void CenterPrint4x5Text2( char * Text , int x, int y, int color );
 int	 Print4x5Text( char * Text , int x , int y , int color );
 int	 Print4x5TextSmall( char * Text , int x , int y , int color );
 void PrintClipped4x5Text( char * Text , int x , int y , int color );
-void Printuint16( uint16 tempnum , int x , int y , int color );
+void Printu_int16_t( u_int16_t tempnum , int x , int y , int color );
 void MessageQuePrint( void );
 void PlayerMessageQuePrint( void );
 void AddColourMessageToQue(  int Colour, char * Text, ... );
@@ -61,11 +61,11 @@ void InitTextMessages( void );
 
 void InitFont( void );
 
-BOOL ReadTxtFile( char *Filename );
+_Bool ReadTxtFile( char *Filename );
 void FreeTxtFile( void );
-void TriggerTextMessage( uint16 * Data );
+void TriggerTextMessage( u_int16_t * Data );
 void InitStatsMessages( void );
-BOOL ReadMsgFile( char *Filename );
+_Bool ReadMsgFile( char *Filename );
 void FreeMsgFile( void );
 
 void NextTextMessage( void );

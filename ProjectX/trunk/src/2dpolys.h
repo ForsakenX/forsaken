@@ -110,10 +110,10 @@
 ===================================================================*/
 typedef struct TPAGEINFO {
 
-	uint16		FirstPoly;		// Index to first Poly in TPage
-	int16		StartVert;		// Filled in by PolyDisp
-	int16		NumVerts;		// Filled in by PolyDisp
-	int16		NumTris;		// Filled in by PolyDisp
+	u_int16_t		FirstPoly;		// Index to first Poly in TPage
+	int16_t		StartVert;		// Filled in by PolyDisp
+	int16_t		NumVerts;		// Filled in by PolyDisp
+	int16_t		NumTris;		// Filled in by PolyDisp
 
 } TPAGEINFO;
 
@@ -122,32 +122,32 @@ typedef struct TPAGEINFO {
 ===================================================================*/
 typedef struct FMPOLY{
 
-	uint16			Next;
-	uint16			Prev;
-	uint16			NextInTPage;
-	uint16			PrevInTPage;
+	u_int16_t			Next;
+	u_int16_t			Prev;
+	u_int16_t			NextInTPage;
+	u_int16_t			PrevInTPage;
 	float			LifeCount;			// LifeCount
 	VECTOR			Pos;				// Position
-	uint8			Start_R;			// Start Colour
-	uint8			Start_G;
-	uint8			Start_B;
-	uint8			R;					// Colour
-	uint8			G;
-	uint8			B;
-	uint8			Trans;				// Amount of transparency
-	uint8			OnceOnly;			// Once Only
+	u_int8_t			Start_R;			// Start Colour
+	u_int8_t			Start_G;
+	u_int8_t			Start_B;
+	u_int8_t			R;					// Colour
+	u_int8_t			G;
+	u_int8_t			B;
+	u_int8_t			Trans;				// Amount of transparency
+	u_int8_t			OnceOnly;			// Once Only
 	float			Rot;				// Rotation Angle
 	float			RotSpeed;			// Rotation Speed
 	float			Frame;				// Animation Frame
 	float			AnimSpeed;			// Animation Speed
-	int16			Flags;				// Display Flags
+	int16_t			Flags;				// Display Flags
 	FRAME_INFO	**	Frm_Info;			// Offset Info
-	int16			SeqNum;				// Sequence Number
+	int16_t			SeqNum;				// Sequence Number
 	VECTOR			Dir;				// Current Direction
 	VECTOR			DirVector;			// Direction to face
 	VECTOR			UpVector;			// Up Vector to face
 	MATRIX			Mat;				// Matrix ( Trojax );
-	uint16			Group;				// GroupImIn
+	u_int16_t			Group;				// GroupImIn
 	float			Speed;				// Speed
 	float			UpSpeed;			// Speed
 	float			xsize;				// in world space
@@ -160,16 +160,16 @@ typedef struct FMPOLY{
 	Protptypes
 ===================================================================*/
 void InitFmPoly( void );
-void KillUsedFmPoly( uint16 i );
-uint16 FindFreeFmPoly();
+void KillUsedFmPoly( u_int16_t i );
+u_int16_t FindFreeFmPoly();
 void FmPolyProcess( void );
 void InitFmPolyTPages( void );
-void AddFmPolyToTPage( uint16 i, int16 TPage );
-void RemoveFmPolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, uint16 Group );
-BOOL DisplayGroupUnclippedFmPolys( RENDEROBJECT *renderObject );
-BOOL FmPolyDispGroupClipped( uint16 Group, RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly );
-BOOL FmPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly );
+void AddFmPolyToTPage( u_int16_t i, int16_t TPage );
+void RemoveFmPolyFromTPage( u_int16_t i, int16_t TPage );
+_Bool DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, u_int16_t Group );
+_Bool DisplayGroupUnclippedFmPolys( RENDEROBJECT *renderObject );
+_Bool FmPolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly );
+_Bool FmPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly );
 FILE * SaveFmPolys( FILE * fp );
 FILE * LoadFmPolys( FILE * fp );
 

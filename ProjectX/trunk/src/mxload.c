@@ -10,27 +10,27 @@
 /*
 Execution list format  (*.mx):
 
-num_texture_files : uint16
+num_texture_files : u_int16_t
 texture_file_name[num_texture_files] : '\0' separated strings
-num_groups : uint16
+num_groups : u_int16_t
 {
-	num_exec_lists : uint16
+	num_exec_lists : u_int16_t
 	{
-	  exec_type : uint16 // 0 = entirely opaque, 1 = contains transparencies
-	  num_vertices : uint16
-	  vertex(x,y,z,reserved,colour,specular,tu,tv)[num_vertices] : x, y, z float, others uint32
-	  num_texture_groups : uint16
+	  exec_type : u_int16_t // 0 = entirely opaque, 1 = contains transparencies
+	  num_vertices : u_int16_t
+	  vertex(x,y,z,reserved,colour,specular,tu,tv)[num_vertices] : x, y, z float, others u_int32_t
+	  num_texture_groups : u_int16_t
 	  {
-	    texture_type : uint16 // 0 = normal, 1 = environment mapped
-		start_vertex : uint16
-		num_vertices : uint16
-		texture_no : uint16
-		num_triangles : uint16
-		triangles(v0,v1,v2,pad16,nx,ny,nz)[num_triangles] : v? uint16, pad16 uint16, n? float
+	    texture_type : u_int16_t // 0 = normal, 1 = environment mapped
+		start_vertex : u_int16_t
+		num_vertices : u_int16_t
+		texture_no : u_int16_t
+		num_triangles : u_int16_t
+		triangles(v0,v1,v2,pad16,nx,ny,nz)[num_triangles] : v? u_int16_t, pad16 u_int16_t, n? float
 	  }[num_texture_groups]
 	}[num_exec_lists]
 }[num_groups]
-mxtype : uint16 // always 0 for mx format
+mxtype : u_int16_t // always 0 for mx format
 */
 /*===================================================================
 		Include File...
@@ -59,7 +59,7 @@ mxtype : uint16 // always 0 for mx format
 		Externals...
 ===================================================================*/
 
-extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
+extern	u_int32_t				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern	DWORD				CurrentSrcBlend;
 extern	DWORD				CurrentDestBlend;
 extern	DWORD				CurrentTextureBlend;
@@ -67,7 +67,7 @@ extern	DWORD				CurrentTextureBlend;
 extern	TLOADHEADER Tloadheader;
 extern	MODEL	Models[MAXNUMOFMODELS];
 
-extern	BOOL	DrawPanel;
+extern	_Bool	DrawPanel;
 extern	GLOBALSHIP	Ships[MAX_PLAYERS+1];
 extern	float	framelag;
 
@@ -83,45 +83,45 @@ POLYANIM * Panel3DPolyAnims_MineNum[NUMOFPOLYSPER3DPANELITEM];
 
 void Check3DPanelPolyAnim(POLYANIM * PolyAnim );
 
-extern void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, uint16 Tpage, LPLVERTEX Orig_Vert );
+extern void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, u_int16_t Tpage, LPLVERTEX Orig_Vert );
 extern void FixUV_Anim( POLYANIM *PolyAnim, LPLVERTEX Vert, LPLVERTEX Orig_Vert );
 
 /*===================================================================
 		Function from title.c not #included due to dependences...
 ===================================================================*/
-void TintDisc(uint16 Model);
+void TintDisc(u_int16_t Model);
 
-//uint8 Red = 128;
-//uint8 Green = 192;
-//uint8 Blue = 192+64;
+//u_int8_t Red = 128;
+//u_int8_t Green = 192;
+//u_int8_t Blue = 192+64;
 
 /*===================================================================
 	Procedure	:		Load .Mx File
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL StoreTriangles )
+_Bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool StoreTriangles )
 {
 
 	char		*	Buffer;
 	char		*	tempBuffer;
-	int16		*	Int16Pnt;
-	uint8		*	Uint8Pnt;
-	uint16		*	Uint16Pnt;
-	uint32		*	Uint32Pnt;
-	uint16		*	Uint16Pnt2;
+	int16_t		*	Int16Pnt;
+	u_int8_t		*	Uint8Pnt;
+	u_int16_t		*	Uint16Pnt;
+	u_int32_t		*	Uint32Pnt;
+	u_int16_t		*	Uint16Pnt2;
 	float		*	FloatPnt;
 	MFACE		*	MFacePnt;
 //	LPTRIANGLE	FacePnt;
 	TRIANGLE		FacePnt; // was a pointer
 	LPTRIANGLE	TempFacePnt; ZEROMEM(TempFacePnt);
-	uint16			exec_type = 0;			// the type of execute buffer
-	uint16			texture_type = 0;		// the type of texture...0 normal  1 env
-	uint16			num_vertices = 0;		// overall number of verts
-	uint16			num_texture_groups = 0; // number of triangle groups
-	uint16			num_triangles = 0;		// number of triangles in group
-	uint16			group_vertex_start = 0; // where in the vert list to start processing
-	uint16			group_vertex_num = 0;	// and how many to do...
+	u_int16_t			exec_type = 0;			// the type of execute buffer
+	u_int16_t			texture_type = 0;		// the type of texture...0 normal  1 env
+	u_int16_t			num_vertices = 0;		// overall number of verts
+	u_int16_t			num_texture_groups = 0; // number of triangle groups
+	u_int16_t			num_triangles = 0;		// number of triangles in group
+	u_int16_t			group_vertex_start = 0; // where in the vert list to start processing
+	u_int16_t			group_vertex_num = 0;	// and how many to do...
 	LPOLDLVERTEX lpLVERTEX2 = NULL;
 	LPLVERTEX	lpLVERTEX = NULL;
 	LPLVERTEX	lpBufStart = NULL;
@@ -129,30 +129,30 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	NORMAL		*lpNormals = NULL;
 	int				ibIndex = 0;
 	int				i,e,o;
-	uint16			tpage = 0;
+	u_int16_t			tpage = 0;
 	int				execbuf;
 	int				group;
-	uint16			ExecSize;
-	uint16			animation,frames,vertices;
+	u_int16_t			ExecSize;
+	u_int16_t			animation,frames,vertices;
 	POLYANIM	*	PolyAnim;
 	TANIMUV		*	TanimUV;
 	int			*	intPnt;
-	uint16			num_animations;
-	uint16			maxloops;
-	uint16			animsize;
+	u_int16_t			num_animations;
+	u_int16_t			maxloops;
+	u_int16_t			animsize;
 	int				r,g,b,a;
 	COLOR		color;
-	uint16			NumSpotFX;
+	u_int16_t			NumSpotFX;
 	PVSPOTFX	*	SpotFXPtr;
-	uint16			NumFirePoints;
+	u_int16_t			NumFirePoints;
 	PVFIREPOINT *	FirePointPtr;
-	uint32			Colour;
+	u_int32_t			Colour;
 	int				colourkey = 0;
 
 #if	MX_VERSION_NUMBER == 2
-	int16			c;
-	int8		*	Int8Pnt;
-	int8			SFXFilename[ 128 ];
+	int16_t			c;
+	int8_t		*	Int8Pnt;
+	int8_t			SFXFilename[ 128 ];
 #endif
 
 	int numTriangles = 0;
@@ -163,13 +163,13 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	DebugPrintf("Mxload - %s\n",Filename);
 
 	// Mxloadheader is not valid until everything has been done..
-	Mxloadheader->state = FALSE;
+	Mxloadheader->state = false;
 
-	if( Panel == TRUE )
+	if( Panel == true )
 	{
-		if( DrawPanel == FALSE )
+		if( DrawPanel == false )
 		{
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -189,38 +189,38 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	if( Buffer == NULL)
 	{
 		Msg( "Mxload() Buffer was not allocated in %s\n", Filename );
-		return FALSE;
+		return false;
 	}
 
 	/*	get the number of groups	*/
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 	Mxloadheader->num_groups = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;
 
 	if ( Mxloadheader->num_groups > MAXGROUPS )
 	{
 		Msg( "Mxload() Num groups > MAXGROUPS in %s\n", Filename );
-		return FALSE;
+		return false;
 	}
 
 	for( group=0 ; group<Mxloadheader->num_groups; group++)
 	{
 
 		/*	get the number of execbufs in this group	*/
-		Uint16Pnt = (uint16 *) Buffer;
+		Uint16Pnt = (u_int16_t *) Buffer;
 		Mxloadheader->Group[group].num_execbufs = *Uint16Pnt++;
 		Buffer = (char *) Uint16Pnt;
 
 		if ( Mxloadheader->Group[group].num_execbufs > MAXEXECBUFSPERGROUP )
 		{
 			Msg( "Mxload() numexecbufs > MAXEXECBUFSPERGROUP in %s\n", Filename );
-			return FALSE;
+			return false;
 		}
 
 		for( execbuf=0 ; execbuf<Mxloadheader->Group[group].num_execbufs; execbuf++)
 		{
 			num_texture_groups = 0;
-			Uint16Pnt = (uint16 *) Buffer;
+			Uint16Pnt = (u_int16_t *) Buffer;
 
 			ExecSize = 	*Uint16Pnt++;
 			ExecSize += 1024;
@@ -244,7 +244,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			if (!FSCreateVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], num_vertices))
 			{
 				Msg( "Mxload : MakeExecBuffer Failed\n" );
-				return FALSE;
+				return false;
 			}
 
 			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
@@ -253,7 +253,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			if (!(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
-				return FALSE;
+				return false;
 			}
 
 			lpBufStart = lpLVERTEX;
@@ -318,7 +318,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 							   D3DSTATUS_CLIPINTERSECTIONBOTTOM |
 							   D3DSTATUS_CLIPINTERSECTIONLEFT |
 							   D3DSTATUS_CLIPINTERSECTIONRIGHT
-							   , 0, TRUE , 0, lpPointer);
+							   , 0, true , 0, lpPointer);
 
 			if( Panel )
 			{
@@ -329,7 +329,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 			Buffer = (char *) lpLVERTEX2;
 
-			Uint16Pnt = (uint16 *) Buffer;
+			Uint16Pnt = (u_int16_t *) Buffer;
 			num_texture_groups = *Uint16Pnt++;
 			DebugPrintf("texture groups: %d\n", num_texture_groups);
 			Buffer = (char *) Uint16Pnt;
@@ -343,7 +343,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			/* find out how many vertexes we'll need to load into our vertex buffer */
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
-				uint16 *temp = (uint16 *) tempBuffer;
+				u_int16_t *temp = (u_int16_t *) tempBuffer;
 
 				temp += 4;
 
@@ -360,7 +360,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			/*	create an index buffer	*/
 			if (!FSCreateIndexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], triangleCount * 3))
 			{
-				return FALSE;
+				return false;
 			}
 
 			DebugPrintf("created index buffer to hold :%d incidices\n", triangleCount * 3);
@@ -369,18 +369,18 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			if (!(FSLockIndexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpIndices)))
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
-				return FALSE;
+				return false;
 			}
 
       if (!FSCreateNormalBuffer(&Mxloadheader->Group[group].renderObject[execbuf], triangleCount))
       {
         DebugPrintf("Mxload() failed to create normal buffer in %s\n", Filename);
-        return FALSE;
+        return false;
       }
       if (!(FSLockNormalBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpNormals)))
       {
         Msg( "Mxload() normal lock failed in %s\n", Filename );
-        return FALSE;
+        return false;
       }
 
 			ibIndex = 0;
@@ -388,7 +388,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
-				Uint16Pnt = (uint16 *) Buffer;
+				Uint16Pnt = (u_int16_t *) Buffer;
 				texture_type = *Uint16Pnt++;
 				group_vertex_start = *Uint16Pnt++;
 				group_vertex_num = *Uint16Pnt++;
@@ -397,7 +397,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				DebugPrintf("trinagles %d\n", num_triangles);
 				Buffer = (char *) Uint16Pnt;
 
-				Mxloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(LVERTEX));
+				Mxloadheader->Group[group].texture_group_vert_off[execbuf][i] = (u_int32_t) (group_vertex_start*sizeof(LVERTEX));
 /* bjd - CHECK
 				OP_STATE_LIGHT(1, lpPointer);
 
@@ -462,7 +462,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				if( Mxloadheader->num_texture_files == 0 )
 				{
 					Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = NULL;
-					Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = FALSE;
+					Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = false;
 				}
 				else
 				{
@@ -493,7 +493,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			}
 
 //			OP_STATE_RENDER( 1, lpPointer);
-//				STATE_DATA(D3DRENDERSTATE_FOGENABLE, FALSE, lpPointer );
+//				STATE_DATA(D3DRENDERSTATE_FOGENABLE, false, lpPointer );
 //			OP_EXIT(lpPointer);
 
 			//free(vertexArray);
@@ -503,20 +503,20 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			if (!(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() vb unlock failed in %s\n", Filename );
-				return FALSE ;
+				return false ;
 			}
 
 			/*	unlock the index buffer	*/
 			if (!(FSUnlockIndexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() ib unlock failed in %s\n", Filename );
-				return FALSE ;
+				return false ;
 			}
 
       if (!(FSUnlockNormalBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
       {
         Msg( "Mxload() normal unlock failed in %s\n", Filename );
-        return FALSE ;
+        return false ;
       }
 
 			Mxloadheader->Group[group].renderObject[execbuf].numTextureGroups = num_texture_groups;
@@ -531,7 +531,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			{
 				//Mxloadheader->Group[ group ].renderObject[execbuf].texture = NULL;
 				Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = NULL;
-				Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = FALSE;
+				Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = false;
 			}
 			else
 			{
@@ -544,7 +544,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	}
 
 	// Background Animation Stuff......
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 	Uint16Pnt++;		// skip old mxv flag..
 	num_animations = *Uint16Pnt++;
 	Mxloadheader->AnimData.num_animations = num_animations;
@@ -556,7 +556,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			frames = *Uint16Pnt++;
 			maxloops = *Uint16Pnt++;
 			animsize = *Uint16Pnt++;
-			Mxloadheader->AnimData.AnimSeq[i] = (uint16 *) malloc( animsize * sizeof( uint16 ) );
+			Mxloadheader->AnimData.AnimSeq[i] = (u_int16_t *) malloc( animsize * sizeof( u_int16_t ) );
 			Uint16Pnt2 = Mxloadheader->AnimData.AnimSeq[i];
 			for( e = 0 ; e < animsize ; e++ )
 			{
@@ -570,7 +570,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			for( execbuf=0 ; execbuf<Mxloadheader->Group[group].num_execbufs; execbuf++)
 			{
 				// Animating background polys......
-				Uint16Pnt = (uint16 *) Buffer;
+				Uint16Pnt = (u_int16_t *) Buffer;
 				Mxloadheader->Group[group].num_animating_polys[execbuf] = *Uint16Pnt++;
 				Buffer = ( char * ) Uint16Pnt;
 				if( Mxloadheader->Group[group].num_animating_polys[execbuf] != 0 )
@@ -582,25 +582,25 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 					if( !PolyAnim )
 					{
 						Msg( "Mxload() Polyanim failed in %s\n", Filename );
-						return FALSE;
+						return false;
 					}
 
 					if (!(FSLockVertexBuffer(&Mxloadheader->Group[ group ].renderObject[execbuf], &lpLVERTEX)))
 					{
 						Msg( "Mxload : Lock ExecBuffer failed\n" );
-						return FALSE;
+						return false;
 					}
 
 					for( i = 0 ; i < Mxloadheader->Group[group].num_animating_polys[execbuf] ; i++ )
 					{
-						Uint8Pnt = (uint8 *) Buffer;
+						Uint8Pnt = (u_int8_t *) Buffer;
 						for( e = 0 ; e < 32 ; e ++ )
 						{
 							PolyAnim->Tag[e] = *Uint8Pnt++;
 						}
 						Buffer = ( char * ) Uint8Pnt;
 
-						Uint16Pnt = (uint16 *) Buffer;
+						Uint16Pnt = (u_int16_t *) Buffer;
 						animation = *Uint16Pnt++;
 						frames = *Uint16Pnt++;
 						vertices = *Uint16Pnt++;
@@ -610,7 +610,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						PolyAnim->CurrentTime = 0.0F;
 						PolyAnim->MasterTime = 0.0F;
 						PolyAnim->CurrentOffset = 0;
-						PolyAnim->currentframe = (uint16) -1;
+						PolyAnim->currentframe = (u_int16_t) -1;
 						PolyAnim->newframe = 0;
 
 						PolyAnim->animation =animation;
@@ -624,13 +624,13 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						if( !PolyAnim->vert)
 						{
 							Msg( "Mxload() PolyAnim->Vert failed\n", Filename );
-							return FALSE;
+							return false;
 						}
 						PolyAnim->UVs  = (TANIMUV *) malloc( vertices * frames * sizeof(TANIMUV) );
 						if( !PolyAnim->UVs)
 						{
 							Msg( "Mxload() PolyAnim->UVs failed\n", Filename );
-							return FALSE;
+							return false;
 						}
 
 						intPnt = PolyAnim->vert;
@@ -638,7 +638,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 						Buffer = ( char * ) Uint16Pnt;
 
-						Uint16Pnt = (uint16 *) Buffer;
+						Uint16Pnt = (u_int16_t *) Buffer;
 						for( e = 0 ; e < vertices  ; e++ )
 						{
 							*intPnt++ = *Uint16Pnt++;
@@ -667,7 +667,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 					if (!(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 					{
 						Msg( "Mxload : Unlock ExecBuffer failed\n" );
-						return FALSE ;
+						return false ;
 					}
 				}
 			}
@@ -681,7 +681,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 /*===================================================================
 	Point Direction Data
 ===================================================================*/
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 
 	if( *Uint16Pnt++ )
 	{
@@ -695,14 +695,14 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			if( !Mxloadheader->FirePoints )
 			{
 				Mxloadheader->NumFirePoints = 0;
-				return( FALSE );
+				return( false );
 			}
 
 			FirePointPtr = Mxloadheader->FirePoints;
 
 			for( i = 0; i < NumFirePoints; i++ )
 			{
-				FirePointPtr->ID = *Uint16Pnt++;				// ID ( uint16 )
+				FirePointPtr->ID = *Uint16Pnt++;				// ID ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
 				FirePointPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				FirePointPtr->Pos.y = *FloatPnt++;
@@ -713,7 +713,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				FirePointPtr->Up.x = *FloatPnt++;				// Up ( 3 floats )
 				FirePointPtr->Up.y = *FloatPnt++;
 				FirePointPtr->Up.z = *FloatPnt++;
-				Uint16Pnt = (uint16 *) FloatPnt;
+				Uint16Pnt = (u_int16_t *) FloatPnt;
 				FirePointPtr++;
 			}
 		}
@@ -733,14 +733,14 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			if( !Mxloadheader->SpotFX )
 			{
 				Mxloadheader->NumSpotFX = 0;
-				return( FALSE );
+				return( false );
 			}
 
 			SpotFXPtr = Mxloadheader->SpotFX;
 
 			for( i = 0; i < NumSpotFX; i++ )
 			{
-				SpotFXPtr->Type = *Uint16Pnt++;				// Type ( uint16 )
+				SpotFXPtr->Type = *Uint16Pnt++;				// Type ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
 				SpotFXPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				SpotFXPtr->Pos.y = *FloatPnt++;
@@ -754,18 +754,18 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				SpotFXPtr->StartDelay = ( *FloatPnt++ * ANIM_SECOND );	// Start Delay
 				SpotFXPtr->ActiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Active Delay
 				SpotFXPtr->InactiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Inactive Delay
-				Int16Pnt = (int16 *) FloatPnt;
-				SpotFXPtr->Primary = (int8) *Int16Pnt++;	// Primary ( int16 )
-				SpotFXPtr->Secondary = (int8) *Int16Pnt++;	// Secondary ( int16 )
-				Uint32Pnt = (uint32 *) Int16Pnt;
+				Int16Pnt = (int16_t *) FloatPnt;
+				SpotFXPtr->Primary = (int8_t) *Int16Pnt++;	// Primary ( int16_t )
+				SpotFXPtr->Secondary = (int8_t) *Int16Pnt++;	// Secondary ( int16_t )
+				Uint32Pnt = (u_int32_t *) Int16Pnt;
 				Colour = *Uint32Pnt++;
 
 #if	MX_VERSION_NUMBER == 2
-//				Int16Pnt = (int16 *) Uint32Pnt;
+//				Int16Pnt = (int16_t *) Uint32Pnt;
 //				SpotFXPtr->SoundFX = *Int16Pnt++;
-//				Uint16Pnt = (uint16 *) Int16Pnt;
+//				Uint16Pnt = (u_int16_t *) Int16Pnt;
 
-				Int8Pnt = (int8 *) Uint32Pnt;
+				Int8Pnt = (int8_t *) Uint32Pnt;
 
 				c = 0;
 				do
@@ -795,13 +795,13 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				FloatPnt = (float *) Int8Pnt;
 				SpotFXPtr->SoundFXVolume = *FloatPnt++;
 				SpotFXPtr->SoundFXSpeed = *FloatPnt++;
-				Uint16Pnt = (uint16 *) FloatPnt;
+				Uint16Pnt = (u_int16_t *) FloatPnt;
 #else
-				Uint16Pnt = (uint16 *) Uint32Pnt;
+				Uint16Pnt = (u_int16_t *) Uint32Pnt;
 #endif
-				SpotFXPtr->Red = (uint8) ( ( Colour >> 16 ) & 255 );
-				SpotFXPtr->Green = (uint8) ( ( Colour >> 8 ) & 255 );
-				SpotFXPtr->Blue = (uint8) ( Colour & 255 );
+				SpotFXPtr->Red = (u_int8_t) ( ( Colour >> 16 ) & 255 );
+				SpotFXPtr->Green = (u_int8_t) ( ( Colour >> 8 ) & 255 );
+				SpotFXPtr->Blue = (u_int8_t) ( Colour & 255 );
 				SpotFXPtr++;
 			}
 		}
@@ -825,38 +825,38 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	if ( colourkey )
 		DebugPrintf( "Mxload: %d colourkey triangles found\n", colourkey );
 	// Mxloadheader is valid and can be executed...
-	Mxloadheader->state = TRUE;
-	return( TRUE );
+	Mxloadheader->state = true;
+	return( true );
 }
 /*===================================================================
 	Procedure	:		Execute all group buffers for a Mxloadheader
 	Input		;		MXLOADHEADER *
-				:		uint16		Models[] Index
-	Output		:		FLASE/TRUE
+				:		u_int16_t		Models[] Index
+	Output		:		FLASE/true
 ===================================================================*/
 
-BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
+_Bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model  )
 {
 	int		i,e,f;
 	int		group;
 	RENDERMATRIX Matrix;
-	BOOL	Display;
+	_Bool	Display;
     LPLVERTEX	lpPointer = NULL;
 	LPLVERTEX	lpLVERTEX = NULL;
 	POLYANIM * PolyAnim;
-	uint32 * uint32Pnt;
+	u_int32_t * u_int32Pnt;
 	TANIMUV * TanimUV;
-	BOOL	VertBufferLocked;
+	_Bool	VertBufferLocked;
 
 	ModelTextureAnimation( Mxloadheader );
 
-	if (Mxloadheader->state == TRUE )
+	if (Mxloadheader->state == true )
 	{
 		for ( group=0 ; group<Mxloadheader->num_groups ; group++)
 		{
 			for ( i=0 ; i<Mxloadheader->Group[group].num_execbufs; i++)
 			{
-				VertBufferLocked = FALSE;
+				VertBufferLocked = false;
 
 				if( Mxloadheader->Group[group].num_animating_polys[i] && Mxloadheader->AnimData.num_animations )
 				{
@@ -873,17 +873,17 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 							{
 								if (!(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[i], &lpPointer)))
 								{
-									return FALSE;
+									return false;
 								}
 
-								VertBufferLocked = TRUE;
+								VertBufferLocked = true;
 							}
 
-							uint32Pnt = (uint32 *) PolyAnim->vert;
+							u_int32Pnt = (u_int32_t *) PolyAnim->vert;
 							for( e = 0 ; e < PolyAnim->vertices ; e++ )
 							{
 
-								lpLVERTEX = lpPointer+ *uint32Pnt++;
+								lpLVERTEX = lpPointer+ *u_int32Pnt++;
 								TanimUV = PolyAnim->UVs;
 								TanimUV += e + (PolyAnim->vertices * PolyAnim->newframe);
 								lpLVERTEX->tu = TanimUV->u;
@@ -899,19 +899,19 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 					// unlock it..
 					if (!(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[i])))
 					{
-						return FALSE;
+						return false;
 					}
-					VertBufferLocked = FALSE;
+					VertBufferLocked = false;
 				}
 
 				if( Mxloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 				{
 
-					if( Model != (uint16) -1 )
+					if( Model != (u_int16_t) -1 )
 					{
 						if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 						{
-							if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+							if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = false;
 						}
 #if 1
 						switch( Models[ Model ].Func )
@@ -927,7 +927,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 
 					if (!FSGetWorld(&Matrix))
 					{
-						return FALSE;
+						return false;
 					}
 
 					if( Models[ Model ].Flags & MODFLAG_UseClipGroup )
@@ -941,14 +941,14 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 				}
 				else
 				{
-					Display = TRUE;
+					Display = true;
 
-					if( Model != (uint16) -1 )
+					if( Model != (u_int16_t) -1 )
 					{
 
 						if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 						{
-							if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+							if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = false;
 						}
 
 						switch( Models[ Model ].Func )
@@ -968,7 +968,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 							case MODFUNC_OrbitPulsar:
 								if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 								{
-									if( !LightModel( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+									if( !LightModel( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = false;
 								}
 								break;
 
@@ -991,7 +991,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 						if (!draw_object(&Mxloadheader->Group[group].renderObject[i]))
 						{
 							render_reset_lighting_variables();
-							return FALSE;
+							return false;
 						}
 						render_reset_lighting_variables();
 					}
@@ -999,7 +999,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 /*
@@ -1085,7 +1085,7 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 		Mxloadheader->OrgAddr = NULL;
 	}
 
-	Mxloadheader->state = FALSE;
+	Mxloadheader->state = false;
 }
 
 
@@ -1097,30 +1097,30 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 	Output		:		Nothing
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
-extern	int16		LevelNum;
-BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL LevelSpecific )
+extern	int16_t		LevelNum;
+_Bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool LevelSpecific )
 {
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
-	uint16		*	Uint16Pnt;
+	u_int16_t		*	Uint16Pnt;
 	int			i;
 	char	*	FileNamePnt;
-	uint32		*	Uint32Pnt;
-	uint32			MagicNumber;
-	uint32			VersionNumber;
-	int8			TempFilename[ 256 ];
+	u_int32_t		*	Uint32Pnt;
+	u_int32_t			MagicNumber;
+	u_int32_t			VersionNumber;
+	int8_t			TempFilename[ 256 ];
 
 	// Mxloadheader is not valid until everything has been done..
-	Mxloadheader->state = FALSE;
+	Mxloadheader->state = false;
 	Mxloadheader->Buffer = NULL;
 
 
-	if( Panel == TRUE )
+	if( Panel == true )
 	{
-		if( DrawPanel == FALSE )
+		if( DrawPanel == false )
 		{
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -1130,7 +1130,7 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 	if( !File_Size )
 	{
 		Msg( "PreMxload() File %s does not exist\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	Buffer = calloc( 1, File_Size + 32 );
@@ -1138,7 +1138,7 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 	if( Buffer == NULL )
 	{
 		Msg( "PreMxload() Allocate buffer for %s failed\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	Read_Size = Read_File( Filename, Buffer, File_Size );
@@ -1146,12 +1146,12 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 	if( Read_Size != File_Size )
 	{
 		Msg( "PreMxload() Error reading file %s\n", Filename );
-		return( FALSE );
+		return( false );
 	}
 
 	Mxloadheader->OrgAddr = Buffer;
 
-	Uint32Pnt = (uint32 *) Buffer;
+	Uint32Pnt = (u_int32_t *) Buffer;
 	MagicNumber = *Uint32Pnt++;
 	VersionNumber = *Uint32Pnt++;
 	Buffer = (char *) Uint32Pnt;
@@ -1159,10 +1159,10 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 	if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != MX_VERSION_NUMBER  ) )
 	{
 		Msg( "PreMxload() Incompatible model ( .MX ) file %s", Filename );
-		return( FALSE );
+		return( false );
 	}
 
-	Uint16Pnt = (uint16 *) Buffer;
+	Uint16Pnt = (u_int16_t *) Buffer;
 
 	Mxloadheader->num_texture_files = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;
@@ -1170,7 +1170,7 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 	if ( Mxloadheader->num_texture_files > MAXTPAGESPERMXLOAD )
 	{
 		Msg( "PreMxload() Too many textures in %s\n", Filename );
-		return FALSE;
+		return false;
 	}
 
 	if ( Mxloadheader->num_texture_files !=0)
@@ -1186,18 +1186,18 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 			else
 				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxloadheader->ImageFile[i][0] );
 
-			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (uint16) (Panel ^ TRUE) , Panel ^ TRUE, FALSE, 0, 0 );
+			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (u_int16_t) (Panel ^ true) , Panel ^ true, false, 0, 0 );
 			if( Mxloadheader->TloadIndex[i] == -1 )
 			{
 				Msg( "PreMxload() Too many TPages\n" );
-				return FALSE;
+				return false;
 			}
 		}
 
 	}
 
 	Mxloadheader->Buffer = Buffer;
-	return( TRUE );
+	return( true );
 }
 
 
@@ -1205,15 +1205,15 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 /*===================================================================
 	Procedure	:		Execute all group buffers for a Mxloadheader
 	Input		;		MXLOADHEADER *
-				:		uint16		Models[] Index
-	Output		:		FLASE/TRUE
+				:		u_int16_t		Models[] Index
+	Output		:		FLASE/true
 ===================================================================*/
-BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
+_Bool ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model )
 {
 	int			i;
 	int			group;
 
-	if (Mxloadheader->state == TRUE )
+	if (Mxloadheader->state == true )
 	{
 		for ( group=0 ; group<Mxloadheader->num_groups ; group++)
 		{
@@ -1221,12 +1221,12 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 			{
 				if (!draw_object(&Mxloadheader->Group[group].renderObject[i]))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -1238,12 +1238,12 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 ===================================================================*/
 void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  )
 {
-	uint16		*	Uint16Pnt;
+	u_int16_t		*	Uint16Pnt;
 	int	i;
 	int	execbuf;
 	int	group;
 	POLYANIM * PolyAnim;
-	uint16 * AnimData;
+	u_int16_t * AnimData;
 	float	ExtraTime;
 	if( !Mxloadheader->AnimData.num_animations )
 		return;
@@ -1288,10 +1288,10 @@ void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  )
 /*===================================================================
 	Procedure	:		Restore the coolours for a Mxloadheader..
 	Input		;		MXLOADHEADER *
-	Output		:		FLASE/TRUE
+	Output		:		FLASE/true
 ===================================================================*/
 
-BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
+_Bool RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 {
 	int		i,e;
 	int		group;
@@ -1301,7 +1301,7 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 	LPLVERTEX			VertPtr;
 
 	if( !Mxloadheader1->state )
-		return FALSE;
+		return false;
 	for ( group=0 ; group<Mxloadheader1->num_groups ; group++)
 	{
 		for ( i=0 ; i<Mxloadheader1->Group[group].num_execbufs; i++)
@@ -1311,10 +1311,10 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 			// lock the execute buffer
 //			if ( Mxloadheader1->Group[group].lpExBuf[i]->lpVtbl->Lock( Mxloadheader1->Group[group].lpExBuf[i], &debDesc1 ) != D3D_OK) // bjd
 //			if (FSLockExecuteBuffer(Mxloadheader1->Group[group].lpExBuf[i], &debDesc1 ) != D3D_OK)
-//				return FALSE;
+//				return false;
 			if (!(FSLockVertexBuffer(&Mxloadheader1->Group[group].renderObject[i], &lpD3DLVERTEX1)))
 			{
-				return FALSE;
+				return false;
 			}
 
 //			lpD3DLVERTEX1 = (LPLVERTEX) debDesc1.lpData;
@@ -1331,14 +1331,14 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 			}
 
 //			if ( Mxloadheader1->Group[group].lpExBuf[i]->lpVtbl->Unlock( Mxloadheader1->Group[group].lpExBuf[i] ) != D3D_OK)
-//				return FALSE;
+//				return false;
 			if (!(FSUnlockVertexBuffer(&Mxloadheader1->Group[group].renderObject[i])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 /*===================================================================
 	Procedure	:		CheckFor 3d Panel PolyAnims..

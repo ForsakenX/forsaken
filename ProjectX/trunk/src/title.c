@@ -65,16 +65,16 @@
 extern render_info_t render_info;
 extern float MaxMessageTime;
 extern void SetViewportError( char *where, render_viewport_t *vp );
-extern BOOL ShowNamesAnyway;
+extern _Bool ShowNamesAnyway;
 
-BOOL SpaceOrbSetup = FALSE;
+_Bool SpaceOrbSetup = false;
 void DefaultJoystickSettings( USERCONFIG *u );
 void ReInitJoysticks( void );
 
 #define MAX_KEYDEF_PAGES	(4)
 int CurrentPage = 0;
 int MaxPage = 0;
-BOOL MissileCameraEnable;
+_Bool MissileCameraEnable;
 void MenuItemSelect( MENUITEM * item );
 void GetLevelName( char *buf, int bufsize, int level );
 void MenuItemDrawPageName( MENUITEM *Item );
@@ -93,34 +93,34 @@ static void KeyDelete( DEFKEY *kdef, int key );
 static void KeyDeleteRepeating( DEFKEY *key );
 static void KeySelect( DEFKEY *kdef, int key );
 
-BOOL DeletePilot( LIST *l, int item );
+_Bool DeletePilot( LIST *l, int item );
 void MoveConfigFile( MENU *Menu );
 
-extern void ShowNodeNetwork( uint32 NetMask );
+extern void ShowNodeNetwork( u_int32_t NetMask );
 void ProcessTextItems (void);
 
-BOOL	Last_SWMonoChrome = FALSE;
+_Bool	Last_SWMonoChrome = false;
 
 /*===================================================================
 		Externals ...
 ===================================================================*/
-extern BOOL WaitingToQuit;
-extern int16	NumPrimaryPickups;
+extern _Bool WaitingToQuit;
+extern int16_t	NumPrimaryPickups;
 extern float FlashTextActive;
 extern float GlobalSoundAttenuation;
 extern float WATER_CELLSIZE;
-extern BOOL flush_input;
+extern _Bool flush_input;
 extern double	Gamma;
-extern BOOL MyUseShortPackets;
-extern BOOL UseShortPackets;
-extern BOOL MyResetKillsPerLevel;
-extern BOOL TintBikeTeamColor;
+extern _Bool MyUseShortPackets;
+extern _Bool UseShortPackets;
+extern _Bool MyResetKillsPerLevel;
+extern _Bool TintBikeTeamColor;
 extern int CrystalsFound;
-extern	int16	NumGoldBars;
+extern	int16_t	NumGoldBars;
 extern int Secrets;
 extern int TotalSecrets;
-extern	int16		NumInitEnemies;
-extern	int16		NumKilledEnemies;
+extern	int16_t		NumInitEnemies;
+extern	int16_t		NumKilledEnemies;
 
 extern MODELNAME *TitleModelSet;
 
@@ -129,22 +129,22 @@ int GameCompleted = GAMECOMPLETE_NotComplete;
 #define NUM_TITLE_LOOPS 2
 #define TITLE_LOOP_DiscAmbience 0
 #define TITLE_LOOP_VduAmbience 1
-uint32 TitleLoopId[ NUM_TITLE_LOOPS ];
+u_int32_t TitleLoopId[ NUM_TITLE_LOOPS ];
 
-BOOL JoystickInput = TRUE;
+_Bool JoystickInput = true;
 
-BOOL CTF = FALSE;
-BOOL NeedFlagAtHome = TRUE;
-BOOL CanCarryOwnFlag = FALSE;
-BOOL OwnFlagTeleportsHome = TRUE;
+_Bool CTF = false;
+_Bool NeedFlagAtHome = true;
+_Bool CanCarryOwnFlag = false;
+_Bool OwnFlagTeleportsHome = true;
 
-BOOL ShowWeaponsPossessedOnHUD;
-BOOL ShowClockOnHUD;
-BOOL ShowKPMOnHUD;
-BOOL ShowSpeedOnHUD;
-BOOL ShowTotalSpeedOnHUD;
-BOOL ShowPlayersOnHUD;
-BOOL ShowPlayersOnHUDbyKills;
+_Bool ShowWeaponsPossessedOnHUD;
+_Bool ShowClockOnHUD;
+_Bool ShowKPMOnHUD;
+_Bool ShowSpeedOnHUD;
+_Bool ShowTotalSpeedOnHUD;
+_Bool ShowPlayersOnHUD;
+_Bool ShowPlayersOnHUDbyKills;
 
 int	NetUpdateIntervalCmdLine = 0;
 int	GoalScore = 5;
@@ -152,37 +152,37 @@ int BountyBonusInterval = 10;
 
 float LevelTimeTaken;
 
-BOOL NoMenuBack = FALSE;
+_Bool NoMenuBack = false;
 
-int16 DummyTextureIndex;
+int16_t DummyTextureIndex;
 extern FRAME_INFO	*	Title_LevelPics_Header;
 extern FRAME_INFO	*	Title_TVFrame_Header;
 extern char MissionTextNames[MAXLEVELS][128];
 extern char MissionTextPics[MAXLEVELS][128];
-extern int32 ColPerspective;
-extern int32 MyColPerspective;
-extern BOOL	JustExitedMenu;
-extern BOOL	PickupValid[ MAXPICKUPTYPES ];
-extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
-extern BOOL LockOutWindows;
+extern int32_t ColPerspective;
+extern int32_t MyColPerspective;
+extern _Bool	JustExitedMenu;
+extern _Bool	PickupValid[ MAXPICKUPTYPES ];
+extern _Bool	MyPickupValid[ MAXPICKUPTYPES ];
+extern _Bool LockOutWindows;
 extern SLIDER BikerSpeechSlider;
-extern int16 Lives;
+extern int16_t Lives;
 extern BYTE	GameStatus[];	// Game Status for every Ship...
-extern BOOL bSoundEnabled;
-extern BOOL ShowTrigZones;
-extern BOOL ShowEFZones;
-extern BOOL ShowTeleports;
-extern BOOL ShowBoundingBoxes;
-extern BOOL ShowColZones;
+extern _Bool bSoundEnabled;
+extern _Bool ShowTrigZones;
+extern _Bool ShowEFZones;
+extern _Bool ShowTeleports;
+extern _Bool ShowBoundingBoxes;
+extern _Bool ShowColZones;
 
 #ifdef DEMO_SUPPORT
 extern float DemoAvgFps;
 extern float DemoTotalTime;
-extern int32 DemoGameLoops;
+extern int32_t DemoGameLoops;
 #endif
 
-extern	int16 actual_volume;
-extern	BOOL RearCameraActive;
+extern	int16_t actual_volume;
+extern	_Bool RearCameraActive;
 char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2];
 extern char *JoystickPOVDirections[];
 extern char *ShipAxisText[];
@@ -196,7 +196,7 @@ extern char *ShipActionText[];
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];	
 extern TLOADHEADER	Tloadheader;
 extern int	TeamMembers[MAX_TEAMS];
-extern	int16	ShowPortal;
+extern	int16_t	ShowPortal;
 extern float VduScaleX, VduScaleY;
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	POLY   			Polys[MAXPOLYS];
@@ -210,7 +210,7 @@ extern	OFF_FILES Title_OffsetFiles[];
 extern	CAMERA	CurrentCamera;
 void Build_View();
 extern	RENDEROBJECT RenderBufs[4];
-extern	int16		NumLevels;
+extern	int16_t		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 
@@ -223,15 +223,15 @@ char	biker_config[256] = DEFAULT_CONFIG_FILE;
 char	biker_name[256] = DEFAULT_PLAYER_NAME;
 char	bike_name[16];
 char	biker_text[512];
-BOOL	quitting = FALSE;
-int16	SelectedBike = 0; //MODEL_Borg;
-int16	NumTitleModelsToLoad;
+_Bool	quitting = false;
+int16_t	SelectedBike = 0; //MODEL_Borg;
+int16_t	NumTitleModelsToLoad;
 float TriggerInitialAnimation = 0.0F;
-BOOL	Our_CalculateFrameRate(void);
-extern	uint16			FirstFmPolyUsed;
-extern	uint16			FirstPolyUsed;
-extern	uint16			FirstLineUsed;
-extern	uint16			FirstScrPolyUsed;
+_Bool	Our_CalculateFrameRate(void);
+extern	u_int16_t			FirstFmPolyUsed;
+extern	u_int16_t			FirstPolyUsed;
+extern	u_int16_t			FirstLineUsed;
+extern	u_int16_t			FirstScrPolyUsed;
 extern USERCONFIG *player_config;
 extern	float framelag;
 extern	BYTE	MyGameStatus;
@@ -239,23 +239,23 @@ extern	int		FontWidth;
 extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
-BOOL	ShowWeaponKills = FALSE;
+_Bool	ShowWeaponKills = false;
 extern	float	ModeScaleX;
 extern	float	ModeScaleY;
-extern	BOOL					HostDuties;
-extern	int16	BikeModels[ MAXBIKETYPES ];
+extern	_Bool					HostDuties;
+extern	int16_t	BikeModels[ MAXBIKETYPES ];
 extern	MLOADHEADER Mloadheader;
-extern int16		LevelNum;
-extern int16		NewLevelNum;
-extern int16		NumLevels;
+extern int16_t		LevelNum;
+extern int16_t		NewLevelNum;
+extern int16_t		NumLevels;
 extern char	ShortLevelNames[MAXLEVELS][32];
-extern	BOOL                    IsHost;
+extern	_Bool                    IsHost;
 extern	RENDERMATRIX view;
-extern	BOOL ClearBuffers( void );
+extern	_Bool ClearBuffers( void );
 extern	MATRIX	MATRIX_Identity;
 extern	render_viewport_t viewport;
 extern	MODEL	Models[];
-uint16	BackgroundModel[NUMOFTITLEMODELS];
+u_int16_t	BackgroundModel[NUMOFTITLEMODELS];
 extern	TLOADHEADER Tloadheader;
 extern	float	LastDistance[];
 extern	MXLOADHEADER ModelHeaders[];
@@ -263,17 +263,17 @@ extern	MODELNAME	TitleModelNames[];
 extern	MODELNAME	InterLevelModelNames[];
 extern	char *PrimaryDescription[];
 extern	char *SecondaryDescription[];
-extern	BOOL	ShowUntriggeredNMEs;
-extern	BOOL	BilinearSolidScrPolys;
-extern	BOOL	MyRandomPickups;
-extern  BOOL bIgnoreWM_SIZE;
+extern	_Bool	ShowUntriggeredNMEs;
+extern	_Bool	BilinearSolidScrPolys;
+extern	_Bool	MyRandomPickups;
+extern  _Bool bIgnoreWM_SIZE;
 
 /*===================================================================
 		Mode changing stuff..
 ===================================================================*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-SLIDER GammaSlider = {50, 300, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
+SLIDER GammaSlider = {50, 300, 10, 100, 0, 0.0F, 0.0F, 0, false, NULL, NULL, SetGamma };
 
 /*===================================================================
 		Level changing stuff..
@@ -307,8 +307,8 @@ int CurrentJoyPOV;
 int	CurrentJoyPOVDirection;
 LIST JoystickAxisList = { 0 };
 LIST AxisActionList = { 0 };
-BOOL AxisInvert = FALSE;
-BOOL FineControl = FALSE;
+_Bool AxisInvert = false;
+_Bool FineControl = false;
 SLIDER DeadzoneSlider = {0, 100, 5, 30 };
 SLIDER SensitivitySlider = {0, 100, 5, 50 };
 SLIDER AxisSlider;
@@ -316,7 +316,7 @@ SLIDER AxisActionSlider;
 int AxisMap[MAX_JOYSTICK_AXIS];
 int JoystickMap[MAX_JOYSTICKS];
 #define NUM_AXIS_TEST_SCRPOLYS 2
-uint16 AxisTestScrPoly[NUM_AXIS_TEST_SCRPOLYS];
+u_int16_t AxisTestScrPoly[NUM_AXIS_TEST_SCRPOLYS];
 #define AXISTEST_XPos 20
 #define AXISTEST_YPos 150
 #define AXISTEST_Width 160
@@ -327,7 +327,7 @@ float AxisPtr_xmin, AxisPtr_xmax, AxisPtr_ymin, AxisPtr_ymax, AxisPtr_mid;
 #define JOYCONFIG_AssignButton 1
 int JoystickConfigState;
 
-BOOL InTitleRoom;
+_Bool InTitleRoom;
 
 char DemoAvgFpsText[128];
 char DemoTotalFramesText[128];
@@ -339,7 +339,7 @@ char ErrorMessage[256];
 char NotifyMessage[ 256 ];
 int	ErrorMoveBackBy;
 MENU * ErrorNewMenu;
-BOOL IgnoreMenuFuncs = FALSE;
+_Bool IgnoreMenuFuncs = false;
 
 /*===================================================================
 		Fucntions without a header..
@@ -407,24 +407,24 @@ void WatchPlayerSelected( MENUITEM *Item);
 char *SearchKey( char c );
 void PauseDemoToggle( MENUITEM *Item );
 
-BOOL InitLevels( char *levels_list );
+_Bool InitLevels( char *levels_list );
 void InitLevelSelect( MENU *Menu );
 void ExitLevelSelect( MENU * Menu );
 void GoToStats( MENUITEM *Item );
 void GetSavedGameData( void );
 
-BOOL SetFOV( float fov );
-BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude );
-BOOL MakeTranslucent( uint16 Model );
-void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *maxoffset );
-BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float tr, float tg, float tb, float ta );
+_Bool SetFOV( float fov );
+_Bool TintModelVertices( u_int16_t Model, float percent, EXCLUDEDVERTICES *Exclude );
+_Bool MakeTranslucent( u_int16_t Model );
+void GetExtremeOffsets( u_int16_t Model, PLANE *plane, float *minoffset, float *maxoffset );
+_Bool TintOneVertex( u_int16_t Model, u_int16_t Group, u_int16_t ExecBuf, int VertexNo, float tr, float tg, float tb, float ta );
 
-BOOL CompareVectors(VECTOR vector1, VECTOR vector2);
+_Bool CompareVectors(VECTOR vector1, VECTOR vector2);
 void SetDiscStatus(MENU *menu);
 void PlaceObjects (void);
 void HighlightDisc(int disc);
 void ResetDisc(int disc);
-void TintDisc(uint16 Model);
+void TintDisc(u_int16_t Model);
 void ExpandDiscs(void);
 void SetUpRotate(int disc);
 void RotateDiscs(int disc, int DifficultyLevel);
@@ -441,14 +441,14 @@ void PlotBikeScanLine(void);
 void PulsateVDU(void);
 void MorphHoloLight(void);
 
-BOOL DeleteSavedGame( LIST *l, int item );
-BOOL DeleteDemo( LIST *l, int item );
-BOOL ListDelete( LIST *l, int item );
+_Bool DeleteSavedGame( LIST *l, int item );
+_Bool DeleteDemo( LIST *l, int item );
+_Bool ListDelete( LIST *l, int item );
 
 char *AxisName( SLIDER *s );
 char *AxisActionName( SLIDER *s );
-BOOL SetAxisSlider( SLIDER *s );
-BOOL SetAxisActionSlider( SLIDER *s );
+_Bool SetAxisSlider( SLIDER *s );
+_Bool SetAxisActionSlider( SLIDER *s );
 
 void InitHostMenu( MENU *Menu );
 void HostListPlayerSelected( MENUITEM *Item );
@@ -457,16 +457,16 @@ void InitWatchList( MENU *Menu );
 /**************************
 new text functions
 ***************************/
-BOOL DrawTextEditCursor( TEXTINFO *TextInfo, int font );
+_Bool DrawTextEditCursor( TEXTINFO *TextInfo, int font );
 void GetTextPos(TEXTINFO *TextInfo, float *xpos, float *ypos, int line, float totalheight);
-BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight);
+_Bool DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight);
 void Print3Dots(TEXTINFO *TextInfo, float totalheight);
 void DisplayTextItem (TEXTINFO *TextInfo);
 void GetFinalChars( TEXTINFO *TextInfo, int currentpos, int length);
 void PrintTextItem (TEXTINFO *TextInfo);
-BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline);
+_Bool FormatTextItem(int start, int end, TEXTINFO *TextInfo, _Bool *newline);
 int GetScreenFont(int fontsize);
-BOOL Plot2dBox (TEXTINFO *TextInfo);
+_Bool Plot2dBox (TEXTINFO *TextInfo);
 void InitScreenFonts (void);
 TEXTINFO *InitTextInfo( void );
 void DrawFlatMenuListText ( MENUITEM *Item );
@@ -533,16 +533,16 @@ void InitCrystalsFoundText( MENU *Menu );
 void SelectGoldBarModel( MENU *Menu );
 void AfterSpecialMessage( MENUITEM *Item );
 void NextLevelOrGameComplete( MENUITEM *Item );
-BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot);
+_Bool SetUpLines (u_int16_t Model, PLANE plane, VECTOR *rot);
 void KillLines(void);
 void KillDerivedPlane(void);
 void KillPlane(void);
 void SwapBikes(void);
-BOOL LoadBike(void);
+_Bool LoadBike(void);
 void GetVduTextFormattingInfo (TEXT *t);
 void RestoreDefaultControlSettings( MENUITEM *Item );
 void PlayCursorSfx( void );
-BOOL ChangeLevel( void );
+_Bool ChangeLevel( void );
 void AddBikeArrow( char *name, int num );
 void CheckMenuTimer( void );
 
@@ -621,8 +621,8 @@ void LoadBikeChar(MENUITEM *Item);
 void LoadLevelPic(MENUITEM *Item);
 void LoadBikeCharPic(MENUITEM *Item);
 void KillBikeCharPic( MENU *Menu );
-BOOL LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, uint16 *scrpoly, BOOL *displayed);
-BOOL DisplayPicOnTV( FRAME_INFO **header, int *frame, uint16 *poly, BOOL *displayed, float zoffset );
+_Bool LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, u_int16_t *scrpoly, _Bool *displayed);
+_Bool DisplayPicOnTV( FRAME_INFO **header, int *frame, u_int16_t *poly, _Bool *displayed, float zoffset );
 void LoadSavedGamePic( char *file );
 
 void ExitEventRotateInRightVDU(TITLE_EVENT *TitleEvent);
@@ -639,7 +639,7 @@ void InitLeftVDUPanTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void ChooseDiscTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void InitVisualsTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void NewMenuSelectMode( MENUITEM *Item );
-BOOL ProcessSlider2( int Key );
+_Bool ProcessSlider2( int Key );
 void SelectConnectionToStart (MENUITEM *Item);
 void SelectConnectionToJoin (MENUITEM *Item);
 void GetInitialPlayers ( MENU *menu );
@@ -667,19 +667,19 @@ void GoToNextLevel( MENUITEM *Item );
 void TitleLoadGame( MENUITEM *Item );
 void StartTimer( int timer );
 void SaveMacros( MENUITEM *Item );
-BOOL SetWaterDetail( SLIDER *slider );
-BOOL SetTextScale( SLIDER *slider );
-BOOL SetNumPrimaryPickups( SLIDER *slider );
+_Bool SetWaterDetail( SLIDER *slider );
+_Bool SetTextScale( SLIDER *slider );
+_Bool SetNumPrimaryPickups( SLIDER *slider );
 void InitHostWaitingToStart( MENU *Menu );
 void BackToJoinSession( MENUITEM *Item );
 
 /***********************************
 Highlight box functions
 ***********************************/
-uint16 PlotHighlightPoly (float xmin, float ymin, float xmax, float ymax, uint8 r, uint8 g, uint8 b);
+u_int16_t PlotHighlightPoly (float xmin, float ymin, float xmax, float ymax, u_int8_t r, u_int8_t g, u_int8_t b);
 void ProcessHighlightBox(void);
-void DrawHighlightBox(TEXTINFO *TextInfo, uint8 r, uint8 g, uint8 b);
-BOOL ProcessWeaponOrder ( int Key );
+void DrawHighlightBox(TEXTINFO *TextInfo, u_int8_t r, u_int8_t g, u_int8_t b);
+_Bool ProcessWeaponOrder ( int Key );
 
 /***********************************
 text messaging
@@ -692,7 +692,7 @@ void GetTitleMessage(void);
 ===================================================================*/
 
 extern BYTE	TeamNumber[MAX_PLAYERS];
-extern BOOL	ShowStartPoints;
+extern _Bool	ShowStartPoints;
 
 enum
 {
@@ -781,8 +781,8 @@ TEXT OriginalText;
 
 SLIDER SensitivityXSlider				= { 0, 16, 1, 5, 0, 0.0F };
 SLIDER SensitivityYSlider				= { 0, 16, 1, 5, 0, 0.0F };
-SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
-SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
+SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, false, NULL, SetWaterDetail };
+SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, false, NULL, SetNumPrimaryPickups };
 SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
 SLIDER MyPacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider1	= { 1, 10, 1, 2, 0, 0.0F };
@@ -794,7 +794,7 @@ SLIDER MaxPlayersSlider				= { 1, MAX_PLAYERS, 1, MAX_PLAYERS, 0, 0.0F };
 SLIDER MaxKillsSlider						= { 0, 255, 1, 0, 0, 0.0F };
 SLIDER GoalScoreSlider					= { 1, 10, 1, 5, 0, 0.0F };
 SLIDER BountyBonusSlider				= { 1, 30, 1, 10, 0, 0.0F };
-SLIDER CTFSlider							= { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, FALSE, CTF_Type };
+SLIDER CTFSlider							= { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, false, CTF_Type };
 SLIDER DemoSpeed						= { 1, 16, 1, 8, 0, 0.0F };
 SLIDER SfxSlider							= { 0, 10, 1, 10, 0, 0.0F };
 SLIDER BikerSpeechSlider				= { 0, 10, 1, 8, 0, 0.0F };
@@ -802,57 +802,57 @@ SLIDER BikeCompSpeechSlider			= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER DemoEyesSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
 SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS+1, 1, 0, 0, 0.0F }; // which player's pov to watch
-SLIDER TextScaleSlider				= { 0, 5, 1, 1, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetTextScale };
+SLIDER TextScaleSlider				= { 0, 5, 1, 1, 0, 0.0F, 0.0F, 0, false, NULL, NULL, SetTextScale };
 
-BOOL ShowTeamInfo;
-BOOL MenuFrozen					= FALSE;
-BOOL NoTeamSelect				= FALSE;
-BOOL UseNewMenus				= TRUE;
-BOOL GameRestricted				= FALSE;
-BOOL Autoleveling				= TRUE;
-BOOL DebugInfo					= FALSE;
-BOOL GodMode					= FALSE;
-BOOL TexturesEnabled			= TRUE;
-BOOL ShowPlaneRGB				= FALSE;
-BOOL PlayDemo					= FALSE;
-BOOL PauseDemo					= FALSE;
-BOOL RecordDemo					= FALSE;
-BOOL BrightShips;
-BOOL MyBrightShips;
-BOOL BikeExhausts;
-BOOL ScreenSaving				= TRUE;
-BOOL ShowNode					= FALSE;
-BOOL NodeCube					= FALSE;
-BOOL OldNodeCube				= FALSE;
-BOOL NodeCubeType				= FALSE;
-BOOL TeamGame					= FALSE;
-BOOL BountyBonus;
-BOOL BikeEnginesOn;
-BOOL ToggleTest;
+_Bool ShowTeamInfo;
+_Bool MenuFrozen					= false;
+_Bool NoTeamSelect				= false;
+_Bool UseNewMenus				= true;
+_Bool GameRestricted				= false;
+_Bool Autoleveling				= true;
+_Bool DebugInfo					= false;
+_Bool GodMode					= false;
+_Bool TexturesEnabled			= true;
+_Bool ShowPlaneRGB				= false;
+_Bool PlayDemo					= false;
+_Bool PauseDemo					= false;
+_Bool RecordDemo					= false;
+_Bool BrightShips;
+_Bool MyBrightShips;
+_Bool BikeExhausts;
+_Bool ScreenSaving				= true;
+_Bool ShowNode					= false;
+_Bool NodeCube					= false;
+_Bool OldNodeCube				= false;
+_Bool NodeCubeType				= false;
+_Bool TeamGame					= false;
+_Bool BountyBonus;
+_Bool BikeEnginesOn;
+_Bool ToggleTest;
 
-BOOL StereoEnabled;
+_Bool StereoEnabled;
 float StereoEyeSep, StereoFocalDist;
 stereo_right_color_t StereoRightColor;
 
-BOOL	CanSelectBike[ MAXBIKETYPES ] =
+_Bool	CanSelectBike[ MAXBIKETYPES ] =
 {
-	TRUE,	// Borg,
-	TRUE,	// Beard,
-	TRUE,	// LaJay,
-	TRUE,	// Excop,
-	TRUE,	// Trucker,
-	TRUE,	// Foetoid,
-	TRUE,	// JapBird,
-	TRUE,	// Nutter,
-	TRUE,	// Rhesus,
-	TRUE,	// Joe,
-	TRUE,	// Shark,
-	TRUE,	// HK5,
-	TRUE,	// Nubia,
-	TRUE,	// Mofisto,
-	TRUE,	// Cerbero,
-	TRUE,	// Slick,
-	TRUE,	// FlyGirl,
+	true,	// Borg,
+	true,	// Beard,
+	true,	// LaJay,
+	true,	// Excop,
+	true,	// Trucker,
+	true,	// Foetoid,
+	true,	// JapBird,
+	true,	// Nutter,
+	true,	// Rhesus,
+	true,	// Joe,
+	true,	// Shark,
+	true,	// HK5,
+	true,	// Nubia,
+	true,	// Mofisto,
+	true,	// Cerbero,
+	true,	// Slick,
+	true,	// FlyGirl,
 };
 int		AllowedBike[ ALLOWED_BIKETYPES ] =
 {
@@ -876,14 +876,14 @@ int		AllowedBike[ ALLOWED_BIKETYPES ] =
 };
 
 #define BIKEFEATURESLIDER( VALUE1, VALUE2, VALUE3, VALUE4, VALUE5, VALUE6, VALUE7, VALUE8 ) \
-	{ 0, 10, 1, (VALUE1), 0, 0.0F, 0.0F, 0, FALSE },\
-	{ 0, 10, 1, (VALUE2), 0, 0.0F, 0.0F, 0, FALSE },\
-	{ 0, 10, 1, (VALUE3), 0, 0.0F, 0.0F, 0, FALSE },\
-	{ 0, 10, 1, (VALUE4), 0, 0.0F, 0.0F, 0, FALSE },\
-	{ 0, 10, 1, (VALUE5), 0, 0.0F, 0.0F, 0, FALSE },\
-	{ 0, 10, 1, (VALUE6), 0, 0.0F, 0.0F, 0, FALSE },\
-	{ 0, 10, 1, (VALUE7), 0, 0.0F, 0.0F, 0, FALSE },\
-	{ 0, 10, 1, (VALUE8), 0, 0.0F, 0.0F, 0, FALSE }
+	{ 0, 10, 1, (VALUE1), 0, 0.0F, 0.0F, 0, false },\
+	{ 0, 10, 1, (VALUE2), 0, 0.0F, 0.0F, 0, false },\
+	{ 0, 10, 1, (VALUE3), 0, 0.0F, 0.0F, 0, false },\
+	{ 0, 10, 1, (VALUE4), 0, 0.0F, 0.0F, 0, false },\
+	{ 0, 10, 1, (VALUE5), 0, 0.0F, 0.0F, 0, false },\
+	{ 0, 10, 1, (VALUE6), 0, 0.0F, 0.0F, 0, false },\
+	{ 0, 10, 1, (VALUE7), 0, 0.0F, 0.0F, 0, false },\
+	{ 0, 10, 1, (VALUE8), 0, 0.0F, 0.0F, 0, false }
 
 SLIDER BikeFeatureSlider[MAXBIKETYPES][8] = {
 	{BIKEFEATURESLIDER(  4,	 5,	 6, 10,	 5,	5, 10, 10)},	// Lokasenna
@@ -1613,7 +1613,7 @@ MENU	MENU_NEW_Controls = {
 };
 
 // Out-of-game menu
-extern BOOL ShowInfo;
+extern _Bool ShowInfo;
 MENU	MENU_NEW_DetailLevels = {
 	"", NULL, ExitDetailLevels, NULL, 0,
 	{
@@ -1657,7 +1657,7 @@ char *StereoColorSliderFunc( SLIDER *slider )
 	}
 }
 
-BOOL SetStereoColor( SLIDER *slider )
+_Bool SetStereoColor( SLIDER *slider )
 {
 	DebugPrintf( "Setting stereo color to %d\n", slider->value );
 	switch( slider->value )
@@ -1666,14 +1666,14 @@ BOOL SetStereoColor( SLIDER *slider )
 	case ST_BLUE:
 	case ST_CYAN:
 		StereoRightColor = (stereo_mode_t) slider->value;
-		return TRUE;
+		return true;
 	default:
 		DebugPrintf( "Unknown stereo slider value: %d\n", slider->value );
-		return FALSE;
+		return false;
 	}
 }
 
-SLIDER StereoColorSlider = {0, 2, 1, 2, 2, 0.0F, 0.0F, 0, TRUE, StereoColorSliderFunc, SetStereoColor, NULL };
+SLIDER StereoColorSlider = {0, 2, 1, 2, 2, 0.0F, 0.0F, 0, true, StereoColorSliderFunc, SetStereoColor, NULL };
 
 MENU	MENU_NEW_VisualsStereo = {
 	"Stereo", NULL, NULL, NULL, 0,
@@ -1760,7 +1760,7 @@ void JoiningEnter(MENU *Menu)
 		return;
 	}
 	
-	PlayDemo = FALSE;
+	PlayDemo = false;
 	
 	// this means I need a ship number
 	WhoIAm = UNASSIGNED_SHIP;
@@ -1772,7 +1772,7 @@ void JoiningEnter(MENU *Menu)
 	SetBikeMods( 0 );
 
 	// we are a joiner
-	IsHost = FALSE;
+	IsHost = false;
 
 	// reset player list
 	PlayersList.items = 0;
@@ -2072,11 +2072,11 @@ MENU	MENU_NEW_DemoPlayBack = {
 
 #endif
 
-int16 InGameLoadGameLevelNum;
-extern	BOOL	CountDownOn;
-BOOL InGameLoadASinglePlayerGame( MENUITEM * Item )
+int16_t InGameLoadGameLevelNum;
+extern	_Bool	CountDownOn;
+_Bool InGameLoadASinglePlayerGame( MENUITEM * Item )
 {
-	int16 OldNewLevelNum;
+	int16_t OldNewLevelNum;
 	OldNewLevelNum = NewLevelNum;
 	WhoIAm = 0;								// I was the first to join...
 	NewLevelNum = -1;
@@ -2085,14 +2085,14 @@ BOOL InGameLoadASinglePlayerGame( MENUITEM * Item )
 	if( NewLevelNum == -1 )
 	{
 		NewLevelNum = OldNewLevelNum;
-		return FALSE;
+		return false;
 	}
 	InGameLoadGameLevelNum = NewLevelNum;
 	NewLevelNum = OldNewLevelNum;
 
-	CountDownOn = FALSE;
+	CountDownOn = false;
 	MyGameStatus = STATUS_InGameLoadGameStartingSinglePlayer;
-	return TRUE;
+	return true;
 }
 
 MENU	MENU_LoadSavedGame = {
@@ -2270,14 +2270,14 @@ MENU	MENU_STATS_Start = {
 };
 
 px_timer_t quick_text_timer;
-BOOL quick_text_timer_initialized = FALSE;
-BOOL quick_text_timer_ok( void )
+_Bool quick_text_timer_initialized = false;
+_Bool quick_text_timer_ok( void )
 {
 	if(!quick_text_timer_initialized)
 	{
 		timer_clear(&quick_text_timer);
-		quick_text_timer_initialized = TRUE;
-		return TRUE;
+		quick_text_timer_initialized = true;
+		return true;
 	}
 	return timer_peek(&quick_text_timer) > 0.05f;
 }
@@ -2843,8 +2843,8 @@ MENU	MENU_Visuals = {
 	}
 };
 
-extern BOOL ShowFrameRate;
-extern BOOL ShowInfo;
+extern _Bool ShowFrameRate;
+extern _Bool ShowInfo;
 
 MENU	MENU_Options = {
 	LT_MENU_Options0/*"Options"*/, NULL, (MenuFunc) SetGamePrefs, NULL, 0,
@@ -3147,9 +3147,9 @@ TEXTINFO *TextStack[ MAXTEXTITEMS ];
 TEXTINFO *BikeNameTextPtr;
 int MenuStackLevel = 0;
 int TextStackLevel = 0;
-BOOL ForceConfigSave = FALSE;
+_Bool ForceConfigSave = false;
 
-BOOL TitleOnceOnly = TRUE;
+_Bool TitleOnceOnly = true;
 
 VECTOR View, Look, Up, PanFrom, PanTo, PanFrom2, PanTo2, VDULookPos, DiscLookPos, DiscViewPos, VDUViewPos, StartLookPos, StartViewPos;
 float CurrentFOV;
@@ -3168,7 +3168,7 @@ int DiscStatus, StackStatus, StackMode, RotWiggle[6], CurrentTextures[6], Curren
 
 float JudderAngle[Judders] = {180.0F, 182.0F, 178.0F, 181.0F, 179.0F, 180.0F, 180.0F};
 
-BOOL Turned[6], LastTurned[6], RotateSetup, DoHighlight, 
+_Bool Turned[6], LastTurned[6], RotateSetup, DoHighlight, 
 	 OnRotateVDU, OnVDUflip, RotVDU, PanDone, VDU_Active;
 
 
@@ -3177,11 +3177,11 @@ MXLOADHEADER ModelHeaders[MAXMODELHEADERS];	//as defined in models.c
 POLYANIM *PolyAnim[6];
 MXLOADHEADER * Mxloadheader[6];
 
-uint16 fmpoly[2];
-uint16 scrpoly[MAXVDULINES][MAXVDULINELENGTH];
-uint16 bikerfmpoly;
-uint16 BikerScrPoly;
-uint16 LevelScrPoly;
+u_int16_t fmpoly[2];
+u_int16_t scrpoly[MAXVDULINES][MAXVDULINELENGTH];
+u_int16_t bikerfmpoly;
+u_int16_t BikerScrPoly;
+u_int16_t LevelScrPoly;
 int CurrentPos[MAXVDULINELENGTH];
 
 typedef struct 
@@ -3196,8 +3196,8 @@ typedef struct
 	float BracketEndRot;
 }VDUINFO;
 
-#define Left	TRUE
-#define	Right	FALSE
+#define Left	true
+#define	Right	false
 
 VECTOR CurrentVDUPos;
 float VDUrot;
@@ -3211,46 +3211,46 @@ int KeyDefLines[MAXVDULINES];
 
 int CurrentToggle, CurrentTextItem, NoOfLists, CurrentKeyDef;
 
-BOOL VduProcessed, LineExists;
-BOOL AutoSelectConnection = FALSE;
-BOOL InitialTexturesSet;
-BOOL LevelDisplayed;
-BOOL BikerDisplayed;
+_Bool VduProcessed, LineExists;
+_Bool AutoSelectConnection = false;
+_Bool InitialTexturesSet;
+_Bool LevelDisplayed;
+_Bool BikerDisplayed;
 int BikerSet;
 
-BOOL DoNotRotateText;
+_Bool DoNotRotateText;
 int BikeChars[MAXBIKETYPES] = {0,7,11,10,6,15,14,12,4,8,2,9,13,5,1, 3, -1};
-uint16 BikeModelLookup[MAXBIKETYPES] = {TITLE_MODEL_Lokasenna, TITLE_MODEL_Beard, TITLE_MODEL_LAJay, TITLE_MODEL_ExCop, TITLE_MODEL_RexHardy,
+u_int16_t BikeModelLookup[MAXBIKETYPES] = {TITLE_MODEL_Lokasenna, TITLE_MODEL_Beard, TITLE_MODEL_LAJay, TITLE_MODEL_ExCop, TITLE_MODEL_RexHardy,
 								TITLE_MODEL_Foetoid, TITLE_MODEL_NimSoo, TITLE_MODEL_Nutta, TITLE_MODEL_Sceptre, TITLE_MODEL_Jo,
 								TITLE_MODEL_Shark, TITLE_MODEL_HK5, TITLE_MODEL_Nubia, TITLE_MODEL_Mofisto, TITLE_MODEL_Cerbero, TITLE_MODEL_Slick, TITLE_MODEL_ExtraModels};
 float BikeModelScale[MAXBIKETYPES] = {0.73F, 0.8F, 0.85F, 0.74F, 0.6F, 0.61F, 0.71F, 0.65F, 0.7F, 0.64F, 0.57F, 0.66F, 0.84F, 0.66F, 0.66F, 0.66F, 1.0F};
 
 float HoloModelScale;
 
-uint16 InterLevelModelLookup[MAXBIKETYPES] = { TITLE_MODEL_Crystal, TITLE_MODEL_GoldBar };
+u_int16_t InterLevelModelLookup[MAXBIKETYPES] = { TITLE_MODEL_Crystal, TITLE_MODEL_GoldBar };
 float InterLevelModelScale[MAXBIKETYPES] = {0.41F, 0.6F };
 
 float *HoloScaleLookupTable;
-uint16 *HoloModelLookup;
+u_int16_t *HoloModelLookup;
 
-#define NOT_ROTATED FALSE
-#define ROTATED TRUE
+#define NOT_ROTATED false
+#define ROTATED true
 
 float	DiscExpand;
 float	DiscSpeed; 
 float	DiscWiggleDistance;
-BOOL	DiscExpandOut;
+_Bool	DiscExpandOut;
 float	DiscPauseTime;
-BOOL	DiscWiggleUp;
+_Bool	DiscWiggleUp;
 float WipeTime;
 float VduDisplayTime = 0.5F;
 float HoloRotx = 0.0F;
 float HoloRoty = 0.0F;
 float HoloRotz = 0.0F;
 
-#define	WipeOut	TRUE
-#define	WipeIn	FALSE
-BOOL WipeStatus;
+#define	WipeOut	true
+#define	WipeIn	false
+_Bool WipeStatus;
 
 VECTOR Holopad = {-486.0F, -86.0F, 497.0F};
 float HolopadRange = 150.0F;
@@ -3289,10 +3289,10 @@ new text globals
 
 TEXTINFO VDUTextItems[MAXTEXTITEMS];
 int Current2dBox;
-BOOL DrawTextItemBox;
+_Bool DrawTextItemBox;
 float VDUoffsetX = 105.0F;
 float VDUoffsetY = 15.0F;
-uint16 screenpoly[MAXNUMOFSCRPOLYS];
+u_int16_t screenpoly[MAXNUMOFSCRPOLYS];
 int CurrentScreenPoly;
 float	TEXTINFO_currentx;					
 float	TEXTINFO_currenty;					
@@ -3302,35 +3302,35 @@ float	TEXTINFO_LineSpace;
 int		TEXTINFO_currentstartpoint;			
 int		TEXTINFO_currentendpoint;
 int CurrentTextItem;
-uint16 testboxpoly;	
-uint16 TextLookup[NUMSCREENFONTS][256];		
+u_int16_t testboxpoly;	
+u_int16_t TextLookup[NUMSCREENFONTS][256];		
 int character = 0;
 int CurrentTeletype;
 MENUITEM *LastMenuItem;
-BOOL ScreenPolyCursorActive;
-uint16 CursorScreenPoly;
-BOOL NewCursorActive;
-BOOL ForceNewLine;
+_Bool ScreenPolyCursorActive;
+u_int16_t CursorScreenPoly;
+_Bool NewCursorActive;
+_Bool ForceNewLine;
 
 /***************
 holo-bike stuff
 ***************/
 int SelectedBikeFrame;
-uint16 SelectedBikeModel;
-uint16 OldBikeModel;
+u_int16_t SelectedBikeModel;
+u_int16_t OldBikeModel;
 float BikeRot = 0.0F;
-uint16 BikeLine[MAXNUMOF2DPOLYS];
-uint16 CurrentHoloModel = (uint16)-1;
-BOOL LinesActive;
+u_int16_t BikeLine[MAXNUMOF2DPOLYS];
+u_int16_t CurrentHoloModel = (u_int16_t)-1;
+_Bool LinesActive;
 int CurrentLine;
 VECTOR BikePos;
 SCANLINES scanline[MAXNUMOF2DPOLYS];
-BOOL KnowExtremeVerts, BikeLoaded;
+_Bool KnowExtremeVerts, BikeLoaded;
 float CurrentOffset;
-BOOL BikeOnSwap, OnBikeShrink, LoadNewBike;
-BOOL LightHolopad;
+_Bool BikeOnSwap, OnBikeShrink, LoadNewBike;
+_Bool LightHolopad;
 
-BOOL BikeExpanded = FALSE;
+_Bool BikeExpanded = false;
 
 /**************
 new event globals
@@ -3340,7 +3340,7 @@ VECTOR OldViewPos;
 float OldVDUrot;
 float RoomDarkness, OldRoomDarkness;
 
-BOOL VDU_Ready;
+_Bool VDU_Ready;
 
 float HoloLightBrightness, OldHoloLightBrightness;
 
@@ -3349,7 +3349,7 @@ float StackRot;
 
 VECTOR stackpos[8];
 
-BOOL StackDown;
+_Bool StackDown;
 float MinStackTheta = 0.0F;
 float MaxStackTheta = 170.0F;
 
@@ -3362,15 +3362,15 @@ float BikeSwapScale, OldBikeSwapScale;
 float SelectedBikeScale, OldSelectedBikeScale;
 int	OldSelectedBike;
 float	OldBikeCharAlpha, BikeCharAlpha, LevelPicAlpha;
-BOOL HolopadJudderReq;
+_Bool HolopadJudderReq;
 
 float BracketRot, OldBracketRot;
 
 float TeleTypeTimer;
 int TeleTypeSkip;
-BOOL NewTextCharDisplayed = FALSE;
+_Bool NewTextCharDisplayed = false;
 
-BOOL ListRedrawReq;
+_Bool ListRedrawReq;
 
 int OldMenuStatus;
 
@@ -3401,17 +3401,17 @@ new slider globals
 #define MAXSLIDERSPERMENU 8
 #define NUMPOLYSPERSLIDER 1
 #define SLIDERSPEED 1.0F
-#define SLIDER_RefreshNeeded TRUE
-#define SLIDER_RefreshNotNeeded FALSE
+#define SLIDER_RefreshNeeded true
+#define SLIDER_RefreshNotNeeded false
 
 typedef struct
 {
 	MENUITEM *Item;
-	BOOL	needs_refresh;
+	_Bool	needs_refresh;
 }ACTIVESLIDERINFO;
 
 ACTIVESLIDERINFO ActiveSliderItem[MAXSLIDERSPERMENU];
-uint16 SliderPoly[MAXSLIDERSPERMENU][NUMPOLYSPERSLIDER];
+u_int16_t SliderPoly[MAXSLIDERSPERMENU][NUMPOLYSPERSLIDER];
 /**********************
 highlight box globals
 ***********************/
@@ -3428,29 +3428,29 @@ int HighlightPolyListStart;
 int HighlightPolyListEnd;
 #define HIGHLIGHT_SPEED			0.5F	// lowest res pixels per frame
 #define HIGHLIGHT_POLY_WIDTH	10	// lowest res pixels
-BOOL HighlightListEmpty;
-BOOL TestPoly = FALSE;
-BOOL WasteAFrame = FALSE;
+_Bool HighlightListEmpty;
+_Bool TestPoly = false;
+_Bool WasteAFrame = false;
 
 /********************
 weapon priority
 *********************/
-extern BOOL PrimaryValid[];
-extern BOOL SecondaryValid[];
+extern _Bool PrimaryValid[];
+extern _Bool SecondaryValid[];
 int WeaponList[ MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) ];
-int16 SelectedWeapon;
-uint16 Num_Unused_Weapons;
+int16_t SelectedWeapon;
+u_int16_t Num_Unused_Weapons;
 MENUITEM *WeaponItem;
-#define WEAPON_ChoosingFirst	FALSE
-#define WEAPON_ChoosingSecond	TRUE
-BOOL WeaponOrderStatus;
-uint16 MaxWeapons;
-int16 *PriorityList;
-int16 *OrderList;
+#define WEAPON_ChoosingFirst	false
+#define WEAPON_ChoosingSecond	true
+_Bool WeaponOrderStatus;
+u_int16_t MaxWeapons;
+int16_t *PriorityList;
+int16_t *OrderList;
 char **DescriptionList;
 TEXTINFO *IdiotText;
 char *IdiotTextPtr;
-BOOL *WeaponValid;
+_Bool *WeaponValid;
 
 /*******************
 text editing
@@ -3459,11 +3459,11 @@ float CursorTimer = 0.0F;
 #define CursorInterval	1.0F
 
 
-BOOL RescanLists = TRUE;
+_Bool RescanLists = true;
 int oldlistitems;
 
-BOOL TitleInitDone;
-BOOL HostQuitting = FALSE;
+_Bool TitleInitDone;
+_Bool HostQuitting = false;
 
 /*******************
 Team Select
@@ -3582,14 +3582,14 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 	{-1.0F, -1.0F, TITLE_EVENT_TIMER_IDLE, NULL}
 };
 
-extern BOOL InitView( void );
-extern BOOL render_mode_select( render_info_t * info );
-BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
+extern _Bool InitView( void );
+extern _Bool render_mode_select( render_info_t * info );
+_Bool RenderModeSelect( int mode, _Bool fullscreen, _Bool vsync )
 {
 	render_info_t old_info = render_info;
 	// this happens if Msg() or something else is called during resize etc...
 	if(!render_info.Mode)
-		return TRUE;
+		return true;
 	render_info.default_mode.h    = render_info.Mode[mode].h;
 	render_info.default_mode.w    = render_info.Mode[mode].w;
 	render_info.fullscreen        = fullscreen;
@@ -3608,7 +3608,7 @@ DebugPrintf("2 vsync = %d\n",render_info.vsync);
 	if (!InitView())
 	{
 		Msg("InitView failed.\n");
-		return FALSE;
+		return false;
 	}
 
 	// set default font scaling by resolution
@@ -3620,34 +3620,34 @@ DebugPrintf("2 vsync = %d\n",render_info.vsync);
 	SetTextScale(&TextScaleSlider);
 
 	SetGamePrefs();
-	return TRUE;
+	return true;
 }
 
-extern BOOL render_reset( render_info_t * info );
-BOOL RenderModeReset( void )
+extern _Bool render_reset( render_info_t * info );
+_Bool RenderModeReset( void )
 {
 	if(!render_reset( &render_info ))
-		return TRUE;
+		return true;
 	if (!InitView())
 	{
 	    Msg("InitView failed.\n");
-        return FALSE;
+        return false;
 	}
 	SetGamePrefs();
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
 	Procedure	:		Init Title load in all graphics etc for Titles..
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-extern void input_grab( BOOL clip );
-BOOL InitTitle()
+extern void input_grab( _Bool clip );
+_Bool InitTitle()
 {
 	framelag = 0;
 
 	if( ! render_info.fullscreen )
-		input_grab( FALSE );
+		input_grab( false );
     
 	InitModeCase();
 
@@ -3655,7 +3655,7 @@ BOOL InitTitle()
 
 	InitFont();
 
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -3731,16 +3731,16 @@ void SetInitialTitleParams()
 	DiscExpand = 3.0F;	// y distance that disc 1 will expand out by
 	DiscSpeed = 0.2F; 	// multiplier for disc rotate fn
 	DiscWiggleDistance = 4.0F;	// max y amount that discs wiggle by after expanding
-	DiscExpandOut = TRUE;	 
+	DiscExpandOut = true;	 
 	DiscPauseTime = 0.0F;
-	DiscWiggleUp = TRUE;
+	DiscWiggleUp = true;
 	CurrentDiscHighlight = -1;
-	RotateSetup = FALSE;
+	RotateSetup = false;
 	StackStatus = DISC_NOTHING;
-	InitialTexturesSet = FALSE;
+	InitialTexturesSet = false;
 					 
 	for (i=0; i<6; i++)
-		Turned[i] = TRUE;  
+		Turned[i] = true;  
 					 
 
 	/**********************************************************************************
@@ -3749,46 +3749,46 @@ void SetInitialTitleParams()
 	CurrentVDUHighlight = -1;
 
 
-	VduProcessed = FALSE;
+	VduProcessed = false;
 
 
 	/**********************************************************************************
 	Viewpoint movement
 	**********************************************************************************/
    	CameraStatus = CAMERA_AtStart;
-	PanDone = FALSE;
+	PanDone = false;
 
 
 	/***********************
 	new text stuff
 	************************/
 	Current2dBox = 0;
-	DrawTextItemBox = FALSE;	//draw the bounding box for VDU text items?
+	DrawTextItemBox = false;	//draw the bounding box for VDU text items?
 	CurrentScreenPoly = 0;
 	CurrentTextItem = 0;
 	CurrentTeletype = 0;
 	LastMenuItem = CurrentMenuItem;
-	ScreenPolyCursorActive = FALSE;
+	ScreenPolyCursorActive = false;
 
 
 	/***********************
 	holo-bike stuff
 	************************/
-	LinesActive = FALSE;
-	BikeLoaded = FALSE;
+	LinesActive = false;
+	BikeLoaded = false;
 	CurrentOffset = 0.0F;
-	BikeOnSwap = FALSE;
+	BikeOnSwap = false;
 
-	VDU_Ready = FALSE;
+	VDU_Ready = false;
 	StackRot = 0.0F;
 
-	StackDown = FALSE;
+	StackDown = false;
 	BikeSwapScale = 0.0F;
 
 	OldSelectedBike = -1;
 
-	HolopadJudderReq = TRUE;
-	ListRedrawReq = TRUE;
+	HolopadJudderReq = true;
+	ListRedrawReq = true;
 
 	RoomDarkness = 1.0F;
 
@@ -3808,7 +3808,7 @@ void SetInitialTitleParams()
 	***********************/
 	HighlightPolyListStart = 0;
 	HighlightPolyListEnd = 0;
-	HighlightListEmpty = TRUE;
+	HighlightListEmpty = true;
 
 	ResetAllEvents();
 
@@ -3817,8 +3817,8 @@ void SetInitialTitleParams()
 	for (i=0; i < MAXHIGHLIGHTITEMS; i++)
 		HighlightItem[ i ] = NULL;
 
-	LevelDisplayed = FALSE;
-	BikerDisplayed = FALSE;
+	LevelDisplayed = false;
+	BikerDisplayed = false;
 
 	InitTitleMessaging();
 
@@ -3826,7 +3826,7 @@ void SetInitialTitleParams()
 	MessagesDisplayed = 0;
 
 	// team game stuff....
-	memset( &PlayerReady, FALSE, sizeof(BOOL) * MAX_PLAYERS);
+	memset( &PlayerReady, false, sizeof(_Bool) * MAX_PLAYERS);
 	memset( TitleMessage, 0, sizeof(char) * MAXTEXTMSG * TITLE_TEXT_MSGS_STORED);
 
 }
@@ -3834,12 +3834,12 @@ void SetInitialTitleParams()
 /*===================================================================
 	Procedure	:		LoadTitleModels
 	Input		:		nothing...
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL LoadTitleModels(void)
+_Bool LoadTitleModels(void)
 {
 	int i;
-	uint16 CurrentModel;
+	u_int16_t CurrentModel;
 
    	// which set of models do we want to load?
 	if ( MyGameStatus == STATUS_BetweenLevels )
@@ -3861,7 +3861,7 @@ BOOL LoadTitleModels(void)
 	{
 		BackgroundModel[i] = FindFreeModel();
 				
-		if ( BackgroundModel[i] != (uint16) -1)
+		if ( BackgroundModel[i] != (u_int16_t) -1)
 		{	CurrentModel = BackgroundModel[i];
 			Models[CurrentModel].Flags = MODFLAG_Original;
 			Models[CurrentModel].Pos.x = 0.0F;
@@ -3881,7 +3881,7 @@ BOOL LoadTitleModels(void)
 			Models[CurrentModel].Func	= MODFUNC_Nothing;
 			Models[CurrentModel].ModelNum	= i;
 		}else
-			return FALSE;
+			return false;
 
 	}
 
@@ -3889,20 +3889,20 @@ BOOL LoadTitleModels(void)
 
 	PlaceObjects();
 
-	TitleInitDone = FALSE;
+	TitleInitDone = false;
 
 	// init all holo-object stuff...
 	
 	// actual model...
-	CurrentHoloModel = (uint16)-1;
+	CurrentHoloModel = (u_int16_t)-1;
 
 	// scan lines...
 	for ( i = 0; i < MAXNUMOF2DPOLYS; i++ )
 	{
-		BikeLine[ i ] = (uint16)-1;
+		BikeLine[ i ] = (u_int16_t)-1;
 	}
 
-	return TRUE;
+	return true;
 		
 }
 
@@ -3914,14 +3914,14 @@ void KillLines(void)
 	{ 
 		for (i=0; i<CurrentLine; i++)
 		{
-			if ( BikeLine[ i ] != (uint16)-1 )
+			if ( BikeLine[ i ] != (u_int16_t)-1 )
 			{
 				KillUsedPoly( BikeLine[i] );
-				BikeLine[ i ] = (uint16)-1;
+				BikeLine[ i ] = (u_int16_t)-1;
 			}
 		}
 
-		LinesActive = FALSE;
+		LinesActive = false;
 		CurrentLine = 0;	  
 	}
 
@@ -3929,7 +3929,7 @@ void KillLines(void)
 
 #define POINT_TO_PLANE( P, N ) ( (P)->x * (N)->Normal.x + (P)->y * (N)->Normal.y + (P)->z * (N)->Normal.z + ( (N)->Offset) )
 
-BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
+_Bool SetUpLines (u_int16_t Model, PLANE plane, VECTOR *rot)
 {
 	int num_polys;	
 	int poly, edge;
@@ -3945,7 +3945,7 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 	int font;
 	int edgebits;
 	int scanlinenum;
-	BOOL startset, endset;
+	_Bool startset, endset;
 	MXALOADHEADER	* mxaheader;
 	MXLOADHEADER	* mxheader;
 	int Group, ExecBuf;
@@ -4011,8 +4011,8 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 					tempv3.y *= HoloModelScale * scaleout; //* BikeSwapScale;
 					tempv3.z *= HoloModelScale * scaleout; //* BikeSwapScale;
 					
-					startset = FALSE;
-					endset = FALSE;
+					startset = false;
+					endset = false;
 
 					for (edge = 0; edge < 3; edge++)
 					{					 
@@ -4062,11 +4062,11 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 
 							if (!startset)
 							{	scanline[scanlinenum].start = IntPoint;
-								startset = TRUE;
+								startset = true;
 							}else
 							{
 								scanline[scanlinenum].end = IntPoint;
-								endset = TRUE;
+								endset = true;
 							}
 
 						}
@@ -4084,9 +4084,9 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 
 					BikeLine[CurrentLine] = FindFreePoly();
 						
-   					if( BikeLine[CurrentLine] != (uint16) -1 )
+   					if( BikeLine[CurrentLine] != (u_int16_t) -1 )
 					{
-						LinesActive = TRUE;
+						LinesActive = true;
 
 						Polys[ BikeLine[CurrentLine] ].Col1.R = 255;
 						Polys[ BikeLine[CurrentLine] ].Col1.G = 255;
@@ -4122,12 +4122,12 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 						Polys[ BikeLine[CurrentLine] ].Pos2.y = Models[Model].Pos.y + (scanline[i].start.y + plane.Normal.y * (thickness / 2.0F));
 						Polys[ BikeLine[CurrentLine] ].Pos2.z = Models[Model].Pos.z + (scanline[i].start.z + plane.Normal.z * (thickness / 2.0F));
 
-						AddPolyToTPage( BikeLine[CurrentLine], GetTPage( *Polys[ BikeLine[CurrentLine] ].Frm_Info, (int16) Polys[ BikeLine[CurrentLine] ].Frame ) );
+						AddPolyToTPage( BikeLine[CurrentLine], GetTPage( *Polys[ BikeLine[CurrentLine] ].Frm_Info, (int16_t) Polys[ BikeLine[CurrentLine] ].Frame ) );
 
 						CurrentLine++;
 					}
 					else
-						return FALSE;
+						return false;
 				}
 			}
 
@@ -4189,8 +4189,8 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 					tempv3.y *= HoloModelScale * scaleout; //* BikeSwapScale;
 					tempv3.z *= HoloModelScale * scaleout; //* BikeSwapScale;
 					
-					startset = FALSE;
-					endset = FALSE;
+					startset = false;
+					endset = false;
 
 					for (edge = 0; edge < 3; edge++)
 					{					 
@@ -4240,11 +4240,11 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 
 							if (!startset)
 							{	scanline[scanlinenum].start = IntPoint;
-								startset = TRUE;
+								startset = true;
 							}else
 							{
 								scanline[scanlinenum].end = IntPoint;
-								endset = TRUE;
+								endset = true;
 							}
 
 						}
@@ -4262,9 +4262,9 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 
 					BikeLine[CurrentLine] = FindFreePoly();
 						
-   					if( BikeLine[CurrentLine] != (uint16) -1 )
+   					if( BikeLine[CurrentLine] != (u_int16_t) -1 )
 					{
-						LinesActive = TRUE;
+						LinesActive = true;
 
 						Polys[ BikeLine[CurrentLine] ].Col1.R = 255;
 						Polys[ BikeLine[CurrentLine] ].Col1.G = 255;
@@ -4300,19 +4300,19 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 						Polys[ BikeLine[CurrentLine] ].Pos2.y = Models[Model].Pos.y + (scanline[i].start.y + plane.Normal.y * (thickness / 2.0F));
 						Polys[ BikeLine[CurrentLine] ].Pos2.z = Models[Model].Pos.z + (scanline[i].start.z + plane.Normal.z * (thickness / 2.0F));
 
-						AddPolyToTPage( BikeLine[CurrentLine], GetTPage( *Polys[ BikeLine[CurrentLine] ].Frm_Info, (int16) Polys[ BikeLine[CurrentLine] ].Frame ) );
+						AddPolyToTPage( BikeLine[CurrentLine], GetTPage( *Polys[ BikeLine[CurrentLine] ].Frm_Info, (int16_t) Polys[ BikeLine[CurrentLine] ].Frame ) );
 
 						CurrentLine++;
 					}
 					else
-						return FALSE;
+						return false;
 				}
 			}
 
 		}
 	}
 	
-	return TRUE;
+	return true;
 }
 
 /*===================================================================
@@ -4429,7 +4429,7 @@ void ExpandDiscs(void)
 			Models[BackgroundModel[CurrentDisc]].Pos.y = (OrigPos[CurrentDisc].y - DiscExpand * (i + 1));
 			StackY[i] = Models[BackgroundModel[CurrentDisc]].Pos.y;
 		}
-		DiscExpandOut = FALSE;
+		DiscExpandOut = false;
 		StackStatus = DISC_WIGGLE;
 	}
 
@@ -4439,8 +4439,8 @@ void ExpandDiscs(void)
 			Models[BackgroundModel[CurrentDisc]].Pos.y = OrigPos[CurrentDisc].y;
 		}
 		StackStatus = DISC_NOTHING;
-		DiscExpandOut = TRUE;
-		RotateSetup = FALSE;
+		DiscExpandOut = true;
+		RotateSetup = false;
 	}
 }
 
@@ -4602,7 +4602,7 @@ void RotateAllDiscs(void)
 {
 
 	int i, count;
-	static BOOL onceonly = FALSE;
+	static _Bool onceonly = false;
 
 
 	switch (StackStatus)
@@ -4611,7 +4611,7 @@ void RotateAllDiscs(void)
 			if ( !onceonly )
 			{
 				PlaySfx( SFX_StakAnimates, 1.0F );
-				onceonly = TRUE;
+				onceonly = true;
 			}
 			SetTextures(CurrentMenu);
 		   	ExpandDiscs();
@@ -4623,7 +4623,7 @@ void RotateAllDiscs(void)
 			if (!RotateSetup)
 			{	for (i = 0; i <=5; i++)
 					SetUpRotate(i);
-				RotateSetup = TRUE;
+				RotateSetup = true;
 			}
 
 			for (i=0; i<=5; i++)
@@ -4644,7 +4644,7 @@ void RotateAllDiscs(void)
 		case DISC_NOTHING:
 			StackMode = DISC_MODE_NONE;
 			DiscWiggleDistance = 4.0F;
-			onceonly = FALSE;
+			onceonly = false;
 		}
 
 }
@@ -4658,7 +4658,7 @@ void RotateAllDiscs(void)
 void RotateOneDisc(int disc)
 {
 
-	static BOOL onceonly = FALSE;
+	static _Bool onceonly = false;
 	
 	switch (StackStatus)
 	{
@@ -4666,7 +4666,7 @@ void RotateOneDisc(int disc)
 		if ( !onceonly )
 		{
 			PlaySfx( SFX_StakAnimates, 1.0F );
-			onceonly = TRUE;
+			onceonly = true;
 		}
 		ExpandDiscs();
 		break;
@@ -4676,7 +4676,7 @@ void RotateOneDisc(int disc)
 	case DISC_ROTATE:
 		if (!RotateSetup)
 				SetUpRotate(disc);
-			RotateSetup = TRUE;
+			RotateSetup = true;
 
 		RotateDiscs(disc, DifficultyDir );
 
@@ -4690,7 +4690,7 @@ void RotateOneDisc(int disc)
 	case DISC_NOTHING:
 		StackMode = DISC_MODE_NONE;
 		DiscWiggleDistance = 4.0F; 
-		onceonly = FALSE;
+		onceonly = false;
 		break;
 	}
 }
@@ -4701,7 +4701,7 @@ void MorphHoloLight(void)
 	int i;
 	float intensity;
 	static float theta = 0.0F;
-	uint16 Model = BackgroundModel[TITLE_MODEL_HoloLight];
+	u_int16_t Model = BackgroundModel[TITLE_MODEL_HoloLight];
 
 	theta += (float)((framelag/(0.75F * 60.0F)) * 90.0F);
 
@@ -4765,31 +4765,31 @@ void PulsateVDU(void)
 
 void InitHoloPad( void );
 void KillHoloModel( void );
-void LoadHoloModel( uint16 model );
+void LoadHoloModel( u_int16_t model );
 void ScaleHoloModel( float scale );
-void ShowHoloModel( uint16 model );
+void ShowHoloModel( u_int16_t model );
 void ProcessHoloModel( void );
 
-uint8 QuickStart = QUICKSTART_None; 
+u_int8_t QuickStart = QUICKSTART_None; 
 
 /*===================================================================
 	Procedure	:		Title Display...
 
 	Input		:		nothing...
-	Output		:		BOOL TRUE/FALSE
+	Output		:		_Bool true/false
 ===================================================================*/
-BOOL IpOnCLI;
-BOOL DisplayTitle(void)
+_Bool IpOnCLI;
+_Bool DisplayTitle(void)
 {
 #if 1 // bjd - CHECK IMPORTANT
-	uint16 i;
-	uint16	group;
+	u_int16_t i;
+	u_int16_t	group;
 	MENUITEM *Item;
 	LIST *l;
 
 	if (!InitialTexturesSet && CameraStatus != CAMERA_AtStart)
 	{
-		InitialTexturesSet = TRUE;
+		InitialTexturesSet = true;
 
 	   	for (i=0; i<6; i++)
 		{
@@ -4814,8 +4814,8 @@ BOOL DisplayTitle(void)
 		InitLevels( SINGLEPLAYER_LEVELS );
 		InitLevels( MULTIPLAYER_LEVELS );
 
-		TitleOnceOnly = FALSE;
-		WhoIAm = (uint8) UNASSIGNED_SHIP;
+		TitleOnceOnly = false;
+		WhoIAm = (u_int8_t) UNASSIGNED_SHIP;
 
 		InitScreenFonts();
 
@@ -4831,8 +4831,8 @@ BOOL DisplayTitle(void)
 	{
 
 		DarkenRoomForStart( NULL );
-		TitleInitDone = TRUE;
-		NoTeamSelect = FALSE;
+		TitleInitDone = true;
+		NoTeamSelect = false;
 		SetFOV( START_FOV );	// in case player was using nitro when finishing level!
 
 		if (UseNewMenus)
@@ -4931,13 +4931,13 @@ BOOL DisplayTitle(void)
 	if (!FSBeginScene())
 	{
 		Msg( "DisplayTitle() : BeginScene failed\n" );
-		return FALSE;
+		return false;
 	}
 
 	if (!FSSetView(&view))
 	{
 		Msg( "DisplayTitle() : SetMatrix failed\n" );
-		return FALSE;
+		return false;
 	}
 
 	if(!FSSetViewPort(&CurrentCamera.Viewport))
@@ -4947,14 +4947,14 @@ BOOL DisplayTitle(void)
 #else
 		Msg( "DisplayTitle() : SetViewport failed\n" );
 #endif
-		return FALSE;
+		return false;
 	}
 
 	FSClearBlack();
-	if (ClearBuffers() != TRUE )
+	if (ClearBuffers() != true )
 	{
 		Msg( "DisplayTitle() : ClearBuffers failed\n" );
-		return FALSE;
+		return false;
 	}
 
 	// reset all the normal execute status flags...
@@ -4962,7 +4962,7 @@ BOOL DisplayTitle(void)
 
 	if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
 	{
-		return FALSE;
+		return false;
 	}
 
 /*
@@ -4970,13 +4970,13 @@ BOOL DisplayTitle(void)
 */
 
 		if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-				return FALSE;
+				return false;
 #if 0
 /*
 Display 0 solid Clipped Faceme Transluecent Polys
 */
 		if( !DisplaySolidGroupClippedFmPolys( &RenderBufs[ 1 ], 0, lpDev, lpView ) )
-				return FALSE;
+				return false;
 #endif
 
 	// set all the Translucent execute status flags...
@@ -4988,14 +4988,14 @@ Display 0 solid Clipped Faceme Transluecent Polys
 ===================================================================*/
 
 		if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-				return FALSE;
+				return false;
 
 /*===================================================================
 Display 0 Clipped Faceme Transluecent Polys
 ===================================================================*/
 		
 		if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-				return FALSE;
+				return false;
 
 		ExecuteTransExe( 0 );
 		ExecuteTransExeUnclipped( 0 );
@@ -5005,20 +5005,20 @@ Display 0 Clipped Faceme Transluecent Polys
 ===================================================================*/
 
 	if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
-			return FALSE;
+			return false;
 
 /*===================================================================
 Display Non 0 Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 	if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
-			return FALSE;
+			return false;
 
 /*===================================================================
 	Display Transluecent Screen Polys
 ===================================================================*/
 
 		if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
-			return FALSE;
+			return false;
 
 //
 // turn off transparency mode
@@ -5031,26 +5031,26 @@ Display Non 0 Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
 	if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
-		return FALSE;
+		return false;
 
 /*===================================================================
 Display Opaque Lines
 ===================================================================*/
-		group = (uint16)-1;
+		group = (u_int16_t)-1;
 
 		ExecuteLines( group, &RenderBufs[ 0 ] );
 
 /*===================================================================
 Display Solid Lines
 ===================================================================*/
-		group = (uint16)-1;
+		group = (u_int16_t)-1;
 
 		ExecuteLines( group, &RenderBufs[ 0 ] );
 
 	if (!FSEndScene())
 	{
 		Msg( "DisplayTitle() : EndScene failed\n" );
-		return FALSE;
+		return false;
 	}
 
 	ScreenPolyProcess();
@@ -5092,7 +5092,7 @@ Event handling
 			MenuProcess();
 		}else
 		{	NewMenuSelectMode(NULL);
-			WasteAFrame = FALSE;
+			WasteAFrame = false;
 		}
 	}
 	else
@@ -5119,7 +5119,7 @@ Event handling
 		}
 	}
 
-	return TRUE;
+	return true;
 #endif
 }
 
@@ -5154,7 +5154,7 @@ void MenuRestart( MENU * Menu )
 		{
 			StackMode = DISC_MODE_ALL;
 	 		StackStatus = DISC_EXPAND;
-			DoHighlight = TRUE;
+			DoHighlight = true;
 		}
 	}
 
@@ -5587,11 +5587,11 @@ void MenuChange( MENUITEM * Item )
 	
 	MenuState = MENUSTATE_Select;
 	
-	DoHighlight = TRUE;	//menu has changed, therefore ensure option is highlighted
+	DoHighlight = true;	//menu has changed, therefore ensure option is highlighted
 
-	VduProcessed = FALSE;
+	VduProcessed = false;
 
-	PanDone = FALSE;
+	PanDone = false;
 
 	OldMenuStatus = CurrentMenu->MenuStatus;
 
@@ -5617,7 +5617,7 @@ void MenuChange( MENUITEM * Item )
 		{
 			CurrentMenuItem++;
 		}
-		NoMenuBack = FALSE;
+		NoMenuBack = false;
 		if ( CurrentMenu->FuncEntry && !IgnoreMenuFuncs)
 		{
 			CurrentMenu->FuncEntry( CurrentMenu );
@@ -5628,7 +5628,7 @@ void MenuChange( MENUITEM * Item )
 		{
 			VduClear();
 			ProcessVduItems(CurrentMenu);
-			//VDU_Ready = FALSE;
+			//VDU_Ready = false;
 			LastMenuItem = NULL;
 		}
 	}
@@ -5653,11 +5653,11 @@ void MenuBack()
 	   	if ( !InTitleRoom )
 			PlayCursorSfx();
 			
-		DoHighlight = TRUE;	//menu has changed, therefore ensure option is highlighted
+		DoHighlight = true;	//menu has changed, therefore ensure option is highlighted
 
-		VduProcessed = FALSE;
+		VduProcessed = false;
 
-		PanDone = FALSE;
+		PanDone = false;
 
 		OldMenuStatus = CurrentMenu->MenuStatus;
 	
@@ -5699,7 +5699,7 @@ void MenuBack()
 		{
 			VduClear();
 			ProcessVduItems(CurrentMenu);
-			//VDU_Ready = FALSE;
+			//VDU_Ready = false;
 			LastMenuItem = NULL;
 		}
 
@@ -5732,14 +5732,14 @@ void MenuBack()
 	}
 }
 
-void MenuBackSpecific( MENU *Menu, BOOL UseExitFuncs )
+void MenuBackSpecific( MENU *Menu, _Bool UseExitFuncs )
 {
 	IgnoreMenuFuncs = !UseExitFuncs;
 	
 	while( ( CurrentMenu != Menu ) && ( CurrentMenu != &MENU_Start ) )
 		MenuBack();
 
-	IgnoreMenuFuncs = FALSE;
+	IgnoreMenuFuncs = false;
 }
 
 /*===================================================================
@@ -5782,7 +5782,7 @@ void	MenuItemDrawCursor( MENUITEM * Item )
 				ResetDisc(CurrentDiscHighlight);
 			CurrentDiscHighlight = Item->y;
 			HighlightDisc(CurrentDiscHighlight);
-			DoHighlight = FALSE;
+			DoHighlight = false;
 		} 
 		break;
 	case CAMERA_AtStart:
@@ -5816,15 +5816,15 @@ void PlayCursorSfx( void )
 		PlaySfx( SFX_VidText, 1.0F );
 }
 
-BOOL ItemSelectable( MENUITEM *item )
+_Bool ItemSelectable( MENUITEM *item )
 {
 	if (item->highlightflags & TEXTFLAG_Unselectable)
-		return FALSE;
+		return false;
 
 	if ( NoTeamSelect && ( item->highlightflags & TEXTFLAG_TeamItem ) )
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 void CursorUp()
@@ -6244,7 +6244,7 @@ KeyDefine( MENUITEM *item, VirtualKeycode key )
 				joystick = KEY_JOYSTICK( key );
 				if ( joystick >= 0 && joystick < Num_Joysticks && JoystickInfo[ joystick ].connected )
 				{
-					JoystickInfo[ joystick ].assigned = TRUE;
+					JoystickInfo[ joystick ].assigned = true;
 				}
 			};
 			PlaySfx( SFX_InGameMenuSelect, 1.0F );
@@ -6264,11 +6264,11 @@ KeyDefine( MENUITEM *item, VirtualKeycode key )
 
 
 
-BOOL ProcessDefKey( int Key )
+_Bool ProcessDefKey( int Key )
 {
-	BOOL done;
+	_Bool done;
 
-	done = FALSE;
+	done = false;
 	switch( Key )
 	{
 	case SDLK_ESCAPE:
@@ -6286,7 +6286,7 @@ BOOL ProcessDefKey( int Key )
 	case SDLK_F12:
 		if ( KeyItem->Variable )
 			KeyDefine( KeyItem, (VirtualKeycode) 0 );
-		done = TRUE; // back out of key definition mode if illegal key selected
+		done = true; // back out of key definition mode if illegal key selected
 		break;
 	default:
 		if ( Key )
@@ -6295,7 +6295,7 @@ BOOL ProcessDefKey( int Key )
 			{
 				KeyDefine( KeyItem, (VirtualKeycode) Key );
 			}
-			done = TRUE;
+			done = true;
 		}
 		break;
 	}
@@ -6640,7 +6640,7 @@ void SelectToggle( MENUITEM *Item )
 
 	if ( Item->Variable )
 	{
-		*(BOOL *)(Item->Variable) = !*(BOOL *)(Item->Variable);
+		*(_Bool *)(Item->Variable) = !*(_Bool *)(Item->Variable);
 		if ( Item->Value )
 		{
 			set_toggle = (MenuItemFunc)(Item->Value);
@@ -6667,7 +6667,7 @@ void DrawToggle( MENUITEM *Item )
 	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 	if ( Item->Variable )
 	{
-		if ( *(BOOL *)(Item->Variable ) )
+		if ( *(_Bool *)(Item->Variable ) )
 		{
 			Print4x5Text( LT_ToggleOn/*" ON"*/, -1 , y , 1 );
 		}
@@ -6948,7 +6948,7 @@ void DrawKeyDef( MENUITEM *Item )
 	Output		:		Nothing
 ===================================================================*/
 
-extern BOOL InitView(void);
+extern _Bool InitView(void);
 extern void ReleaseView(void);
 void ExitDetailLevels( MENU *Menu )
 {
@@ -6970,7 +6970,7 @@ void InitBikerMenu( MENU *Menu )
 
 void InitBikeComputerMenu( MENU *Menu )
 {
-	static uint32 CurrentSpeechID = 0;
+	static u_int32_t CurrentSpeechID = 0;
 	BikeComputerList.selected_item = player_config->bikecomp;
 	KillBikeChar( NULL );
 	UpdateSfxForBikeComputer( player_config->bikecomp );
@@ -7002,7 +7002,7 @@ void ExitBikerMenu( MENU *Menu )
 {
 //	if ( ( memcmp( &Config, player_config, sizeof( Config ) ) ) || ForceConfigSave )
 	{
-		ForceConfigSave = FALSE;
+		ForceConfigSave = false;
 		*player_config = Config;
 		write_config( player_config, biker_config );
 	}
@@ -7073,7 +7073,7 @@ void InitControls( MENU *Menu )
 	float sensi;
 //	MENUITEM *item;
 
-	Autoleveling = ( Config.autolevel_rate != 0.0F ) ? TRUE : FALSE;
+	Autoleveling = ( Config.autolevel_rate != 0.0F ) ? true : false;
 
 	sensi = Config.mouse_x_sensitivity;
 	SensitivityXSlider.value = (int) (sensi / 0.12F);
@@ -7309,7 +7309,7 @@ void InitPilotName( MENU *menu )
 void SetPilotName( MENUITEM *item )
 {
 	FILE *f;
-	uint16 tempbike;
+	u_int16_t tempbike;
 	static char filepath[ 255 ];
 
 	// abort if pilot name empty
@@ -7457,7 +7457,7 @@ void InitPilotReName( MENU *menu )
 void RenamePilotName( MENUITEM *item )
 {
 	FILE *f;
-	uint16 tempbike;
+	u_int16_t tempbike;
 	static char fname[ 255 ];
 
 	if ( !strlen( PilotReName.text ) )
@@ -7530,7 +7530,7 @@ void GetBikeDetails(int Bike, MENUITEM *item)
 	SelectedBikeModel = BikeModelLookup[ Bike ];
 	SelectedBikeScale = BikeModelScale[ Bike ];
 	strcpy(bike_name,BikeList.item[ Bike ]);
-	if ( WhoIAm != (uint8) -1 )
+	if ( WhoIAm != (u_int8_t) -1 )
 		Ships[ WhoIAm ].BikeNum = Bike;
 }
 
@@ -7589,7 +7589,7 @@ void SelectList( MENUITEM *Item )
 	PreListItem = Item;
 	PreListMenu = CurrentMenu;
 	CurrentList = (LIST *)(Item->Variable);
-	CurrentList->Static = FALSE;
+	CurrentList->Static = false;
 	CurrentListItem = Item;
 	if( CurrentList->items == 0 )
 	{
@@ -8054,7 +8054,7 @@ void GetDefaultPilot(void)
 	int size = sizeof( pilot_name );
 
 	// did we find a player name ?
-	BOOL found = FALSE;
+	_Bool found = false;
 
 	config_get_strncpy( &pilot_name[0], size, "PlayerName", "" );
 
@@ -8062,7 +8062,7 @@ void GetDefaultPilot(void)
 	if ( strlen(pilot_name) )
 
 		// found
-		found = TRUE;
+		found = true;
 
 	// if failed to get registry setting
 	else
@@ -8078,7 +8078,7 @@ void GetDefaultPilot(void)
 				*strptr = 0;
 
 			// found
-			found = TRUE;
+			found = true;
 
 			// close the find handle
 			find_close();
@@ -8124,7 +8124,7 @@ void InitStartMenu( MENU *Menu )
 
 void ExitInGameMenu( MENU *Menu )
 {
-	input_grab( TRUE );
+	input_grab( true );
 }
 
 
@@ -8133,7 +8133,7 @@ void InitInGameMenu( MENU *Menu )
 	MENUITEM *item;
 
 	if ( ! render_info.fullscreen )
-		input_grab( FALSE );
+		input_grab( false );
 
 	for ( item = Menu->Item; item->x >= 0; item++ )
 	{
@@ -8304,7 +8304,7 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 			if ( !strncasecmp( LevelList.item[ i ], level_name, 7 ) )
 			{
 				DebugPrintf("level select: found last level at index %d\n",i);
-				selected_level = (uint16) i;
+				selected_level = (u_int16_t) i;
 				break;
 			}
 		}
@@ -8415,15 +8415,15 @@ void GetSavedGameData( void )
 {
 	struct filetime ftime;
 	FILE	*	fp;
-	int8		buf[ 256 ];
-	int8		biker[ 256 ];
-	int8		filename[ 256 ];
-	int16		i;
-	int16		Hours, Minutes, Seconds;
-	int16		KilledEnemiesNum, InitEnemiesNum;
+	int8_t		buf[ 256 ];
+	int8_t		biker[ 256 ];
+	int8_t		filename[ 256 ];
+	int16_t		i;
+	int16_t		Hours, Minutes, Seconds;
+	int16_t		KilledEnemiesNum, InitEnemiesNum;
 	char *ext;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
+	u_int32_t		MagicNumber;
+	u_int32_t		VersionNumber;
 
 	CurrentSavedGameDate[0] = 0;
 	CurrentSavedGameLevel[0] = 0;
@@ -8452,8 +8452,8 @@ void GetSavedGameData( void )
 
 	if( fp )
 	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+		fread( &MagicNumber, sizeof( u_int32_t ), 1, fp );
+		fread( &VersionNumber, sizeof( u_int32_t ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
 			Msg("Save file is in an old format.\nYou will most likely crash...\n\n");
@@ -8566,7 +8566,7 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 	{
 		if( IsHost )
 		{
-		 	WaitingToQuit = TRUE;
+		 	WaitingToQuit = true;
 			return;
 		}
 	}
@@ -8578,8 +8578,8 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 void AddBikeArrow( char *name, int num )
 {
 	int i;
-	BOOL leftarrow = FALSE;
-	BOOL rightarrow = FALSE;
+	_Bool leftarrow = false;
+	_Bool rightarrow = false;
 	char tempbikename[16];
 	char leftarrowchar[2];
 	char rightarrowchar[2];
@@ -8593,12 +8593,12 @@ void AddBikeArrow( char *name, int num )
 	{
 		if ( i < num )
 		{
-				leftarrow = TRUE;
+				leftarrow = true;
 		}
 
 		if ( i > num )
 		{
-				rightarrow = TRUE;
+				rightarrow = true;
 		}
 	}				   
 
@@ -8674,12 +8674,12 @@ void ExitBikeSelection( MENUITEM * item )
 	SelectedBikeScale = BikeModelScale[ BikeList.selected_item ];
 	Config.bike = SelectedBike;
 	player_config->bike = Config.bike;
-	ForceConfigSave = FALSE;
+	ForceConfigSave = false;
 	write_config( player_config, biker_config );
 	strcpy(bike_name,BikeList.item[BikeList.selected_item]);
 	AddBikeArrow( bike_name, SelectedBike );
 	strcpy(biker_text,BikerText[BikeList.selected_item]);
-	if ( WhoIAm != (uint8) -1 )
+	if ( WhoIAm != (u_int8_t) -1 )
 	{
 		Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 	}
@@ -8688,7 +8688,7 @@ void ExitBikeSelection( MENUITEM * item )
 
 void ExitBikeComputerSelection( MENUITEM * item )
 {
-	static uint32 CurrentSpeechID = 0;
+	static u_int32_t CurrentSpeechID = 0;
 
 	player_config->bikecomp = BikeComputerList.selected_item;
 	Config.bikecomp = player_config->bikecomp;	// backward compatability
@@ -8715,23 +8715,23 @@ void MenuGoFullScreen( MENUITEM *Item )
 		VduClear();
 	}
 
-	bIgnoreWM_SIZE = TRUE;
+	bIgnoreWM_SIZE = true;
 
     RenderModeSelect( render_info.CurrMode, !render_info.fullscreen, render_info.vsync );
 
 	// user goes into window mode to do something else
 	// so release their inputs and let them click to activate
 	if ( ! render_info.fullscreen )
-		input_grab( FALSE );
+		input_grab( false );
 
-	bIgnoreWM_SIZE = FALSE;
+	bIgnoreWM_SIZE = false;
 
 	if( MyGameStatus == STATUS_Title )
 	{
 		FadeHoloLight(HoloLightBrightness);
 		DarkenRoom2(RoomDarkness);
 		ProcessVduItems( CurrentMenu );
-   		InitialTexturesSet = FALSE;
+   		InitialTexturesSet = false;
 	}
 }
 	
@@ -8800,20 +8800,20 @@ void NewMenuSelectMode( MENUITEM *Item )
 	}
 	else
 	{
-		bIgnoreWM_SIZE = TRUE;
+		bIgnoreWM_SIZE = true;
         RenderModeSelect( mode, render_info.fullscreen, render_info.vsync );
-		bIgnoreWM_SIZE = FALSE;
+		bIgnoreWM_SIZE = false;
 
 		// user goes into window mode to do something else
 		// just let them click to regain inputs
-		input_grab( FALSE );
+		input_grab( false );
 	}
 
 	FadeHoloLight(HoloLightBrightness);
 	DarkenRoom2(RoomDarkness);
 	ProcessVduItems( CurrentMenu );
 
-   	InitialTexturesSet = FALSE;
+   	InitialTexturesSet = false;
 }
 
 void InitDebugMenu( MENU *Menu )
@@ -8835,7 +8835,7 @@ void InitRoomList( void )
 		for ( j = 0; j < RoomList.items; j++ )
 		{
 			strncpy( RoomList.item[ j ], Mloadheader.Group[ j ].name, sizeof( RoomList.item[ j ] ) );
-			if ( WhoIAm != (uint8) -1 && Ships[WhoIAm].Object.Group == j )
+			if ( WhoIAm != (u_int8_t) -1 && Ships[WhoIAm].Object.Group == j )
 				RoomList.selected_item = j;
 		}
 	}
@@ -8882,8 +8882,8 @@ void ChooseRoom( MENUITEM *item )
 	MenuExit();
 }
 
-int8	DebuggingString[] = "Cheating";
-int8	NotDebuggingString[] = "No Longer Cheating";
+int8_t	DebuggingString[] = "Cheating";
+int8_t	NotDebuggingString[] = "No Longer Cheating";
 
 void DebugModeChanged( MENUITEM *item )
 {
@@ -8936,10 +8936,10 @@ void InitAvgFrameRateGlobals( MENU *Menu )
 
 void RestoreDemoSettings( void )
 {
-	PauseDemo = FALSE;
+	PauseDemo = false;
 	DemoSpeed.value = 8;
 	DemoEyesSelect.value = 0;
-	ShowNamesAnyway = FALSE;
+	ShowNamesAnyway = false;
 }
 
 /*===================================================================
@@ -8988,18 +8988,18 @@ void InitDemoList( MENU * Menu )
 
 		if ( DemoFp )
 		{
-			uint32 mp_version;
+			u_int32_t mp_version;
 
 			mp_version = ~MULTIPLAYER_VERSION;
 			fread( &mp_version, sizeof( mp_version ), 1, DemoFp );
 			if ( (mp_version <= MULTIPLAYER_VERSION) && (mp_version >= DEMO_MULTIPLAYER_VERSION) )
 			{
-				uint16 CopyOfSeed1;
-				uint16 CopyOfSeed2;
-				BOOL RandomPickups;
-				uint32 flags;
-				uint32 PackedInfo[ MAX_PICKUPFLAGS ];
-				uint16 RandomStartPosModify;
+				u_int16_t CopyOfSeed1;
+				u_int16_t CopyOfSeed2;
+				_Bool RandomPickups;
+				u_int32_t flags;
+				u_int32_t PackedInfo[ MAX_PICKUPFLAGS ];
+				u_int16_t RandomStartPosModify;
 				static char buf[ 256 ];
 				int i;
 
@@ -9220,55 +9220,55 @@ void GetGamePrefs( void )
 
 	config_get_strncpy( tracker_server, sizeof(tracker_server), "TrackerServer", "fly.thruhere.net" );
 	tracker_port = config_get_int( "TrackerPort", 47624 );
-	tracker_enabled = config_get_bool( "TrackerEnabled", TRUE );
+	tracker_enabled = config_get_bool( "TrackerEnabled", true );
 
 	// booleans
  
-    TintBikeTeamColor                = config_get_bool( "TintBikeTeamColor",		TRUE );
-    MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		FALSE );
-    MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
-    MyRandomPickups                  = config_get_bool( "RandomPickups",			FALSE );
+    TintBikeTeamColor                = config_get_bool( "TintBikeTeamColor",		true );
+    MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		false );
+    MyBrightShips                    = config_get_bool( "BrightShips",				false );
+    MyRandomPickups                  = config_get_bool( "RandomPickups",			false );
 
-    MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
-    RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
-    BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			TRUE );
-	ShowWeaponsPossessedOnHUD		 = config_get_bool( "ShowWeaponsPossessedOnHUD", FALSE );
-	ShowClockOnHUD				     = config_get_bool( "ShowClockOnHUD", TRUE );
-	ShowKPMOnHUD				     = config_get_bool( "ShowKPMOnHUD", FALSE );
-	ShowSpeedOnHUD				     = config_get_bool( "ShowSpeedOnHUD", FALSE );
-	ShowTotalSpeedOnHUD				 = config_get_bool( "ShowTotalSpeedOnHUD", TRUE );
-    ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			TRUE );
-    ShowPlayersOnHUDbyKills          = config_get_bool( "ShowPlayersOnHUDbyKills",		TRUE );
-    BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
-    BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
-    MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
-    ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
-	render_info.fullscreen			 = config_get_bool( "FullScreen",				FALSE );
+    MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		true );
+    RearCameraActive                 = config_get_bool( "RearCameraActive",			true );
+    BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			true );
+	ShowWeaponsPossessedOnHUD		 = config_get_bool( "ShowWeaponsPossessedOnHUD", false );
+	ShowClockOnHUD				     = config_get_bool( "ShowClockOnHUD", true );
+	ShowKPMOnHUD				     = config_get_bool( "ShowKPMOnHUD", false );
+	ShowSpeedOnHUD				     = config_get_bool( "ShowSpeedOnHUD", false );
+	ShowTotalSpeedOnHUD				 = config_get_bool( "ShowTotalSpeedOnHUD", true );
+    ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			true );
+    ShowPlayersOnHUDbyKills          = config_get_bool( "ShowPlayersOnHUDbyKills",		true );
+    BikeExhausts                     = config_get_bool( "BikeExhausts",				true );
+    BountyBonus                      = config_get_bool( "BountyBonus",				true );
+    MyUseShortPackets                = config_get_bool( "UseShortPackets",			true );
+    ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				true );
+	render_info.fullscreen			 = config_get_bool( "FullScreen",				false );
 
 	memset( MyPickupValid, 0, sizeof(MyPickupValid) );
 
-	MyPickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
-	MyPickupValid[ PICKUP_HeatseakerPickup ]  = config_get_bool( "AllowHeatseaker",       TRUE );
-	MyPickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          TRUE );
-	MyPickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          TRUE );
-	MyPickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         TRUE );
-	MyPickupValid[ PICKUP_TitanStar ]         = config_get_bool( "AllowTitanStar",        TRUE );
-	MyPickupValid[ PICKUP_PurgePickup ]       = config_get_bool( "AllowPurgePickup",      TRUE );
-	MyPickupValid[ PICKUP_QuantumPickup ]     = config_get_bool( "AllowQuantumPickup",    TRUE );
-	MyPickupValid[ PICKUP_Trojax ]            = config_get_bool( "AllowTrojax",           TRUE );
-	MyPickupValid[ PICKUP_Pyrolite ]          = config_get_bool( "AllowPyrolite",         TRUE );
-	MyPickupValid[ PICKUP_SussGun ]           = config_get_bool( "AllowSussGun",          TRUE );
-	MyPickupValid[ PICKUP_Laser ]             = config_get_bool( "AllowLaser",            TRUE );
-	MyPickupValid[ PICKUP_Nitro ]             = config_get_bool( "AllowNitro",            TRUE );
-	MyPickupValid[ PICKUP_Orb ]               = config_get_bool( "AllowOrb",              TRUE );
-	MyPickupValid[ PICKUP_GoldenPowerPod ]    = config_get_bool( "AllowGoldenPowerPod",   TRUE );
+	MyPickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             true );
+	MyPickupValid[ PICKUP_HeatseakerPickup ]  = config_get_bool( "AllowHeatseaker",       true );
+	MyPickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          true );
+	MyPickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          true );
+	MyPickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         true );
+	MyPickupValid[ PICKUP_TitanStar ]         = config_get_bool( "AllowTitanStar",        true );
+	MyPickupValid[ PICKUP_PurgePickup ]       = config_get_bool( "AllowPurgePickup",      true );
+	MyPickupValid[ PICKUP_QuantumPickup ]     = config_get_bool( "AllowQuantumPickup",    true );
+	MyPickupValid[ PICKUP_Trojax ]            = config_get_bool( "AllowTrojax",           true );
+	MyPickupValid[ PICKUP_Pyrolite ]          = config_get_bool( "AllowPyrolite",         true );
+	MyPickupValid[ PICKUP_SussGun ]           = config_get_bool( "AllowSussGun",          true );
+	MyPickupValid[ PICKUP_Laser ]             = config_get_bool( "AllowLaser",            true );
+	MyPickupValid[ PICKUP_Nitro ]             = config_get_bool( "AllowNitro",            true );
+	MyPickupValid[ PICKUP_Orb ]               = config_get_bool( "AllowOrb",              true );
+	MyPickupValid[ PICKUP_GoldenPowerPod ]    = config_get_bool( "AllowGoldenPowerPod",   true );
 
-	MyPickupValid[ PICKUP_SpiderPod ]         = config_get_bool( "AllowSpiderPod",        FALSE );
-	MyPickupValid[ PICKUP_PinePickup ]        = config_get_bool( "AllowPinePickup",       FALSE );
-	MyPickupValid[ PICKUP_Thief ]             = config_get_bool( "AllowThief",            FALSE );
-	MyPickupValid[ PICKUP_Transpulse ]        = config_get_bool( "AllowTranspulse",       FALSE );
-	MyPickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           FALSE );
-	MyPickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              FALSE );
+	MyPickupValid[ PICKUP_SpiderPod ]         = config_get_bool( "AllowSpiderPod",        false );
+	MyPickupValid[ PICKUP_PinePickup ]        = config_get_bool( "AllowPinePickup",       false );
+	MyPickupValid[ PICKUP_Thief ]             = config_get_bool( "AllowThief",            false );
+	MyPickupValid[ PICKUP_Transpulse ]        = config_get_bool( "AllowTranspulse",       false );
+	MyPickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           false );
+	MyPickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              false );
 
 	memmove( PickupValid, MyPickupValid, sizeof(PickupValid) );//memcpy
 
@@ -9352,7 +9352,7 @@ void GetGamePrefs( void )
 	CLAMP( GameType, MAX_GAMETYPE );
 
 	// Stereo options
-	StereoEnabled = config_get_bool( "StereoEnabled", FALSE );
+	StereoEnabled = config_get_bool( "StereoEnabled", false );
 	StereoEyeSep = config_get_float( "StereoEyeSep", 20 );
 	StereoFocalDist = config_get_float( "StereoFocalDist", 750 );
 	StereoRightColor = config_get_float( "StereoRightColor", ST_CYAN );
@@ -9469,12 +9469,12 @@ void SetGamePrefs( void )
 	config_save();
 }
 
-BOOL CompareVectors(VECTOR vector1, VECTOR vector2)
+_Bool CompareVectors(VECTOR vector1, VECTOR vector2)
 {
 	if ((vector1.x == vector2.x) && (vector1.y == vector2.y) && (vector1.z == vector2.z))
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 void SetTextures (MENU *menu)
@@ -9504,16 +9504,16 @@ void SetDiscStatus(MENU *menu)
 
 	Note		:		Only allows vertices to be excluded from one group & exec buffer at present.
 ===================================================================*/
-BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
+_Bool TintModelVertices( u_int16_t Model, float percent, EXCLUDEDVERTICES *Exclude )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
 	LPLVERTEX			VertPtr;
 	COLOR				Colour;
-	uint8 red, green, blue, alpha;
+	u_int8_t red, green, blue, alpha;
 	int i;
 	int *CurrentExclude;
 	int NumberToExclude;
@@ -9541,7 +9541,7 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 
 			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
-				return FALSE;
+				return false;
 			}
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
@@ -9550,10 +9550,10 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 		
 			for (i=0; i<Vert; i++)
 			{
-				red = (uint8)RGBA_GETRED(VertPtr->color);
-				green = (uint8)RGBA_GETGREEN(VertPtr->color);
-				blue = (uint8)RGBA_GETBLUE(VertPtr->color);
-				alpha = (uint8)RGBA_GETALPHA(VertPtr->color);
+				red = (u_int8_t)RGBA_GETRED(VertPtr->color);
+				green = (u_int8_t)RGBA_GETGREEN(VertPtr->color);
+				blue = (u_int8_t)RGBA_GETBLUE(VertPtr->color);
+				alpha = (u_int8_t)RGBA_GETALPHA(VertPtr->color);
 				
 				//DebugPrintf("vertex color rgba=%d,%d,%d,%d\n",
 				//				red, green, blue, alpha);
@@ -9568,9 +9568,9 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			  	}
 				else
 			  	{
-			  		red = (uint8)((float)red * percent);
-			  		green = (uint8)((float)green * percent);
-			  		blue = (uint8)((float)blue * percent);
+			  		red = (u_int8_t)((float)red * percent);
+			  		green = (u_int8_t)((float)green * percent);
+			  		blue = (u_int8_t)((float)blue * percent);
 			  	}
 
 				//DebugPrintf("tinted vertex color by %f%% to rgba=%d,%d,%d,%d\n",
@@ -9578,7 +9578,7 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			  
 				Colour = RGBA_MAKE( red, green, blue, alpha );
 				if( !Colour ) 
-					return FALSE;
+					return false;
 				
 				DstlpD3DLVERTEX->color = Colour;
 				DstlpD3DLVERTEX++;
@@ -9588,17 +9588,17 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 
 			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
-void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *maxoffset )
+void GetExtremeOffsets( u_int16_t Model, PLANE *plane, float *minoffset, float *maxoffset )
 {
-	uint16					Group;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					ExecBuf;
 	MXALOADHEADER	*		ModelHeaderPtr;
 	MXLOADHEADER	*		MxModelHeaderPtr;
 	int i, TotalVerts;
@@ -9674,18 +9674,18 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 
 
 
-BOOL MakeTranslucent( uint16 Model )
+_Bool MakeTranslucent( u_int16_t Model )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	uint16					Group;
-	uint16					Vert;
-	uint16					ExecBuf;
+	u_int16_t					Group;
+	u_int16_t					Vert;
+	u_int16_t					ExecBuf;
 	MXALOADHEADER	*		DstMloadheader;
 	MXLOADHEADER	*		DstMxloadheader;
 	LPLVERTEX			ColourPtr;
 	COLOR				Colour;
-	uint8 red, green, blue, alpha;
+	u_int8_t red, green, blue, alpha;
 	int i;
 
 	if ( TitleModelSet[ Model ].DoIMorph )
@@ -9701,12 +9701,12 @@ BOOL MakeTranslucent( uint16 Model )
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//					return FALSE;
+//					return false;
 				if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
-					return FALSE;
+					return false;
 				}
 
 //				DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -9718,15 +9718,15 @@ BOOL MakeTranslucent( uint16 Model )
 
 				for (i=0; i<Vert; i++)
 				{
-					red = (uint8)RGBA_GETRED(ColourPtr->color);
-					green = (uint8)RGBA_GETGREEN(ColourPtr->color);
-					blue = (uint8)RGBA_GETBLUE(ColourPtr->color);
-					alpha = (uint8)RGBA_GETALPHA(ColourPtr->color);
+					red = (u_int8_t)RGBA_GETRED(ColourPtr->color);
+					green = (u_int8_t)RGBA_GETGREEN(ColourPtr->color);
+					blue = (u_int8_t)RGBA_GETBLUE(ColourPtr->color);
+					alpha = (u_int8_t)RGBA_GETALPHA(ColourPtr->color);
 					
-					//red = (uint8)((float)red * BikeCol);
-					//green = (uint8)((float)green * BikeCol);
-					//blue = (uint8)((float)blue * BikeCol);
-					//alpha = (uint8)((float)alpha * BikeAlpha);
+					//red = (u_int8_t)((float)red * BikeCol);
+					//green = (u_int8_t)((float)green * BikeCol);
+					//blue = (u_int8_t)((float)blue * BikeCol);
+					//alpha = (u_int8_t)((float)alpha * BikeAlpha);
 					red = 255;
 					green = 255;
 					blue = 255;
@@ -9742,14 +9742,14 @@ BOOL MakeTranslucent( uint16 Model )
 
 
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//				DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//				DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 				if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
-		return TRUE;
+		return true;
 	}else
 	{
 		DstMxloadheader = &ModelHeaders[ Models[Model].ModelNum];
@@ -9763,13 +9763,13 @@ BOOL MakeTranslucent( uint16 Model )
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 */
 //				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//								DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//								DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return false; // bjd
 //				if (FSLockExecuteBuffer(DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//					return FALSE;
+//					return false;
 
 				if (!(FSLockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
-					return FALSE;
+					return false;
 				}
 
 				//DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
@@ -9782,15 +9782,15 @@ BOOL MakeTranslucent( uint16 Model )
 
 				for (i=0; i<Vert; i++)
 				{
-					red = (uint8)RGBA_GETRED(ColourPtr->color);
-					green = (uint8)RGBA_GETGREEN(ColourPtr->color);
-					blue = (uint8)RGBA_GETBLUE(ColourPtr->color);
-					alpha = (uint8)RGBA_GETALPHA(ColourPtr->color);
+					red = (u_int8_t)RGBA_GETRED(ColourPtr->color);
+					green = (u_int8_t)RGBA_GETGREEN(ColourPtr->color);
+					blue = (u_int8_t)RGBA_GETBLUE(ColourPtr->color);
+					alpha = (u_int8_t)RGBA_GETALPHA(ColourPtr->color);
 					
-					red = (uint8)((float)red * BikeCol);
-					green = (uint8)((float)green * BikeCol);
-					blue = (uint8)((float)blue * BikeCol);
-					alpha = (uint8)((float)alpha * BikeAlpha);
+					red = (u_int8_t)((float)red * BikeCol);
+					green = (u_int8_t)((float)green * BikeCol);
+					blue = (u_int8_t)((float)blue * BikeCol);
+					alpha = (u_int8_t)((float)alpha * BikeAlpha);
 					
 					Colour = RGBA_MAKE( red, green, blue, alpha );
 					
@@ -9802,45 +9802,45 @@ BOOL MakeTranslucent( uint16 Model )
 
 
 //				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//				DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//				DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return false;
 				if (!(FSUnlockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
-		return TRUE;
+		return true;
 	}
 }
 
 
-BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
+_Bool TintOneVertex( u_int16_t Model, u_int16_t Group, u_int16_t ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
 	LPLVERTEX			VertPtr;
 	COLOR				Colour;
-	uint8 red, green, blue, alpha;
-	uint8 vred, vgreen, vblue, valpha;
+	u_int8_t red, green, blue, alpha;
+	u_int8_t vred, vgreen, vblue, valpha;
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
 	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
 	  
-	vred = (uint8)RGBA_GETRED(VertPtr->color);
-	vgreen = (uint8)RGBA_GETGREEN(VertPtr->color);
-	vblue = (uint8)RGBA_GETBLUE(VertPtr->color);
-	valpha = (uint8)RGBA_GETALPHA(VertPtr->color);
+	vred = (u_int8_t)RGBA_GETRED(VertPtr->color);
+	vgreen = (u_int8_t)RGBA_GETGREEN(VertPtr->color);
+	vblue = (u_int8_t)RGBA_GETBLUE(VertPtr->color);
+	valpha = (u_int8_t)RGBA_GETALPHA(VertPtr->color);
 	
- 	red = (uint8)((float)vred * tr);
-  	green = (uint8)((float)vgreen * tg);
-  	blue = (uint8)((float)vblue * tb);
-  	alpha = (uint8)((float)valpha * ta);
+ 	red = (u_int8_t)((float)vred * tr);
+  	green = (u_int8_t)((float)vgreen * tg);
+  	blue = (u_int8_t)((float)vblue * tb);
+  	alpha = (u_int8_t)((float)valpha * ta);
 
 /*
 	red = 255;
@@ -9851,16 +9851,16 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 
 	Colour = RGBA_MAKE( red, green, blue, alpha );
 	if( !Colour ) 
-		return FALSE;
+		return false;
 			
 	DstlpD3DLVERTEX[VertexNo].color = Colour;
 
 	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
-		return FALSE;
+		return false;
 	}
    	
-	return TRUE;
+	return true;
 }
 
 
@@ -9938,7 +9938,7 @@ TEXTINFO *InitTextInfo( void )
 	}
 
 	TextInfo->text = NULL;						// text string
-	TextInfo->highlight = FALSE;					// item highlighted?
+	TextInfo->highlight = false;					// item highlighted?
 	TextInfo->highlighttype = HIGHLIGHT_Pulsing;
 	TextInfo->xmin = 0;						// 
 	TextInfo->ymin = 0;						// bounding box for text
@@ -9947,9 +9947,9 @@ TEXTINFO *InitTextInfo( void )
 	TextInfo->font = FONT_Small;						// font size (small, medium, large)
 	TextInfo->flags = 0;						// formatting info
 	TextInfo->num_lines = 0;					// number of lines once formatted
-	TextInfo->boxdone = FALSE;					
+	TextInfo->boxdone = false;					
 	TextInfo->num_pointers_to_free = 0;		
-	TextInfo->force_fit = FALSE;
+	TextInfo->force_fit = false;
 
 	return TextInfo;
 }
@@ -9988,9 +9988,9 @@ void RedrawFlatMenuList( MENUITEM *Item )
 			TextInfo->flags = Item->highlightflags;
 	
 			if (current == l->selected_item)
-				TextInfo->highlight = TRUE;
+				TextInfo->highlight = true;
 			else
-				TextInfo->highlight = FALSE;
+				TextInfo->highlight = false;
 
 				//format text item...
 			PrintTextItem(TextInfo);
@@ -10012,9 +10012,9 @@ void RedrawFlatMenuList( MENUITEM *Item )
 				current = l->top_item + i;
 
 				if (current == l->selected_item)
-					Item->TextInfo[i]->highlight = TRUE;
+					Item->TextInfo[i]->highlight = true;
 				else
-					Item->TextInfo[i]->highlight = FALSE;
+					Item->TextInfo[i]->highlight = false;
 			}
 		}
 	}
@@ -10041,9 +10041,9 @@ void DrawFlatMenuListText ( MENUITEM *Item )
 		TextInfo = Item->TextInfo[i];
 
 		if (current == l->selected_item)
-			TextInfo->highlight = TRUE;
+			TextInfo->highlight = true;
 		else
-			TextInfo->highlight = FALSE;
+			TextInfo->highlight = false;
 
 		current = l->top_item + i;
 		if (current >= l->items)
@@ -10084,7 +10084,7 @@ void AddToFlatMenuList( MENUITEM *Item )
 
 		if (current >= l->items)
 		{
-			if (TextInfo->text != (uint8*)EmptyString)
+			if (TextInfo->text != (u_int8_t*)EmptyString)
 			{	
 				TextInfo->text = EmptyString;
 				PrintTextItem(TextInfo);
@@ -10110,9 +10110,9 @@ void AddToFlatMenuList( MENUITEM *Item )
 		}
 
 		if (current == l->selected_item)
-			TextInfo->highlight = TRUE;
+			TextInfo->highlight = true;
 		else
-			TextInfo->highlight = FALSE;
+			TextInfo->highlight = false;
 
 		if (!(CurrentMenuItem->highlightflags & TEXTFLAG_ManualListHighlight))
 		{
@@ -10152,7 +10152,7 @@ void DrawFlatMenuList( MENUITEM *Item )
 	l = (LIST *)(Item->Variable);
 	l->old_top_item = l->top_item;
 	l->old_selected_item = l->selected_item;
-	l->Static = FALSE;
+	l->Static = false;
 
 	Item->numtextitems = 0;
 
@@ -10377,7 +10377,7 @@ void DrawFlatMenuItem( MENUITEM *Item )
 
 void DrawConditionalText( MENUITEM *Item )
 {
-	if ( *(BOOL *)(Item->Value ) )
+	if ( *(_Bool *)(Item->Value ) )
 	{
 	 	DrawFlatMenuItem( Item );
 	}
@@ -10385,7 +10385,7 @@ void DrawConditionalText( MENUITEM *Item )
 
 void DrawConditionalName( MENUITEM *Item )
 {
-	if ( *(BOOL *)(Item->Value ) )
+	if ( *(_Bool *)(Item->Value ) )
 	{
 	 	DrawFlatMenuName( Item );
 	}
@@ -10409,9 +10409,9 @@ void PlayerConfirm( MENUITEM *Item )
 	DrawReadyStatus(Item);
 
 	if (PlayerReady[WhoIAm])
-		NoTeamSelect = TRUE;
+		NoTeamSelect = true;
 	else
-		NoTeamSelect = FALSE;
+		NoTeamSelect = false;
 }
 
 TEXTINFO * DrawFlatRadioBtnStatus( MENUITEM *Item )
@@ -10451,7 +10451,7 @@ TEXTINFO * DrawFlatToggleStatus( MENUITEM *Item )
 	TEXTINFO *TextInfo;
 	char *status;
 
-	if ( *(BOOL *)(Item->Variable ) )
+	if ( *(_Bool *)(Item->Variable ) )
 	{
 		status = ToggleStatusOn;
 	}
@@ -10482,7 +10482,7 @@ TEXTINFO * DrawColFlatToggleStatus( MENUITEM *Item )
 	TEXTINFO *TextInfo;
 	char *status;
 
-	if ( *(BOOL *)(Item->Variable ) )
+	if ( *(_Bool *)(Item->Variable ) )
 	{
 		status = ToggleStatusShooter;
 	}
@@ -10539,10 +10539,10 @@ void SelectMultiToggle( MENUITEM *Item )
 	{
 		if ( Item->Variable )
 		{
-			*(BOOL *)(Item->Variable) = !*(BOOL *)(Item->Variable);
+			*(_Bool *)(Item->Variable) = !*(_Bool *)(Item->Variable);
 			if ( Item->Value )
 			{
-				*(BOOL *)(Item->Value) = !*(BOOL *)(Item->Value);
+				*(_Bool *)(Item->Value) = !*(_Bool *)(Item->Value);
 			}
 		}
 
@@ -11018,13 +11018,13 @@ void UpdateSlider (MENUITEM *Item)
 	ScrPolys[Slider->poly].Col1.G = 32;
 	ScrPolys[Slider->poly].Col1.B = 0;
 	ScrPolys[Slider->poly].Col1.Trans = 255;
-	ScrPolys[Slider->poly].Col2.R = (uint8)(64.0F * frac);
-	ScrPolys[Slider->poly].Col2.G = (uint8)(223.0F * frac + 32.0F);
-	ScrPolys[Slider->poly].Col2.B = (uint8)(64.0F * frac);
+	ScrPolys[Slider->poly].Col2.R = (u_int8_t)(64.0F * frac);
+	ScrPolys[Slider->poly].Col2.G = (u_int8_t)(223.0F * frac + 32.0F);
+	ScrPolys[Slider->poly].Col2.B = (u_int8_t)(64.0F * frac);
 	ScrPolys[Slider->poly].Col2.Trans = 255;
-	ScrPolys[Slider->poly].Col3.R = (uint8)(64.0F * frac);
-	ScrPolys[Slider->poly].Col3.G = (uint8)(223.0F * frac + 32.0F);
-	ScrPolys[Slider->poly].Col3.B = (uint8)(64.0F * frac);
+	ScrPolys[Slider->poly].Col3.R = (u_int8_t)(64.0F * frac);
+	ScrPolys[Slider->poly].Col3.G = (u_int8_t)(223.0F * frac + 32.0F);
+	ScrPolys[Slider->poly].Col3.B = (u_int8_t)(64.0F * frac);
 	ScrPolys[Slider->poly].Col3.Trans = 255;
 	ScrPolys[Slider->poly].Col4.R = 0;
 	ScrPolys[Slider->poly].Col4.G = 32;
@@ -11056,7 +11056,7 @@ SLIDER *GetSlider( MENUITEM *Item, int *slidertype )
 void DrawFlatMenuSlider( MENUITEM *Item )
 {
 	SLIDER *slider;
-	BOOL SliderStored;
+	_Bool SliderStored;
 	int i;
 	int slidertype;
 
@@ -11064,18 +11064,18 @@ void DrawFlatMenuSlider( MENUITEM *Item )
 
 	slider->timer = 0.0F;
 	slider->dt = framelag/( SLIDERSPEED * 60.0F);
-	slider->redraw_req = TRUE;
-	slider->poly = (uint16) -1;
+	slider->redraw_req = true;
+	slider->poly = (u_int16_t) -1;
 	slider->oldvalue = -1;
 
-	SliderStored = FALSE;
+	SliderStored = false;
 
 	for (i=0; i<MAXSLIDERSPERMENU; i++)
 	{
 		if (!ActiveSliderItem[i].Item)
 		{
 			ActiveSliderItem[i].Item = Item;
-			SliderStored = TRUE;
+			SliderStored = true;
 			break;
 		}
 	}
@@ -11089,7 +11089,7 @@ void DrawFlatMenuSlider( MENUITEM *Item )
 	{
 		slider->poly = FindFreeScrPoly();
 
-		if (slider->poly == (uint16)-1)
+		if (slider->poly == (u_int16_t)-1)
 		{
 			Msg("Title.c: DrawFlatMenuSlider() unable to allocate screen poly\n");
 			exit(1);
@@ -11173,12 +11173,12 @@ void ProcessFlatSliders(void)
 				( (slider->timer <= ReqFraction ) && ( slider->dt < 0.0F ) ))
 			{
 			   	slider->timer = ReqFraction;
-				if (slider->poly != (uint16) -1)
+				if (slider->poly != (u_int16_t) -1)
 				   	UpdateSlider(ActiveSliderItem[i].Item);
 				slider->timer = -1.0F;
 			}else
 			{
-				if (slider->poly != (uint16) -1)
+				if (slider->poly != (u_int16_t) -1)
 					UpdateSlider(ActiveSliderItem[i].Item);
 			}
 
@@ -11193,7 +11193,7 @@ void RedrawFlatMenuSlider( MENUITEM *Item )
 
 	slider = GetSlider ( Item, &slidertype );
 
-	slider->redraw_req = FALSE;
+	slider->redraw_req = false;
 
 	DrawFlatSliderStatus(Item);
 
@@ -11277,7 +11277,7 @@ void DrawGeneralWeaponText( MENUITEM *Item )
 		// if the same as existing item, no need to redraw...
 		if ((TextInfo->xmin == Item->x + offset) &&
 			(TextInfo->ymin == (((Item->ymax - Item->y)/Total_Slots) * line) + Item->y) &&
-			(TextInfo->text == (uint8*)DescriptionList[WeaponList[i]]))
+			(TextInfo->text == (u_int8_t*)DescriptionList[WeaponList[i]]))
 			continue;
 
 		TextInfo->xmin = Item->x + offset;
@@ -11297,9 +11297,9 @@ void DrawGeneralWeaponText( MENUITEM *Item )
 
 }
 
-static uint16 GetNumUsed( int16 *priority, BOOL *valid, uint16 Max )
+static u_int16_t GetNumUsed( int16_t *priority, _Bool *valid, u_int16_t Max )
 {
-	uint16 i, unused;
+	u_int16_t i, unused;
 
 	unused = 0;
 
@@ -11365,9 +11365,9 @@ void DrawGeneralWeapons( MENUITEM *Item )
 {
 	int i, num_weapons;
 
-	BOOL used[ MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) ];
+	_Bool used[ MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) ];
 
-	memset( used, FALSE, MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) * sizeof ( BOOL ) ); 
+	memset( used, false, MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) * sizeof ( _Bool ) ); 
 
 	SelectedWeapon = 0;
 	WeaponItem = Item;
@@ -11390,7 +11390,7 @@ void DrawGeneralWeapons( MENUITEM *Item )
 		Item->TextInfo[i] = InitTextInfo();
 		Item->numtextitems++;
 		AddToTextStack( Item->TextInfo[i] );
-		Item->TextInfo[i]->highlight = FALSE;
+		Item->TextInfo[i]->highlight = false;
 		Item->TextInfo[i]->highlighttype = HIGHLIGHT_Pulsing;
 	}
 
@@ -11405,7 +11405,7 @@ void DrawGeneralWeapons( MENUITEM *Item )
 			if ( WeaponValid[ OrderList[ i ] ] )
 			{
 				WeaponList[ num_weapons++ ] = OrderList[ i ];
-				used[ OrderList[ i ] ] = TRUE;
+				used[ OrderList[ i ] ] = true;
 			}
 		}
 	}
@@ -11422,7 +11422,7 @@ void DrawGeneralWeapons( MENUITEM *Item )
 	MaxWeapons = num_weapons;
 
 	DrawGeneralWeaponText( Item );
-	Item->TextInfo[0]->highlight = TRUE;
+	Item->TextInfo[0]->highlight = true;
 	Item->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
 
 	MenuState = MENUSTATE_WeaponOrder;
@@ -11480,14 +11480,14 @@ void VduClear ( void )
 	MENUITEM *Item;
 	SLIDER *slider;
 
-	NewTextCharDisplayed = FALSE;
+	NewTextCharDisplayed = false;
 
 	tempstacklevel = 0;
 
 	for (i=0; i<TextStackLevel; i++)
 		if ( TextStack[ i ] )
 		{
-			TextStack[i]->boxdone = FALSE;
+			TextStack[i]->boxdone = false;
 			KillTextInfo( TextStack[i] );
 		}
 
@@ -11503,7 +11503,7 @@ void VduClear ( void )
 	for (i=0; i<CurrentScreenPoly; i++)
 	{
 		KillUsedScrPoly( screenpoly[i] );
-		screenpoly[i] = (uint16)-1;
+		screenpoly[i] = (u_int16_t)-1;
 	}
 
 	CurrentScreenPoly = 0;
@@ -11512,10 +11512,10 @@ void VduClear ( void )
 		if (ActiveSliderItem[i].Item)
 		{
 			slider = GetSlider ( ActiveSliderItem[i].Item, &slidertype );
-			if (slider->poly != (uint16) -1)
+			if (slider->poly != (u_int16_t) -1)
 			{
 				KillUsedScrPoly( slider->poly );
-				slider->poly = (uint16)-1;
+				slider->poly = (u_int16_t)-1;
 			}
 			ActiveSliderItem[i].Item = NULL;
 		}
@@ -11528,13 +11528,13 @@ void VduClear ( void )
 start of VDU text routines
 *********************************************************************************************************/
 
-BOOL Plot2dBox (TEXTINFO *TextInfo)
+_Bool Plot2dBox (TEXTINFO *TextInfo)
 {
-	uint8 r, g, b;
+	u_int8_t r, g, b;
 
 	screenpoly[CurrentScreenPoly] = FindFreeScrPoly();					
 	testboxpoly = screenpoly[CurrentScreenPoly];
-	if( screenpoly[CurrentScreenPoly] != (uint16 ) -1 )
+	if( screenpoly[CurrentScreenPoly] != (u_int16_t ) -1 )
 	{
 
 		ScrPolys[screenpoly[CurrentScreenPoly]].Type = SCRTYPE_Normal;
@@ -11580,9 +11580,9 @@ BOOL Plot2dBox (TEXTINFO *TextInfo)
 		CurrentScreenPoly++;
 	}
 	else
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 
 }
 
@@ -11595,19 +11595,19 @@ int GetScreenFont(int fontsize)
 	return FONT_512X384_Small + fontsize;
 }
 
-BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
+_Bool FormatTextItem(int start, int end, TEXTINFO *TextInfo, _Bool *newline)
 {
 	int i,font;
 	float TotalWidth, RemainingWidth, WordWidth, TrailingSpaceWidth, TotalHeight, PreviousHeight;
-	BOOL TrailingSpace, ForceNewLineNext;
-	uint16 CurrentChar;
+	_Bool TrailingSpace, ForceNewLineNext;
+	u_int16_t CurrentChar;
 	float xmin, xmax, ymin, ymax;
 
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	
-	*newline = FALSE;
+	*newline = false;
 
 
 	xmin = TextInfo->xmin * ModeScaleX;
@@ -11623,8 +11623,8 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 	
 	 //find total width of word...
 	WordWidth = 0.0F;
-	TrailingSpace = FALSE;
-	ForceNewLineNext = FALSE;
+	TrailingSpace = false;
+	ForceNewLineNext = false;
 
 	//store current height, as it will be needed if text wraps...
 	PreviousHeight = TEXTINFO_currentheight;
@@ -11636,7 +11636,7 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 					  
 		if ((CurrentChar) || (TextInfo->text[i] == '~'))
 		{
-			Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(CurrentChar) );
+			Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16_t)(CurrentChar) );
 			Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
 			Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -11646,9 +11646,9 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 			if ( i == end)
 			{
 				if (TextInfo->text[i] == ' ')
-					TrailingSpace = TRUE;
+					TrailingSpace = true;
 				if (TextInfo->text[i] == '~')
-					ForceNewLineNext = TRUE;
+					ForceNewLineNext = true;
 			
 			}else
 				WordWidth += TEXTINFO_TextSpace; //add a space between characters
@@ -11660,7 +11660,7 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 		}
 	}
 
-	Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font][' ']) );
+	Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16_t)(TextLookup[font][' ']) );
 	Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
 	Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -11672,21 +11672,21 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 	{	
 		if (TextInfo->flags & TEXTFLAG_ForceFit)
 		{
-			TextInfo->force_fit = TRUE;
-			return FALSE;
+			TextInfo->force_fit = true;
+			return false;
 		}
 
 		if (TrailingSpace)
 		{
 			if (WordWidth - TrailingSpaceWidth > TotalWidth)
-				return FALSE;
+				return false;
 			else
 			{	end--;	//word will fit without trailing space, so reduce end pointer
 				WordWidth -= TrailingSpaceWidth;
 			}
 		}
 		else
-			return FALSE;
+			return false;
 	}
 
 
@@ -11705,11 +11705,11 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 			{
 		 		if (TextInfo->flags & TEXTFLAG_ForceFit)
 				{
-					TextInfo->force_fit = TRUE;
-					return FALSE;
+					TextInfo->force_fit = true;
+					return false;
 				}
 		
-				return FALSE;	//no room for new line
+				return false;	//no room for new line
 			}
 			else
 			{	
@@ -11727,13 +11727,13 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 				TextInfo->endpoint[TextInfo->num_lines-1] = TEXTINFO_currentendpoint;
 				TextInfo->startpoint[TextInfo->num_lines] = start;
 				TextInfo->num_lines++;
-				*newline = TRUE;
+				*newline = true;
 				
 				TEXTINFO_currenty += PreviousHeight + TEXTINFO_LineSpace;
 				TEXTINFO_currentx = 0.0F;
 				//TEXTINFO_currentheight = 0.0F;
 
-				ForceNewLine = FALSE;
+				ForceNewLine = false;
 			}
 		}
 	}
@@ -11744,7 +11744,7 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 	}
 
 	if (ForceNewLineNext)
-	{	ForceNewLine = TRUE;
+	{	ForceNewLine = true;
 		end--;
 	}
 
@@ -11753,23 +11753,23 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 	TEXTINFO_currentx += WordWidth + TEXTINFO_TextSpace;
 
 	for ( i = 0; i < TextInfo->num_lines; i++ )
-		TextInfo->finished[ i ] = FALSE;
+		TextInfo->finished[ i ] = false;
 
-	return TRUE;
+	return true;
 	
 }
 
 
-BOOL DrawTextEditCursor( TEXTINFO *TextInfo, int font )
+_Bool DrawTextEditCursor( TEXTINFO *TextInfo, int font )
 {
 	float xmin, ymin;
 	char cursor = '!';
-	int16 lookup;
+	int16_t lookup;
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	uint16 TempPoly;
-	uint8 i;
+	u_int16_t TempPoly;
+	u_int8_t i;
   	TEXT *t;
 
 	t = (TEXT *)(TextItem->Variable);
@@ -11777,7 +11777,7 @@ BOOL DrawTextEditCursor( TEXTINFO *TextInfo, int font )
 	xmin = TextInfo->char1x;
 	ymin = TextInfo->text_y_min;
 
-	Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font][cursor]) );
+	Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16_t)(TextLookup[font][cursor]) );
 	Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
 	Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -11800,7 +11800,7 @@ BOOL DrawTextEditCursor( TEXTINFO *TextInfo, int font )
 	xmin -= (TEXTINFO_TextSpace / 2.0F);
 
 	TempPoly = FindFreeScrPoly();					
-	if( TempPoly != (uint16 ) -1 )
+	if( TempPoly != (u_int16_t ) -1 )
 	{
 					   	
 		ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
@@ -11821,9 +11821,9 @@ BOOL DrawTextEditCursor( TEXTINFO *TextInfo, int font )
 
 	}
 	else
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
  
 void GetTextPos(TEXTINFO *TextInfo, float *xpos, float *ypos, int line, float totalheight)
@@ -11866,26 +11866,26 @@ void GetTextPos(TEXTINFO *TextInfo, float *xpos, float *ypos, int line, float to
 
 }
 
-BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight)
+_Bool DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight)
 {
    
 	float xpos, ypos, currentx, currenty, xmin;
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	BOOL	OKtoProcess;
-	uint16 TempPoly;
+	_Bool	OKtoProcess;
+	u_int16_t TempPoly;
 
 	currentx = TextInfo->currentx[line];
 	currenty = TextInfo->currenty;
 
 	xmin = (TextInfo->xmin + VDUoffsetX) * ModeScaleX;
 
-	OKtoProcess = FALSE;
+	OKtoProcess = false;
 
 	if ((pos != -1) && (pos != -2))
 	{	if (TextLookup[font][TextInfo->text[pos]])
-			OKtoProcess = TRUE;		
+			OKtoProcess = true;		
 //		else
 			//TextInfo->currentchar[line]++;
 	}
@@ -11909,7 +11909,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 		switch(pos)
 		{
 		case -1:
-			Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font][71]) );	// right arrow character
+			Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16_t)(TextLookup[font][71]) );	// right arrow character
 			Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
 			Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -11919,7 +11919,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 		case -2:
 			break;
 		default:
-			Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font][TextInfo->text[pos]]) );
+			Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16_t)(TextLookup[font][TextInfo->text[pos]]) );
 			Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
 			Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -11928,7 +11928,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 		}
 
 		TempPoly = FindFreeScrPoly();					
-		if( TempPoly != (uint16 ) -1 )
+		if( TempPoly != (u_int16_t ) -1 )
 		{
 					   	
 			ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
@@ -11972,11 +11972,11 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 void Print3Dots(TEXTINFO *TextInfo, float totalheight)
@@ -11986,14 +11986,14 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	uint16 TempPoly;
+	u_int16_t TempPoly;
 	
 	font = GetScreenFont(TextInfo->font);
 
 	GetTextPos(TextInfo, &xpos, &ypos, TextInfo->num_lines - 1, totalheight);
 		
 	
-	Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font]['.']) );
+	Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16_t)(TextLookup[font]['.']) );
 	Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
 	Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -12003,7 +12003,7 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	for (i = 0; i < 3; i++)
 	{
 		TempPoly = FindFreeScrPoly();					
-		if( TempPoly != (uint16 ) -1 )
+		if( TempPoly != (u_int16_t ) -1 )
 		{
 			ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
 			ScrPolys[TempPoly].Flags = SCRFLAG_Nothing;
@@ -12030,24 +12030,24 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	}
 }
 
-BOOL VduFinished( MENU *Menu )
+_Bool VduFinished( MENU *Menu )
 {
 	int i, j;
-	BOOL eventsactive = FALSE;
+	_Bool eventsactive = false;
 	TITLE_EVENT *Event;
 
 	if ( Menu && ( Menu != CurrentMenu ) )
-		return FALSE;
+		return false;
 
 	if ( !TextStackLevel )
-		return FALSE;
+		return false;
 	
 	for (i=0; i<TextStackLevel; i++)
 	{	
 		for ( j = 0; j < TextStack[i]->num_lines; j++ )
 		{
 			if ( !TextStack[ i ]->finished[ j ] )
-				return FALSE;
+				return false;
 		}
 	}
 
@@ -12060,14 +12060,14 @@ BOOL VduFinished( MENU *Menu )
 		case TITLE_EVENT_STATUS_IDLE:
 			break;
 		default:
-			eventsactive = TRUE;
+			eventsactive = true;
 		}
 	}
 
 	if ( !eventsactive )
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 void DisplayTextItem (TEXTINFO *TextInfo)
@@ -12076,7 +12076,7 @@ void DisplayTextItem (TEXTINFO *TextInfo)
 	float totalheight = 0.0;
 	TEXTINFO TempTextInfo;
   	TEXT *t = NULL;
-	BOOL DoForceFit;
+	_Bool DoForceFit;
 
 	if (MenuState == MENUSTATE_Text2)
 		t = (TEXT *)(TextItem->Variable);
@@ -12092,7 +12092,7 @@ void DisplayTextItem (TEXTINFO *TextInfo)
 
 
 	TextInfo->currenty = 0.0F;
-	DoForceFit = FALSE;
+	DoForceFit = false;
 
 	for (i=0; i<TextInfo->num_lines; i++)
 	{
@@ -12104,17 +12104,17 @@ void DisplayTextItem (TEXTINFO *TextInfo)
 			if ((TextInfo->currentchar[i] + TextInfo->startpoint[i]) <= TextInfo->endpoint[i])
 			{
 				TextInfo->currentchar[i]++;
-				NewTextCharDisplayed = TRUE;
+				NewTextCharDisplayed = true;
 			}
 			skip--;
 		}
 
 		if ( !NewTextCharDisplayed )
-			TextInfo->finished[ i ] = TRUE;
+			TextInfo->finished[ i ] = true;
 		
 		if ( (i == TextInfo->num_lines - 1) && (TextInfo->currentchar[i] - 1 == TextInfo->endpoint[i] - TextInfo->startpoint[i]))
 		{
-			DoForceFit = TRUE;
+			DoForceFit = true;
 		}
 
 		if( TextInfo->flags & TEXTFLAG_Instant)
@@ -12162,7 +12162,7 @@ void DisplayTextItem (TEXTINFO *TextInfo)
 			if (TempTextInfo.currentchar[i] <= (TempTextInfo.endpoint[i] - TempTextInfo.startpoint[i]))  
 			{
 				DisplayTextCharacter(&TempTextInfo, i, -2, font, totalheight);
-				TextInfo->finished[ i ] = FALSE;
+				TextInfo->finished[ i ] = false;
 			}
 			
 			TempTextInfo.currenty += TempTextInfo.height[i];
@@ -12185,7 +12185,7 @@ void GetFinalChars( TEXTINFO *TextInfo, int currentpos, int length)
 
 	for (i = currentpos; i < length; i++)
 	{
-		Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font][TextInfo->text[i]]) );	// right arrow character
+		Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16_t)(TextLookup[font][TextInfo->text[i]]) );	// right arrow character
 		Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
 		Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -12206,9 +12206,9 @@ void PrintTextItem (TEXTINFO *TextInfo)
 {
 	int StartPos;
 	int length;
-	uint8 *str = NULL;
+	u_int8_t *str = NULL;
 	int i;
-	BOOL newline;
+	_Bool newline;
 
 	if(TextInfo && TextInfo->text)
 		str = TextInfo->text;
@@ -12228,10 +12228,10 @@ void PrintTextItem (TEXTINFO *TextInfo)
 	TEXTINFO_currentendpoint = 0;
 	TextInfo->startpoint[0] = 0;
 	TextInfo->endpoint[0] = 0;
-	TextInfo->force_fit = FALSE;
+	TextInfo->force_fit = false;
 	
-	newline = TRUE;
-	ForceNewLine = FALSE;
+	newline = true;
+	ForceNewLine = false;
 
 	if (length == 0)
 	{
@@ -12298,7 +12298,7 @@ void ProcessTextItems (void)
 	int i, teletypenum;
 	static float VidTextSfxPause = 0.0F;
 	static float theta = 0.0F;
-	uint8 r, g, b;
+	u_int8_t r, g, b;
 	float multiplier;
 
 	teletypenum = 0;
@@ -12314,7 +12314,7 @@ void ProcessTextItems (void)
 
 	TeleTypeTimer -= (float)TeleTypeSkip;
 
-	NewTextCharDisplayed = FALSE;
+	NewTextCharDisplayed = false;
 	for (i=0; i<TextStackLevel; i++)
 	{	
 		if ( ! TextStack[ i ] )
@@ -12341,7 +12341,7 @@ void ProcessTextItems (void)
 
 		if (DrawTextItemBox && !TextStack[i]->boxdone)
 		{
-			TextStack[i]->boxdone = TRUE;
+			TextStack[i]->boxdone = true;
 	  		if (!Plot2dBox (TextStack[i]))
 	  			Msg( "Plot2dBox() : failed\n" );
 		}
@@ -12350,7 +12350,7 @@ void ProcessTextItems (void)
 
 		// do not do sfx for instant text
 		if ( TextStack[i]->flags & TEXTFLAG_Instant )
-			NewTextCharDisplayed = FALSE;
+			NewTextCharDisplayed = false;
 
 	}
 
@@ -12400,9 +12400,9 @@ Highlight box
 	if (theta > 360.0F)
 		theta -= 360.0F;
 	multiplier = (float)(SIND(theta) + 1.0F)/2.0F;
-	r = (uint8)(64.0F * multiplier);
+	r = (u_int8_t)(64.0F * multiplier);
 	b = r;
-	g = (uint8)(255.0F * multiplier);
+	g = (u_int8_t)(255.0F * multiplier);
 	
 	for (i = 0; i < MAXHIGHLIGHTITEMS; i++)
 	{
@@ -12490,34 +12490,34 @@ void InitScreenFonts (void)
 		TextLookup[font][']'] = 7 + offset;
 
 		// foreign characters...
-		TextLookup[font][(uint8)'à'] = 56 + offset; 
-		TextLookup[font][(uint8)'à'] = 56 + offset; 
-		TextLookup[font][(uint8)'À'] = 56 + offset; 
-		TextLookup[font][(uint8)'á'] = 57 + offset; 
-		TextLookup[font][(uint8)'Á'] = 57 + offset; 
-		TextLookup[font][(uint8)'ä'] = 58 + offset; 
-		TextLookup[font][(uint8)'Ä'] = 58 + offset; 
-		TextLookup[font][(uint8)'è'] = 59 + offset; 
-		TextLookup[font][(uint8)'È'] = 59 + offset; 
-		TextLookup[font][(uint8)'é'] = 60 + offset; 
-		TextLookup[font][(uint8)'É'] = 60 + offset; 
-		TextLookup[font][(uint8)'ê'] = 61 + offset; 
-		TextLookup[font][(uint8)'ì'] = 62 + offset; 
-		TextLookup[font][(uint8)'ò'] = 63 + offset; 
-		TextLookup[font][(uint8)'Ò'] = 63 + offset; 
-		TextLookup[font][(uint8)'ó'] = 64 + offset; 
-		TextLookup[font][(uint8)'Ó'] = 64 + offset; 
-		TextLookup[font][(uint8)'ö'] = 65 + offset; 
-		TextLookup[font][(uint8)'Ö'] = 65 + offset; 
-		TextLookup[font][(uint8)'ù'] = 66 + offset; 
-		TextLookup[font][(uint8)'Ù'] = 66 + offset; 
-		TextLookup[font][(uint8)'ú'] = 67 + offset; 
-		TextLookup[font][(uint8)'Ú'] = 67 + offset; 
-		TextLookup[font][(uint8)'ü'] = 68 + offset; 
-		TextLookup[font][(uint8)'Ü'] = 68 + offset; 
-		TextLookup[font][(uint8)'ñ'] = 69 + offset; 
-		TextLookup[font][(uint8)'Ñ'] = 69 + offset;
-		TextLookup[font][(uint8)'ß'] = TextLookup[font][(uint8)'B'];
+		TextLookup[font][(u_int8_t)'à'] = 56 + offset; 
+		TextLookup[font][(u_int8_t)'à'] = 56 + offset; 
+		TextLookup[font][(u_int8_t)'À'] = 56 + offset; 
+		TextLookup[font][(u_int8_t)'á'] = 57 + offset; 
+		TextLookup[font][(u_int8_t)'Á'] = 57 + offset; 
+		TextLookup[font][(u_int8_t)'ä'] = 58 + offset; 
+		TextLookup[font][(u_int8_t)'Ä'] = 58 + offset; 
+		TextLookup[font][(u_int8_t)'è'] = 59 + offset; 
+		TextLookup[font][(u_int8_t)'È'] = 59 + offset; 
+		TextLookup[font][(u_int8_t)'é'] = 60 + offset; 
+		TextLookup[font][(u_int8_t)'É'] = 60 + offset; 
+		TextLookup[font][(u_int8_t)'ê'] = 61 + offset; 
+		TextLookup[font][(u_int8_t)'ì'] = 62 + offset; 
+		TextLookup[font][(u_int8_t)'ò'] = 63 + offset; 
+		TextLookup[font][(u_int8_t)'Ò'] = 63 + offset; 
+		TextLookup[font][(u_int8_t)'ó'] = 64 + offset; 
+		TextLookup[font][(u_int8_t)'Ó'] = 64 + offset; 
+		TextLookup[font][(u_int8_t)'ö'] = 65 + offset; 
+		TextLookup[font][(u_int8_t)'Ö'] = 65 + offset; 
+		TextLookup[font][(u_int8_t)'ù'] = 66 + offset; 
+		TextLookup[font][(u_int8_t)'Ù'] = 66 + offset; 
+		TextLookup[font][(u_int8_t)'ú'] = 67 + offset; 
+		TextLookup[font][(u_int8_t)'Ú'] = 67 + offset; 
+		TextLookup[font][(u_int8_t)'ü'] = 68 + offset; 
+		TextLookup[font][(u_int8_t)'Ü'] = 68 + offset; 
+		TextLookup[font][(u_int8_t)'ñ'] = 69 + offset; 
+		TextLookup[font][(u_int8_t)'Ñ'] = 69 + offset;
+		TextLookup[font][(u_int8_t)'ß'] = TextLookup[font][(u_int8_t)'B'];
 		
 /*
   128  Ç ( 199 )  144  É ( 201 )  160  á ( 225 )   
@@ -12549,60 +12549,60 @@ void InitScreenFonts (void)
 			TextLookup[font][96] = 228; // apostrophe
 			TextLookup[font][','] = 231; // comma
 
-			TextLookup[font][(uint8)'¡'] = 234;
-			TextLookup[font][(uint8)'¿'] = 237;
-			TextLookup[font][(uint8)'Ç'] = 240;
-			TextLookup[font][(uint8)'ç'] = 240;
+			TextLookup[font][(u_int8_t)'¡'] = 234;
+			TextLookup[font][(u_int8_t)'¿'] = 237;
+			TextLookup[font][(u_int8_t)'Ç'] = 240;
+			TextLookup[font][(u_int8_t)'ç'] = 240;
 
-			TextLookup[font][(uint8)'â'] = 243;
-			TextLookup[font][(uint8)'å'] = 246;
-			TextLookup[font][(uint8)'ë'] = 249;
-			TextLookup[font][(uint8)'ï'] = 252;
-			TextLookup[font][(uint8)'î'] = 255;
-			TextLookup[font][(uint8)'í'] = 258;
-			TextLookup[font][(uint8)'Í'] = 258;
-			TextLookup[font][(uint8)'ô'] = 261;
-			TextLookup[font][(uint8)'û'] = 264;
+			TextLookup[font][(u_int8_t)'â'] = 243;
+			TextLookup[font][(u_int8_t)'å'] = 246;
+			TextLookup[font][(u_int8_t)'ë'] = 249;
+			TextLookup[font][(u_int8_t)'ï'] = 252;
+			TextLookup[font][(u_int8_t)'î'] = 255;
+			TextLookup[font][(u_int8_t)'í'] = 258;
+			TextLookup[font][(u_int8_t)'Í'] = 258;
+			TextLookup[font][(u_int8_t)'ô'] = 261;
+			TextLookup[font][(u_int8_t)'û'] = 264;
 			break;
 		case FONT_512X384_Medium:
 			TextLookup[font][39] = 227; // apostrophe
 			TextLookup[font][96] = 227; // apostrophe
 			TextLookup[font][','] = 230; // comma
 
-			TextLookup[font][(uint8)'¡'] = 233;
-			TextLookup[font][(uint8)'¿'] = 236;
-			TextLookup[font][(uint8)'Ç'] = 239;
-			TextLookup[font][(uint8)'ç'] = 239;
+			TextLookup[font][(u_int8_t)'¡'] = 233;
+			TextLookup[font][(u_int8_t)'¿'] = 236;
+			TextLookup[font][(u_int8_t)'Ç'] = 239;
+			TextLookup[font][(u_int8_t)'ç'] = 239;
 
-			TextLookup[font][(uint8)'â'] = 242;
-			TextLookup[font][(uint8)'å'] = 245;
-			TextLookup[font][(uint8)'ë'] = 248;
-			TextLookup[font][(uint8)'ï'] = 251;
-			TextLookup[font][(uint8)'î'] = 254;
-			TextLookup[font][(uint8)'í'] = 257;
-			TextLookup[font][(uint8)'Í'] = 257;
-			TextLookup[font][(uint8)'ô'] = 260;
-			TextLookup[font][(uint8)'û'] = 263;
+			TextLookup[font][(u_int8_t)'â'] = 242;
+			TextLookup[font][(u_int8_t)'å'] = 245;
+			TextLookup[font][(u_int8_t)'ë'] = 248;
+			TextLookup[font][(u_int8_t)'ï'] = 251;
+			TextLookup[font][(u_int8_t)'î'] = 254;
+			TextLookup[font][(u_int8_t)'í'] = 257;
+			TextLookup[font][(u_int8_t)'Í'] = 257;
+			TextLookup[font][(u_int8_t)'ô'] = 260;
+			TextLookup[font][(u_int8_t)'û'] = 263;
 			break;
 		case FONT_512X384_Large:
 			TextLookup[font][39] = 226; // apostrophe
 			TextLookup[font][96] = 226; // apostrophe
 			TextLookup[font][','] = 229; // comma
 
-			TextLookup[font][(uint8)'¡'] = 232;
-			TextLookup[font][(uint8)'¿'] = 235;
-			TextLookup[font][(uint8)'Ç'] = 238;
-			TextLookup[font][(uint8)'ç'] = 238;
+			TextLookup[font][(u_int8_t)'¡'] = 232;
+			TextLookup[font][(u_int8_t)'¿'] = 235;
+			TextLookup[font][(u_int8_t)'Ç'] = 238;
+			TextLookup[font][(u_int8_t)'ç'] = 238;
 
-			TextLookup[font][(uint8)'â'] = 241;
-			TextLookup[font][(uint8)'å'] = 244;
-			TextLookup[font][(uint8)'ë'] = 247;
-			TextLookup[font][(uint8)'ï'] = 250;
-			TextLookup[font][(uint8)'î'] = 253;
-			TextLookup[font][(uint8)'í'] = 256;
-			TextLookup[font][(uint8)'Í'] = 256;
-			TextLookup[font][(uint8)'ô'] = 259;
-			TextLookup[font][(uint8)'û'] = 262;
+			TextLookup[font][(u_int8_t)'â'] = 241;
+			TextLookup[font][(u_int8_t)'å'] = 244;
+			TextLookup[font][(u_int8_t)'ë'] = 247;
+			TextLookup[font][(u_int8_t)'ï'] = 250;
+			TextLookup[font][(u_int8_t)'î'] = 253;
+			TextLookup[font][(u_int8_t)'í'] = 256;
+			TextLookup[font][(u_int8_t)'Í'] = 256;
+			TextLookup[font][(u_int8_t)'ô'] = 259;
+			TextLookup[font][(u_int8_t)'û'] = 262;
 			break;
 		}
 	}
@@ -12809,7 +12809,7 @@ void LoadBikeChar(MENUITEM *Item)
 		exit(1);
 	}
 
-	Bit_Ptr = ( (*ScrPolys[ BikerScrPoly ].Frm_Info)->Bit_Info + (int16) ScrPolys[ BikerScrPoly ].Frame );
+	Bit_Ptr = ( (*ScrPolys[ BikerScrPoly ].Frm_Info)->Bit_Info + (int16_t) ScrPolys[ BikerScrPoly ].Frame );
 	Off_Ptr = ( (*ScrPolys[ BikerScrPoly ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 	Box_Ptr = ( (*ScrPolys[ BikerScrPoly ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
@@ -12860,8 +12860,8 @@ void KillBikeCharPic( MENU *Menu )
 {
 	if (BikerDisplayed)
 	{	KillUsedScrPoly ( BikerScrPoly );
-		BikerScrPoly = (uint16)-1;
-		BikerDisplayed = FALSE;
+		BikerScrPoly = (u_int16_t)-1;
+		BikerDisplayed = false;
 	}
 }
 
@@ -12889,10 +12889,10 @@ void LoadLevelPic(MENUITEM *Item)
 	}
 }
 
-uint16 SavedGamePicPoly;
-uint16 TVFramePoly;
-BOOL SavedGamePicDisplayed = FALSE;
-BOOL TVFrameDisplayed = FALSE;
+u_int16_t SavedGamePicPoly;
+u_int16_t TVFramePoly;
+_Bool SavedGamePicDisplayed = false;
+_Bool TVFrameDisplayed = false;
 
 void LoadSavedGamePic( char *file )
 {
@@ -12914,8 +12914,8 @@ void KillLevelPic( MENU *Menu )
 {
 	if (LevelDisplayed)
 	{	KillUsedScrPoly ( LevelScrPoly );
-		LevelScrPoly = (uint16)-1;
-		LevelDisplayed = FALSE;
+		LevelScrPoly = (u_int16_t)-1;
+		LevelDisplayed = false;
 	}
 }
 
@@ -12963,20 +12963,20 @@ void GetTVCoords( POLY *poly, float zoffset )
 	}
 }
 
-BOOL DisplayPicOnTV( FRAME_INFO **header, int *frame, uint16 *poly, BOOL *displayed, float zoffset )
+_Bool DisplayPicOnTV( FRAME_INFO **header, int *frame, u_int16_t *poly, _Bool *displayed, float zoffset )
 {
 	if (*displayed)
 	{	KillUsedPoly ( *poly );
-		*poly = (uint16)-1;
-		*displayed = FALSE;
+		*poly = (u_int16_t)-1;
+		*displayed = false;
 	}
 
 	if (!*displayed)
 	{
 		*poly = FindFreePoly();					
-		if( *poly != (uint16 ) -1 )
+		if( *poly != (u_int16_t ) -1 )
 		{	
-			*displayed = TRUE;
+			*displayed = true;
 
 			GetTVCoords( &Polys[ *poly ], zoffset );
 
@@ -13001,33 +13001,33 @@ BOOL DisplayPicOnTV( FRAME_INFO **header, int *frame, uint16 *poly, BOOL *displa
    		    Polys[ *poly ].Frm_Info = header;
 			Polys[ BikeLine[CurrentLine] ].Frame = (float)(*frame);
 
-			AddPolyToTPage( BikeLine[CurrentLine], GetTPage( *Polys[ *poly ].Frm_Info, (int16) Polys[ *poly ].Frame ) );
+			AddPolyToTPage( BikeLine[CurrentLine], GetTPage( *Polys[ *poly ].Frm_Info, (int16_t) Polys[ *poly ].Frame ) );
 
 		}
 		else
-			return FALSE;
+			return false;
 
 
 	}
 
-	return TRUE;
+	return true;
 
 }
 
-BOOL LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, uint16 *scrpoly, BOOL *displayed)
+_Bool LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, u_int16_t *scrpoly, _Bool *displayed)
 {
 	if (*displayed)
 	{	KillUsedScrPoly ( *scrpoly );
-		*scrpoly = (uint16)-1;
-		*displayed = FALSE;
+		*scrpoly = (u_int16_t)-1;
+		*displayed = false;
 	}
 
 	if (!*displayed)
 	{
 		*scrpoly = FindFreeScrPoly();					
-		if( *scrpoly != (uint16 ) -1 )
+		if( *scrpoly != (u_int16_t ) -1 )
 		{	
-			*displayed = TRUE;
+			*displayed = true;
 
 			ScrPolys[*scrpoly].Type = SCRTYPE_Normal;
 			ScrPolys[*scrpoly].Flags = SCRFLAG_UseCoords;
@@ -13043,7 +13043,7 @@ BOOL LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO *
 			ScrPolys[*scrpoly].Yscale = 1.0F;
 		}
 		else
-			return FALSE;
+			return false;
 	}
 
 	ScrPolys[*scrpoly].x1 = xmin;
@@ -13052,15 +13052,15 @@ BOOL LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO *
 	ScrPolys[*scrpoly].y3 = ymax;					
 	ScrPolys[ *scrpoly ].Frame = (float)*frame;
 
-	return TRUE;
+	return true;
 }
 
 void KillBikeChar(MENU *Menu)
 {
 	if (BikerDisplayed)
 	{	KillUsedScrPoly( BikerScrPoly );
-		BikerScrPoly = (uint16)-1;
-		BikerDisplayed = FALSE;
+		BikerScrPoly = (u_int16_t)-1;
+		BikerDisplayed = false;
 	}
 
 	InitBikeList( Menu );
@@ -13080,7 +13080,7 @@ void InitEventDiscPan(TITLE_EVENT *TitleEvent)
 {
 	//InitEventGeneralPan(TitleEvent);
 	//VduClear();
-	//VDU_Ready = FALSE;
+	//VDU_Ready = false;
 }
 
 
@@ -13139,7 +13139,7 @@ void EventRightVDUPan(TITLE_EVENT *TitleEvent)
 void ExitEventVDUPan(TITLE_EVENT *TitleEvent)
 {
 	ProcessVduItems( CurrentMenu );
-	VDU_Ready = TRUE;
+	VDU_Ready = true;
 }
 
 void InitEventLeftVDUPan(TITLE_EVENT *TitleEvent)
@@ -13304,7 +13304,7 @@ void InitEventFadeOnHoloLight(TITLE_EVENT *TitleEvent)
 
 void TriggerBikeSpeech( TITLE_EVENT *TitleEvent )
 {
-	static uint32 CurrentSpeechID = 0;
+	static u_int32_t CurrentSpeechID = 0;
 
 	if( MyGameStatus != STATUS_Title )
 		return;
@@ -13379,7 +13379,7 @@ void ExitEventRaiseHolopad(TITLE_EVENT *TitleEvent)
 void InitEventLowerHoloPad(TITLE_EVENT *TitleEvent)
 {
 	OldHoloPadHeight = Models[BackgroundModel[TITLE_MODEL_Holopad]].Pos.y;
-	HolopadJudderReq = TRUE;
+	HolopadJudderReq = true;
 }
 
 void EventLowerHoloPad(TITLE_EVENT *TitleEvent)
@@ -13428,7 +13428,7 @@ void EventJudderHoloPad(TITLE_EVENT *TitleEvent)
 
 void ExitEventJudderHoloPad(TITLE_EVENT *TitleEvent)
 {
-	HolopadJudderReq = FALSE;
+	HolopadJudderReq = false;
 }
 
 
@@ -13525,7 +13525,7 @@ void InitEventExpandCrystal(TITLE_EVENT *TitleEvent)
 
 void ExitEventExpandBike(TITLE_EVENT *TitleEvent)
 {
-	BikeExpanded = TRUE;
+	BikeExpanded = true;
 	
 	if ( CurrentMenu != &MENU_NEW_ChangeBike )
 		OldBikeSwapScale = BikeSwapScale;
@@ -13534,14 +13534,14 @@ void ExitEventExpandBike(TITLE_EVENT *TitleEvent)
 void InitEventShrinkBike(TITLE_EVENT *TitleEvent)
 {
 	/*
-	BikeExpanded = FALSE;
+	BikeExpanded = false;
 	
 	KillLines();
 
 	PlaySfx( SFX_HoloChange, 0.5F );
 	*/
 
-	ShowHoloModel( (uint16)-1 );
+	ShowHoloModel( (u_int16_t)-1 );
 }
 
 void InitStartDiscPanTimer (TITLE_EVENT_TIMER *TitleEventTimer)
@@ -13582,7 +13582,7 @@ void InitRightVDUPanTimer (TITLE_EVENT_TIMER *TitleEventTimer)
 {
 	CameraStatus = CAMERA_AtRightVDU;
 	InitEventGeneralPan(NULL);
-	VDU_Ready = FALSE;
+	VDU_Ready = false;
 
 	TitleEventTimer->Status = TITLE_EVENT_TIMER_ACTIVE;
 	TitleEventTimer->CurrentTime = 0.0F;
@@ -13592,7 +13592,7 @@ void InitLeftVDUPanTimer (TITLE_EVENT_TIMER *TitleEventTimer)
 {
 	CameraStatus = CAMERA_AtLeftVDU;
 	InitEventGeneralPan(NULL);
-	VDU_Ready = FALSE;
+	VDU_Ready = false;
 
 	TitleEventTimer->Status = TITLE_EVENT_TIMER_ACTIVE;
 	TitleEventTimer->CurrentTime = 0.0F;
@@ -13602,7 +13602,7 @@ void InitVisualsTimer (TITLE_EVENT_TIMER *TitleEventTimer)
 {
 	CameraStatus = CAMERA_AtRightVDU;
 	InitEventGeneralPan(NULL);
-	VDU_Ready = FALSE;
+	VDU_Ready = false;
 	PlaySfx( SFX_TitlePan, 1.0F );
 
 	TitleEventTimer->Status = TITLE_EVENT_TIMER_ACTIVE;
@@ -13735,7 +13735,7 @@ void ProcessTimers(void)
 	}
 }
 							   
-void DrawHighlightBox(TEXTINFO *TextInfo, uint8 r, uint8 g, uint8 b)
+void DrawHighlightBox(TEXTINFO *TextInfo, u_int8_t r, u_int8_t g, u_int8_t b)
 {
 	float xmin, ymin, xmax, ymax, widthX, widthY, height, length, templength, actuallength;
 	int i, font;
@@ -13780,9 +13780,9 @@ void DrawHighlightBox(TEXTINFO *TextInfo, uint8 r, uint8 g, uint8 b)
 		PlotHighlightPoly (xmax, ymin - widthY, xmax + widthX, ymax + widthY, r, g, b); //right
 }
 
-uint16 PlotHighlightPoly (float xmin, float ymin, float xmax, float ymax, uint8 r, uint8 g, uint8 b)
+u_int16_t PlotHighlightPoly (float xmin, float ymin, float xmax, float ymax, u_int8_t r, u_int8_t g, u_int8_t b)
 {
-	uint16 poly;
+	u_int16_t poly;
 	
 	poly =FindFreeScrPoly();
 
@@ -13928,9 +13928,9 @@ void GetTitleMessage(void)
 			dummytext.font = FONT_Small;				   
 			dummytext.flags = TEXTFLAG_ForceFit;						
 			dummytext.num_lines = 0;				
-			dummytext.boxdone = FALSE;					
+			dummytext.boxdone = false;					
 			dummytext.num_pointers_to_free = 0;		
-			dummytext.force_fit = FALSE;
+			dummytext.force_fit = false;
 			dummytext.text = &TitleMsgQue[TitleMsgQueEnd].text[0];
 			PrintTextItem( &dummytext );
 
@@ -13991,9 +13991,9 @@ void PrintErrorMessage (char *ErrorStr, int BackBy, MENU *NewMenu, int type)
 	ErrorNewMenu = NewMenu;
 
 	if (type & ERROR_DONTUSE_MENUFUNCS)
-		IgnoreMenuFuncs = TRUE;
+		IgnoreMenuFuncs = true;
 	else
-		IgnoreMenuFuncs = TRUE;
+		IgnoreMenuFuncs = true;
 	
 	ChangeItem.Value = &MENU_NEW_Error;
 	MenuChange( &ChangeItem );
@@ -14029,7 +14029,7 @@ void MenuItemBackFromError ( MENUITEM *Item )
 		MenuChange( &ChangeItem );
 	}
 
-	IgnoreMenuFuncs = FALSE;
+	IgnoreMenuFuncs = false;
 
 
 }
@@ -14050,14 +14050,14 @@ void SelectConfigureAxisMenu ( MENUITEM *Item )
 void InitJoystickList ( MENU *Menu )
 {
 	int i, j;
-	BOOL jsfound = FALSE;
+	_Bool jsfound = false;
 
 	// if no joysticks connected, display error message & return to last menu...
 	for (i = 0; i < Num_Joysticks; i++)
 	{
 		if (JoystickInfo[i].connected)
 		{
-			jsfound = TRUE;
+			jsfound = true;
 			break;
 		}
 	}
@@ -14178,7 +14178,7 @@ void InitJoystickAxisConfig ( MENU *Menu)
 	{
 		AxisTestScrPoly[i] = FindFreeScrPoly();
 
-		if (AxisTestScrPoly[i] == (uint16)-1)
+		if (AxisTestScrPoly[i] == (u_int16_t)-1)
 		{
 			Msg("Title.c: InitJoystickAxisConfig() unable to allocate screen poly\n");
 			exit(1);
@@ -14517,7 +14517,7 @@ void ExitJoySetup( MENU *Menu )
 		{
 			if ( JoystickInfo[ joystick ].Axis[ j ].exists &&  JoystickInfo[ joystick ].Axis[ j ].action )
 			{
-				JoystickInfo[ joystick ].assigned = TRUE;
+				JoystickInfo[ joystick ].assigned = true;
 			}
 		}
 
@@ -14528,7 +14528,7 @@ void ExitJoySetup( MENU *Menu )
 			{
 				if ( JoystickInfo[ joystick ].POV[ j ].action[ k ] )
 				{
-					JoystickInfo[ joystick ].assigned = TRUE;
+					JoystickInfo[ joystick ].assigned = true;
 				}
 			}
 		}
@@ -14538,7 +14538,7 @@ void ExitJoySetup( MENU *Menu )
 		{
 			if ( JoystickInfo[ joystick ].Button[ j ].action )
 			{
-			 	JoystickInfo[ joystick ].assigned = TRUE;
+			 	JoystickInfo[ joystick ].assigned = true;
 			}
 		}
 	}
@@ -14641,16 +14641,16 @@ void SendQuickText( MENUITEM *Item )
 	MenuExit();
 	SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
 	QuickText.text[0] = 0;
-	JustExitedMenu = FALSE;
-	flush_input = TRUE;
+	JustExitedMenu = false;
+	flush_input = true;
 }
 void SendQuickTextWhisper( MENUITEM *Item )
 {
 	MenuExit();
 	SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTauntWhisper, 0);
 	QuickTextWhisper.text[0] = 0;
-	JustExitedMenu = FALSE;
-	flush_input = TRUE;
+	JustExitedMenu = false;
+	flush_input = true;
 }
 
 
@@ -14722,7 +14722,7 @@ void SelectGoldBarModel( MENU *Menu )
 	ShowHoloModel( TITLE_MODEL_GoldBar );
 }
 
-BOOL InitScene(void);
+_Bool InitScene(void);
 void AfterSpecialMessage( MENUITEM *Item )
 {
 	switch( GameCompleted )
@@ -14735,8 +14735,8 @@ void AfterSpecialMessage( MENUITEM *Item )
 	ReleaseView();
 	MyGameStatus = STATUS_Title;
 	MenuRestart( &MENU_Start );
-	TitleInitDone = FALSE;
-	InitialTexturesSet = FALSE;
+	TitleInitDone = false;
+	InitialTexturesSet = false;
 	InitScene();
 	InitView();
 }
@@ -14819,7 +14819,7 @@ char *CTF_Type( SLIDER *s )
 }
 
 
-BOOL ListDelete( LIST *l, int item )
+_Bool ListDelete( LIST *l, int item )
 {
 	if ( item >= 0 && item < l->items )
 	{
@@ -14832,16 +14832,16 @@ BOOL ListDelete( LIST *l, int item )
 			l->selected_item = l->items - 1;
 		if ( l->top_item >= l->items )
 			l->top_item = l->items - 1;
-		return TRUE;
+		return true;
 	}
 	else
-		return FALSE;
+		return false;
 }
 
 
-BOOL DeleteDemo( LIST *l, int item )
+_Bool DeleteDemo( LIST *l, int item )
 {
-	return delete_file( DemoFileName( l->item[ item ] ) ) ? ListDelete( l, item ) : FALSE;
+	return delete_file( DemoFileName( l->item[ item ] ) ) ? ListDelete( l, item ) : false;
 }
 
 
@@ -14879,17 +14879,17 @@ void DebugLastError( void )
 }
 
 
-BOOL DeleteSavedGame( LIST *l, int item )
+_Bool DeleteSavedGame( LIST *l, int item )
 {
 	if ( delete_file( SaveGameFileName( item ) )
 		&& delete_file( SaveGamePicFileName( item ) ) )
 	{
 		strncpy( l->item[ item ], SavedGameInfo( item ), sizeof( l->item[ 0 ] ) - 1 );
 		l->item[ item ][ sizeof( l->item[ 0 ] ) - 1 ] = 0;
-		return TRUE;
+		return true;
 	}
 	DebugLastError();
-	return FALSE;
+	return false;
 }
 
 void SaveMacros( MENUITEM *Item )
@@ -14901,7 +14901,7 @@ void SaveMacros( MENUITEM *Item )
 	write_config( player_config, biker_config );
 }
 
-BOOL SetGamma( SLIDER *slider )
+_Bool SetGamma( SLIDER *slider )
 {
 	double tempgamma;
 
@@ -14911,7 +14911,7 @@ BOOL SetGamma( SLIDER *slider )
 
 	// convert to float to get rid of small rounding errors
 	if ( (float)tempgamma == (float)Gamma )
-		return TRUE;
+		return true;
 
 	DebugPrintf("Gamma set to %f\n",Gamma);
 
@@ -14922,7 +14922,7 @@ BOOL SetGamma( SLIDER *slider )
 		exit( 1 );
 	}
 
-	InitialTexturesSet = FALSE;
+	InitialTexturesSet = false;
 
 	if( MyGameStatus == STATUS_Title )
 	{
@@ -14930,10 +14930,10 @@ BOOL SetGamma( SLIDER *slider )
 		DarkenRoom2(RoomDarkness);
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL SetWaterDetail( SLIDER *slider )
+_Bool SetWaterDetail( SLIDER *slider )
 {
 	switch( slider->value )
 	{
@@ -14947,21 +14947,21 @@ BOOL SetWaterDetail( SLIDER *slider )
 		WATER_CELLSIZE = 64.0F;
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOL SetTextScale( SLIDER *slider )
+_Bool SetTextScale( SLIDER *slider )
 {
 	FontWidth = 8.0F + (4.0F*slider->value);
 	FontHeight = 8.0F + (4.0F*slider->value);
-	return TRUE;
+	return true;
 }
 
-BOOL SetNumPrimaryPickups( SLIDER *slider )
+_Bool SetNumPrimaryPickups( SLIDER *slider )
 {
 	NumPrimaryPickups = slider->value;
 
-	return TRUE;
+	return true;
 }
 
 char *AxisName( SLIDER *s )
@@ -14976,7 +14976,7 @@ char *AxisActionName( SLIDER *s )
 }
 
 
-BOOL SetAxisSlider( SLIDER *s )
+_Bool SetAxisSlider( SLIDER *s )
 {
 	if ( s->value >= 0 && s->value < JoystickAxisList.items )
 	{
@@ -14985,14 +14985,14 @@ BOOL SetAxisSlider( SLIDER *s )
 			JoystickAxisList.selected_item = s->value;
 			ChooseJoyAxis( NULL );
 		}
-		return TRUE;
+		return true;
 	}
 	else
-		return FALSE;
+		return false;
 }
 
 
-BOOL SetAxisActionSlider( SLIDER *s )
+_Bool SetAxisActionSlider( SLIDER *s )
 {
 	if ( s->value >= 0 && s->value < AxisActionList.items )
 	{
@@ -15003,10 +15003,10 @@ BOOL SetAxisActionSlider( SLIDER *s )
 		axis = AxisMap[JoystickAxisList.selected_item];
 		JoystickInfo[joystick].Axis[axis].action = ShipAxisLookup[ AxisActionList.selected_item ];
 		CheckJoyAxis( NULL );
-		return TRUE;
+		return true;
 	}
 	else
-		return FALSE;
+		return false;
 }
 #if 1
 
@@ -15016,7 +15016,7 @@ BOOL SetAxisActionSlider( SLIDER *s )
 
 float HoloModelTimer;
 int HoloModelMode;
-uint16 NextHoloModel;
+u_int16_t NextHoloModel;
 
 #define HOLOSCANSPEED 0.5F
 #define NUM_HOLO_SCANPLANES 2
@@ -15026,7 +15026,7 @@ PLANE HoloPlane[ NUM_HOLO_SCANPLANES ] = {
 };
 float MinHoloPlaneOffset[ NUM_HOLO_SCANPLANES ];
 float MaxHoloPlaneOffset[ NUM_HOLO_SCANPLANES ];
-uint8 CurrentHoloPlane;
+u_int8_t CurrentHoloPlane;
 float CurrentHoloOffset;
 
 void InitHoloScanLine( void )
@@ -15070,7 +15070,7 @@ void PlotHoloScanLine( void )
 	ApplyMatrix( &Mat_R, &HoloPlane[ CurrentHoloPlane ].Normal, &tempplane.Normal);
 
    	if (!SetUpLines( CurrentHoloModel, tempplane, &HoloRot))
-		Msg("SetUpLines() returned FALSE");
+		Msg("SetUpLines() returned false");
 
 	Models[ CurrentHoloModel ].IntersectionPlane = HoloPlane[ CurrentHoloPlane ];
 	
@@ -15080,37 +15080,37 @@ void PlotHoloScanLine( void )
 
 void InitHoloPad( void )
 {
-	CurrentHoloModel = (uint16)-1;
+	CurrentHoloModel = (u_int16_t)-1;
 	HoloModelScale = 1.0F;
 	HoloModelTimer = 0.0F;
 	HoloModelMode = HOLOMODEL_Done;
-	NextHoloModel = (uint16)-1;
+	NextHoloModel = (u_int16_t)-1;
 }
 
 void KillHoloModel( void )
 {
 
-	if ( CurrentHoloModel != (uint16)-1 )
+	if ( CurrentHoloModel != (u_int16_t)-1 )
 		KillUsedModel( CurrentHoloModel );
 
-	CurrentHoloModel = (uint16)-1;
+	CurrentHoloModel = (u_int16_t)-1;
 
 }			  
 
-BOOL FlyGirlActive = FALSE;
+_Bool FlyGirlActive = false;
 
-void LoadHoloModel( uint16 model )
+void LoadHoloModel( u_int16_t model )
 {
 	int i;
 
-	if ( CurrentHoloModel != ( uint16 ) -1 )
+	if ( CurrentHoloModel != ( u_int16_t ) -1 )
 	{
 		KillHoloModel();
 	}
 
 	if ( model == TITLE_MODEL_ExtraModels )
 	{
-		FlyGirlActive = TRUE;
+		FlyGirlActive = true;
 		HoloModelScale = 1.0F;
 		for( i = 0; i < MAXBIKETYPES; i++ )
 		{
@@ -15124,12 +15124,12 @@ void LoadHoloModel( uint16 model )
 	}
 	else
 	{
-		FlyGirlActive = FALSE;
+		FlyGirlActive = false;
 	}
 	
 	CurrentHoloModel = FindFreeModel();
 
-	if (CurrentHoloModel != (uint16) -1)
+	if (CurrentHoloModel != (u_int16_t) -1)
 	{
 		HoloModelScale = 1.0F;
 		for( i = 0; i < MAXBIKETYPES; i++ )
@@ -15164,7 +15164,7 @@ void LoadHoloModel( uint16 model )
 
 void ScaleHoloModel( float scale )
 {
-   	if( CurrentHoloModel != (uint16)-1 )
+   	if( CurrentHoloModel != (u_int16_t)-1 )
 	{
 		Models[CurrentHoloModel].Xscale = scale * HoloModelScale;
 		Models[CurrentHoloModel].Yscale = HoloModelScale;
@@ -15174,17 +15174,17 @@ void ScaleHoloModel( float scale )
 
 #define HOLO_SPEECH_DELAY 60.0F
 float HoloSpeechDelay;
-BOOL HoloSpeechDone = FALSE;
+_Bool HoloSpeechDone = false;
 
-// specify (uint16)-1 for no new model
-void ShowHoloModel( uint16 model )
+// specify (u_int16_t)-1 for no new model
+void ShowHoloModel( u_int16_t model )
 {
 	HoloSpeechDelay = HOLO_SPEECH_DELAY;
-	HoloSpeechDone = FALSE;
+	HoloSpeechDone = false;
 	
-	if ( ( CurrentHoloModel == (uint16)-1 ) && !FlyGirlActive )
+	if ( ( CurrentHoloModel == (u_int16_t)-1 ) && !FlyGirlActive )
 	{
-		if ( model == (uint16)-1  )
+		if ( model == (u_int16_t)-1  )
 			return;
 		
 		LoadHoloModel( model );
@@ -15231,14 +15231,14 @@ void ProcessFlyGirl( float scale )
 
 	MatrixMultiply( &TempMatrix, &TempRotMatrix, &TempTransMatrix );
 
-	UpdateFlyGirl( &flygirlpos, &TempTransMatrix, TRUE );
+	UpdateFlyGirl( &flygirlpos, &TempTransMatrix, true );
 
 }
 
 void ProcessHoloModel( void )
 {
 	float oldtimer;
-	BOOL reload = FALSE;
+	_Bool reload = false;
 
 	HoloRot.y -= 0.5F * framelag;
 	if (HoloRot.y < 0.0F)
@@ -15247,7 +15247,7 @@ void ProcessHoloModel( void )
 	HoloRot.x = 0.0F;
 	HoloRot.z = 0.0F;
 
-	if ( ( CurrentHoloModel == (uint16)-1 ) && !FlyGirlActive )
+	if ( ( CurrentHoloModel == (u_int16_t)-1 ) && !FlyGirlActive )
 	{
 		return;
 	}
@@ -15266,7 +15266,7 @@ void ProcessHoloModel( void )
 			if ( HoloSpeechDelay < 0.0F )
 			{
 				TriggerBikeSpeech( NULL );
-				HoloSpeechDone = TRUE;
+				HoloSpeechDone = true;
 			}
 
 			HoloSpeechDelay -= framelag;
@@ -15285,7 +15285,7 @@ void ProcessHoloModel( void )
 		{
 			HoloModelMode = HOLOMODEL_Expand;
 			HoloModelTimer = (float)fabs(HoloModelTimer);
-			reload = TRUE;
+			reload = true;
 		}
 		break;
 	}
@@ -15298,12 +15298,12 @@ void ProcessHoloModel( void )
 	
 	if ( reload )
 	{
-		if ( NextHoloModel == (uint16)-1 )
+		if ( NextHoloModel == (u_int16_t)-1 )
 		{
 			if ( FlyGirlActive )
 			{
-				UpdateFlyGirl( &BikePos, &MATRIX_Identity, FALSE );
-				FlyGirlActive = FALSE;
+				UpdateFlyGirl( &BikePos, &MATRIX_Identity, false );
+				FlyGirlActive = false;
 			}else
 			{
 				KillHoloModel();
@@ -15322,7 +15322,7 @@ void ProcessHoloModel( void )
 		ProcessFlyGirl((float)fabs(HoloModelTimer));
 	}else
 	{
-		UpdateFlyGirl( &BikePos, &MATRIX_Identity, FALSE );
+		UpdateFlyGirl( &BikePos, &MATRIX_Identity, false );
 		ScaleHoloModel( (float)fabs(HoloModelTimer));
 	}
 
@@ -15333,7 +15333,7 @@ void ProcessHoloModel( void )
 }
 
 
-BOOL DeletePilot( LIST *l, int item )
+_Bool DeletePilot( LIST *l, int item )
 {
 	static char fname[ 255 ];
 
@@ -15341,27 +15341,27 @@ BOOL DeletePilot( LIST *l, int item )
 	if ( l->items > 1 && delete_file( fname ) && ListDelete( l, item ) )
 	{
 		SelectPilot( NULL );
-		return TRUE;
+		return true;
 	}
 	else
-		return FALSE;
+		return false;
 }
 
-void UnToggleOption( BOOL *toggle )
+void UnToggleOption( _Bool *toggle )
 {
 	MENUITEM *Item;
-	BOOL toggled = FALSE;
+	_Bool toggled = false;
 
 	for( Item = CurrentMenu->Item ; Item->x >= 0 ; Item++ )
 	{
 		if( Item->Variable )
 		{
-			if ( (BOOL *)Item->Variable == toggle )
+			if ( (_Bool *)Item->Variable == toggle )
 			{
 				if( !toggled )
 				{
 					SelectFlatMenuToggle( Item );
-					toggled = TRUE;
+					toggled = true;
 				}
 			}
 		}
@@ -15465,7 +15465,7 @@ void InitHostWaitingToStart( MENU *Menu )
 	GetInitialPlayers( Menu );
 }
 
-BOOL GeneralTimeout( float *timer )
+_Bool GeneralTimeout( float *timer )
 {
 	char buf[ 64 ];
 
@@ -15473,14 +15473,14 @@ BOOL GeneralTimeout( float *timer )
 
 	if ( *timer < 0.0F )
 	{
-		return TRUE;
+		return true;
 	}else
 	{
  		sprintf( buf, "%d", (int)( *timer / 60.0F ) );
 		Print4x5Text( buf, 10, 10, InGameMenuColour );
 	}
 
-	return FALSE;
+	return false;
 }
 
 void TitleReset( MENUITEM *item )
@@ -15488,7 +15488,7 @@ void TitleReset( MENUITEM *item )
 	MenuAbort();
 	SetInitialTitleParams();
 	PlaceObjects();
-	TitleInitDone = FALSE;
+	TitleInitDone = false;
 	CameraStatus = CAMERA_AtStart;
 	QuickStart = QUICKSTART_None;
 }
@@ -15554,11 +15554,11 @@ void InitBattleMenu( MENU *menu )
 
 
 
-BOOL ProcessSelectKeydef( int Key )
+_Bool ProcessSelectKeydef( int Key )
 {
-	BOOL done;
+	_Bool done;
 
-	done = FALSE;
+	done = false;
 	if (StackStatus == DISC_NOTHING)
 	{
 		switch(Key)
@@ -15680,7 +15680,7 @@ BOOL ProcessSelectKeydef( int Key )
 			
 		case SDLK_ESCAPE:
 			MenuBack();
-			done = TRUE;
+			done = true;
 			break;
 			
 		case SDLK_PAGEUP:
@@ -15726,13 +15726,13 @@ BOOL ProcessSelectKeydef( int Key )
 	return !done;
 }
 
-BOOL ProcessKeydef( int Key )
+_Bool ProcessKeydef( int Key )
 {
-	BOOL done;
+	_Bool done;
 	int KeyDefNo;
 	MENUITEM *Item, *nextitem;
 
-	done = FALSE;
+	done = false;
 	switch( Key )
 	{
 	case SDLK_ESCAPE:
@@ -15748,7 +15748,7 @@ BOOL ProcessKeydef( int Key )
 	case SDLK_F10:
 	case SDLK_F11:
 	case SDLK_F12:
-		done = TRUE; // back out of key definition mode if illegal key selected
+		done = true; // back out of key definition mode if illegal key selected
 		break;
 	default:
 		if ( Key )
@@ -15757,7 +15757,7 @@ BOOL ProcessKeydef( int Key )
 			{
 				DefineKey( KeyItem, (VirtualKeycode) Key );
 			}
-			done = TRUE;
+			done = true;
 		}
 		break;
 	}
@@ -15781,15 +15781,15 @@ BOOL ProcessKeydef( int Key )
 }
 
 
-BOOL ProcessSlider( int Key )
+_Bool ProcessSlider( int Key )
 {
-	BOOL done;
+	_Bool done;
 	SLIDER *slider;
 	MenuItemFunc set_fn;
 
 	slider = (SLIDER *)SliderItem->Variable;
 	
-	done = FALSE;
+	done = false;
 	switch( Key )
 	{
 	case SDLK_LEFT:
@@ -15813,12 +15813,12 @@ BOOL ProcessSlider( int Key )
 		SliderEnd( SliderItem );
 		break;
 	case SDLK_RETURN:
-		done = TRUE;
+		done = true;
 		break;
 	case SDLK_ESCAPE:
 		slider->oldvalue = slider->value;
 		SliderCancel( SliderItem );
-		done = TRUE;
+		done = true;
 		break;
 	default:
 		break;
@@ -15841,17 +15841,17 @@ BOOL ProcessSlider( int Key )
 }
 
 
-BOOL ProcessSlider2( int Key )
+_Bool ProcessSlider2( int Key )
 {
-	BOOL done, redraw, refresh;
+	_Bool done, redraw, refresh;
 	SLIDER *slider;
 	MenuItemFunc set_fn;
 
 	slider = (SLIDER *)SliderItem->Variable;
 	
-	done = FALSE;
-	redraw = FALSE;
-	refresh = FALSE;
+	done = false;
+	redraw = false;
+	refresh = false;
 	switch( Key )
 	{
 	case SDLK_LEFT:
@@ -15859,40 +15859,40 @@ BOOL ProcessSlider2( int Key )
 		slider->oldvalue = slider->value;
 		DecrementSlider( SliderItem );
 		SliderSet( SliderItem );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case SDLK_RIGHT:
 		PlayCursorSfx();
 		slider->oldvalue = slider->value;
 		IncrementSlider( SliderItem );
 		SliderSet( SliderItem );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case SDLK_HOME:
 		CursorHome();
-		done = TRUE;
+		done = true;
 		break;
 	case SDLK_END:
 		CursorEnd();
-		done = TRUE;
+		done = true;
 		break;
 	case UP_MOUSE:
 	case SDLK_UP:
 		CursorUp();
-		done = TRUE;
+		done = true;
 		break;
 	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		CursorDown();
-		done = TRUE;
+		done = true;
 		break;
 	case SDLK_ESCAPE:
 		MenuBack();
-		done = TRUE;
+		done = true;
 		break;
 	case SDLK_RETURN:
-		refresh = TRUE;
-		done = TRUE;
+		refresh = true;
+		done = true;
 		break;
 	default:
 		if ( Key )
@@ -15904,7 +15904,7 @@ BOOL ProcessSlider2( int Key )
 				CursorSearch( SearchKey( *c ) );
 				if (CurrentMenuItem != SliderItem)
 				{
-					done = TRUE;
+					done = true;
 				}
 			}
 		}
@@ -15922,7 +15922,7 @@ BOOL ProcessSlider2( int Key )
 
 	if (redraw && ((CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU)))
 	{
-		slider->redraw_req = TRUE;
+		slider->redraw_req = true;
 	}
 
 	if (done || redraw)
@@ -15943,20 +15943,20 @@ BOOL ProcessSlider2( int Key )
    but text lists ... 
    while in the pregame menu's */
 
-BOOL ProcessList( int Key )
+_Bool ProcessList( int Key )
 {
-	BOOL done;
+	_Bool done;
 	MenuItemFunc FuncSet;
 	int i;
 
 	if (CurrentList->Static)
 	{
 	 	if ( Key == SDLK_ESCAPE || Key == RIGHT_MOUSE )
-			CurrentList->Static = FALSE;
-		return TRUE;
+			CurrentList->Static = false;
+		return true;
 	}
 
-	done = FALSE;
+	done = false;
 
 	if ( CurrentList->selected_item < 0 )
 		SelectListHome( CurrentList );
@@ -16038,14 +16038,14 @@ BOOL ProcessList( int Key )
 			{
 				FuncSet( CurrentMenuItem );
 			}
-			done = TRUE;
+			done = true;
 		break;
 
 	case MIDDLE_MOUSE:
 	case RIGHT_MOUSE:
 	case SDLK_ESCAPE:
 		CancelListSelection( CurrentList );
-		done = TRUE;
+		done = true;
 		if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
 			MenuBack();
 		break;
@@ -16079,12 +16079,12 @@ BOOL ProcessList( int Key )
 }
 
 
-BOOL ProcessText( int Key )
+_Bool ProcessText( int Key )
 {
-	BOOL done;
+	_Bool done;
 	TEXT *t;
 
-	done = FALSE;
+	done = false;
 	t = (TEXT *)(TextItem->Variable);
 
 	switch( Key )
@@ -16120,11 +16120,11 @@ BOOL ProcessText( int Key )
 	case SDLK_UP:
 	case SDLK_DOWN:
 		TextEnter( TextItem );
-		done = TRUE;
+		done = true;
 		break;
 	case SDLK_ESCAPE:
 		TextCancel( (TEXT *)(TextItem->Variable) );
-		done = TRUE;
+		done = true;
 		break;
 	case SDLK_SPACE:
 		TextType( (TEXT *)(TextItem->Variable), ' ' );
@@ -16225,7 +16225,7 @@ void ProcessSelect( int Key )
 
 				if
 				(
-					  (CurrentMenuItem->Variable && *(BOOL *)(CurrentMenuItem->Variable)) &&
+					  (CurrentMenuItem->Variable && *(_Bool *)(CurrentMenuItem->Variable)) &&
 					  CurrentMenuItem->FuncSelect
 				)
 				{
@@ -16252,7 +16252,7 @@ void ProcessSelect( int Key )
 		{
 
 			if (  CurrentMenuItem->Variable &&
-				  !*(BOOL *)(CurrentMenuItem->Variable) &&
+				  !*(_Bool *)(CurrentMenuItem->Variable) &&
 				  CurrentMenuItem->FuncSelect )
 			{
 				CurrentMenuItem->FuncSelect( CurrentMenuItem );
@@ -16308,9 +16308,9 @@ void ProcessSelect( int Key )
 
 
 
-BOOL ProcessDifficultySet ( int Key )
+_Bool ProcessDifficultySet ( int Key )
 {
-	BOOL done = FALSE;
+	_Bool done = false;
 
 	if ( StackStatus != DISC_NOTHING )
 		return !done;
@@ -16320,13 +16320,13 @@ BOOL ProcessDifficultySet ( int Key )
 	case UP_MOUSE:
 	case SDLK_UP:
 		CursorUp();
-		done = TRUE;
+		done = true;
 		break;
 
 	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		CursorDown();
-		done = TRUE;
+		done = true;
 		break;
 
 	case SDLK_LEFT:
@@ -16348,15 +16348,15 @@ BOOL ProcessDifficultySet ( int Key )
 		break;
 	case SDLK_HOME:
 		CursorHome();
-		done = TRUE;
+		done = true;
 		break;
 	case SDLK_END:
-		done = TRUE;
+		done = true;
 		CursorEnd();
 		break;
 	case SDLK_ESCAPE:
 		MenuBack();
-		done = TRUE;
+		done = true;
 		break;
 	default:
 		if ( Key )
@@ -16368,7 +16368,7 @@ BOOL ProcessDifficultySet ( int Key )
 			{
 				CursorSearch( SearchKey( *c ) );
 			}
-			done = TRUE;
+			done = true;
 		}
 		break;
 	}
@@ -16380,15 +16380,15 @@ BOOL ProcessDifficultySet ( int Key )
 /*===================================================================
 	Procedure	:		Processes biker list, auto selects highlighted item and redraws biker char and text
 	Input		:		key pressed
-	Output		:		BOOL - indicates when biker list is no longer being used
+	Output		:		_Bool - indicates when biker list is no longer being used
 ===================================================================*/
-BOOL ProcessBikerList ( int Key )
+_Bool ProcessBikerList ( int Key )
 {
-	BOOL done, redraw;
+	_Bool done, redraw;
 	int current;
 
-	done = FALSE;
-	redraw = FALSE;
+	done = false;
+	redraw = false;
 
 	switch(Key)
 	{
@@ -16405,7 +16405,7 @@ BOOL ProcessBikerList ( int Key )
 		if (current != BikeList.selected_item)
 		{
 			ExitBikeSelection(NULL);
-			redraw = TRUE;
+			redraw = true;
 		}
 		break;
 	case SDLK_RIGHT:
@@ -16422,15 +16422,15 @@ BOOL ProcessBikerList ( int Key )
 		if (current != BikeList.selected_item)
 		{
 			ExitBikeSelection(NULL);
-			redraw = TRUE;
+			redraw = true;
 		}
 		break;
 	case SDLK_RETURN:
-		done = TRUE;
+		done = true;
 		MenuBack();
 		break;
 	case SDLK_ESCAPE:
-		done = TRUE;
+		done = true;
 		MenuBack();
 		break;
 	}
@@ -16447,13 +16447,13 @@ BOOL ProcessBikerList ( int Key )
 	return !done;
 }
 
-BOOL ProcessSavedGameList( int Key )
+_Bool ProcessSavedGameList( int Key )
 {
-	BOOL done, redraw;
+	_Bool done, redraw;
 	int current;
 
-	done = FALSE;
-	redraw = FALSE;
+	done = false;
+	redraw = false;
 
 	switch(Key)
 	{
@@ -16464,7 +16464,7 @@ BOOL ProcessSavedGameList( int Key )
 		SelectListPrev( &LoadSavedGameList );
 		if (current != LoadSavedGameList.selected_item)
 		{
-			redraw = TRUE;
+			redraw = true;
 		}
 		break;
 	case SDLK_RIGHT:
@@ -16474,15 +16474,15 @@ BOOL ProcessSavedGameList( int Key )
 		SelectListNext( &LoadSavedGameList );
 		if (current != LoadSavedGameList.selected_item)
 		{
-			redraw = TRUE;
+			redraw = true;
 		}
 		break;
 	case SDLK_RETURN:
-		done = TRUE;
+		done = true;
 		TitleLoadGame( NULL );
 		break;
 	case SDLK_ESCAPE:
-		done = TRUE;
+		done = true;
 		MenuBack();
 		break;
 	}
@@ -16503,15 +16503,15 @@ BOOL ProcessSavedGameList( int Key )
 	Procedure	:		Processes the player list - auto selects highlighted item, 
 						and draws corresponding biker character.
 	Input		:		key pressed...
-	Output		:		BOOL - indicates when player list is no longer being used.
+	Output		:		_Bool - indicates when player list is no longer being used.
 ===================================================================*/
-BOOL ProcessPlayerList ( int Key )
+_Bool ProcessPlayerList ( int Key )
 {
-	BOOL done, redraw;
+	_Bool done, redraw;
 	char old_bike_name[16];
 
-	done = FALSE;	 
-	redraw = FALSE;
+	done = false;	 
+	redraw = false;
 
 	strcpy(old_bike_name, bike_name);
 
@@ -16523,44 +16523,44 @@ BOOL ProcessPlayerList ( int Key )
 		//make selected item 1 up
 		PlayCursorSfx();
 		SelectListPrev( &PilotList );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		//make selected item 1 down
 		PlayCursorSfx();
 		SelectListNext( &PilotList );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case SDLK_RETURN:
-		done = TRUE;
-		redraw = TRUE;
+		done = true;
+		redraw = true;
 		MenuBack();
 		break;
 	case SDLK_ESCAPE:
-		done = TRUE;
-		redraw = TRUE;
+		done = true;
+		redraw = true;
 		MenuBack();
 		break;
 	case SDLK_PAGEDOWN:
 		PlayCursorSfx();
 		SelectListNextPage( &PilotList );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case SDLK_PAGEUP:
 		PlayCursorSfx();
 		SelectListPrevPage( &PilotList );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case SDLK_HOME:
 		PlayCursorSfx();
 		SelectListHome( &PilotList );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case SDLK_END:
 		PlayCursorSfx();
 		SelectListEnd( &PilotList );
-		redraw = TRUE;
+		redraw = true;
 		break;
 	case SDLK_DELETE:
 		if ( PilotList.FuncDelete )
@@ -16570,7 +16570,7 @@ BOOL ProcessPlayerList ( int Key )
 			{
 				PlaySfx( SFX_Error, 1.0F );
 			}
-			redraw = TRUE;
+			redraw = true;
 		}
 		break;
 	default:
@@ -16581,7 +16581,7 @@ BOOL ProcessPlayerList ( int Key )
 			if ( c && strlen( c ) == 1 )
 			{
 				SelectListSearch( &PilotList, SearchKey( *c ) );
-				redraw = TRUE;
+				redraw = true;
 				PlayCursorSfx();
 			}
 		}
@@ -16644,13 +16644,13 @@ BOOL ProcessPlayerList ( int Key )
 	return !done;
 }
 
-BOOL ProcessWeaponOrder ( int Key )
+_Bool ProcessWeaponOrder ( int Key )
 {
-	BOOL done, redraw;
+	_Bool done, redraw;
 	int highlighttype, temp, oldselectedweapon, i;
 
-	done = FALSE;
-	redraw = FALSE;
+	done = false;
+	redraw = false;
 	
 	switch(Key)
 	{
@@ -16665,7 +16665,7 @@ BOOL ProcessWeaponOrder ( int Key )
 			if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons - 1)
 			{
 				Num_Unused_Weapons++;
-				redraw = TRUE;
+				redraw = true;
 			}else
 			{
 				// if last item...
@@ -16674,14 +16674,14 @@ BOOL ProcessWeaponOrder ( int Key )
 					// if no weapons in unused list...
 					if (Num_Unused_Weapons == 0)
 						Num_Unused_Weapons++;
-						redraw = TRUE;
+						redraw = true;
 				}else
 				{
 					// swap current weapon with one below...
 					temp = WeaponList[SelectedWeapon];
 					WeaponList[SelectedWeapon] = WeaponList[SelectedWeapon + 1];
 					WeaponList[SelectedWeapon + 1] = temp;
-					redraw = TRUE;
+					redraw = true;
 
 					SelectedWeapon++;
 				}
@@ -16697,9 +16697,9 @@ BOOL ProcessWeaponOrder ( int Key )
 		// move cursor if necessary...
 		if (oldselectedweapon != SelectedWeapon)
 		{
-			WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+			WeaponItem->TextInfo[oldselectedweapon]->highlight = false;
 			highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-			WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+			WeaponItem->TextInfo[SelectedWeapon]->highlight = true;
 			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
 		}
 		break;
@@ -16715,7 +16715,7 @@ BOOL ProcessWeaponOrder ( int Key )
 			if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons)
 			{
 				Num_Unused_Weapons--;
-				redraw = TRUE;
+				redraw = true;
 			}else
 			{
 				// if first item...
@@ -16724,14 +16724,14 @@ BOOL ProcessWeaponOrder ( int Key )
 					// if no weapons in used list...
 					if (Num_Unused_Weapons == MaxWeapons)
 						Num_Unused_Weapons--;
-						redraw = TRUE;
+						redraw = true;
 				}else
 				{
 					// swap current weapon with one above...
 					temp = WeaponList[SelectedWeapon];
 					WeaponList[SelectedWeapon] = WeaponList[SelectedWeapon - 1];
 					WeaponList[SelectedWeapon - 1] = temp;
-					redraw = TRUE;
+					redraw = true;
 
 					SelectedWeapon--;
 				}
@@ -16747,9 +16747,9 @@ BOOL ProcessWeaponOrder ( int Key )
 		// move cursor if necessary...
 		if (oldselectedweapon != SelectedWeapon)
 		{
-			WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+			WeaponItem->TextInfo[oldselectedweapon]->highlight = false;
 			highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-			WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+			WeaponItem->TextInfo[SelectedWeapon]->highlight = true;
 			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
 		}
 		break;
@@ -16766,7 +16766,7 @@ BOOL ProcessWeaponOrder ( int Key )
 				if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons)
 				{
 					Num_Unused_Weapons--;
-					redraw = TRUE;
+					redraw = true;
 					SelectedWeapon++;
 					if (SelectedWeapon > MaxWeapons - 1)
 						SelectedWeapon = MaxWeapons - 1;
@@ -16780,7 +16780,7 @@ BOOL ProcessWeaponOrder ( int Key )
 					}
 					WeaponList[i] = temp;
 					Num_Unused_Weapons--;
-					redraw = TRUE;
+					redraw = true;
 				}
 				// return to choosing first weapon...
 				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
@@ -16796,9 +16796,9 @@ BOOL ProcessWeaponOrder ( int Key )
 			// move cursor if necessary...
 			if (oldselectedweapon != SelectedWeapon)
 			{
-				WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+				WeaponItem->TextInfo[oldselectedweapon]->highlight = false;
 				highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-				WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+				WeaponItem->TextInfo[SelectedWeapon]->highlight = true;
 				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
 			}
 		}
@@ -16816,7 +16816,7 @@ BOOL ProcessWeaponOrder ( int Key )
 				if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons - 1)
 				{
 					Num_Unused_Weapons++;
-					redraw = TRUE;
+					redraw = true;
 					SelectedWeapon--;
 					if (SelectedWeapon < 0)
 						SelectedWeapon = 0;
@@ -16830,7 +16830,7 @@ BOOL ProcessWeaponOrder ( int Key )
 					}
 					WeaponList[i] = temp;
 					Num_Unused_Weapons++;
-					redraw = TRUE;
+					redraw = true;
 				}
 				// return to choosing first weapon...
 				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
@@ -16846,9 +16846,9 @@ BOOL ProcessWeaponOrder ( int Key )
 			// move cursor if necessary...
 			if (oldselectedweapon != SelectedWeapon)
 			{
-				WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+				WeaponItem->TextInfo[oldselectedweapon]->highlight = false;
 				highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-				WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+				WeaponItem->TextInfo[SelectedWeapon]->highlight = true;
 				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
 			}
 		}
@@ -16865,7 +16865,7 @@ BOOL ProcessWeaponOrder ( int Key )
 		}
 		break;
 	case SDLK_ESCAPE:
-		done = TRUE;
+		done = true;
 		MenuBack();
 		break;
 	}
@@ -16878,13 +16878,13 @@ BOOL ProcessWeaponOrder ( int Key )
 
 
 
-BOOL ProcessLevelList ( int Key )
+_Bool ProcessLevelList ( int Key )
 {
-	BOOL done, redraw;
+	_Bool done, redraw;
 	int current;
 
-	done = FALSE;
-	redraw = FALSE;
+	done = false;
+	redraw = false;
 
 	switch(Key)
 	{
@@ -16894,7 +16894,7 @@ BOOL ProcessLevelList ( int Key )
 		current = LevelList.selected_item;
 		SelectListPrev( &LevelList );
 		if (current != LevelList.selected_item)
-			redraw = TRUE;
+			redraw = true;
 		break;
 	case SDLK_RIGHT:
 		PlayCursorSfx();
@@ -16902,7 +16902,7 @@ BOOL ProcessLevelList ( int Key )
 		current = LevelList.selected_item;
 		SelectListNext( &LevelList );
 		if (current != LevelList.selected_item)
-			redraw = TRUE;
+			redraw = true;
 		break;
 	case SDLK_RETURN:
 		if ( MenuState == MENUSTATE_SelectLevelQuick )
@@ -16914,12 +16914,12 @@ BOOL ProcessLevelList ( int Key )
 			}
 		}else
 		{
-			done = TRUE;
+			done = true;
 			MenuBack();
 		}
 		break;
 	case SDLK_ESCAPE:
-		done = TRUE;
+		done = true;
 		MenuBack();
 		break;
 		
@@ -16928,7 +16928,7 @@ BOOL ProcessLevelList ( int Key )
 		if (MenuState == MENUSTATE_SelectLevelQuick)
 		{
 			CursorUp();
-			done = TRUE; 
+			done = true; 
 		}
 		break;
 	case DOWN_MOUSE:
@@ -16936,7 +16936,7 @@ BOOL ProcessLevelList ( int Key )
 		if (MenuState == MENUSTATE_SelectLevelQuick)
 		{
 			CursorDown();
-			done = TRUE;
+			done = true;
 		}
 		break;
 	default:
@@ -16953,7 +16953,7 @@ BOOL ProcessLevelList ( int Key )
 			if (current != LevelList.selected_item)
 			{
 				PlayCursorSfx();
-				redraw = TRUE;
+				redraw = true;
 			}
 		}
 		break;
@@ -17019,10 +17019,10 @@ void MenuProcess()
 			case	STATUS_Title:
 			case	STATUS_BetweenLevels:
 			case	STATUS_StartingSinglePlayer:
-				InTitleRoom = TRUE;
+				InTitleRoom = true;
 				break;
 			default:
-				InTitleRoom = FALSE;
+				InTitleRoom = false;
 		}
 
 		// no menu processing done while loading...

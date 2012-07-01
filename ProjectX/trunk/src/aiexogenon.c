@@ -43,7 +43,7 @@ void ExogenonAim( ENEMY * Enemy );
 
 
 VECTOR	ExogenonSweepAngle;
-uint32	ExogenonSweepDir;
+u_int32_t	ExogenonSweepDir;
 void	ExogenonFireLeftRight( ENEMY * Enemy );
 
 /*===================================================================
@@ -56,7 +56,7 @@ void AI_EXOGENON_IDLE( register ENEMY * Enemy )
 	int i;
 	int startpos = 0;
 	float	Distance = 0.0F;
-	AI_THINK( Enemy , TRUE , TRUE );
+	AI_THINK( Enemy , true , true );
 
 	if( Enemy->Object.CurAnimSeq != EXOGENONSEQ_Stop_Up )
 	{
@@ -79,7 +79,7 @@ void AI_EXOGENON_IDLE( register ENEMY * Enemy )
 		return;
 	}
 
-	startpos = Random_Range( (uint16) Exogenon_Num_StartPos);
+	startpos = Random_Range( (u_int16_t) Exogenon_Num_StartPos);
 	i = Exogenon_Num_StartPos;
 
 	while( Distance < (SHIP_RADIUS * 3.0F ) && i >= 0 )
@@ -106,7 +106,7 @@ void AI_EXOGENON_MOVEDOWN( register ENEMY * Enemy )
 	VECTOR	TempUpVector;
 	VECTOR	FireDir;
 
-	BOOL	ClearLos = TRUE;
+	_Bool	ClearLos = true;
 	VECTOR	TempOffset = { 0.0F, 0.0F, 180.0F };
 	ExogenonAim( Enemy );
 
@@ -129,7 +129,7 @@ void AI_EXOGENON_MOVEDOWN( register ENEMY * Enemy )
 			// Fire a homing missile Forward...
 			InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 				&Enemy->Object.Pos, &TempOffset, &FireDir, &TempUpVector,
-				&TempOffset, ENEMYBLUEHOMINGMISSILE, FALSE );
+				&TempOffset, ENEMYBLUEHOMINGMISSILE, false );
 		}
 		ExogenonFireLeftRight( Enemy );
 	}else{
@@ -204,7 +204,7 @@ void AI_EXOGENON_FIRE( register ENEMY * Enemy )
 				
 				EnemyFirePrimary( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, EnemyTypes[Enemy->Type].PrimaryWeaponType,
 					Enemy->Object.Group, &Enemy->Object.Pos, &TempOffset, &TempVector, &TempUpVector,
-					EnemyTypes[Enemy->Type].PowerLevel, (EnemyTypes[Enemy->Type].PowerLevel +1) * 33.0F, FALSE, NULL );
+					EnemyTypes[Enemy->Type].PowerLevel, (EnemyTypes[Enemy->Type].PowerLevel +1) * 33.0F, false, NULL );
 			}
 
 			Enemy->Object.AI_Mode = AIMODE_EXOGENON_SWEEP;
@@ -296,7 +296,7 @@ void	ExogenonFireLeftRight( ENEMY * Enemy )
 
 	InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 		&Enemy->Object.Pos, &TempOffset, &FireDir, &TempUpVector,
-		&TempOffset, ENEMYBLUEHOMINGMISSILE, FALSE );
+		&TempOffset, ENEMYBLUEHOMINGMISSILE, false );
 
 	ApplyMatrix( &Enemy->Object.Mat, &SlideRight, &FireDir );
 	TempOffset.x = FireDir.x * ( 1200.0F * GLOBAL_SCALE );
@@ -305,7 +305,7 @@ void	ExogenonFireLeftRight( ENEMY * Enemy )
 	// Fire a homing missile right
 	InitOneSecBull( OWNER_ENEMY, Enemy->Index, ++Enemy->BulletID, Enemy->Object.Group,
 		&Enemy->Object.Pos, &TempOffset, &FireDir, &TempUpVector,
-		&TempOffset, ENEMYBLUEHOMINGMISSILE, FALSE );
+		&TempOffset, ENEMYBLUEHOMINGMISSILE, false );
 }
 
 #ifdef OPT_ON

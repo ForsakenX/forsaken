@@ -11,7 +11,7 @@ extern "C" {
 #include "new3d.h"
 #include <SDL.h>
 
-BOOL  bSquareOnly;
+_Bool  bSquareOnly;
 
 typedef struct {
     DWORD       X;
@@ -42,16 +42,16 @@ typedef struct {
     render_display_mode_t   ThisMode;				/* description of this mode, identical to Mode[CurrMode] */
     render_display_mode_t   WindowsDisplay;			/* current Windows disply mode */
     render_display_mode_t   default_mode;			/* current Windows disply mode */
-    BOOL                    fullscreen;				/* in fullscreen exclusive mode? */
+    _Bool                    fullscreen;				/* in fullscreen exclusive mode? */
     CLIENTSIZE              window_size;			/* dimensions of client win */
-    BOOL                    bPaused;				/* the app is paused */
-    BOOL                    app_active;				/* the app is active */
-    BOOL                    minimized;				/* app window is minimized */
-    BOOL                    ok_to_render;			/* All objects etc. necessary rendering are in ok */
-	BOOL					vsync;					/* vertical sync */
+    _Bool                    bPaused;				/* the app is paused */
+    _Bool                    app_active;				/* the app is active */
+    _Bool                    minimized;				/* app window is minimized */
+    _Bool                    ok_to_render;			/* All objects etc. necessary rendering are in ok */
+	_Bool					vsync;					/* vertical sync */
 	float					aspect_ratio;			/* screen aspect ratio */
-	BOOL					force_accel;			/* force 3d acelleration on gl */
-	BOOL					wireframe;
+	_Bool					force_accel;			/* force 3d acelleration on gl */
+	_Bool					wireframe;
 	SDL_Surface*	        screen;
 } render_info_t;
 
@@ -90,9 +90,9 @@ typedef struct {
     long y2;
 } XYRECT;
 
-BOOL FSClearBlack(void);
-BOOL FSClear(XYRECT * rect);
-BOOL FSClearDepth(XYRECT * rect);
+_Bool FSClearBlack(void);
+_Bool FSClear(XYRECT * rect);
+_Bool FSClearDepth(XYRECT * rect);
 
 #define MAX_LEVEL_TEXTURE_GROUPS 8
 
@@ -110,7 +110,7 @@ typedef struct TEXTUREGROUP
 	int startIndex;
 	int numVerts;
 	int numTriangles;
-	BOOL colourkey;
+	_Bool colourkey;
 	LPTEXTURE texture;
 } TEXTUREGROUP;
 
@@ -132,7 +132,7 @@ typedef struct RENDEROBJECT
 	LPVERTEXBUFFER	lpVertexBuffer;
 	LPARRAYBUFFER	lpNormalBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
-	BOOL			vbLocked;
+	_Bool			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_TEXTURE_GROUPS];
 } RENDEROBJECT;
@@ -142,7 +142,7 @@ typedef struct LEVELRENDEROBJECT
 	LPVERTEXBUFFER	lpVertexBuffer;
 	LPARRAYBUFFER	lpNormalBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
-	BOOL			vbLocked;
+	_Bool			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];
 } LEVELRENDEROBJECT;
@@ -176,41 +176,41 @@ extern float render_lighting_env_water_green;
 extern float render_lighting_env_water_blue;
 extern int render_lighting_env_whiteout;
 
-void render_set_filter( BOOL red, BOOL green, BOOL blue );
+void render_set_filter( _Bool red, _Bool green, _Bool blue );
 
-BOOL render_flip( render_info_t * info );
+_Bool render_flip( render_info_t * info );
 
-BOOL FSGetViewPort(render_viewport_t *returnViewPort);
-BOOL FSBeginScene(void);
-BOOL FSEndScene(void);
-BOOL FSSetViewPort(render_viewport_t *newViewPort);
-BOOL FSGetWorld(RENDERMATRIX *matrix);
-BOOL FSSetWorld( RENDERMATRIX *matrix );
-BOOL FSSetProjection( RENDERMATRIX *matrix );
-BOOL FSSetView( RENDERMATRIX *matrix );
+_Bool FSGetViewPort(render_viewport_t *returnViewPort);
+_Bool FSBeginScene(void);
+_Bool FSEndScene(void);
+_Bool FSSetViewPort(render_viewport_t *newViewPort);
+_Bool FSGetWorld(RENDERMATRIX *matrix);
+_Bool FSSetWorld( RENDERMATRIX *matrix );
+_Bool FSSetProjection( RENDERMATRIX *matrix );
+_Bool FSSetView( RENDERMATRIX *matrix );
 
-BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals);
-BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals);
-BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals);
-BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject);
-BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
-BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
-BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
-BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
-BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
-BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
-BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
-BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
-BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts);
-BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+_Bool FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals);
+_Bool FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals);
+_Bool FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals);
+_Bool FSUnlockNormalBuffer(RENDEROBJECT *renderObject);
+_Bool FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+_Bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+_Bool FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
+_Bool FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
+_Bool FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
+_Bool FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
+_Bool FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
+_Bool FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
+_Bool FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts);
+_Bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 
-BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
-BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+_Bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colourkey);
+_Bool update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colourkey);
 void release_texture( LPTEXTURE texture );
 
-BOOL draw_line_object(RENDEROBJECT *renderObject);
-BOOL draw_object(RENDEROBJECT *renderObject);
-BOOL draw_2d_object(RENDEROBJECT *renderObject);
+_Bool draw_line_object(RENDEROBJECT *renderObject);
+_Bool draw_object(RENDEROBJECT *renderObject);
+_Bool draw_2d_object(RENDEROBJECT *renderObject);
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject);
 

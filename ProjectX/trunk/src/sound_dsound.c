@@ -14,18 +14,18 @@
 //
 
 LPDIRECTSOUND lpDS = NULL;
-BOOL Sound3D = FALSE;
+_Bool Sound3D = false;
 
 //
 // Generic Functions
 //
 
-BOOL sound_init( void )
+_Bool sound_init( void )
 {
 	int iErr;
 	lpDS = NULL;
 	if FAILED( CoInitialize(NULL) )
-		return FALSE;
+		return false;
 
 	// Attempt to initialize with DirectSound.
 	// First look for DSOUND.DLL using CoCreateInstance.
@@ -37,19 +37,19 @@ BOOL sound_init( void )
 		iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init Direct Sound.
 
 	if (iErr < DS_OK)
-		return FALSE; // Failed to get DirectSound, so no sound-system available.
+		return false; // Failed to get DirectSound, so no sound-system available.
 
 	// build sound_caps structure
 	sound_minimum_volume = (DSBVOLUME_MIN / 3);
 	
 	// Set control-level of DirectSound. (To normal, default.)
 	if(IDirectSound_SetCooperativeLevel(lpDS, GetActiveWindow(), DSSCL_EXCLUSIVE) >= DS_OK)
-		return TRUE;
+		return true;
 
 	// If here, failed to initialize sound system in some way
 	IDirectSound_Release(lpDS);
 	lpDS = NULL;
-	return(FALSE);
+	return(false);
 }
 
 //
@@ -60,22 +60,22 @@ BOOL sound_init( void )
 //   which this game does not currently use
 //   this is left here for openAL later
 
-BOOL sound_listener_position( float x, float y, float z )
+_Bool sound_listener_position( float x, float y, float z )
 {
-	return TRUE;
+	return true;
 }
 
-BOOL sound_listener_velocity( float x, float y, float z )
+_Bool sound_listener_velocity( float x, float y, float z )
 {
-	return TRUE;
+	return true;
 }
 
-BOOL sound_listener_orientation( 
+_Bool sound_listener_orientation( 
 	float fx, float fy, float fz, // forward vector
 	float ux, float uy, float uz  // up vector
 )
 {
-	return TRUE;
+	return true;
 }
 
 //
@@ -112,7 +112,7 @@ void sound_release( sound_t * buffer )
 	buffer = NULL;
 }
 
-BOOL sound_is_playing( sound_t * buffer )
+_Bool sound_is_playing( sound_t * buffer )
 {
 	DWORD dwStatus;
 	IDirectSoundBuffer_GetStatus( buffer, &dwStatus );
@@ -180,8 +180,8 @@ sound_t * sound_load(char *name)
     DSBUFFERDESC buffer_description = {0};
 	WAVEFORMATEX buffer_format;
 	SDL_AudioSpec wav_spec;
-	Uint32 wav_length;
-	Uint8 *wav_buffer;
+	u_int32_t wav_length;
+	u_int8_t *wav_buffer;
 	DWORD flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY | DSBCAPS_LOCSOFTWARE;
 
 	if (!lpDS)
@@ -236,7 +236,7 @@ sound_t * sound_load(char *name)
     return sound_buffer;
 }
 
-BOOL sound_duplicate( sound_t * source, sound_t ** destination )
+_Bool sound_duplicate( sound_t * source, sound_t ** destination )
 {
 	return IDirectSound_DuplicateSoundBuffer( lpDS, source, destination	) == DS_OK;
 }

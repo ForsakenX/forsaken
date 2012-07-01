@@ -28,7 +28,7 @@
 		Externals...	
 ===================================================================*/
 
-extern	BOOL	TexturesEnabled;
+extern	_Bool	TexturesEnabled;
 
 /*===================================================================
 		Globals...	
@@ -42,9 +42,9 @@ double	Gamma = 1.0;
 /*===================================================================
 	Procedure	:		Init a Tloadheader
 	Input		:		TLOADHEADER *
-	Output		:		BOOL FALSE/TRUE
+	Output		:		_Bool false/true
 ===================================================================*/
-BOOL InitTload( TLOADHEADER * Tloadheader  )
+_Bool InitTload( TLOADHEADER * Tloadheader  )
 {
 	int i;
 	memset( Tloadheader, 0, sizeof(TLOADHEADER) );
@@ -53,28 +53,28 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 	{
 		Tloadheader->lpTexture[i]     = NULL; // texture
 		Tloadheader->CurScale[i]      = 0;	  // handle
-		Tloadheader->Scale[i]		  = FALSE;// Should it scale??
+		Tloadheader->Scale[i]		  = false;// Should it scale??
 
-		Tloadheader->MipMap[i]		  = FALSE;// Should it have Mip Maps
-		Tloadheader->PlaceHolder[i]	  = FALSE;// Is it a placeholder ( for subsequent dynamicly loaded textures )
-		Tloadheader->LOD[i]			  = FALSE;// How many Levels of Mip Map
+		Tloadheader->MipMap[i]		  = false;// Should it have Mip Maps
+		Tloadheader->PlaceHolder[i]	  = false;// Is it a placeholder ( for subsequent dynamicly loaded textures )
+		Tloadheader->LOD[i]			  = false;// How many Levels of Mip Map
 
 		Tloadheader->Xsize[ i ] = 0;		
 		Tloadheader->Ysize[ i ] = 0;
 		
 		Tloadheader->PlaceHolderFile[ i ] = NULL;
 	}
-	return	TRUE;
+	return	true;
 }
 
 
 /*===================================================================
 	Procedure	:		Load All textures associated with a level
 	Input		:		TLOADHEADER *
-	Output		:		BOOL FALSE/TRUE
+	Output		:		_Bool false/true
 ===================================================================*/
 void build_gamma_table( double gamma );
-BOOL Tload( TLOADHEADER * Tloadheader  )
+_Bool Tload( TLOADHEADER * Tloadheader  )
 {
 	int	i,e;
 	int LeastScaledThatCanbe;
@@ -83,7 +83,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	build_gamma_table( Gamma );
  
 	// Tloadheader is not valid until everything has been done..
-	Tloadheader->state = FALSE;
+	Tloadheader->state = false;
 
 	// allocate space for placeholder file names
 	for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
@@ -99,10 +99,10 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	if ( Tloadheader->num_texture_files != 0 )
 	{
 		//	load in and convert all textures
-		if ( TloadAllTextures( Tloadheader ) != TRUE)
+		if ( TloadAllTextures( Tloadheader ) != true)
 		{
 			Msg( "TLoadAllTextures() Failed\n" );
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -130,16 +130,16 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	}
 
 	// Tloadheader is valid
-	Tloadheader->state = TRUE;
+	Tloadheader->state = true;
 
-	return( TRUE );
+	return( true );
 }
 	
 //
 // this will create and set a brand new texture pointer
 //
 
-BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
+_Bool TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 {
 	LPTEXTURE lpSrcTexture = NULL;
 	release_texture(Tloadheader->lpTexture[n]);
@@ -164,7 +164,7 @@ BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 	Tloadheader->lpTexture[n] = lpSrcTexture;
 	lpSrcTexture = NULL;
 
-	return TRUE;
+	return true;
 }
 
 //
@@ -172,14 +172,14 @@ BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 // or reload a new surface while keeping the pointer the same
 //
 
-BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
+_Bool TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16_t n )
 {
 	// create only one mipmap level (original texture only)
 	int numMips = 1;
 
 	// we only work on place holders
 	if( !Tloadheader->PlaceHolderFile[n] || !Tloadheader->PlaceHolderFile[n][0] )
-		return FALSE;
+		return false;
 
 	// let d3d generate mipmaps for us that are needed
 	if(Tloadheader->MipMap[n])
@@ -197,7 +197,7 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 			&Tloadheader->Xsize[n], &Tloadheader->Ysize[n],
 			numMips, &Tloadheader->ColourKey[n]);
 
-	return TRUE;
+	return true;
 }
 
 /*
@@ -235,7 +235,7 @@ ReleaseTloadheader( TLOADHEADER * Tloadheader )
     InitTload( Tloadheader );
 }
 
-BOOL TloadAllTextures(TLOADHEADER * Tloadheader)
+_Bool TloadAllTextures(TLOADHEADER * Tloadheader)
 {
     int i;
 
@@ -247,13 +247,13 @@ BOOL TloadAllTextures(TLOADHEADER * Tloadheader)
 		}
 	}
 
-    return TRUE;
+    return true;
 
 exit_with_error:
     for ( ; i < Tloadheader->num_texture_files; i++) {
         TloadReleaseTexture( Tloadheader , i);
     }
-    return FALSE;
+    return false;
 }
 
 /*===================================================================
@@ -262,7 +262,7 @@ exit_with_error:
 	Output		:		-1 if no match found otherwise number of texture
 ===================================================================*/
 
-int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
+int16_t	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 {
 	int	i;
 	char * pnt1;
@@ -300,9 +300,9 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 	Output		:		-1 if too many tpages
 ===================================================================*/
 
-int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize )
+int16_t	AddTexture( TLOADHEADER * Tloadheader , char * Name , u_int16_t ColourKey  , _Bool Scale , _Bool MipMap, int16_t xsize, int16_t ysize )
 {
-	int16 i;
+	int16_t i;
 	char * NamePnt;
 
 	// are we just loading placeholder?
@@ -310,10 +310,10 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , 
 	{
 	 	i = Tloadheader->num_texture_files;
 		Tloadheader->ColourKey[i] = ColourKey;
-		Tloadheader->Scale[i] = FALSE;		// cannot allow scaling of placeholder!
+		Tloadheader->Scale[i] = false;		// cannot allow scaling of placeholder!
 		Tloadheader->MipMap[i] = MipMap;
 		Tloadheader->ImageFile[i][0] = 0;
-		Tloadheader->PlaceHolder[i] = TRUE;
+		Tloadheader->PlaceHolder[i] = true;
 		Tloadheader->num_texture_files++;
 
 		Tloadheader->Xsize[ i ] = xsize;		
@@ -339,7 +339,7 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , 
 	Tloadheader->MipMap[i] = MipMap;
 	NamePnt = (char *) &Tloadheader->ImageFile[i];
 	while( ( *NamePnt++ = *Name++ ) != 0 );
-		Tloadheader->PlaceHolder[i] = FALSE;
+		Tloadheader->PlaceHolder[i] = false;
 	Tloadheader->num_texture_files++;
 	return i;
 }

@@ -10,32 +10,32 @@ LPDIRECTINPUT lpdi = NULL;
 LPDIRECTINPUTDEVICE lpdiMouse;
 DIMOUSESTATE mouse;
 
-BOOL dx_init_mouse( void )
+_Bool dx_init_mouse( void )
 {
 	HRESULT  err;
 	GUID guid_mouse = GUID_SysMouse;
 
 	err = DirectInputCreate(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &lpdi, NULL);
 	if (FAILED(err))
-		return FALSE;
+		return false;
 
 	err = IDirectInput_CreateDevice(lpdi, &guid_mouse, &lpdiMouse, NULL);
 	if ( err != DI_OK )
-		return FALSE;
+		return false;
 
 	err = IDirectInputDevice_SetDataFormat(lpdiMouse, &c_dfDIMouse);
 	if(err != DI_OK)
-		return FALSE;
+		return false;
 
 	err = IDirectInputDevice_SetCooperativeLevel(
 		lpdiMouse, GetActiveWindow(), DISCL_NONEXCLUSIVE | DISCL_BACKGROUND
 	);
 	if(err != DI_OK)
-		return FALSE;
+		return false;
 
 	err = IDirectInputDevice_Acquire(lpdiMouse);
 
-	return TRUE;
+	return true;
 }
 
 extern float real_framelag;
@@ -85,7 +85,7 @@ mouse_state_t* read_mouse( void )
 
 int Num_Joysticks = 0;
 
-BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
+_Bool  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
 {
    return (
       ((PLONG) lpguid1)[0] == ((PLONG) lpguid2)[0] &&
@@ -100,7 +100,7 @@ LPDIRECTINPUT             lpdi = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 
-BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef) 
+_Bool FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef) 
 { 
    LPDIRECTINPUT pdi = pvRef; 
    LPDIRECTINPUTDEVICE pdev;
@@ -140,7 +140,7 @@ BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 
 /* this is called for object in our joystick */
 /* objects can be buttons, axis, sliders etc... */
-BOOL CALLBACK DIEnumDeviceObjectsProc( 
+_Bool CALLBACK DIEnumDeviceObjectsProc( 
        LPCDIDEVICEOBJECTINSTANCE lpddoi, /* the object instance */
        LPVOID pvRef) /* pointer to void we passed in from calling block */
 { 
@@ -190,7 +190,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
       snprintf( JoystickInfo[joysticknum].Axis[axis].name, MAX_JOYNAME, "Axis %d", axis );
 
     /* this current axis exists */
-    JoystickInfo[joysticknum].Axis[axis].exists = TRUE;
+    JoystickInfo[joysticknum].Axis[axis].exists = true;
 
     /* up the count */
     /* NumAxis==1 means JoystickInfo[0] is set */
@@ -316,7 +316,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
 
 extern render_info_t render_info;
 
-BOOL joysticks_init(void)
+_Bool joysticks_init(void)
 {
   HRESULT  err;
   DIPROPDWORD dipdw =
@@ -332,12 +332,12 @@ BOOL joysticks_init(void)
 	LPDIRECTINPUTDEVICE     tempJoystick = NULL;
 	LPVOID joysticknumptr;
 	int i, j, k;
-	BOOL failjoystick;
+	_Bool failjoystick;
 
     err = DirectInputCreate(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &lpdi, NULL);
 	if (FAILED(err))//DirectInput8Create(hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
     {
-		return FALSE;
+		return false;
     }
 
   // try to create Joystick devices
@@ -350,11 +350,11 @@ BOOL joysticks_init(void)
 						//DI8DEVCLASS_GAMECTRL, 
                          InitJoystickInput, lpdi, DIEDFL_ATTACHEDONLY); 
 
-  failjoystick = FALSE;
+  failjoystick = false;
   for (i = 0; i < Num_Joysticks; i++)
   {
-    JoystickInfo[i].assigned = FALSE;
-    JoystickInfo[i].connected = TRUE;
+    JoystickInfo[i].assigned = false;
+    JoystickInfo[i].connected = true;
     JoystickInfo[i].NumAxis = 0;
     JoystickInfo[i].NumButtons = 0;
     JoystickInfo[i].NumPOVs = 0;
@@ -362,7 +362,7 @@ BOOL joysticks_init(void)
     joysticknumptr = (LPVOID)&i;
     for (j = AXIS_Start; j <= AXIS_End; j++)
     {
-      JoystickInfo[i].Axis[j].exists = FALSE;
+      JoystickInfo[i].Axis[j].exists = false;
     }
     lpdiJoystick[i]->lpVtbl->EnumObjects(lpdiJoystick[i], DIEnumDeviceObjectsProc, 
                      joysticknumptr, DIDFT_ALL); 
@@ -370,9 +370,9 @@ BOOL joysticks_init(void)
     for (j = AXIS_Start; j <= AXIS_End; j++)
     {
       JoystickInfo[i].Axis[j].action = SHIPACTION_Nothing;
-      JoystickInfo[i].Axis[j].inverted = FALSE;
+      JoystickInfo[i].Axis[j].inverted = false;
       JoystickInfo[i].Axis[j].deadzone = 20;
-      JoystickInfo[i].Axis[j].fine = TRUE;
+      JoystickInfo[i].Axis[j].fine = true;
     }
 
     for (j = 0; j < JoystickInfo[i].NumButtons; j++)
@@ -395,22 +395,22 @@ BOOL joysticks_init(void)
         err = IDirectInputDevice2_Acquire(lpdiJoystick[i]);
         if (err != DI_OK)
         {
-          failjoystick = TRUE;
+          failjoystick = true;
         }
       }else
       {
-        failjoystick = TRUE;
+        failjoystick = true;
       }
     }
 	else
     {
-      failjoystick = TRUE;
+      failjoystick = true;
     }
 
     
     if (failjoystick)
     {
-      failjoystick = FALSE;
+      failjoystick = false;
       IDirectInputDevice2_Release(lpdiJoystick[i]);
       lpdiJoystick[i] = NULL;
     }
@@ -420,7 +420,7 @@ BOOL joysticks_init(void)
   DebugPrintf( "joysticks_init: %d joysticks connected\n", Num_Joysticks );
 
   // if we get here, all DirectInput objects were created ok
-  return TRUE;
+  return true;
 }
 
 void  ReleaseJoysticks( void )
@@ -456,7 +456,7 @@ void  ReleaseJoysticks( void )
   }
 }
 
-BOOL joysticks_cleanup( void )
+_Bool joysticks_cleanup( void )
 {
 	int i;
 
@@ -478,7 +478,7 @@ BOOL joysticks_cleanup( void )
 
 	ReleaseJoysticks();
 
-	return TRUE;
+	return true;
 }
 
 #endif // DINPUTJOY

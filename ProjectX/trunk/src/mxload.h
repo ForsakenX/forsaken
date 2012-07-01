@@ -38,7 +38,7 @@ enum {
 
 typedef struct PVFIREPOINT{
 
-	uint16		ID;
+	u_int16_t		ID;
 	VECTOR		Pos;
 	VECTOR		Dir;
 	VECTOR		Up;
@@ -47,20 +47,20 @@ typedef struct PVFIREPOINT{
 
 typedef struct PVSPOTFX {
 
-	uint16		Type;
-	uint16		Group;
-	int8		Primary;
-	int8		Secondary;
-	uint8		Red;
-	uint8		Green;
-	uint8		Blue;
+	u_int16_t		Type;
+	u_int16_t		Group;
+	int8_t		Primary;
+	int8_t		Secondary;
+	u_int8_t		Red;
+	u_int8_t		Green;
+	u_int8_t		Blue;
 	VECTOR		Pos;
 	VECTOR		DirVector;
 	VECTOR		UpVector;
 	float		StartDelay;
 	float		ActiveDelay;
 	float		InactiveDelay;
-	int16		SoundFX;
+	int16_t		SoundFX;
 	float		SoundFXVolume;
 	float		SoundFXSpeed;
 
@@ -68,39 +68,39 @@ typedef struct PVSPOTFX {
 
 
 typedef struct MXGROUP{
-	uint16		num_execbufs;
-	uint16		exec_type[MAXEXECBUFSPERGROUP];
-	uint16		num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
+	u_int16_t		num_execbufs;
+	u_int16_t		exec_type[MAXEXECBUFSPERGROUP];
+	u_int16_t		num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
 //	COLOR *	org_colors[MAXEXECBUFSPERGROUP];
-	uint16	num_polys_per_execbuf[MAXEXECBUFSPERGROUP];
-	uint16	num_texture_groups[MAXMXATEXTUREGROUPSPER];
+	u_int16_t	num_polys_per_execbuf[MAXEXECBUFSPERGROUP];
+	u_int16_t	num_texture_groups[MAXMXATEXTUREGROUPSPER];
 //	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
 	RENDEROBJECT renderObject[MAXMXATEXTUREGROUPSPER];
 	LPLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 
 	LPTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
-	uint32		texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];
+	u_int32_t		texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];
 	char		name[16];
-	uint16		num_animating_polys[MAXEXECBUFSPERGROUP];
+	u_int16_t		num_animating_polys[MAXEXECBUFSPERGROUP];
 	POLYANIM *	polyanim[MAXEXECBUFSPERGROUP];
 
 }MXGROUP;
 
 
 typedef struct MXLOADHEADER{
-	int					state;								// FALSE if not loaded properly...
-	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
+	int					state;								// false if not loaded properly...
+	u_int32_t				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 	char		*		OrgAddr;
 	char		*		Buffer;
-	uint16				num_texture_files;
-	uint16				num_groups;
+	u_int16_t				num_texture_files;
+	u_int16_t				num_groups;
 	MXGROUP				Group[MAXMXGROUPS];
-	int16				TloadIndex[MAXTPAGESPERMXLOAD];		// which texture in the Tloadheader....
+	int16_t				TloadIndex[MAXTPAGESPERMXLOAD];		// which texture in the Tloadheader....
     char                ImageFile[MAXTPAGESPERMXLOAD][32];	// Texture Files....
 	ANIMDATA			AnimData;
-	uint16				NumFirePoints;						// Number of FirePoints
+	u_int16_t				NumFirePoints;						// Number of FirePoints
 	PVFIREPOINT	*		FirePoints;							// FirePoint Stuff
-	uint16				NumSpotFX;							// Number of SpotFX
+	u_int16_t				NumSpotFX;							// Number of SpotFX
 	PVSPOTFX	*		SpotFX;								// SpotFX Stuff
 	int					LOD;
 	VECTOR				Center;								// Center Pos
@@ -110,18 +110,18 @@ typedef struct MXLOADHEADER{
 /*
  * fn prototypes
  */
-BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL LevelSpecific );
-BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL StoreTriangles );
-BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model );
+_Bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool LevelSpecific );
+_Bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool StoreTriangles );
+_Bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model );
 
 void ReleaseMxloadheader( MXLOADHEADER * Mxloadheader );
 
-BOOL ExecuteSingleGroupMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 group  );
-BOOL ReleaseMxModels();
-BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model );
+_Bool ExecuteSingleGroupMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t group  );
+_Bool ReleaseMxModels();
+_Bool ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model );
 
 void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  );
-BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 );
+_Bool RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 );
 #endif
 
 

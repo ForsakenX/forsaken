@@ -11,10 +11,10 @@
 
 typedef struct GOAL
 {
-	uint16	state;
+	u_int16_t	state;
 	int		team;
-	uint16	group;
-	uint16	type;
+	u_int16_t	group;
+	u_int16_t	type;
 	VECTOR	pos;
 	VECTOR	half_size;
 	VECTOR	dir;
@@ -22,18 +22,18 @@ typedef struct GOAL
 	float	width;
 	float	height;
 	float	depth;
-	uint16	num_sides;
+	u_int16_t	num_sides;
 	TRIGGER_ZONE	*Zone;
 } GOAL;
 
 
-BOOL GoalLoad( void );
+_Bool GoalLoad( void );
 void ReleaseGoal( void );
 void ProcessGoals( void );
 GOAL *TeamGoal( int team );
-BOOL GenerateFlagAtHome( int team );
-int GoalCheckTeam( VECTOR * OldPos , VECTOR * NewPos, uint16 Group, int team );
-int DisplayGoal( uint16 group );
+_Bool GenerateFlagAtHome( int team );
+int GoalCheckTeam( VECTOR * OldPos , VECTOR * NewPos, u_int16_t Group, int team );
+int DisplayGoal( u_int16_t group );
 
 
 #endif // GOAL_H

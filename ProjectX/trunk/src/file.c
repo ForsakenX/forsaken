@@ -45,7 +45,7 @@
 #define S_IWRITE 0200
 #endif
 
-extern BOOL Debug;
+extern _Bool Debug;
 
 FILE * file_open(char * filename, char * mode)
 {
@@ -58,14 +58,14 @@ void touch_file( char* path )
 		Write_File(path, "", 0);
 }
 
-BOOL is_folder( char* str )
+_Bool is_folder( char* str )
 {
 	static struct stat s;
 	char * path = convert_path(str);
 	if ( stat( path, &s ) == 0 && s.st_mode & S_IFDIR )
-		return TRUE;
+		return true;
 	DebugPrintf("folder '%s' is not a directory\n",path);
-	return FALSE;
+	return false;
 }
 
 int folder_exists( char *pathspec, ... )
@@ -105,7 +105,7 @@ int folder_exists( char *pathspec, ... )
 	return 0;
 }
 
-BOOL File_Exists( char * str )
+_Bool File_Exists( char * str )
 {
 	char * path = convert_path(str);
 	int rval  = (access( path, 0 ) == 0);
@@ -176,7 +176,7 @@ long Get_File_Size( char * Filename )
 }
 
 #ifdef WIN32
-BOOL file_time( const char * path, struct filetime *t )
+_Bool file_time( const char * path, struct filetime *t )
 {
 	HANDLE hfile;
 	FILETIME Time;
@@ -194,7 +194,7 @@ BOOL file_time( const char * path, struct filetime *t )
 	{
 		DebugPrintf("failed to retrieve file '%s' modification time\n", path);
 		// TODO: print windows-specific error string?
-		return FALSE;
+		return false;
 	}
 	GetFileTime( hfile,	NULL,  NULL, &Time );
 	FileTimeToSystemTime( &Time, &systime );
@@ -207,10 +207,10 @@ BOOL file_time( const char * path, struct filetime *t )
 	t->second = systime.wSecond;
 	CloseHandle(hfile);
 
-	return TRUE;
+	return true;
 }
 #else
-BOOL file_time( const char * path, struct filetime *t )
+_Bool file_time( const char * path, struct filetime *t )
 {
 	struct stat st;
 	struct tm lt;
@@ -219,7 +219,7 @@ BOOL file_time( const char * path, struct filetime *t )
 	{
 		DebugPrintf("failed to retrieve file '%s' modification time\n", path);
 		perror("stat");
-		return FALSE;
+		return false;
 	}
 	gmtime_r( &st.st_mtime, &lt );
 	t->year = lt.tm_year + 1900;
@@ -229,7 +229,7 @@ BOOL file_time( const char * path, struct filetime *t )
 	t->minute = lt.tm_min;
 	t->second = lt.tm_sec;
 
-	return TRUE;
+	return true;
 }
 #endif
 
@@ -266,7 +266,7 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 	return ( Bytes_Read );
 }
 
-BOOL delete_file( char * str )
+_Bool delete_file( char * str )
 {
 #ifdef WIN32
 	return DeleteFile( str );
