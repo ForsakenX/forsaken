@@ -31,14 +31,14 @@ void input_grab( BOOL grab )
 	if( render_info.fullscreen )
 	{
 		input_grabbed = TRUE;
-		SDL_WM_GrabInput( TRUE );
-		SDL_ShowCursor( FALSE );
+		SDL_WM_GrabInput( SDL_GRAB_ON );
+		SDL_ShowCursor( SDL_DISABLE );
 		return;
 	}
 	// window mode
 	input_grabbed = grab;
-	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
-	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
+	SDL_WM_GrabInput( grab ? SDL_GRAB_ON : SDL_GRAB_OFF );
+	SDL_ShowCursor( grab ? SDL_DISABLE : SDL_ENABLE );
 	//DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
 }
 
