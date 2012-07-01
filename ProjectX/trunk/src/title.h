@@ -430,7 +430,7 @@ struct _TEXT
 {
 	int insert_pos;
 	int VDU_insert_pos;
-	u_int8_t text[MAXTEXTMSG];
+	char text[MAXTEXTMSG];
 	MenuItemFunc FuncSet;
 	int limit_length;
 	TextTypeFunc FuncType;
