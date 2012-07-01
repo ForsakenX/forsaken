@@ -672,7 +672,7 @@ void render_reset_lighting_variables( void )
 	render_lighting_env_whiteout = 0;
 }
 
-void do_water_effect( VECTOR * pos, u_int8_t * color )
+void do_water_effect( VECTOR * pos, COLOR * color )
 {
 	u_int32_t r,g,b;
 	int x,y,z;
