@@ -33,10 +33,17 @@
     #endif
 #endif
 
+// architecture
+#ifdef __i386__
+  #define ARCH "32"
+#else
+  #define ARCH "64"
+#endif
+
 // the full version name (must contain no spaces for net_tracker)
-#define PXVersion "ProjectX-" PXV "." PXMPV "." PXRV "-" PXBV
+#define PXVersion "ProjectX-" PXV "." PXMPV "." PXRV "-" PXBV "-" ARCH
 
 // this should be plenty if not please increase this
-#define MAX_PXVersion 40
+#define MAX_PXVersion 45
 
 #endif
