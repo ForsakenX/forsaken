@@ -1,21 +1,5 @@
 #ifdef OPENGL3
-
-#include "main.h"
-#include "util.h"
-#include "render.h"
-#include "texture.h"
-#include "file.h"
-#include <SDL.h>
-#include "SDL_opengl.h"
-#include <stdio.h>
-
-#define CHECK_GL_ERRORS \
-	do \
-	{ \
-		int err; \
-		while( ( err = glGetError() ) ) \
-			DebugPrintf( "GL error: %s (%s:%d)\n", gluErrorString( err ), __FILE__, __LINE__ ); \
-	} while (0)
+#include "render_gl_shared.h"
 
 struct texture
 {
@@ -1112,24 +1096,6 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 			renderObject->textureGroups[i].texture = NULL;
 		}
 	}
-}
-
-//
-// loop and clear out all gl errors
-// it will does not use the argument
-// and the last argument is returned
-//
-
-const char * render_error_description( int e )
-{
-	GLenum error;
-	const GLubyte * str = NULL;
-	while( ( error = glGetError() ) != GL_NO_ERROR )
-	{
-		str = gluErrorString(error);
-		DebugPrintf("GL error: %s\n",str);
-	}
-	return (const char *) str;
 }
 
 #endif // OPENGL3

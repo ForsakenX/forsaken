@@ -1,13 +1,5 @@
 #ifdef OPENGL1
-
-#include "main.h"
-#include "util.h"
-#include "render.h"
-#include "texture.h"
-#include "file.h"
-#include <SDL.h>
-#include "SDL_opengl.h"
-#include <stdio.h>
+#include "render_gl_shared.h"
 #include "new3d.h"
 #include "lights.h"
 
@@ -179,7 +171,7 @@ _Bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t
 	// generates full range of mipmaps and scales to nearest power of 2
 	if(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image.w, image.h, GL_RGBA, GL_UNSIGNED_BYTE, image.data) != 0)
 	{
-	   render_error_description(0);
+	   CHECK_GL_ERRORS;
 	   return false;
 	}
 
@@ -326,7 +318,7 @@ void render_set_filter( _Bool red, _Bool green, _Bool blue )
 _Bool render_flip( render_info_t * info )
 {
 	SDL_GL_SwapBuffers();
-	render_error_description(0);
+	CHECK_GL_ERRORS;
 	return true;
 }
 
@@ -1018,24 +1010,6 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 		}
 	}
 	renderObject->numTextureGroups = 0;
-}
-
-//
-// loop and clear out all gl errors
-// it will does not use the argument
-// and the last argument is returned
-//
-
-const char * render_error_description( int e )
-{
-	GLenum error;
-	const GLubyte * str = NULL;
-	while( ( error = glGetError() ) != GL_NO_ERROR )
-	{
-		str = gluErrorString(error);
-		DebugPrintf("render error: %s\n",str);
-	}
-	return (const char *) str;
 }
 
 #endif // OPENGL
