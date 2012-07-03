@@ -1,6 +1,9 @@
 #ifndef NETWORKING_INCLUDED
 #define NETWORKING_INCLUDED
 
+// TODO in 1.19 we should change this to a byte and merge multiple bools into bit fields
+typedef int net_bool_t; // backwards compatibility need bool's in pkt structures to be int's
+
 //
 // General Networking
 //
@@ -119,7 +122,7 @@ typedef struct SHORTPICKUP{
 	VECTOR	Dir;
 	int16_t	RegenSlot;
 	float	Speed;
-	_Bool	Sparkle;
+	net_bool_t	Sparkle;
 	float	LifeCount;
 	u_int16_t	TriggerMod;
 }SHORTPICKUP;
@@ -199,7 +202,7 @@ typedef struct _PICKUPINFO
 	VECTOR		Dir;
 	float		Speed;
 	int16_t		RegenSlot;
-	_Bool		Sparkle;
+	net_bool_t		Sparkle;
 	float		LifeCount;
 	u_int16_t		TriggerMod;
 }PICKUPINFO; // 46
@@ -316,7 +319,7 @@ typedef struct _SHIPHIT
 	BYTE		WeaponType;
 	BYTE		Weapon;
 	float		Force;
-	_Bool		OneOffExternalForce;
+	net_bool_t		OneOffExternalForce;
 
 }SHIPHIT;
 
@@ -353,7 +356,7 @@ typedef struct _GLOBALSHIP
 	float				StealthTime;				// Stealth Mode Time Limit
 	float				Timer;						// General Purpose Mode Timer....How Long to stay dead ...etc..
 	float				InvulTimer;					// HowLong am I Invulnerable
-	_Bool				Invul;						// Am I Invulnerable...
+	net_bool_t				Invul;						// Am I Invulnerable...
 	VECTOR				LastAngle;					// what my last Step Turn Angles Were...
 	u_int16_t				PrimBullIdCount;			// Id count for every bullet I fire....
 	u_int16_t				SecBullIdCount;				// Id count for every bullet I fire....
@@ -368,7 +371,7 @@ typedef struct _GLOBALSHIP
 	BYTE				Triggers;
 	BYTE				TrigVars;
 	BYTE				Mines;
-	_Bool				JustRecievedPacket;			//
+	net_bool_t				JustRecievedPacket;			//
 	VECTOR				LastMove;					// last movement vector (framelagged)
 	VECTOR				Move_Off;					// Last MoveMent...x , y , z
 	network_player_t *  network_player;
@@ -379,9 +382,9 @@ typedef struct _GLOBALSHIP
 	u_int16_t				PrimID;						// Bullet ID
 	u_int16_t				SecID;						// Missile ID
 	BYTE				SecWeapon;					// Weapon
-	_Bool	headlights; // are my headlights on?
+	net_bool_t	headlights; // are my headlights on?
 
-	_Bool				DemoInterpolate;
+	net_bool_t				DemoInterpolate;
 
 	VECTOR		OldPos;								//
 	VECTOR		NextPos;							// what my next position will be
@@ -881,10 +884,10 @@ typedef struct _STATUSMSG
 {
     BYTE     MsgCode;
     BYTE     WhoIAm;
-	_Bool		IsHost;			// from host ???
+	net_bool_t		IsHost;			// from host ???
 	BYTE		Status;
 	BYTE		TeamNumber;
-	_Bool		IAmReady;		// used for team game - game cannot start until everyone is ready
+	net_bool_t		IAmReady;		// used for team game - game cannot start until everyone is ready
 	BYTE		Pickups;			// tells how much of the pickup list I have recieved..
 	BYTE		RegenSlots;		// tells how much of the pickup regen slots list I have recieved..
 	BYTE		Mines;			// tells how much of the mine list I have recieved..
@@ -896,10 +899,10 @@ typedef struct _NETSETTINGSMSG
 {
 	BYTE		MsgCode;
 	BYTE		WhoIAm;
-	_Bool		IsHost;
+	net_bool_t		IsHost;
 	float		PacketsPerSecond;
-	_Bool		CollisionPerspective;
-	_Bool		ShortPackets;	
+	net_bool_t		CollisionPerspective;
+	net_bool_t		ShortPackets;	
 } NETSETTINGSMSG, *LPNETSETTINGSMSG;
 
 typedef struct _LONGSTATUSMSG
