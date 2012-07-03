@@ -116,6 +116,7 @@ void loop()
 // MSG_TEXT should validate it's actually a team game other wise we crash
 // 	and it could be variable lengtha
 // should only send packets to players that need them...
+// net_bool_t = int but could just be char or bitflags..
 ////
 
 ////
