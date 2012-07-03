@@ -637,8 +637,6 @@ RENDERMATRIX  TempWorld;
 
 float	WhiteOut = 0.0F;
 float	RandomBubbleTimer = 0.0F;
-long debug_long = 0;
-long max_mouse_move = 0;
 DWORD max_time;
 u_int16_t	NumCollides;
 
