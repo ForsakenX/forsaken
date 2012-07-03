@@ -434,6 +434,10 @@ static network_player_t * create_player( ENetPeer * peer )
 	player->data = peer;
 	peer_data->player = player;
 
+	// player is only added to list once in game
+	player->prev = NULL;
+	player->next = NULL;
+
 	// update dynamic data (ping etc..)
 	update_player( player );
 
