@@ -141,7 +141,7 @@ void loop()
 // Settings
 ////////////////////////////////////////////////////////
 
-BOOL Debug = TRUE;
+_Bool Debug = true;
 
 char * my_player_name;
 int my_connect_port = 0;
