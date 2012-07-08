@@ -17,6 +17,18 @@ extern char* msg_to_str( int msg_type );
 
 #define MSGS 31
 
+int msg_indexes[] = { MSG_BGOUPDATE,MSG_BIKENUM,MSG_DROPPICKUP,MSG_FUPDATE,MSG_GROUPONLY_VERYSHORTFUPDATE,MSG_HEREIAM,MSG_INIT,MSG_KILLPICKUP,MSG_LONGSTATUS,MSG_NETSETTINGS,MSG_PRIMBULLPOSDIR,MSG_REQTIME,MSG_SECBULLPOSDIR,MSG_SETTIME,MSG_SHIPDIED,MSG_SHIPHIT,MSG_SHOCKWAVE,MSG_SHORTMINE,MSG_SHORTPICKUP,MSG_SHORTREGENSLOT,MSG_SHORTSHIPHIT,MSG_SHORTTRIGGER,MSG_SHORTTRIGVAR,MSG_STATUS,MSG_TEAMGOALS,MSG_TEXTMSG,MSG_TITANBITS,MSG_VERYSHORTDROPPICKUP,MSG_VERYSHORTFUPDATE,MSG_VERYSHORTUPDATE,MSG_YOUQUIT };
+
+int msg_index( int msg_type )
+{
+	int i;
+	for(i=0;i<MSGS;i++)
+		if (msg_indexes[i] == msg_type)
+			return i;
+	printf("ERROR: msg_index could not find type = %d\n",msg_type);
+	return 0;
+}
+
 char* msg_to_str( int msg_type )
 {
 	switch( msg_type )
@@ -68,8 +80,6 @@ size_t msg_size[] = {12,3,56,68,28,3,408,8,64,20,72,2,76,8,20,56,28,232,264,244,
 
 unsigned char msg_data[1000];
 
-void init() { }
-
 void receive(network_packet_t * packet)
 {
 	printf("%s > %s %p\n", msg_to_str(packet->data), packet->from->name, (unsigned char *)packet->data);
@@ -83,14 +93,26 @@ void randomize_msg_data( void )
 		msg_data[n] = rand()%UCHAR_MAX;
 }
 
+void send_msg_by_index( int i )
+{
+	msg_data[1] = my_id;
+	msg_data[0] = msg_id[i];
+	network_broadcast( msg_data, msg_size[i], NETWORK_UNRELIABLE, MAIN_CHANNEL );
+}
+void send_msg_by_type( int t ) { send_msg_by_index(msg_index(t)); }
+
+void init() { printf("my_id = %d\n",my_id); }
+
 void loop()
 {
 	static int i = 0;
-	printf("Sending message %s (%d) size=%d\n",(char*)msg_name[i],msg_id[i],msg_size[i]);
 	randomize_msg_data();
-	msg_data[0] = msg_id[i];
-	msg_data[1] = my_id;
-	network_broadcast( msg_data, msg_size[i], NETWORK_UNRELIABLE, MAIN_CHANNEL );
+	send_msg_by_type(MSG_STATUS); // flood valid status messages so we get in game
+	printf("Sending message %s (%d) size=%d\n",(char*)msg_name[i],msg_id[i],msg_size[i]);
+	// fix up messages to get around known security checks
+	if(msg_id[i] == MSG_TEXTMSG) msg_data[2+MAXTEXTMSG] %= 17; // only 17 types of text messages
+	// send it and move to next message
+	send_msg_by_index(i);
 	if( ++i >= MSGS ) i = 0;
 }
 
@@ -117,6 +139,9 @@ void loop()
 // 	and it could be variable lengtha
 // should only send packets to players that need them...
 // net_bool_t = int but could just be char or bitflags..
+//  many of the text message types are abused as pkt types that don't send text
+// 		but that's shit cause its' 515 bytes every time..
+//		also most don't need to send text it can be computed on other side
 ////
 
 ////
@@ -283,7 +308,6 @@ void network_event( network_event_type_t type, void* data )
 		if ( data == NULL )
 		{
 			puts("-- we have joined the game");
-			puts("-- enter text to be sent to other players");
 			init();
 			_state_joined = 1;
 		}
