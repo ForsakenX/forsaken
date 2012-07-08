@@ -3176,18 +3176,15 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			case TEXTMSGTYPE_QuickTauntWhisper:
 				if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
 					return;
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] ); tempstr[sizeof(tempstr)-1]=0;
-				AddPlayerMessageToQue(PlayerMessageColour,  (char*)&tempstr[0] );
+				AddPlayerMessageToQue(PlayerMessageColour, "%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
 				return;
 			case TEXTMSGTYPE_Taunt1:
 			case TEXTMSGTYPE_Taunt2:
 			case TEXTMSGTYPE_Taunt3:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(TauntMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(TauntMessageColour, "%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
 				return;
 			case TEXTMSGTYPE_QuickTaunt:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] ); tempstr[sizeof(tempstr)-1]=0;
-				AddPlayerMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
+				AddPlayerMessageToQue(PlayerMessageColour, "%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
 				// received version request
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
 				{
@@ -3200,31 +3197,28 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				}
 				return;
 			case TEXTMSGTYPE_JoiningTeamGame:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(SystemMessageColour, "%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
 				return;
 			case TEXTMSGTYPE_EnteredWatchMode:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"ENTERED WATCH MODE"); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(SystemMessageColour, "%s %s", &Names[lpTextMsg->WhoIAm][0] ,"ENTERED WATCH MODE");
 				return;
 			case TEXTMSGTYPE_ExitedWatchMode:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"EXITED WATCH MODE"); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(SystemMessageColour, "%s %s", &Names[lpTextMsg->WhoIAm][0] ,"EXITED WATCH MODE");
 				return;
 			case TEXTMSGTYPE_TitleMessage:
 				AddTitleMessage(lpTextMsg);
 				return;
 			case TEXTMSGTYPE_CaptureFlagMessage:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
+				// this message is instead formatted by the sender
+				// AddColourMessageToQue(FlagMessageColour, "%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+				AddColourMessageToQue(FlagMessageColour, "%s", lpTextMsg->Text );
 				if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
 					PlaySfx( SFX_MyTeamGotFlag, FlagVolume );
 				else
 					PlaySfx( SFX_OtherTeamGotFlag , FlagVolume );
 				return;
 			case TEXTMSGTYPE_ScoredWithFlag:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(FlagMessageColour, THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 				if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
 					PlaySfx( SFX_MyTeamScored, FlagVolume );
 				else
@@ -3234,26 +3228,19 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				return;
 			case TEXTMSGTYPE_ReturningFlag:
 				if ( lpTextMsg->WhoIAm != WhoIAm )
-				{
-					snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_ARE_RETURNING_THEIR_FLAG,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ]); tempstr[sizeof(tempstr)-1]=0;
-					AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-				}
+					AddColourMessageToQue(FlagMessageColour, THE_COLOUR_TEAM_ARE_RETURNING_THEIR_FLAG,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ]);
 				return;
 			case TEXTMSGTYPE_ReturnedFlag:
-					snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
-					AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(FlagMessageColour, THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 				return;
 			case TEXTMSGTYPE_FlagDriftedIn:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(FlagMessageColour, THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 				return;
 			case TEXTMSGTYPE_FlagEscaped:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(FlagMessageColour, THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 				return;
 			case TEXTMSGTYPE_BountyMessage:
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(FlagMessageColour, "%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY);
 				PlaySfx( SFX_OtherTeamGotFlag, FlagVolume );
 				return;
 			case TEXTMSGTYPE_SpeechTaunt:
