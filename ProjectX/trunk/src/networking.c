@@ -3156,6 +3156,23 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		}
 		switch (lpTextMsg->TextMsgType)
 		{
+			case TEXTMSGTYPE_FlagDriftedIn:
+			case TEXTMSGTYPE_FlagEscaped:
+			case TEXTMSGTYPE_ReturnedFlag:
+			case TEXTMSGTYPE_ReturningFlag:
+			case TEXTMSGTYPE_ScoredWithFlag:
+			case TEXTMSGTYPE_CaptureFlagMessage:
+			case TEXTMSGTYPE_JoiningTeamGame:
+				if(!TeamGame)
+				{
+					DebugPrintf("EvaluateMessage: from %s (%s:%d) %s (%d) dropping team message (%d) because not in team game\n",
+						from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, lpTextMsg->TextMsgType );
+					return;
+				}
+			break;
+		}
+		switch (lpTextMsg->TextMsgType)
+		{
 			case TEXTMSGTYPE_QuickTauntWhisper:
 				if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
 					return;
