@@ -573,10 +573,10 @@ void AddPlayerMessageToQue( int Colour, char * Text, ... )
 				MessageBankLong[0][j] = 0;
 
 		va_start( args, Text );
-		vsprintf( &TempMessage[0], Text, args);
+		vsnprintf( &TempMessage[0], sizeof(TempMessage)-1, Text, args);
 		va_end( args );
 
-		TempMessage[511] = 0;
+		TempMessage[sizeof(TempMessage)-1] = 0;
 
 		Pnt = &TempMessage[0];
 
@@ -613,10 +613,10 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 				MessageBankLong[0][j] = 0;
 
 		va_start( args, Text );
-		vsprintf( &TempMessage[0], Text, args);
+		vnsprintf( &TempMessage[0], sizeof(TempMessage)-1, Text, args);
 		va_end( args );
 
-		TempMessage[511] = 0;
+		TempMessage[sizeof(TempMessage)-1] = 0;
 
 		Pnt = &TempMessage[0];
 
