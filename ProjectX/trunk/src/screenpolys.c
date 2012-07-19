@@ -3186,12 +3186,13 @@ FILE * SaveScreenPolys( FILE * fp )
 ===================================================================*/
 FILE * LoadScreenPolys( FILE * fp )
 {
-	float			Time;
+    int16_t minutes;	
+    int16_t seconds;
 
 	if( fp )
 	{
 		fread( &CountDownOn, sizeof( CountDownOn ), 1, fp );
-		fread( &Time, sizeof( Countdown_Float ), 1, fp );
+		fread( &Countdown_Float, sizeof( Countdown_Float ), 1, fp );
 		fread( &ThermalTemp, sizeof( ThermalTemp ), 1, fp );
 		fread( &WantedThermalTemp, sizeof( WantedThermalTemp ), 1, fp );
 		fread( &ThermalMinimum, sizeof( ThermalMinimum ), 1, fp );
@@ -3201,7 +3202,9 @@ FILE * LoadScreenPolys( FILE * fp )
 			CountDownOn = true;
 			KilledPlayer = false;
 			CreateCountdownDigits();
-			StartCountDown( 1, 0 );
+            minutes = Countdown_Float / 6000.0F;
+            seconds = ( Countdown_Float - (minutes * 6000.0F) ) / 100.0F;
+			StartCountDown( minutes, seconds );
 			TimeLimitTrigger = NULL;
 		}
 	}
