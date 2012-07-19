@@ -3802,10 +3802,7 @@ void RegeneratePickups( void )
 	}
 
 	/* regen primaries */
-	static int last_regen_primary = 0;
-	if ( last_regen_primary >= MAXPRIMARYWEAPONS )
-		last_regen_primary = 0;
-	for( Count = last_regen_primary; Count < MAXPRIMARYWEAPONS; Count++ )
+	for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
 	{
 		// if this weapon should be regenerated
 		if( NumPrimWeapons[ Count ] <= 0 ) continue;
@@ -3815,9 +3812,6 @@ void RegeneratePickups( void )
 		if ( ! RegeneratePickup( weapon ) ) continue;
 		// decrement count to regenerate
 		NumPrimWeapons[ Count ]--;
-		// start at next weapon next game loop
-		// this helps to mix up the weapons
-		last_regen_primary = Count + 1;
 	}
 
 	/* regen power pods */
