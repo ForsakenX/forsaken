@@ -1711,11 +1711,11 @@ MENU	MENU_NEW_JoinWaitingToStart = {
 		{ 5, 27, 100, 37, SLIDER_Value, LT_MENU_NEW_JoinWaitingToStart1 /*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
 		{ 5, 40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
 
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_JoinWaitingToStart2 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 155, 25, 162, 0, LT_MENU_NEW_JoinWaitingToStart2 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL, NULL , NULL, NULL, 0 }
 	}
@@ -1729,11 +1729,11 @@ MENU	MENU_NEW_GetTeamPlayers = {
 		{ 5, 27, 100, 37, SLIDER_Value, LT_MENU_NEW_GetTeamPlayers1 /*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
 		{ 5, 40, 100, 165, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
 
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_GetTeamPlayers2 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 155, 25, 162, 0, LT_MENU_NEW_GetTeamPlayers2 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL, NULL , NULL, NULL, 0 }
 	}
@@ -2367,11 +2367,11 @@ MENU	MENU_NEW_Team = {
 		
 		{ 0, 116, 200, 126, 0, LT_MENU_NEW_Team9 /*"waiting for team selection"*/, FONT_Small, TEXTFLAG_Instant | TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_Pulse, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 		
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_Team10 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 155, 25, 162, 0, LT_MENU_NEW_Team10 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" ,0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -2395,11 +2395,11 @@ MENU	MENU_NEW_WatchTeamSelect = {
 
 		{ 0, 116, 200, 126, 0, LT_MENU_NEW_WatchTeamSelect9 /*"waiting for team selection"*/, FONT_Small, TEXTFLAG_Instant | TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_Pulse, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 		
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_WatchTeamSelect10 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 155, 25, 162, 0, LT_MENU_NEW_WatchTeamSelect10 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" ,0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -2425,12 +2425,12 @@ MENU  MENU_NEW_ChooseTeamForExistingGame = {
 		{ 149, 118, 194, 125, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TeamCurrentScore[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 #endif
 
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_ChooseTeamForExistingGame9 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 155, 25, 162, 0, LT_MENU_NEW_ChooseTeamForExistingGame9 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" ,0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
