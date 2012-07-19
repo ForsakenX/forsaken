@@ -3624,7 +3624,7 @@ _Bool LoadPickupsPositions( void )
     for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
     {
       /* if NOT an enabled weapon */
-      if( ! FilterPickup( i ) )
+      if( ! FilterPickup( Count ) )
         /* then bail out */
         continue;
 
