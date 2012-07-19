@@ -126,9 +126,20 @@ typedef struct
 // should be included after malloc/stdlib
 #include "xmem.h"
 
+// really crappy support right now for mingw32
+// since apparently it doesn't work with u_ types
+// support for this coming soon in a newer release
+#ifdef WIN32
+#include <stdint.h>
+typedef uint8_t  u_int8_t;
+typedef uint16_t u_int16_t;
+typedef uint32_t u_int32_t;
+#include <windef.h>
+#else
 // winapi compatibility
-typedef u_int8_t  BYTE;
 typedef u_int32_t DWORD;
+#endif
+typedef u_int8_t  BYTE;
 typedef u_int16_t WORD;
  
 #endif	// MAIN_INCLUDED
