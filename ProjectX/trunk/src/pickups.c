@@ -3620,39 +3620,18 @@ _Bool LoadPickupsPositions( void )
      )
   )
   {
-    /* for each of the primary weapons */
     for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
     {
-      /* if NOT an enabled weapon */
-      if( ! FilterPickup( Count ) )
-        /* then bail out */
-        continue;
+        if( ! FilterPickup( Count ) )
+            continue;
 
-      /* this probably garentees that we have at least a 1 to 1 mapping
-         for primary ammo and number of primary guns in the level */
+        if( MaxPickupType[ Count ] < NumPrimaryPickups )
+        {
+            MaxPickupType[ Count ] = NumPrimaryPickups;
 
-      /* if this pickup type */
-      if(
-        /* has a minimum number of pickups that must always exist*/
-        /* this is usually ammo */
-        ( MaxPickupType[ Count ] != 0 )  &&
-        /* and the minimum is less than the number of current primary weapons */
-        ( MaxPickupType[ Count ] < NumPrimaryPickups )
-      )
-      {
-        /* set the minimum number of this type
-           to the number of primary pickups */
-
-        MaxPickupType[ Count ] = NumPrimaryPickups;
-
-        /* if we are the game manager */
-		if( IsHost )
-		{
-          /* add N number of these pickups to the current regen list */
-          /* N = (minimum that must exist) - (currently existing) */
-          NumPrimWeapons[ Count ] += ( MaxPickupType[ Count ] - NumPickupType[ Count ] );
-		}
-      }
+		    if( IsHost )
+                NumPrimWeapons[ Count ] = MaxPickupType[ Count ] - NumPickupType[ Count ];
+        }
     }
   }
 
@@ -3823,15 +3802,15 @@ void RegeneratePickups( void )
 	}
 
 	/* regen primaries */
-	static int last_regen_primary = 1;
+	static int last_regen_primary = 0;
 	if ( last_regen_primary >= MAXPRIMARYWEAPONS )
-		last_regen_primary = 1;
+		last_regen_primary = 0;
 	for( Count = last_regen_primary; Count < MAXPRIMARYWEAPONS; Count++ )
 	{
 		// if this weapon should be regenerated
-		if( ! NumPrimWeapons[ Count ] ) continue;
+		if( NumPrimWeapons[ Count ] <= 0 ) continue;
 		// get the weapon id
-		u_int16_t weapon = PICKUP_Trojax + ( Count - 1 );
+		u_int16_t weapon = PICKUP_Trojax + Count;
 		// regenerate weapon
 		if ( ! RegeneratePickup( weapon ) ) continue;
 		// decrement count to regenerate
