@@ -9341,10 +9341,10 @@ void GetGamePrefs( void )
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
     SystemMessageColour              = config_get_int( "SystemMessageColour",		YELLOW );
     FlagMessageColour                = config_get_int( "FlagMessageColour",			BLUE );
-    PlayerMessageColour              = config_get_int( "PlayerMessageColour",		YELLOW );
+    PlayerMessageColour              = config_get_int( "PlayerMessageColour",		WHITE );
     PickupMessageColour              = config_get_int( "PickupMessageColour",		GREEN );
     TauntMessageColour               = config_get_int( "TauntMessageColour",		GREEN );
-    MyMessageColour                  = config_get_int( "MyMessageColour",			  YELLOW );
+    MyMessageColour                  = config_get_int( "MyMessageColour",			  WHITE );
 		MaxMessageTime                   = config_get_float( "MaxMessageTime",    5.0f );
 		
 	CLAMP( InGameMenuColour, MAXFONTCOLOURS );
