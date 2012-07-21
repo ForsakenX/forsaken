@@ -182,6 +182,10 @@ extern int PickupMessageColour;
 extern SLIDER WatchPlayerSelect;
 // player selected in demo mode - used to display their missile camera (Title.c)
 extern SLIDER DemoEyesSelect;
+extern _Bool ShowPlayerHealthAboveBikes;
+extern _Bool ScaleFontPlayerHealthAboveBikes;
+// (networking.c)
+extern SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
 
 /*===================================================================
 	Globals
@@ -6628,6 +6632,7 @@ void DispHUDNames( void )
 	u_int16_t	Ship;
 	BYTE	MyTeam;
 	BYTE	ShipsTeam;
+    char buf[10];
 
 	if( TeamGame )
 	{
@@ -6652,6 +6657,19 @@ void DispHUDNames( void )
 	}
 	else
 	{
+        if(ShowPlayerHealthAboveBikes)
+        {
+            for( Count = 0; Count < NumVisibleShips; Count++ )
+            {
+                Ship = VisibleShipsPos[ Count ].Ship;
+                sprintf( (char*) &buf[0] ,"%d", (u_int16_t) (((PlayerHealths[Ship].Hull + PlayerHealths[Ship].Shield)/2.56F)));
+                if(ScaleFontPlayerHealthAboveBikes)
+                     Print4x5Text( &buf[0] , VisibleShipsPos[ Count ].ScreenX - 24, VisibleShipsPos[ Count ].ScreenY, 4 );
+                else
+                    Print4x5TextSmall( &buf[0] , VisibleShipsPos[ Count ].ScreenX - 12, VisibleShipsPos[ Count ].ScreenY, 4 );
+            }   
+        }
+
 		if( TargetComputerOn )
 		{
 			for( Count = 0; Count < NumVisibleShips; Count++ )

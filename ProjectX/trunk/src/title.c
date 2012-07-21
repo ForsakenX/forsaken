@@ -145,6 +145,9 @@ _Bool ShowSpeedOnHUD;
 _Bool ShowTotalSpeedOnHUD;
 _Bool ShowPlayersOnHUD;
 _Bool ShowPlayersOnHUDbyKills;
+_Bool ShowPlayerHealthAboveBikes;
+_Bool ScaleFontPlayerHealthAboveBikes;
+_Bool ShowPlayerHealthByScores;
 
 int	NetUpdateIntervalCmdLine = 0;
 int	GoalScore = 5;
@@ -783,6 +786,7 @@ SLIDER SensitivityXSlider				= { 0, 16, 1, 5, 0, 0.0F };
 SLIDER SensitivityYSlider				= { 0, 16, 1, 5, 0, 0.0F };
 SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, false, NULL, SetWaterDetail };
 SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, false, NULL, SetNumPrimaryPickups };
+SLIDER HealthPacketsSlider = { 0, 10, 1, 2, 0, 0.0F };
 SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
 SLIDER MyPacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider1	= { 1, 10, 1, 2, 0, 0.0F };
@@ -1271,13 +1275,14 @@ MENU MENU_NEW_NetworkOptions = {
 
 		{ 10, 32,  85, 32, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,						FONT_Small,	TEXTFLAG_CentreY,							&MyUseShortPackets,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10, 40,  85, 40, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&MyPacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 56,  85, 40, SLIDER_Value,"HEALTH PPS"/*"health packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&HealthPacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
-		{ 10, 56,  85, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{ 10, 64,  85, 64, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 64,  85, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 78,  85, 64, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
-		{ 10, 78,  85, 78, 0,			"enable tracker",															FONT_Small, TEXTFLAG_CentreY,							&tracker_enabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 88,  85, 78, 0,			"enable tracker",															FONT_Small, TEXTFLAG_CentreY,							&tracker_enabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
-		{ 10, 88,  85, 88, 0,			"local port",																FONT_Small,	TEXTFLAG_ForceFit | TEXTFLAG_CentreY,		&local_port_str,			NULL,						SelectFlatMenutext,		DrawFlatMenuText,		NULL, 0 } ,
+		{ 10, 98,  85, 88, 0,			"local port",																FONT_Small,	TEXTFLAG_ForceFit | TEXTFLAG_CentreY,		&local_port_str,			NULL,						SelectFlatMenutext,		DrawFlatMenuText,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -2862,6 +2867,9 @@ MENU	MENU_Options = {
 		{ 200, 288, 0, 0, 0, "HUD Show KPM",	0, 0, &ShowKPMOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{ 200, 304, 0, 0, 0, "HUD Show XYZ Speed",	0, 0, &ShowSpeedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{ 200, 320, 0, 0, 0, "HUD Show Total Speed",	0, 0, &ShowTotalSpeedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
+        { 200, 336, 0, 0, 0, "Show Health Above Bikes", 0, 0, &ShowPlayerHealthAboveBikes,NULL,SelectToggle,DrawToggle,NULL, 0 },
+        { 200, 352, 0, 0, 0, "Show Health By Scores", 0, 0, &ShowPlayerHealthByScores,NULL,SelectToggle,DrawToggle,NULL, 0 },
+        { 200, 368, 0, 0, 0, "Scale Font Above Bikes", 0, 0, &ScaleFontPlayerHealthAboveBikes,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -2947,8 +2955,9 @@ MENU	MENU_Host_Options = { "HOST OPTIONS FOR THIS GAME" , InitHostMenu , NULL , 
 					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&ColPerspective,				NULL,								SelectToggle,	DrawColToggle),
 					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&UseShortPackets,			NULL,								SelectToggle,	DrawToggle),
 					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,		NULL,								SelectSlider,	DrawSlider),
-					OLDMENUITEM( 200, 176, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,								&MENU_LevelSelect,			MenuChange,	MenuItemDrawName),
-					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,				HostListPlayerSelected,		SelectList,		DrawList ),  
+					OLDMENUITEM( 200, 176, "Health Packets Per Second",	(void*)&HealthPacketsSlider,NULL, SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 192, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,								&MENU_LevelSelect,			MenuChange,	MenuItemDrawName),
+					OLDMENUITEM( 200, 208, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,				HostListPlayerSelected,		SelectList,		DrawList ),  
 
 			{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
 };
@@ -9239,6 +9248,9 @@ void GetGamePrefs( void )
 	ShowTotalSpeedOnHUD				 = config_get_bool( "ShowTotalSpeedOnHUD", true );
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			true );
     ShowPlayersOnHUDbyKills          = config_get_bool( "ShowPlayersOnHUDbyKills",		true );
+    ShowPlayerHealthAboveBikes       = config_get_bool( "ShowPlayerHealthAboveBikes", true );
+    ShowPlayerHealthByScores         = config_get_bool( "ShowPlayerHealthByScores", true );
+    ScaleFontPlayerHealthAboveBikes  = config_get_bool( "ScaleFontPlayerHealthAboveBikes", true );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				true );
     BountyBonus                      = config_get_bool( "BountyBonus",				true );
     MyUseShortPackets                = config_get_bool( "UseShortPackets",			true );
@@ -9393,6 +9405,9 @@ void SetGamePrefs( void )
 	config_set_bool( "ShowTotalSpeedOnHUD", ShowTotalSpeedOnHUD );
 	config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
 	config_set_bool( "ShowPlayersOnHUDbyKills",	ShowPlayersOnHUDbyKills );
+    config_set_bool( "ShowPlayerHealthAboveBikes", ShowPlayerHealthAboveBikes );
+    config_set_bool( "ShowPlayerHealthByScores", ShowPlayerHealthByScores );
+    config_set_bool( "ScaleFontPlayerHealthAboveBikes", ScaleFontPlayerHealthAboveBikes );
 	config_set_bool( "BikeExhausts",		BikeExhausts );
 	config_set_bool( "BountyBonus",			BountyBonus );
 	config_set_bool( "RandomPickups",		MyRandomPickups );

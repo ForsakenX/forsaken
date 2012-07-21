@@ -128,11 +128,14 @@ extern _Bool	BikeExhausts;
 extern	_Bool IllegalTime;
 extern	float	Countdown_Float;
 extern	SLIDER  PacketsSlider;
+extern SLIDER HealthPacketsSlider;
 
 extern char CurrentTauntVariant;
 
 float NetUpdateInterval = 4.0F;
+float HealthUpdateInterval = 4.0F;
 int OldPPSValue;
+int OldHealthPPSValue;
 int OldUseShortPackets;
 int OldColPerspective;
 float PacketDelay = 4.0F;					// How long before I start to Declerate him.....
@@ -210,6 +213,8 @@ _Bool		JustPickedUpShield = false;
 int16_t	NextworkOldBikeNum = -1;
 
 float		Interval = 0.0F;
+float HealthInterval = 0.0F;
+SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
 
 #ifdef DEMO_SUPPORT
 extern	LONGLONG	GameStartedTime;
@@ -454,6 +459,7 @@ _Bool msg_is_valid( int msg_type )
 	case MSG_SETTIME:
 	case MSG_STATUS:
 	case MSG_NETSETTINGS:
+    case MSG_NETSETTINGS_HEALTHPPS:
 	case MSG_LONGSTATUS:
 	case MSG_SHORTPICKUP:
 	case MSG_SHORTREGENSLOT:
@@ -463,6 +469,7 @@ _Bool msg_is_valid( int msg_type )
 	case MSG_TEXTMSG:
 	case MSG_VERYSHORTINTERPOLATE:
 	case MSG_INTERPOLATE:
+    case MSG_SHIPHEALTH:
 		return true;
 	}
 	return false;
@@ -497,6 +504,7 @@ char* msg_to_str( int msg_type )
 	case MSG_SETTIME:                        return "MSG_SETTIME";                      break;
 	case MSG_STATUS:                         return "MSG_STATUS";                       break;
 	case MSG_NETSETTINGS:                    return "MSG_NETSETTINGS";                  break;
+    case MSG_NETSETTINGS_HEALTHPPS:          return "MSG_NETSETTINGS_HEALTHPPS";        break;
 	case MSG_LONGSTATUS:                     return "MSG_LONGSTATUS";                   break;
 	case MSG_SHORTPICKUP:                    return "MSG_SHORTPICKUP";                  break;
 	case MSG_SHORTREGENSLOT:                 return "MSG_SHORTREGENSLOT";               break;
@@ -506,6 +514,7 @@ char* msg_to_str( int msg_type )
 	case MSG_TEXTMSG:                        return "MSG_TEXTMSG";                      break;
 	case MSG_VERYSHORTINTERPOLATE:           return "MSG_VERYSHORTINTERPOLATE";         break;
 	case MSG_INTERPOLATE:                    return "MSG_INTERPOLATE";                  break;
+    case MSG_SHIPHEALTH:                     return "MSG_SHIPHEALTH";                   break;
 	}
 	return "UNKNOWN";
 }
@@ -586,7 +595,15 @@ void NetworkGameUpdate()
 	else
 	{
 		ReceiveGameMessages();
-		
+	
+        HealthInterval -= framelag;
+        if (HealthPacketsSlider.value > 0 && HealthInterval <= 0.0F )
+        {
+            HealthInterval = HealthUpdateInterval;
+            SendGameMessage(MSG_SHIPHEALTH, 0, 0, 0, 0);
+        }
+
+	
 		if( ( Ships[WhoIAm].Object.Flags & ( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire ) ) )
 		{
 			if( !UseShortPackets )
@@ -709,6 +726,14 @@ void NetworkGameUpdate()
 			SendGameMessage(MSG_NETSETTINGS, 0, 0, 0, 0);
 			AddColourMessageToQue(SystemMessageColour, "%d %s" , PacketsSlider.value , PACKETS_PER_SECOND_SET );
 		}
+        if( OldHealthPPSValue != HealthPacketsSlider.value )
+        {
+            OldHealthPPSValue = HealthPacketsSlider.value;
+            HealthUpdateInterval = (60.0F / HealthPacketsSlider.value);
+            SendGameMessage(MSG_NETSETTINGS_HEALTHPPS, 0, 0, 0, 0);
+            AddColourMessageToQue(SystemMessageColour, "%d %s", HealthPacketsSlider.value, "HEALTH PPS SET" );
+            HealthInterval = HealthUpdateInterval;
+        }
 		// changed collision perspective
 		if ( OldColPerspective != ColPerspective )
 		{
@@ -969,6 +994,7 @@ void SetupNetworkGame()
 	RealPacketSize[MSG_KILLPICKUP]                     = sizeof(KILLPICKUPMSG);
 	RealPacketSize[MSG_STATUS]                         = sizeof(STATUSMSG);
 	RealPacketSize[MSG_NETSETTINGS]                    = sizeof(NETSETTINGSMSG);
+    RealPacketSize[MSG_NETSETTINGS_HEALTHPPS]          = sizeof(NETSETTINGS_HEALTHPPS_MSG);
 	RealPacketSize[MSG_SHORTPICKUP]                    = sizeof(SHORTPICKUPMSG);
 	RealPacketSize[MSG_SHOCKWAVE]                      = sizeof(SHOCKWAVEMSG);
 	RealPacketSize[MSG_FUPDATE]                        = sizeof(FUPDATEMSG);
@@ -994,6 +1020,7 @@ void SetupNetworkGame()
 	RealPacketSize[MSG_TITANBITS]                      = sizeof(TITANBITSMSG);
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE]     = sizeof(GROUPONLY_VERYSHORTFUPDATEMSG);
 	RealPacketSize[MSG_VERYSHORTDROPPICKUP]            = sizeof(VERYSHORTDROPPICKUPMSG);
+    RealPacketSize[MSG_SHIPHEALTH]                     = sizeof(SHIPHEALTHMSG);
 
 	for( i = 0; i < 256; i++ )
 	{
@@ -1012,6 +1039,7 @@ void SetupNetworkGame()
 	memset(&Ships,			0,				sizeof(Ships) );
 	memset(&Names,			0,				sizeof(SHORTNAMETYPE) );
 	memset(&GameStatus,		STATUS_Null,	sizeof(GameStatus) );
+    memset(&PlayerHealths,  0,              sizeof(PlayerHealths));
 
 	JustGenerated = true;
 	
@@ -1054,6 +1082,10 @@ void SetupNetworkGame()
 	
 		// (stats.c)
 		InitScoreSortTab((int) i);
+
+        PlayerHealths[i].WhoIAm = i;
+        PlayerHealths[i].Hull = Start_Hull;
+        PlayerHealths[i].Shield = Start_Shield;
 	}
 }
 
@@ -1317,6 +1349,7 @@ void network_event_new_host( network_player_t * player )
 		IsHost = true;					// I have Become the host
 
 		PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
+        HealthPacketsSlider.value = (int) (60.0F / HealthUpdateInterval);
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
 			if( ( i != WhoIAm ) && ( Ships[i].Object.Flags & SHIP_IsHost ) )
@@ -1495,6 +1528,7 @@ extern px_timer_t last_mine_timer;
 
 void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 {
+    LPSHIPHEALTHMSG                 lpShipHealth;
     LPUPDATEMSG							lpUpdate;
     LPVERYSHORTUPDATEMSG			lpVeryShortUpdate;
     LPFUPDATEMSG						lpFUpdate;
@@ -1528,6 +1562,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPNETSETTINGSMSG					lpNetSettingsMsg;
+    LPNETSETTINGS_HEALTHPPS_MSG         lpNetSettingsHealthPPSMsg;
 	int					i;
 	BYTE				OldMode;
 	BYTE				OldStatus;
@@ -1604,6 +1639,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	case MSG_VERYSHORTINTERPOLATE:
 #endif
 	case MSG_NETSETTINGS:
+    case MSG_NETSETTINGS_HEALTHPPS:
 	case MSG_TEAMGOALS:
 	case MSG_YOUQUIT:
 	case MSG_INIT:
@@ -1842,6 +1878,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			case MSG_VERYSHORTFUPDATE:
 			case MSG_GROUPONLY_VERYSHORTFUPDATE:
 			case MSG_FUPDATE:
+            case MSG_SHIPHEALTH:
 			case MSG_TEAMGOALS:
 				return;
 
@@ -1859,6 +1896,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		case MSG_VERYSHORTUPDATE:
 		case MSG_UPDATE:
 		case MSG_INIT:
+        case MSG_NETSETTINGS_HEALTHPPS:
 		case MSG_STATUS:
 		case MSG_LONGSTATUS:
 		case MSG_HEREIAM:
@@ -1872,6 +1910,16 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	}
     switch( *MsgPnt )
     {
+
+    case MSG_SHIPHEALTH:
+
+        lpShipHealth = (LPSHIPHEALTHMSG)MsgPnt;
+        if( lpShipHealth->WhoIAm != WhoIAm)
+        {
+            PlayerHealths[lpShipHealth->WhoIAm].Hull = lpShipHealth->Hull;
+            PlayerHealths[lpShipHealth->WhoIAm].Shield = lpShipHealth->Shield;
+        }
+        return;
 
 	case MSG_YOUQUIT:
 
@@ -2308,6 +2356,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			LPHEREIAMMSG msg = (LPHEREIAMMSG) MsgPnt;
 			SendGameMessage(MSG_INIT, from, msg->WhoIAm, 0, msg->MPVersion);
 			SendGameMessage(MSG_STATUS, from, 0, 0, 0);
+            SendGameMessage(MSG_NETSETTINGS_HEALTHPPS, from, 0, 0, 0);
 		}
 		return;
 
@@ -2445,7 +2494,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		// tell everyone my status (includes my ship number and from->name)
 		// they can now use this message to relate my name to my ship number
 		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-
 		return;
 
 
@@ -2942,6 +2990,20 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 		return;
 
+    case MSG_NETSETTINGS_HEALTHPPS:
+
+            lpNetSettingsHealthPPSMsg = (LPNETSETTINGS_HEALTHPPS_MSG)MsgPnt;
+
+            if(!IsHost)
+            {
+                HealthPacketsSlider.value = lpNetSettingsHealthPPSMsg->HealthPacketsPerSecond;
+                HealthUpdateInterval = 60.0F / HealthPacketsSlider.value; 
+                HealthInterval = HealthUpdateInterval;
+
+                if( MyGameStatus == STATUS_Normal )
+                    AddColourMessageToQue(SystemMessageColour, "%d %s", HealthPacketsSlider.value, "HEALTH PPS SET" );
+            }
+            return;
 
 	case MSG_NETSETTINGS:
 
@@ -2968,7 +3030,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						}
 						// packet rate changed by the host
 						if( NetUpdateInterval != lpNetSettingsMsg->PacketsPerSecond )
-							AddColourMessageToQue(SystemMessageColour, "%2.2f %s" , ( 60.0F / lpNetSettingsMsg->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
+							AddColourMessageToQue(SystemMessageColour, "%.0f %s" , ( 60.0F / lpNetSettingsMsg->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
 						// short packets changed by the host
 						if( UseShortPackets != lpNetSettingsMsg->ShortPackets)
 						{
@@ -3342,6 +3404,7 @@ typedef enum {
 
 void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, BYTE mask )
 {
+    LPSHIPHEALTHMSG                     lpShipHealth;
     LPVERYSHORTUPDATEMSG				lpVeryShortUpdate;
     LPUPDATEMSG							lpUpdate;
     LPFUPDATEMSG						lpFUpdate;
@@ -3374,6 +3437,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	LPSETTIMEMSG						lpSetTime;
 	LPREQTIMEMSG						lpReqTime;
 	LPNETSETTINGSMSG					lpNetSettingsMsg;
+    LPNETSETTINGS_HEALTHPPS_MSG         lpNetSettingsHealthPPSMsg;
 
 	// network variables
 	DWORD			nBytes = 0;
@@ -3395,6 +3459,17 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 	switch( msg )
     {
+
+    case MSG_SHIPHEALTH:
+        DebugPrintf("net_msg: MSG_SHIPHEALTH\n");
+
+        lpShipHealth = (LPSHIPHEALTHMSG)&CommBuff[0];
+        lpShipHealth->MsgCode = msg;
+        lpShipHealth->WhoIAm = WhoIAm;
+        lpShipHealth->Hull = (u_int8_t) Ships[WhoIAm].Object.Hull;
+        lpShipHealth->Shield = (u_int8_t) Ships[WhoIAm].Object.Shield;
+        nBytes = sizeof( SHIPHEALTHMSG );
+        break;
 
     case MSG_YOUQUIT:
     	DebugPrintf("net_msg: MSG_YOUQUIT\n");
@@ -3595,6 +3670,9 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		memmove( lpInit->TeamNumber,		TeamNumber,		sizeof(lpInit->TeamNumber));		// what team everyone is on//memcpy
 
 		strncpy( lpInit->LevelName, ShortLevelNames[NewLevelNum], 32 );						// level we are on
+       
+        // update the health pps 
+//        SendGameMessage(MSG_NETSETTINGS_HEALTHPPS, 0, 0, 0, 0);
 
 		break;
 
@@ -3873,6 +3951,16 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		lpStatus->TrigVars					= Ships[WhoIAm].TrigVars;	 
 		nBytes = sizeof( STATUSMSG );
 		flags |= NETWORK_RELIABLE;
+        break;
+
+    case MSG_NETSETTINGS_HEALTHPPS:
+        DebugPrintf("net_msg: MSG_NETSETTINGS_HEALTHPPS\n");
+
+        lpNetSettingsHealthPPSMsg = (LPNETSETTINGS_HEALTHPPS_MSG)&CommBuff[0];
+        lpNetSettingsHealthPPSMsg->MsgCode = msg;
+        lpNetSettingsHealthPPSMsg->HealthPacketsPerSecond = HealthPacketsSlider.value;
+        nBytes = sizeof( NETSETTINGS_HEALTHPPS_MSG );
+        flags |= NETWORK_RELIABLE;
         break;
 
 	case MSG_NETSETTINGS:

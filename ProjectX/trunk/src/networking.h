@@ -586,6 +586,7 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_DROPPICKUP						0x88
 #define MSG_KILLPICKUP						0x99
 #define MSG_NETSETTINGS					0xaa
+#define MSG_NETSETTINGS_HEALTHPPS       0xfb
 #define MSG_STATUS							0xbb
 #define MSG_SHORTPICKUP					0xee
 #define MSG_SHOCKWAVE						0xff
@@ -610,6 +611,7 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_TITANBITS						0xfd
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec
 #define MSG_VERYSHORTDROPPICKUP		0xed
+#define MSG_SHIPHEALTH              0xcc
 
 typedef struct _SENDBIKENUMMSG
 {
@@ -905,6 +907,13 @@ typedef struct _NETSETTINGSMSG
 	net_bool_t		ShortPackets;	
 } NETSETTINGSMSG, *LPNETSETTINGSMSG;
 
+typedef struct _NETSETTINGS_HEALTHPPS_MSG
+{
+    BYTE MsgCode;
+    BYTE WhoIAm;
+    float HealthPacketsPerSecond;
+} NETSETTINGS_HEALTHPPS_MSG, *LPNETSETTINGS_HEALTHPPS_MSG;
+
 typedef struct _LONGSTATUSMSG
 {
     BYTE        MsgCode;
@@ -979,6 +988,14 @@ typedef struct _REQTIMEMSG
     BYTE        WhoIAm;
 
 } REQTIMEMSG, *LPREQTIMEMSG;
+
+typedef struct _SHIPHEALTHMSG
+{
+    BYTE MsgCode;
+    BYTE WhoIAm;
+    u_int8_t Hull;
+    u_int8_t Shield;
+} SHIPHEALTHMSG, *LPSHIPHEALTHMSG;
 
 #define MAXLEVELSPERBATCH 8
 

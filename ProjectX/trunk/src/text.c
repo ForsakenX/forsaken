@@ -81,9 +81,12 @@ extern int SystemMessageColour;
 extern int PlayerMessageColour;
 extern int MyMessageColour;
 extern SLIDER TextScaleSlider;
-
+extern _Bool ShowPlayerHealthByScores;
 // (stats.c)
 extern int GetPlayerByRank(int Player);
+
+// (networking.c)
+extern SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
 
 /*===================================================================
 		Globals ...
@@ -743,7 +746,16 @@ void PrintScoreSort( void )
 				{
 					if( Ships[GetPlayerByRank(i)].network_player != NULL )
 					{
-						sprintf( (char*) &buf[0] ,"%*dms", 4, (u_int16_t) Ships[GetPlayerByRank(i)].network_player->ping );
+                        // Show Name + Ping + % Health
+                        if(ShowPlayerHealthByScores)
+                        {
+						    sprintf( (char*) &buf[0] ,"%*dms H:%d", 4, (u_int16_t) Ships[GetPlayerByRank(i)].network_player->ping, (u_int16_t) (((PlayerHealths[GetPlayerByRank(i)].Hull + PlayerHealths[GetPlayerByRank(i)].Shield)/2.56F)));
+                        }
+                        // Show Name + Ping
+                        else
+                        {
+						    sprintf( (char*) &buf[0] ,"%*dms", 4, (u_int16_t) Ships[GetPlayerByRank(i)].network_player->ping);
+                        }
 						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 
 				/*		sprintf( (char*) &buf[0] ,"IP: %s PING: %d LOSS: %d LOST: %d BW IN: %d BW OUT: %d PORT: %d", 
