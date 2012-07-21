@@ -832,9 +832,11 @@ NEXT_LIGHT:
 	ADD( COLOR, LIGHT );\
 	MINUS( COLOR, BLEND )
 
-void light_vert( LVERTEX * vert, COLOR * color ) 
+void light_vert( LVERTEX * vert, COLOR * _color ) 
 {
 	int tmp;
+	// work on color components individually
+	u_int8_t *color = (u_int8_t *) _color;
 	float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
 	VECTOR world, v = {vert->x,vert->y,vert->z};
 	MxV( &world_matrix, &v, &world );
