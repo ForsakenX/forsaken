@@ -718,10 +718,10 @@ void PrintScoreSort( void )
 
 				// blue dot for bad ping
 				if( GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
-					DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], 2, top_offset );
+					DisplayConnectionStatus( GetPlayerByRank(i), 2, top_offset );
 
 				// give blue dot space
-				left_offset = 8;
+				left_offset = FontWidth;
 
 				// print name
 				if ( !( Ships[ GetPlayerByRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
@@ -856,11 +856,11 @@ void PrintScoreSort( void )
 						&& (GameStatus[i] == STATUS_Normal) && (Ships[i].Object.Mode != LIMBO_MODE) )
 				{
 					col = ( WhoIAm == i ) ? 0 : TeamCol[ TeamNumber[ i ] ];
-					Print4x5Text( &Names[i][0] , 8 , e*(FontHeight+1)+(FontHeight*4) , col );
+					Print4x5Text( &Names[i][0] , FontWidth , e*(FontHeight+1)+(FontHeight*4) , col );
 
 					Print4x5TextSmall( &Mloadheader.Group[Ships[i].Object.Group].name[0] , 8+(FontWidth*8), e*(FontHeight+1)+(FontHeight*4)+((FontHeight-8.0F)/2.0F), 2 );
 
-					DisplayConnectionStatus( TeamBadConnection[TeamNumber[i]] , 2 , e*(FontHeight+1)+(FontHeight*4) );
+					DisplayConnectionStatus( i , 2 , e*(FontHeight+1)+(FontHeight*4) );
 					e++;
 					NumOfActivePlayers++;
 				}
@@ -1940,12 +1940,19 @@ void BuildReliabilityTab( void )
 ===================================================================*/
 void DisplayConnectionStatus( int num , int x , int y)
 {
-	if( !num )
+    u_int16_t dot;
+
+	if( num < 0 || num > MAX_PLAYERS || num == WhoIAm )
 		return;
 
-	num--;
+    if(Ships[num].network_player->packet_loss < 1000)
+        dot = 84; // green
+    else if(Ships[num].network_player->packet_loss < 2000)
+        dot = 83; // blue
+    else
+        dot = 85; // red
 
-	AddScreenPolyText( (u_int16_t) (83+num), (float) x , (float) y+2, 255, 255, 255, 255 );
+    AddScreenPolyText( dot, (float) x , (float) y+2, 255, 255, 255, 255 );
 }
 
 
