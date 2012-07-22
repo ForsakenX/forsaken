@@ -2105,7 +2105,7 @@ _Bool CollectPickup( u_int16_t i )
 				else
 					PlaySfx( MessageSFX, Sfx_Volume );
 				if( ShowTextAnyway )
-					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
+					AddColourMessageToQue( PickupMessageColour, "%s", &Message[ 0 ] );
 			}
 			else
 				if( Speech )
@@ -2129,7 +2129,7 @@ _Bool CollectPickup( u_int16_t i )
 						PlaySfx( MessageSFX, Sfx_Volume );
 	 
 					if( ShowTextAnyway )
-						AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
+						AddColourMessageToQue( PickupMessageColour, "%s", &Message[ 0 ] );
 				}
 				Pickups[ i ].CouldNotPickup = true;
 			}
@@ -3280,13 +3280,11 @@ void SavePickupsPositions( void )
 
 		fclose( fp );
 
-		AddColourMessageToQue(SystemMessageColour, "Saved Pickup Positions" );
-		AddColourMessageToQue(SystemMessageColour, &NewFilename[ 0 ] );
+		AddColourMessageToQue(SystemMessageColour, "Saved Pickup Positions: %s", &NewFilename[ 0 ] );
 	}
 	else
 	{
-		AddColourMessageToQue(SystemMessageColour, "Error Saving Pickup Positions" );
-		AddColourMessageToQue(SystemMessageColour, &NewFilename[ 0 ] );
+		AddColourMessageToQue(SystemMessageColour, "Error Saving Pickup Positions: %s", &NewFilename[ 0 ] );
 	}
 }
 
@@ -6435,7 +6433,7 @@ _Bool ActuallyCollectPickup( u_int16_t i )
 					PlaySfx( MessageSFX, Sfx_Volume );
 				if( ShowTextAnyway )
 				{
-					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
+					AddColourMessageToQue( PickupMessageColour, "%s", &Message[ 0 ] );
 				}
 			}
 			else
@@ -6445,7 +6443,7 @@ _Bool ActuallyCollectPickup( u_int16_t i )
 					PlaySfx( SFX_PickupGeneral, Sfx_Volume );
 				}
 
-				AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
+				AddColourMessageToQue( PickupMessageColour, "%s", &Message[ 0 ] );
 			}
 
 			PickupsGot[ Pickups[ i ].Type ]++;
@@ -6466,12 +6464,12 @@ _Bool ActuallyCollectPickup( u_int16_t i )
 	 
 					if( ShowTextAnyway )
 					{
-						AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
+						AddColourMessageToQue( PickupMessageColour, "%s", &Message[ 0 ] );
 					}
 				}
 				else
 				{
-					AddColourMessageToQue( SystemMessageColour, &Message[ 0 ] );
+					AddColourMessageToQue( SystemMessageColour, "%s", &Message[ 0 ] );
 				}
 				Pickups[ i ].CouldNotPickup = true;
 			}
@@ -6941,12 +6939,12 @@ _Bool PretendCollectPickup( u_int16_t i )
 	 
 					if( ShowTextAnyway )
 					{
-						AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
+						AddColourMessageToQue( PickupMessageColour, "%s", &Message[ 0 ] );
 					}
 				}
 				else
 				{
-					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
+					AddColourMessageToQue( PickupMessageColour, "%s", &Message[ 0 ] );
 				}
 				Pickups[ i ].CouldNotPickup = true;
 			}

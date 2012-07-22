@@ -1939,7 +1939,7 @@ int16_t DoDamage( _Bool OverrideInvul )
 	{
 		if ( Message[ 0 ] )
 		{
-			AddColourMessageToQue( SystemMessageColour, &Message[ 0 ] );
+			AddColourMessageToQue( SystemMessageColour, "%s", &Message[ 0 ] );
 		}
 	}
 	

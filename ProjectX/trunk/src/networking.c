@@ -1294,10 +1294,7 @@ void network_event_player_left( network_player_t * player )
 			if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
 			{	
 				if( MyGameStatus == STATUS_Normal )
-				{
-					snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME ); tempstr[sizeof(tempstr)-1]=0;
-	   				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
-				}
+	   				AddColourMessageToQue(SystemMessageColour, "%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
 
 				if( Ships[i].Object.light != (u_int16_t) -1  )
 				{
@@ -1366,8 +1363,7 @@ void network_event_new_host( network_player_t * player )
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			if( player == Ships[i].network_player )
 			{
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[i][0] , "has become the host." ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(SystemMessageColour, "%s %s", &Names[i][0] , "has become the host." );
 				break;
 			}
 	}
@@ -1397,8 +1393,7 @@ void network_event_player_joined( network_player_t * player )
 		DebugPrintf("network_event_player_joined: player '%s' joined the game.\n", player->name);
 		if( MyGameStatus == STATUS_Normal && !TeamGame )
 		{
-			snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", player->name, IS_JOINING_THE_GAME ); tempstr[sizeof(tempstr)-1]=0;
-			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+			AddColourMessageToQue(SystemMessageColour, "%s %s", player->name, IS_JOINING_THE_GAME );
 		}
 	}
 }
@@ -2685,8 +2680,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-   					snprintf( (char*)tempstr, sizeof(tempstr) ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr[0] ); tempstr[sizeof(tempstr)-1]=0;
-   					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
+   					AddColourMessageToQue(KillMessageColour, "%s %s %s %s",
+							&Names[Ships[WhoIAm].ShipThatLastKilledMe][0],
+							"KILLED YOU WITH ", &methodstr[0], &teamstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );
    				}
 			}
@@ -2769,8 +2765,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						strcpy(&teamstr[0], "");
 
 					// called in TOL OFF multiplayer!!
-					snprintf( (char*)tempstr, sizeof(tempstr), "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr[0] ); tempstr[sizeof(tempstr)-1]=0;
-   					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
+   					AddColourMessageToQue( KillMessageColour, "%s %s %s %s",
+							&Names[Ships[WhoIAm].ShipThatLastKilledMe][0],
+							"KILLED YOU WITH", &methodstr[0]  ,&teamstr[0] );
 					// update stats 1 (stats.c) -- somebody killed me
 					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
 					// kill me :(
@@ -2800,7 +2797,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					if( !GodMode )
 					{
 						// you killed someone on your own team
-						AddColourMessageToQue( KillMessageColour, "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
+						AddColourMessageToQue( KillMessageColour, "%s %s %s %s" " %s",
+							"YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
 						// update stats 7 (stats.c) -- you killed someone on your own team
 						UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 					}
@@ -2815,10 +2813,12 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						{
 							// you killed the person who was carrying the bounty
 							if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
-								AddColourMessageToQue( KillMessageColour, "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
+								AddColourMessageToQue( KillMessageColour, "%s %s %s %s" "%s", 
+									"YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
 							// you had the bounty and killed someone
 							else
-								AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+								AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s",
+									"YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 							
 							PlaySfx( SFX_BIKER_VP, 1.0F );
 							AddKill();
@@ -2892,8 +2892,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			if( lpShipDied->WhoIAm == lpShipDied->WhoKilledMe )
 			{
 				// gee someone killed themselves...
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue(KillMessageColour, "%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] );
 			}
 			else
 			{
@@ -2903,8 +2902,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					strcpy (&teamstr[0], "");
 
 				// gee someone killed somebody...who cares...
-				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr[0] ); tempstr[sizeof(tempstr)-1]=0;
-				AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
+				AddColourMessageToQue( KillMessageColour, "%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr[0] );
 			}
 
 			// update stats 3 (stats.c) -- somebody killed someone
@@ -3251,7 +3249,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
 				{
 					// display my version number
-					AddColourMessageToQue(SystemMessageColour, YourVersion );
+					AddColourMessageToQue(SystemMessageColour, "%s", YourVersion );
 					// send my version number back
 					strncpy( (char *)&QuickText.text, PXVersion , sizeof(PXVersion) );
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
@@ -4119,12 +4117,12 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 				strncpy( &lpTextMsg->Text[0]	, &QuickText.text[0] , MAXTEXTMSG );
 				lpTextMsg->TextMsgType = Type;
 				MessageColour = MyMessageColour;
-				AddPlayerMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
+				AddPlayerMessageToQue( MessageColour, "%s", (char*) &lpTextMsg->Text[0] );
 				// sending version request
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
 				{
 					// display my version number
-					AddColourMessageToQue(SystemMessageColour, YourVersion );
+					AddColourMessageToQue(SystemMessageColour, "%s", YourVersion );
 					VersionMessage[0] = 0;
 				}
 				break;
@@ -4132,7 +4130,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 				strncpy( &lpTextMsg->Text[0]	, &QuickTextWhisper.text[0] , MAXTEXTMSG );
 				lpTextMsg->TextMsgType = Type;
 				MessageColour = MyMessageColour;
-				AddPlayerMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
+				AddPlayerMessageToQue( MessageColour, "%s", (char*) &lpTextMsg->Text[0] );
 				break;
 			case TEXTMSGTYPE_CaptureFlagMessage:
 				lpTextMsg->TextMsgType = Type;
@@ -4187,7 +4185,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 		// quick taunt already delt with
 		if (MyGameStatus != STATUS_StartingMultiplayer && Type != TEXTMSGTYPE_QuickTaunt && Type != TEXTMSGTYPE_QuickTauntWhisper)
-			AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
+			AddColourMessageToQue( MessageColour, "%s", (char*) &lpTextMsg->Text[0] );
 		break;
 
 	}

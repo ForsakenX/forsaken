@@ -195,8 +195,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 						AddColourMessageToQue(MilestoneMessagesColour, "YOU GOT FIRST BLOOD");
 					else
 					{
-						sprintf( (char*)&tempstr[0], "%s %s", (const char *)GetName(Killer), "GOT FIRST BLOOD" );
-						AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
+						AddColourMessageToQue( MilestoneMessagesColour, "%s %s", (const char *)GetName(Killer), "GOT FIRST BLOOD" );
 					}
 
 					if(Killer == WatchPlayerSelect.value)
@@ -223,8 +222,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 						AddColourMessageToQue( MilestoneMessagesColour, "YOU ARE FIRST TO 50 KILLS" );
 					else
 					{
-						sprintf( (char*)&tempstr[0], "%s %s", (const char *)GetName(Killer), "IS FIRST TO 50 KILLS" );
-						AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
+						AddColourMessageToQue( MilestoneMessagesColour, "%s %s", (const char *)GetName(Killer), "IS FIRST TO 50 KILLS" );
 					}
 
 					if(Killer == WatchPlayerSelect.value)
@@ -296,36 +294,17 @@ void UpdateKillCount(int Killer)
 	// check for milestone achievements
 	switch(KillCounter[Killer])
 	{
-		case 3:	
-					if(PlaySound) PlaySfx( SFX_KILLINGSPREE, 1.0F );
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A KILLING SPREE (3 KILLS)" );
-   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
-					break;
-		case 5:
-					if(PlaySound) PlaySfx( SFX_RAMPAGE, 1.0F );
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A RAMPAGE (5 KILLS)" );
-   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
-					break;
-		case 8:
-					if(PlaySound) PlaySfx( SFX_DOMINATING, 1.0F );
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "DOMINATING (8 KILLS)" );
-   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
-					break;
-		case 11:
-					if(PlaySound) PlaySfx( SFX_UNSTOPPABLE, 1.0F );
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "UNSTOPPABLE (11 KILLS)" );
-   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
-					break;
-		case 15:
-					if(PlaySound) PlaySfx( SFX_WICKEDSICK, 1.0F );
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "WICKED SICK (15 KILLS)" );
-   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
-					break;
-		case 20:
-					if(PlaySound) PlaySfx( SFX_GODLIKE, 1.0F );
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOD LIKE (20 KILLS)" );
-   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
-					break;
+#define MILESTONE_CASE( count, sound, msg ) \
+		case count: \	
+			if(PlaySound) PlaySfx( sound, 1.0F ); \
+   			AddColourMessageToQue( MilestoneMessagesColour, "%s %s (%d KILLS)", prefix, msg, count );
+	
+		MILESTONE_CASE(  3,  SFX_KILLINGSPREE, "ON A KILLING SPREE" )
+		MILESTONE_CASE(  5,  SFX_RAMPAGE,      "ON A RAMPAGE" )
+		MILESTONE_CASE(  8,  SFX_DOMINATING,   "DOMINATING" )
+		MILESTONE_CASE(  11, SFX_UNSTOPPABLE,  "UNSTOPPABLE" )
+		MILESTONE_CASE(  15, SFX_WICKEDSICK,   "WICKED SICK" )
+		MILESTONE_CASE(  20, SFX_GODLIKE,      "GOD LIKE" )
 	}
 }
 
