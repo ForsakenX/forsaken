@@ -62,15 +62,6 @@ typedef struct {
 #define RELEASE(x) {if (x != NULL) {x->Release(); x = NULL;}}
 #endif
 
-#undef MAX
-#define MAX(x, y) ((x) > (y)) ? (x) : (y)
-
-#undef MIN
-#define MIN(x, y) ((x) > (y)) ? (y) : (x)
-
-#undef ZEROMEM
-#define ZEROMEM(x) memset(&x, 0, sizeof(x))
-
 void cull_none( void );
 void cull_cw( void );
 void reset_cull( void );

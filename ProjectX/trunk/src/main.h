@@ -93,6 +93,15 @@ typedef struct
     long  y;
 } point_t;
 
+#undef MAX
+#define MAX(x, y) ((x) > (y)) ? (x) : (y)
+
+#undef MIN
+#define MIN(x, y) ((x) > (y)) ? (y) : (x)
+
+#undef ZEROMEM
+#define ZEROMEM(x) memset(&x, 0, sizeof(x))
+
 #ifdef WIN32
 #include <string.h>
 #define strcasecmp	_stricmp
