@@ -251,8 +251,10 @@ int Msg( const char * msg, ... )
 	int res = 1; // return an ok
 
 	va_start( args, msg );
-	vsprintf( txt, msg, args);
+	vsnprintf( txt, sizeof(txt), msg, args);
 	va_end( args );
+
+	txt[sizeof(txt)-1] = 0;
 
 #if 0 //def WIN32
 

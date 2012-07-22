@@ -76,8 +76,10 @@ int folder_exists( char *pathspec, ... )
 	va_list args;
 
 	va_start( args, pathspec );
-	vsprintf( pathname, pathspec, args );
+	vsnprintf( pathname, sizeof(pathname)-1, pathspec, args );
 	va_end( args );
+
+	pathname[sizeof(pathname)-1] = 0;
 
 	path = convert_path(pathname);
 
