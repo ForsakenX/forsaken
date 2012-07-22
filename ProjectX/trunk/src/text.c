@@ -2002,6 +2002,7 @@ void InitFont( void )
 	CharTrans[(u_int8_t)'+'] = e++;
 	CharTrans[(u_int8_t)'-'] = e++;
 	CharTrans[(u_int8_t)'='] = e++;
+    CharTrans[(u_int8_t)'\''] = e++;
 
 	e++;
 	e = 86;
