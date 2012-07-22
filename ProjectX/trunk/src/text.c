@@ -1956,63 +1956,39 @@ void DisplayConnectionStatus( int num , int x , int y)
 }
 
 
-/*===================================================================
-	Procedure	:		Init the font surface...
-	Input		:		nothing
-	Output		:		nothing
-===================================================================*/
+// maps ascii character codes to location on texture
 void InitFont( void )
 {
 	u_int16_t i;
 	u_int8_t e;
 
-	for( i = 0; i < 0x100 ; i++ )
-		CharTrans[i] = 0;
+	ZEROMEM(CharTrans);
 
-	e = 1;
-	for( i = 0 ; i < 0x30 ; i++ )
-		CharTrans[i] = 0;
+	for( i = 0x30, e = 1 ; i < 0x3a ; i++ , e++ ) CharTrans[i] = e; // 0 - 9
+	for( i = 0x41, e = 11; i < 0x5b ; i++ , e++ ) CharTrans[i] = e; // A - Z
+	for( i = 0x61, e = 11; i < 0x7b ; i++ , e++ ) CharTrans[i] = e; // a - z
 
-	for( ; i < 0x3a ; i++ , e++ )		// 0 - 9
-		CharTrans[i] = e;
+	CharTrans[(u_int8_t)'.'] = 37;
 
-	for( ; i < 0x41 ; i++ )
-		CharTrans[i] = 0;
-
-	for( ; i < 0x5b ; i++ , e++ )		// a - z
-		CharTrans[i] = e;
-
-	for( ; i < 0x61 ; i++ )
-		CharTrans[i] = 0;
-
-	e = 11;
-	for( ; i < 0x7b ; i++ , e++ )		// A - Z
-		CharTrans[i] = e;
-
-	CharTrans['.'] = e++;
 	e = 73;
 	CharTrans[(u_int8_t)','] = e++;
 	CharTrans[(u_int8_t)';'] = e++;
-	CharTrans[(u_int8_t)'['] = e;
-	CharTrans[(u_int8_t)'('] = e++;
-	CharTrans[(u_int8_t)']'] = e;
-	CharTrans[(u_int8_t)')'] = e++;
+	CharTrans[(u_int8_t)'['] = CharTrans[(u_int8_t)'('] = e++; // render same
+	CharTrans[(u_int8_t)']'] = CharTrans[(u_int8_t)')'] = e++; // render same
 	CharTrans[(u_int8_t)'*'] = e++;
 	CharTrans[(u_int8_t)'/'] = e++;
 	CharTrans[(u_int8_t)'+'] = e++;
 	CharTrans[(u_int8_t)'-'] = e++;
 	CharTrans[(u_int8_t)'='] = e++;
-    CharTrans[(u_int8_t)'\''] = e++;
+	CharTrans[(u_int8_t)'\''] = e++;
 
-	e++;
 	e = 86;
 	CharTrans[(u_int8_t)'?'] = e++;
 	CharTrans[(u_int8_t)'!'] = e++;
 	CharTrans[(u_int8_t)'"'] = e++;
 	CharTrans[(u_int8_t)'#'] = e++;
 	CharTrans[(u_int8_t)'$'] = e++;
-//	CharTrans[(u_int8_t)'%'] =
- e++;
+	CharTrans[(u_int8_t)'%'] = e++;
 	CharTrans[(u_int8_t)'&'] = e++;
 	CharTrans[(u_int8_t)':'] = e++;
 	CharTrans[(u_int8_t)'@'] = e++;
