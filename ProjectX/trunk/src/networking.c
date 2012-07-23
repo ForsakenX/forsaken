@@ -215,6 +215,8 @@ int16_t	NextworkOldBikeNum = -1;
 float		Interval = 0.0F;
 float HealthInterval = 0.0F;
 SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
+u_int8_t ShipHealthColour[ MAX_PLAYERS+1 ];
+float ShipHealthColourInterval[ MAX_PLAYERS+1 ];
 
 #ifdef DEMO_SUPPORT
 extern	LONGLONG	GameStartedTime;
@@ -596,6 +598,7 @@ void NetworkGameUpdate()
 	{
 		ReceiveGameMessages();
 	
+		// Update the health pps timer
         HealthInterval -= framelag;
         if (HealthPacketsSlider.value > 0 && HealthInterval <= 0.0F )
         {
@@ -603,6 +606,13 @@ void NetworkGameUpdate()
             SendGameMessage(MSG_SHIPHEALTH, 0, 0, 0, 0);
         }
 
+		// Update each bike's health colour timer
+		for(i = 0; i < MAX_PLAYERS+1; i++)
+		{
+			ShipHealthColourInterval[i] -= framelag;
+			if( ShipHealthColourInterval[i] <= 0.0F )
+				ShipHealthColour[i] = YELLOW; // default
+		}
 	
 		if( ( Ships[WhoIAm].Object.Flags & ( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire ) ) )
 		{
@@ -1040,6 +1050,7 @@ void SetupNetworkGame()
 	memset(&Names,			0,				sizeof(SHORTNAMETYPE) );
 	memset(&GameStatus,		STATUS_Null,	sizeof(GameStatus) );
     memset(&PlayerHealths,  0,              sizeof(PlayerHealths));
+    memset(&ShipHealthColourInterval, 0.0F, sizeof(ShipHealthColourInterval));
 
 	JustGenerated = true;
 	
@@ -1084,8 +1095,8 @@ void SetupNetworkGame()
 		InitScoreSortTab((int) i);
 
         PlayerHealths[i].WhoIAm = i;
-        PlayerHealths[i].Hull = Start_Hull;
-        PlayerHealths[i].Shield = Start_Shield;
+        PlayerHealths[i].Hull = 0;
+        PlayerHealths[i].Shield = 0;
 	}
 }
 
@@ -1911,7 +1922,20 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
         lpShipHealth = (LPSHIPHEALTHMSG)MsgPnt;
         if( lpShipHealth->WhoIAm != WhoIAm)
         {
-            PlayerHealths[lpShipHealth->WhoIAm].Hull = lpShipHealth->Hull;
+        	if(lpShipHealth->Hull < PlayerHealths[lpShipHealth->WhoIAm].Hull ||
+				lpShipHealth->Shield < PlayerHealths[lpShipHealth->WhoIAm].Shield )
+			{
+				ShipHealthColour[lpShipHealth->WhoIAm] = RED;
+				ShipHealthColourInterval[lpShipHealth->WhoIAm] = 30.0F;
+			}
+			else if(lpShipHealth->Hull > PlayerHealths[lpShipHealth->WhoIAm].Hull ||
+				lpShipHealth->Shield > PlayerHealths[lpShipHealth->WhoIAm].Shield )
+			{
+				ShipHealthColour[lpShipHealth->WhoIAm] = GREEN;
+				ShipHealthColourInterval[lpShipHealth->WhoIAm] = 30.0F;
+			}
+			
+			PlayerHealths[lpShipHealth->WhoIAm].Hull = lpShipHealth->Hull;
             PlayerHealths[lpShipHealth->WhoIAm].Shield = lpShipHealth->Shield;
         }
         return;

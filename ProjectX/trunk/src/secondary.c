@@ -186,6 +186,7 @@ extern _Bool ShowPlayerHealthAboveBikes;
 extern _Bool ScaleFontPlayerHealthAboveBikes;
 // (networking.c)
 extern SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
+extern u_int8_t ShipHealthColour[ MAX_PLAYERS+1 ];
 
 /*===================================================================
 	Globals
@@ -6659,14 +6660,21 @@ void DispHUDNames( void )
 	{
         if(ShowPlayerHealthAboveBikes)
         {
+			// for all visible ships
             for( Count = 0; Count < NumVisibleShips; Count++ )
             {
+				// get the ship
                 Ship = VisibleShipsPos[ Count ].Ship;
+
+				// format the ship health as a percentage
                 sprintf( (char*) &buf[0] ,"%d", (u_int16_t) (((PlayerHealths[Ship].Hull + PlayerHealths[Ship].Shield)/2.56F)));
+
+				// display using whatever scaled font player has chosen
                 if(ScaleFontPlayerHealthAboveBikes)
-                     Print4x5Text( &buf[0] , VisibleShipsPos[ Count ].ScreenX - 24, VisibleShipsPos[ Count ].ScreenY, 4 );
+                     Print4x5Text( &buf[0] , VisibleShipsPos[ Count ].ScreenX - 24, VisibleShipsPos[ Count ].ScreenY, ShipHealthColour[Ship] );
+				// display using small font
                 else
-                    Print4x5TextSmall( &buf[0] , VisibleShipsPos[ Count ].ScreenX - 12, VisibleShipsPos[ Count ].ScreenY, 4 );
+                    Print4x5TextSmall( &buf[0] , VisibleShipsPos[ Count ].ScreenX - 12, VisibleShipsPos[ Count ].ScreenY, ShipHealthColour[Ship] );
             }   
         }
 
