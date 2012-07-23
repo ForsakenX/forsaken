@@ -3618,17 +3618,18 @@ _Bool LoadPickupsPositions( void )
      )
   )
   {
-    for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
+    for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
     {
-        if( ! FilterPickup( Count ) )
+		i = PICKUP_Trojax + ( Count - 1 );
+        if( ! FilterPickup( i ) )
             continue;
 
-        if( MaxPickupType[ Count ] < NumPrimaryPickups )
+        if( MaxPickupType[ i ] < NumPrimaryPickups && ( MaxPickupType[ i ] != 0 ) )
         {
-            MaxPickupType[ Count ] = NumPrimaryPickups;
+            MaxPickupType[ i ] = NumPrimaryPickups;
 
 		    if( IsHost )
-                NumPrimWeapons[ Count ] = MaxPickupType[ Count ] - NumPickupType[ Count ];
+                NumPrimWeapons[ Count ] += ( NumPrimaryPickups - NumPickupType [ i ] ); 
         }
     }
   }
@@ -3800,12 +3801,12 @@ void RegeneratePickups( void )
 	}
 
 	/* regen primaries */
-	for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
+	for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
 	{
 		// if this weapon should be regenerated
 		if( NumPrimWeapons[ Count ] <= 0 ) continue;
 		// get the weapon id
-		u_int16_t weapon = PICKUP_Trojax + Count;
+		u_int16_t weapon = PICKUP_Trojax + Count - 1;
 		// regenerate weapon
 		if ( ! RegeneratePickup( weapon ) ) continue;
 		// decrement count to regenerate
