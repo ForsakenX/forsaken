@@ -87,6 +87,7 @@ extern int GetPlayerByRank(int Player);
 
 // (networking.c)
 extern SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
+extern u_int8_t ShipHealthColour[ MAX_PLAYERS+1 ];
 
 /*===================================================================
 		Globals ...
@@ -660,6 +661,7 @@ void PrintScoreSort( void )
 	int col;
 	u_int16_t scorewidth = 1;
 	u_int16_t tempwidth = 0;
+	BYTE Ship;
 
 	NumOfActivePlayers = 0;
 
@@ -712,60 +714,62 @@ void PrintScoreSort( void )
 			{
 				int left_offset = 0; // offset from left
 
+				// get player id
+				Ship = GetPlayerByRank(i);
+
 				// make sure it's a valid player
-				if( GameStatus[GetPlayerByRank(i)] != STATUS_Normal )
+				if( GameStatus[Ship] != STATUS_Normal )
 					continue;
 
 				// blue dot for bad ping
-				if( GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
-					DisplayConnectionStatus( GetPlayerByRank(i), 2, top_offset );
+				if( GameStatus[Ship] == STATUS_Normal )
+					DisplayConnectionStatus( Ship, 2, top_offset );
 
 				// give blue dot space
 				left_offset = FontWidth;
 
 				// print name
-				if ( !( Ships[ GetPlayerByRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
-					Print4x5Text( &Names[GetPlayerByRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerByRank(i) ) ? GRAY : RED) );
+				if ( !( Ships[ Ship ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
+					Print4x5Text( &Names[Ship][0], left_offset, top_offset, (( WhoIAm == Ship ) ? GRAY : RED) );
 				else
-					Print4x5Text( &Names[GetPlayerByRank(i)][0], left_offset, top_offset, WHITE );
+					Print4x5Text( &Names[Ship][0], left_offset, top_offset, WHITE );
 
 				left_offset += ( 8 * FontWidth );
 				
 				// print real score
 				{
 					if(ShowPlayersOnHUDbyKills)
-						Printint16_t( GetKills(GetPlayerByRank(i)), left_offset, top_offset, GRAY ); // kills - suacides - friendly
+						Printint16_t( GetKills(Ship), left_offset, top_offset, GRAY ); // kills - suacides - friendly
 					else
-						Printint16_t( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
+						Printint16_t( GetRealScore(Ship), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
 				}
 
 				left_offset += scorewidth+8.0F; // give a padding space
 
 				// Show pings for everyone except your self
-				if( GetPlayerByRank(i) != WhoIAm )
+				if( Ship != WhoIAm )
 				{
-					if( Ships[GetPlayerByRank(i)].network_player != NULL )
+					if( Ships[Ship].network_player != NULL )
 					{
-                        // Show Name + Ping + % Health
-                        if(ShowPlayerHealthByScores)
+						// Show ping
+						sprintf( (char*) &buf[0] ,"%*dms", 4, (u_int16_t) Ships[Ship].network_player->ping);
+						Print4x5TextSmall( &buf[0], left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
+
+                        // Show % Health
+                        if(ShowPlayerHealthByScores && GameStatus[i] != STATUS_Left)
                         {
-						    sprintf( (char*) &buf[0] ,"%*dms H:%d", 4, (u_int16_t) Ships[GetPlayerByRank(i)].network_player->ping, (u_int16_t) (((PlayerHealths[GetPlayerByRank(i)].Hull + PlayerHealths[GetPlayerByRank(i)].Shield)/2.56F)));
+							sprintf( (char*) &buf[0], "H:%d", (u_int16_t) ((PlayerHealths[Ship].Shield + PlayerHealths[Ship].Hull) /2.56F));
+							Print4x5TextSmall( &buf[0], left_offset+60.0F, top_offset+((FontHeight-8.0F)/2.0F), ShipHealthColour[Ship] );
                         }
-                        // Show Name + Ping
-                        else
-                        {
-						    sprintf( (char*) &buf[0] ,"%*dms", 4, (u_int16_t) Ships[GetPlayerByRank(i)].network_player->ping);
-                        }
-						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 
 				/*		sprintf( (char*) &buf[0] ,"IP: %s PING: %d LOSS: %d LOST: %d BW IN: %d BW OUT: %d PORT: %d", 
-													Ships[GetPlayerByRank(i)].network_player->ip,
-													Ships[GetPlayerByRank(i)].network_player->ping,
-													Ships[GetPlayerByRank(i)].network_player->packet_loss,
-													Ships[GetPlayerByRank(i)].network_player->packets_lost,
-													Ships[GetPlayerByRank(i)].network_player->bw_in,
-													Ships[GetPlayerByRank(i)].network_player->bw_out,
-													Ships[GetPlayerByRank(i)].network_player->port);
+													Ships[Ship].network_player->ip,
+													Ships[Ship].network_player->ping,
+													Ships[Ship].network_player->packet_loss,
+													Ships[Ship].network_player->packets_lost,
+													Ships[Ship].network_player->bw_in,
+													Ships[Ship].network_player->bw_out,
+													Ships[Ship].network_player->port);
 
 						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), GREEN );*/
 
