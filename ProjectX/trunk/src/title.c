@@ -1146,7 +1146,7 @@ MENU	MENU_NEW_HostWaitingToStart = {
 		{   0,   0, 200,  10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{   5,  15,  90,  25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, HostAboutToStart/*GoToSynchup*/, DrawFlatMenuItem, NULL, 0  },
 		{   5,  27, 100,  37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
-		{   5,  40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
+		{   5,  40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
 		{   5, 112, 200, 119, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[5], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 119, 200, 126, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[4], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_Instant, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
