@@ -65,12 +65,15 @@
 
 void SetCam(int ship, int Cam);
 
+VECTOR OldPos;
+float SpeedInterval = 0.0F;
+float BikeSpeed = 0.0F;
+
 extern int HUDColour;
 extern _Bool ShowWeaponsPossessedOnHUD;
 extern _Bool ShowClockOnHUD;
 extern _Bool ShowKPMOnHUD;
 extern _Bool ShowSpeedOnHUD;
-extern _Bool ShowTotalSpeedOnHUD;
 
 extern render_info_t render_info;
 extern _Bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
@@ -1705,14 +1708,19 @@ void DrawSimplePanel()
             // Current Speed
             if(ShowSpeedOnHUD)
             {
-                sprintf( MessageBuff, "%.2f, %.2f, %.2f", Ships[WhoIAm].Object.Speed.x, Ships[WhoIAm].Object.Speed.y, Ships[WhoIAm].Object.Speed.z); 
-                Print4x5Text( &MessageBuff[0], left, top-(FontHeight*4), WHITE);
-            }
+				if(SpeedInterval <= 0.0F)
+				{
+					SpeedInterval = 10.0F;
+					BikeSpeed = DistanceVector2Vector(&Ships[WhoIAm].Object.Pos, &OldPos);
 
-            if(ShowTotalSpeedOnHUD)
-            {
-                sprintf( MessageBuff, "%.0f", fabs(Ships[WhoIAm].Object.Speed.x) + fabs(Ships[WhoIAm].Object.Speed.y) + fabs(Ships[WhoIAm].Object.Speed.z)); 
-                Print4x5Text( &MessageBuff[0], left, top-(FontHeight*5), YELLOW);
+					OldPos.x = Ships[WhoIAm].Object.Pos.x;
+					OldPos.y = Ships[WhoIAm].Object.Pos.y;
+					OldPos.z = Ships[WhoIAm].Object.Pos.z;
+                }
+
+				sprintf( MessageBuff, "%.0f", BikeSpeed/3.0F); // attempt scale 0-100
+				Print4x5Text( &MessageBuff[0], left, top-(FontHeight*5), YELLOW);
+				SpeedInterval -= framelag;
             }
 /*
 			{

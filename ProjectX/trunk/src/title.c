@@ -142,7 +142,6 @@ _Bool ShowWeaponsPossessedOnHUD;
 _Bool ShowClockOnHUD;
 _Bool ShowKPMOnHUD;
 _Bool ShowSpeedOnHUD;
-_Bool ShowTotalSpeedOnHUD;
 _Bool ShowPlayersOnHUD;
 _Bool ShowPlayersOnHUDbyKills;
 _Bool ShowPlayerHealthAboveBikes;
@@ -2865,11 +2864,10 @@ MENU	MENU_Options = {
 		{ 200, 256, 0, 0, 0, "HUD Show Inventory",	0, 0, &ShowWeaponsPossessedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{ 200, 272, 0, 0, 0, "HUD Show Clock",	0, 0, &ShowClockOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{ 200, 288, 0, 0, 0, "HUD Show KPM",	0, 0, &ShowKPMOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
-		{ 200, 304, 0, 0, 0, "HUD Show XYZ Speed",	0, 0, &ShowSpeedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
-		{ 200, 320, 0, 0, 0, "HUD Show Total Speed",	0, 0, &ShowTotalSpeedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
-        { 200, 336, 0, 0, 0, "Show Health Above Bikes", 0, 0, &ShowPlayerHealthAboveBikes,NULL,SelectToggle,DrawToggle,NULL, 0 },
-        { 200, 352, 0, 0, 0, "Show Health By Scores", 0, 0, &ShowPlayerHealthByScores,NULL,SelectToggle,DrawToggle,NULL, 0 },
-        { 200, 368, 0, 0, 0, "Scale Font Above Bikes", 0, 0, &ScaleFontPlayerHealthAboveBikes,NULL,SelectToggle,DrawToggle,NULL, 0 },
+		{ 200, 304, 0, 0, 0, "HUD Show Speed",	0, 0, &ShowSpeedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
+        { 200, 320, 0, 0, 0, "Show Health Above Bikes", 0, 0, &ShowPlayerHealthAboveBikes,NULL,SelectToggle,DrawToggle,NULL, 0 },
+        { 200, 336, 0, 0, 0, "Show Health By Scores", 0, 0, &ShowPlayerHealthByScores,NULL,SelectToggle,DrawToggle,NULL, 0 },
+        { 200, 352, 0, 0, 0, "Scale Font Above Bikes", 0, 0, &ScaleFontPlayerHealthAboveBikes,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -9244,8 +9242,7 @@ void GetGamePrefs( void )
 	ShowWeaponsPossessedOnHUD		 = config_get_bool( "ShowWeaponsPossessedOnHUD", false );
 	ShowClockOnHUD				     = config_get_bool( "ShowClockOnHUD", true );
 	ShowKPMOnHUD				     = config_get_bool( "ShowKPMOnHUD", false );
-	ShowSpeedOnHUD				     = config_get_bool( "ShowSpeedOnHUD", false );
-	ShowTotalSpeedOnHUD				 = config_get_bool( "ShowTotalSpeedOnHUD", true );
+	ShowSpeedOnHUD				     = config_get_bool( "ShowSpeedOnHUD", true );
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			true );
     ShowPlayersOnHUDbyKills          = config_get_bool( "ShowPlayersOnHUDbyKills",		true );
     ShowPlayerHealthAboveBikes       = config_get_bool( "ShowPlayerHealthAboveBikes", true );
@@ -9402,7 +9399,6 @@ void SetGamePrefs( void )
 	config_set_bool( "ShowClockOnHUD", ShowClockOnHUD );
 	config_set_bool( "ShowKPMOnHUD", ShowKPMOnHUD );
 	config_set_bool( "ShowSpeedOnHUD", ShowSpeedOnHUD );
-	config_set_bool( "ShowTotalSpeedOnHUD", ShowTotalSpeedOnHUD );
 	config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
 	config_set_bool( "ShowPlayersOnHUDbyKills",	ShowPlayersOnHUDbyKills );
     config_set_bool( "ShowPlayerHealthAboveBikes", ShowPlayerHealthAboveBikes );
