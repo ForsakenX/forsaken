@@ -98,8 +98,6 @@ int	TextSrcY[MAXFONTCOLOURS][256];
 
 float MaxMessageTime = 5.0f;
 
-int ReliabilityTab[MAX_PLAYERS+1];
-
 int16_t	TextActivatedOrder = 0;
 int16_t	CurrentTextActivated = 0;
 int	TeamCol[MAX_TEAMS] = { 1, 2, 3, 4 };
@@ -145,6 +143,7 @@ char StatsMessageFile[] = "data\\txt\\statsmessages.txt";
 
 STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 
+void DisplayConnectionStatus(int num, int x, int y);
 
 /*===================================================================
 	Procedure	:		Print a int16_t number in small 4x4 chars..
@@ -661,7 +660,7 @@ void PrintScoreSort( void )
 	int col;
 	u_int16_t scorewidth = 1;
 	u_int16_t tempwidth = 0;
-	BYTE Ship;
+	BYTE ShipID;
 
 	NumOfActivePlayers = 0;
 
@@ -715,61 +714,60 @@ void PrintScoreSort( void )
 				int left_offset = 0; // offset from left
 
 				// get player id
-				Ship = GetPlayerByRank(i);
+				ShipID = GetPlayerByRank(i);
 
 				// make sure it's a valid player
-				if( GameStatus[Ship] != STATUS_Normal )
+				if( GameStatus[ShipID] != STATUS_Normal )
 					continue;
 
 				// blue dot for bad ping
-				if( GameStatus[Ship] == STATUS_Normal )
-					DisplayConnectionStatus( Ship, 2, top_offset );
+				DisplayConnectionStatus( ShipID, 2, top_offset );
 
-				// give blue dot space
+				// give packet loss flag a space
 				left_offset = FontWidth;
 
 				// print name
-				if ( !( Ships[ Ship ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
-					Print4x5Text( &Names[Ship][0], left_offset, top_offset, (( WhoIAm == Ship ) ? GRAY : RED) );
+				if ( !( Ships[ShipID].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
+					Print4x5Text( &Names[ShipID][0], left_offset, top_offset, (( WhoIAm == ShipID ) ? GRAY : RED) );
 				else
-					Print4x5Text( &Names[Ship][0], left_offset, top_offset, WHITE );
+					Print4x5Text( &Names[ShipID][0], left_offset, top_offset, WHITE );
 
 				left_offset += ( 8 * FontWidth );
 				
 				// print real score
-				{
-					if(ShowPlayersOnHUDbyKills)
-						Printint16_t( GetKills(Ship), left_offset, top_offset, GRAY ); // kills - suacides - friendly
-					else
-						Printint16_t( GetRealScore(Ship), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
-				}
+				if(ShowPlayersOnHUDbyKills)
+					// kills - suicides - friendly
+					Printint16_t( GetKills(ShipID), left_offset, top_offset, GRAY ); 
+				else
+					// points + kills - suicides - friendly - deaths
+					Printint16_t( GetRealScore(ShipID), left_offset, top_offset, GRAY );
 
 				left_offset += scorewidth+8.0F; // give a padding space
 
-				// Show pings for everyone except your self
-				if( Ship != WhoIAm )
+				// Show pings for everyone except yourself
+				if( ShipID != WhoIAm )
 				{
-					if( Ships[Ship].network_player != NULL )
+					if( Ships[ShipID].network_player != NULL )
 					{
 						// Show ping
-						sprintf( (char*) &buf[0] ,"%*dms", 4, (u_int16_t) Ships[Ship].network_player->ping);
-						Print4x5TextSmall( &buf[0], left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
+						sprintf( (char*) &buf[0] ,"%*dms", 4, (u_int16_t) Ships[ShipID].network_player->ping);
+						Print4x5TextSmall( &buf[0], left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[ShipID] == STATUS_Left) ? DARKGRAY : GREEN) );
 
                         // Show % Health
-                        if(ShowPlayerHealthByScores && GameStatus[i] != STATUS_Left)
+                        if(ShowPlayerHealthByScores && GameStatus[ShipID] != STATUS_Left)
                         {
-							sprintf( (char*) &buf[0], "H:%d", (u_int16_t) ((PlayerHealths[Ship].Shield + PlayerHealths[Ship].Hull) /2.56F));
-							Print4x5TextSmall( &buf[0], left_offset+60.0F, top_offset+((FontHeight-8.0F)/2.0F), ShipHealthColour[Ship] );
+							sprintf( (char*) &buf[0], "H:%d", (u_int16_t) ((PlayerHealths[ShipID].Shield + PlayerHealths[ShipID].Hull) /2.56F));
+							Print4x5TextSmall( &buf[0], left_offset+60.0F, top_offset+((FontHeight-8.0F)/2.0F), ShipHealthColour[ShipID] );
                         }
 
 				/*		sprintf( (char*) &buf[0] ,"IP: %s PING: %d LOSS: %d LOST: %d BW IN: %d BW OUT: %d PORT: %d", 
-													Ships[Ship].network_player->ip,
-													Ships[Ship].network_player->ping,
-													Ships[Ship].network_player->packet_loss,
-													Ships[Ship].network_player->packets_lost,
-													Ships[Ship].network_player->bw_in,
-													Ships[Ship].network_player->bw_out,
-													Ships[Ship].network_player->port);
+													Ships[ShipID].network_player->ip,
+													Ships[ShipID].network_player->ping,
+													Ships[ShipID].network_player->packet_loss,
+													Ships[ShipID].network_player->packets_lost,
+													Ships[ShipID].network_player->bw_in,
+													Ships[ShipID].network_player->bw_out,
+													Ships[ShipID].network_player->port);
 
 						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), GREEN );*/
 
@@ -789,7 +787,6 @@ void PrintScoreSort( void )
 			teamleft[i] = true;
 			TeamCol[i] = i + 1;
 			TeamBounty[ i ] = 0;
-			TeamBadConnection[ i ] = 0;
 		}
 		
 		for (i = 0; i < MAX_PLAYERS; i++)
@@ -797,18 +794,17 @@ void PrintScoreSort( void )
 			if ( (TeamNumber[i] < MAX_TEAMS) && (GameStatus[i] == STATUS_Normal ) )
 			{
 				teamOK[TeamNumber[i]] = true;
-				switch (GameStatus[i] )
+				switch ( GameStatus[i] )
 				{
-				case STATUS_Left:
-				case STATUS_LeftCrashed:
-					break;
-				default:
-					teamleft[TeamNumber[i]] = false;
-					if( ReliabilityTab[i] > TeamBadConnection[ TeamNumber[ i ] ] )
-						TeamBadConnection[ TeamNumber[ i ] ] = ReliabilityTab[i];
-					if ( Ships[ i ].Object.Flags & SHIP_CarryingBounty )
-						TeamBounty[ TeamNumber[ i ] ]++;
-				}
+					case STATUS_Left:
+					case STATUS_LeftCrashed:
+						break;
+					default:
+						teamleft[TeamNumber[i]] = false;
+						if ( Ships[ i ].Object.Flags & SHIP_CarryingBounty )
+							TeamBounty[ TeamNumber[ i ] ]++;
+						break;
+					}
 			}
 		}
 
@@ -1911,33 +1907,6 @@ void FillStatusTab( void )
 }
 
 /*===================================================================
-	Procedure	:		Build Reliability Tab...
-	Input		:		void
-	Output		:		void
-===================================================================*/
-void BuildReliabilityTab( void )
-{
-	int i;
-	int Temp;
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		ReliabilityTab[i] = 0;
-
-		if( (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) && (i != WhoIAm) )
-		{
-			Temp = (int) timer_run( &LastPacketTime[i] );
-
-			if( Temp >= 10 )
-			{
-				ReliabilityTab[i]++;
-				if( Temp >= 30 )
-					ReliabilityTab[i]++;
-			}
-		}
-	}
-}
-
-/*===================================================================
 	Procedure	:		Display a connection setting...
 	Input		:		void
 	Output		:		void
@@ -1946,16 +1915,19 @@ void DisplayConnectionStatus( int num , int x , int y)
 {
     u_int16_t dot;
 
-	if( num < 0 || num > MAX_PLAYERS || num == WhoIAm )
+	// protect against bad input
+	if( num < 0 || num > MAX_PLAYERS-1 || num == WhoIAm || Ships[num].network_player == NULL )
 		return;
 
+	// calculate which colour flag to use
     if(Ships[num].network_player->packet_loss < 1000)
         dot = 84; // green
     else if(Ships[num].network_player->packet_loss < 2000)
         dot = 83; // blue
     else
         dot = 85; // red
-
+	
+	// display
     AddScreenPolyText( dot, (float) x , (float) y+2, 255, 255, 255, 255 );
 }
 

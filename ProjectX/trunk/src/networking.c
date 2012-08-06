@@ -1513,8 +1513,6 @@ void ReceiveGameMessages( void )
 		BytesPerSecTimer = 71.0F;
 	}
 
-	BuildReliabilityTab();
-
 	if(IsHost && tracker_enabled)
 		handle_tracker();
 
@@ -3483,7 +3481,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
     {
 
     case MSG_SHIPHEALTH:
-        DebugPrintf("net_msg: MSG_SHIPHEALTH\n");
+        //DebugPrintf("net_msg: MSG_SHIPHEALTH\n");
 
         lpShipHealth = (LPSHIPHEALTHMSG)&CommBuff[0];
         lpShipHealth->MsgCode = msg;

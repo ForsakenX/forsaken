@@ -4524,7 +4524,6 @@ _Bool StatsNamePulse( void )
 }
 
 extern int GetPlayerByRank( int rank );
-extern int ReliabilityTab[MAX_PLAYERS+1];
 void ShowGameStats( stats_mode_t mode )
  {
 	int active_players = 0;
@@ -4722,7 +4721,7 @@ void ShowGameStats( stats_mode_t mode )
 			// connection status
 			// print the dot about 2 character space gap from the names
 			if( ! left )
-				DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], (xpos-(4*FontWidth)), top_offset );
+				DisplayConnectionStatus( GetPlayerByRank(i), (xpos-(4*FontWidth)), top_offset );
 
 			// name
 			Print4x5Text( (char*)&Names[GetPlayerByRank(i)],	xpos,			top_offset, (left) ? DARKGRAY : color );
