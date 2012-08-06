@@ -92,7 +92,6 @@ typedef enum {
 // peer->data = 
 typedef struct {
 	peer_id_t id;
-	peer_id_t id_host_gave_us;
 	network_peer_state_t state;
 	network_player_t * player;
 	int connect_port;
@@ -135,7 +134,6 @@ static void init_peer( ENetPeer * peer )
 	data->player = NULL;
 	data->connect_port = 0;
 	data->id = NO_ID;
-	data->id_host_gave_us = NO_ID;
 }
 
 static void init_peers( void )
@@ -586,9 +584,6 @@ typedef enum {
 
 	// nat punching
 	NAT_PUNCH_THROUGH_LIST, // see explanation in new_connection()
-
-	// disconnect reasons (move this up later once we are on 1.19)
-	ALREADY_CONNECTED,      // we already know about this player id
 	
 } p2p_event_t;
 
@@ -811,9 +806,7 @@ static void lost_connection( ENetPeer * peer, enet_uint32 data )
 	if ( network_state == NETWORK_CONNECTED ) 
 	{
 		// backup data so we can kill peer before we broadcast
-		peer_id_t id = peer_data->id_host_gave_us != NO_ID ?
-			peer_data->id_host_gave_us:
-			peer_data->id;
+		peer_id_t id = peer_data->id;
 
 		// if player was in the game
 		if( peer_data->state == PLAYING )
@@ -1064,53 +1057,16 @@ static void new_packet( ENetEvent * event )
 				p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 				if ( ! i_am_host )
 				{
-					DebugPrintf("network: %s says their id is %d\n",
-						address_to_str(&peer->address), packet->id );
-
-					// host gave us id when telling us to connect to them so validate they are the same
-					if( peer_data->id_host_gave_us != NO_ID )
-					{
-						if( packet->id != peer_data->id_host_gave_us )
-						{
-							DebugPrintf("network security: dropping %s because host said their id was %d not %d\n",
-								address_to_str(&peer->address),
-								peer_data->id_host_gave_us,
-								packet->id);
-							enet_peer_disconnect( peer, 0 );
-							break;
-						}
-					}
-
-					// check to see if we are already connected
-					// since we try to connect to multiple ports to get around nat
-					// first connection to get past this part will win.. 
-					// this also protects against duplicate connections in general
-					
-					ENetPeer * already_connected_peer = find_peer_by_id( packet->id );
-					if ( already_connected_peer )
-					{
-						DebugPrintf("network: dropped %s with id %d because we are already connected on %s\n",
-							address_to_str(&peer->address),
-							packet->id,
-							address_to_str(&already_connected_peer->address)
-							);
-						peer_data->id_host_gave_us = peer_data->id = NO_ID; // so we don't tell host about this in lost_connection()
-						enet_peer_disconnect( peer, ALREADY_CONNECTED );
-						break;
-					}
-
-					// set their id
 					peer_data->id = packet->id;
-
+					DebugPrintf("network: %s says their id is %d\n",
+						address_to_str(&peer->address), peer_data->id );
 					// ack the player id
 					{
 						p2p_packet_t packet;
 						packet.type = ACK_ID;
 						enet_send( peer, &packet, sizeof(packet),
 							convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-						DebugPrintf("network: acking id %d for %s\n",
-							peer_data->id,
-							address_to_str(&peer->address));
+						DebugPrintf("network: acking his id\n");
 					}
 				}
 				else
@@ -1163,13 +1119,6 @@ static void new_packet( ENetEvent * event )
 					packet.type = CONNECT;
 					packet.id = peer_data->id;
 					packet.address = peer->address;
-					// first tell them to connect to the source/ip as I see them connected from
-					// this will catch nat mappings when the player doesn't have port open
-					// allowing nat punch through to properly work
-					network_broadcast( &packet, sizeof(packet),
-						NETWORK_RELIABLE, system_channel );
-					// now send them another connect packet for the players connect port
-					// if they have port forward setup on the connect port then this will work
 					packet.address.port = peer_data->connect_port;
 					network_broadcast( &packet, sizeof(packet),
 						NETWORK_RELIABLE, system_channel );
@@ -1367,7 +1316,7 @@ static void new_packet( ENetEvent * event )
 					{
 						new_peer_data = new_peer->data;
 						new_peer_data->state = CONNECTING;
-						new_peer_data->id_host_gave_us = packet->id;
+						new_peer_data->id = packet->id;
 					}
 				}
 				// I'm the host
