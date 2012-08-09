@@ -9240,6 +9240,7 @@ void GetGamePrefs( void )
     RearCameraActive                 = config_get_bool( "RearCameraActive",			true );
     BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			true );
 	ShowWeaponsPossessedOnHUD		 = config_get_bool( "ShowWeaponsPossessedOnHUD", false );
+	JoystickInput					 = config_get_bool( "JoystickInput", true );
 	ShowClockOnHUD				     = config_get_bool( "ShowClockOnHUD", true );
 	ShowKPMOnHUD				     = config_get_bool( "ShowKPMOnHUD", false );
 	ShowSpeedOnHUD				     = config_get_bool( "ShowSpeedOnHUD", true );
@@ -9396,6 +9397,7 @@ void SetGamePrefs( void )
 	config_set_bool( "RearCameraActive",		RearCameraActive );
 	config_set_bool( "BikeEnginesOn",		BikeEnginesOn );
 	config_set_bool( "ShowWeaponsPossessedOnHUD", ShowWeaponsPossessedOnHUD );
+	config_set_bool( "JoystickInput", JoystickInput );
 	config_set_bool( "ShowClockOnHUD", ShowClockOnHUD );
 	config_set_bool( "ShowKPMOnHUD", ShowKPMOnHUD );
 	config_set_bool( "ShowSpeedOnHUD", ShowSpeedOnHUD );
