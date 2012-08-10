@@ -37,13 +37,14 @@ void input_grab( _Bool grab )
 	}
 	// window mode
 	input_grabbed = grab;
-	SDL_WM_GrabInput( grab ? SDL_GRAB_ON : SDL_GRAB_OFF );
-	SDL_ShowCursor( grab ? SDL_DISABLE : SDL_ENABLE );
 
 #ifdef LUA_BOT
 	SDL_WM_GrabInput( SDL_GRAB_OFF );
 	SDL_ShowCursor( SDL_ENABLE );
-#endif // LUA_BOT
+#else
+	SDL_WM_GrabInput( grab ? SDL_GRAB_ON : SDL_GRAB_OFF );
+	SDL_ShowCursor( grab ? SDL_DISABLE : SDL_ENABLE );
+#endif
 
 	//DebugPrintf("input state: %s\n",(grab?"grabbed":"free"));
 }
