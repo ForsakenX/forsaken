@@ -2467,7 +2467,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 
 #ifdef LUA_BOT
 		// bot automatically respawns
-		if(true)
+		if( ShipPnt->Timer < RESPAWN_TIMER )
 #else
 		// hit respawn key
 		if( ( ShipPnt->Timer < RESPAWN_TIMER ) && ( AnyKeyReleased() != 0 ) )
