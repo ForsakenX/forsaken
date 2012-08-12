@@ -1328,7 +1328,7 @@ void network_event_player_left( network_player_t * player )
 
 				InitShipStructure(i , false );
 
-				memset(Names[i],0,sizeof(Names[i]));
+				//memset(Names[i],0,sizeof(Names[i]));
 			}
 	}
 }
