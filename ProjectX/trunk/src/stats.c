@@ -473,7 +473,7 @@ void ScoreSort()
 
 	while( true )
 	{
-		int swapped = false;
+		_Bool swapped = false;
 		for( i = 0; i < (players-1); i++ ) // -1 because we need to compare with next valid player
 		{
 			// if my score is worse than player bellow me
@@ -490,7 +490,6 @@ void ScoreSort()
 		if ( swapped == false )
 			break;
 	}
-
 }
 
 /*===================================================================
