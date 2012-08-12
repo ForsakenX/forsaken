@@ -212,6 +212,7 @@ _Bool FullRearView = false;
 _Bool ShowStats = false;
 _Bool ShowMessages = false;	// display long list of chat messages
 _Bool ShowStatistics = false;	// display statistics in game
+_Bool ShowNetworkInfo = false;	// display enet info in game 
 
 void FlashMenuText( char *text, float activetime, u_int16_t sfx )
 {
@@ -703,6 +704,11 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 	  ShowStatistics = true;
   else
 	  ShowStatistics = false;
+
+  if( key_held( &conf->show_networkinfo))
+	  ShowNetworkInfo = true;
+  else
+	  ShowNetworkInfo = false;
 
   if ( key_pressed( &conf->headlights ) )
 		Ships[WhoIAm].headlights = !Ships[WhoIAm].headlights;

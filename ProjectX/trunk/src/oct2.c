@@ -199,6 +199,7 @@ extern  char * StatusTab[256];
 
 extern _Bool ShowMessages; // show long list of chat messages
 extern _Bool ShowStatistics; // show in-game statistics
+extern _Bool ShowNetworkInfo; // show in-game enet info
 
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
@@ -488,6 +489,7 @@ void ShowBasicStats(int NumActivePlayers);
 void ShowInGameStats();
 void ShowDeathModeStats();
 void ShowGameStats(stats_mode_t mode);
+void DisplayNetworkInfo();
 
 int Secrets = 0;
 int TotalSecrets = 0;
@@ -1791,6 +1793,9 @@ void DrawSimplePanel()
 		  // show statistics
 		  else if ( ShowStatistics)
 			  ShowInGameStats();
+
+			else if( ShowNetworkInfo )
+				DisplayNetworkInfo();
 	  }
 
 	  // watch mode
@@ -4505,6 +4510,7 @@ void ShowInGameStats()
 }
 
 void PaintBackground( rect_t * box ) // pass NULL to black out all of the screen
+
 {
 	/* would simply blit the area defined by box on the backbuffer to black */
 }
@@ -4524,6 +4530,78 @@ _Bool StatsNamePulse( void )
 }
 
 extern int GetPlayerByRank( int rank );
+
+void DisplayNetworkInfo()
+{
+	char buf[256];
+	int total_height = 0;
+	int top_offset = 0;
+	int row_height = (FontHeight+(FontHeight/2));
+	int x_center = ( render_info.window_size.cx >>1 );
+	int y_center = ( render_info.window_size.cy >>1 );
+	int ShipID;
+
+	// get layout information
+	for( i = 0; i < MAX_PLAYERS; i++ )
+	{
+		if( GameStatus[i] != STATUS_Normal || ShipID == i )
+			continue;
+			
+		total_height += (3*row_height);
+	}
+
+	top_offset = ( y_center - (total_height / 2) );
+
+	Print4x5Text( "ENET NETWORK INFO:", x_center-(9*FontWidth), top_offset-(row_height*2),  WHITE );
+
+	// give packet loss flag a space
+	int left_offset = x_center - (30*FontWidth);
+
+	// print the network information
+	for( i = 0; i < MAX_PLAYERS; i++ )
+	{
+		ShipID = GetPlayerByRank(i);
+
+		if( GameStatus[ShipID] != STATUS_Normal || ShipID == WhoIAm )
+			continue;
+
+		// for packet loss 
+		DisplayConnectionStatus( ShipID, left_offset, top_offset );
+		left_offset += ( 2 * FontWidth );
+
+		// print name
+		if( TeamGame )
+			Print4x5Text( &Names[ShipID][0], left_offset, top_offset, TeamCol[TeamNumber[i]]);
+		else
+			Print4x5Text( &Names[ShipID][0], left_offset, top_offset,  WHITE );
+
+		left_offset += ( 8 * FontWidth );
+		
+		if( Ships[ShipID].network_player != NULL )
+		{
+			sprintf( (char*) &buf[0] ,"IP: %s PORT: %d",
+				Ships[ShipID].network_player->ip,
+				Ships[ShipID].network_player->port);
+			
+			Print4x5Text( &buf[0] , left_offset, top_offset, GREEN );
+
+			top_offset+=row_height;
+			
+			sprintf( (char*) &buf[0] ,"PING: %d LOSS: %d LOST: %d BW IN: %d BW OUT: %d", 
+				Ships[ShipID].network_player->ping,
+				Ships[ShipID].network_player->packet_loss,
+				Ships[ShipID].network_player->packets_lost,
+				Ships[ShipID].network_player->bw_in,
+				Ships[ShipID].network_player->bw_out);
+
+			Print4x5Text( &buf[0] , left_offset, top_offset, GREEN );
+
+			top_offset+=row_height;
+			top_offset+=row_height; // blank line for spacing
+		}
+	}
+}
+
 void ShowGameStats( stats_mode_t mode )
  {
 	int active_players = 0;

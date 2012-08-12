@@ -976,6 +976,7 @@ DEFKEY KDheadlights				= { &Config.headlights, 0 };
 DEFKEY KDfull_rearview			= { &Config.full_rear_view, 0 };
 DEFKEY KDshow_messages		= { &Config.show_messages, 0 };
 DEFKEY KDshow_stats			= { &Config.show_stats, 0 };
+DEFKEY KDshow_networkinfo	= { &Config.show_networkinfo, 0 };
 
 #ifdef PLAYER_SPEECH_TAUNTS
 DEFKEY KDsend_speech = { &Config.send_speech, 0 };
@@ -2637,6 +2638,7 @@ MENU	MENU_Keyboard =
 
 		KDEF( 3, 200, 310, LT_MENU_Keyboard48 /*"Show Messages"*/, KDshow_messages ),
 		KDEF( 3, 200, 326, LT_MENU_Keyboard49 /*"Show Statistics"*/, KDshow_stats ),
+		KDEF( 3, 200, 342, LT_MENU_Keyboard50 /*"Show Network Info"*/, KDshow_networkinfo ),
 
 		{ 200, 32, 0, 0, 0, "help3", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp3, NULL, 0 },
 		{ 200, 336, 0, 0, 0, "help1", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp1, NULL, 0 },

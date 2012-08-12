@@ -98,6 +98,7 @@ USERCONFIG default_config = {
 	{ 0, {}  },										// drop ammo
 	{ 0, {}  },										// show messages
 	{ 0, {}  },										// show statistics
+	{ 0, {}  },										// show network info
 	{ 1, { SDLK_RETURN } },				// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
 	{ 0, {}  },					// send speech taunt
@@ -215,6 +216,7 @@ USERCONFIG my_controls = {
 	{ 0, {}  },										// drop ammo
 	{ 0, {}  },										// show messages
 	{ 0, {} },										// show statistics
+	{ 0, {} },										// show network info
 	{ 1, { SDLK_RETURN } },					// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
 	{ 0, {}  },					// send speech taunt
@@ -609,6 +611,12 @@ static int
 read_show_stats( FILE *f, USERCONFIG *u, char *last_token )
 {
 	return read_keydef( f, &u->show_stats, last_token );
+}
+
+static int
+read_show_networkinfo( FILE *f, USERCONFIG *u, char *last_token )
+{
+	return read_keydef( f, &u->show_networkinfo, last_token );
 }
 
 static int
@@ -1341,6 +1349,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 		{ "dropammo",  		read_drop_ammo				},
 		{ "show_messages",	read_show_messages	},
 		{ "show_stats",	read_show_stats		},
+		{ "show_networkinfo",	read_show_networkinfo	},
 		{ "joystick",  		read_joystick_info			},
 		{ "sendtext",  		read_send_text				},
 #ifdef PLAYER_SPEECH_TAUNTS
@@ -1728,6 +1737,7 @@ write_config( USERCONFIG *u, char *cfg_name )
 	write_keydef( f, "DROPAMMO", &u->drop_ammo );
 	write_keydef( f, "SHOW_MESSAGES", &u->show_messages );
 	write_keydef( f, "SHOW_STATS", &u->show_stats );
+	write_keydef( f, "SHOW_NET_INFO", &u->show_networkinfo );
 
 	write_preferred( f, "PREFERRED1", u->primary_order, MAX_PRIMARY_WEAPONS );
 	write_preferred( f, "PREFERRED2", u->secondary_order, MAX_SECONDARY_WEAPONS );

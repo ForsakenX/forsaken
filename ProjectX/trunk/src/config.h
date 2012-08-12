@@ -93,6 +93,7 @@ typedef struct {
 	USERKEY drop_ammo;
 	USERKEY show_messages;
 	USERKEY show_stats;
+	USERKEY show_networkinfo;
 	USERKEY send_msg;
 #ifdef PLAYER_SPEECH_TAUNTS
 	USERKEY send_speech;

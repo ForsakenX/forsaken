@@ -468,6 +468,7 @@
 #define LT_MENU_Keyboard47 "Spider Mine"
 #define LT_MENU_Keyboard48 "Show Messages"
 #define LT_MENU_Keyboard49 "Show Statistics"
+#define LT_MENU_Keyboard50 "Show Network Info"
 
 #define LT_MENU_Controls0 "Bike Controls"
 #define LT_MENU_Controls1 "Configure controls"
