@@ -54,6 +54,7 @@ extern _Bool TeamGame;										// team game?
 extern int MilestoneMessagesColour;			// colour to display messages 
 extern SLIDER WatchPlayerSelect;				// which player is being watched 
 extern float LevelTimeTaken; // time elapsed in this game
+extern _Bool ShowPlayersOnHUDbyKills; // whether to sort score by kills only
 // (oct2.c)
 extern px_timer_t level_timer;
 // (timer.c)
@@ -462,33 +463,67 @@ void ScoreSort()
 {
 	int i;
 	int temp;
-	int players = 0;
+	_Bool swapped;
+	int ikills;
+	int jkills;
 
-	// we need to know number of players because scores can be negative
-	// meaning that uninitialized scores will be better than a negative score...
-	// so you'll disapear off the player list...
-	for (i = 0; i < MAX_PLAYERS; i++)
-		if ( scoreable_status(i) )
-			players++;
-
-	while( true )
+	if(ShowPlayersOnHUDbyKills)
 	{
-		_Bool swapped = false;
-		for( i = 0; i < (players-1); i++ ) // -1 because we need to compare with next valid player
+		// sorted by kills and then deaths
+		while( true )
 		{
-			// if my score is worse than player bellow me
-			if(	GetRealScore(ScoreSortTab[i]) < GetRealScore(ScoreSortTab[i+1])	) 
+			swapped = false;
+			for( i = 0; i < MAX_PLAYERS; i++ )
 			{
-				// swap places
-				temp				= ScoreSortTab[i];
-				ScoreSortTab[i]		= ScoreSortTab[i+1];
-				ScoreSortTab[i+1]	= temp;
-				swapped				= true;
+				ikills = GetKills(ScoreSortTab[i]);
+				jkills = GetKills(ScoreSortTab[i+1]);
+
+				// only swap if the swap is with a scoreable player
+				if(	scoreable_status(i+1) && ( 
+					// and if my kills are less than the scoreable player below me	
+					( ikills < jkills )
+					// or we have same kills but my deaths are more than scoreable player below me
+					|| ( ikills == jkills && GetTotalDeaths(ScoreSortTab[i]) > GetTotalDeaths(ScoreSortTab[i+1]) ) 
+					// or i'm not scoreable
+					|| ( !scoreable_status(i) ) ) ) 
+				{
+					// swap places
+					temp				= ScoreSortTab[i];
+					ScoreSortTab[i]		= ScoreSortTab[i+1];
+					ScoreSortTab[i+1]	= temp;
+					swapped				= true;
+				}
 			}
+			// no players needed swapping
+			if ( !swapped )
+				break;
 		}
-		// no players needed swapping
-		if ( swapped == false )
-			break;
+	}
+
+	else
+	{
+		// sorted by real score
+		while( true )
+		{
+			swapped = false;
+			for( i = 0; i < MAX_PLAYERS; i++ )
+			{
+				// if my score is worse than a scoreable player below me
+				if(	( GetRealScore(ScoreSortTab[i]) < GetRealScore(ScoreSortTab[i+1]) && scoreable_status(i+1) )
+					// or i'm not scoreable but the player below me is
+					|| ( !scoreable_status(i) && scoreable_status(i+1) ) ) 
+				{
+					// swap places
+					temp				= ScoreSortTab[i];
+					ScoreSortTab[i]		= ScoreSortTab[i+1];
+					ScoreSortTab[i+1]	= temp;
+					swapped				= true;
+				}
+			}
+			// no players needed swapping
+			if ( !swapped )
+				break;
+		}
 	}
 }
 
