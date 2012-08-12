@@ -4709,6 +4709,8 @@ void ShowGameStats( stats_mode_t mode )
 			int color = GRAY;
 			if (!FlashName && GetPlayerByRank(i) == WhoIAm)
 				color = WHITE;
+			else if (player_left(GetPlayerByRank(i)))
+				color = DARKGRAY;
 			else if (TeamGame)
 				color = TeamCol[TeamNumber[GetPlayerByRank(i)]];
 
