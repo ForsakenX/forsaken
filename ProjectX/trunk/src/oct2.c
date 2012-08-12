@@ -4554,9 +4554,6 @@ void DisplayNetworkInfo()
 
 	Print4x5Text( "ENET NETWORK INFO:", x_center-(9*FontWidth), top_offset-(row_height*2),  WHITE );
 
-	// give packet loss flag a space
-	int left_offset = x_center - (30*FontWidth);
-
 	// print the network information
 	for( i = 0; i < MAX_PLAYERS; i++ )
 	{
@@ -4564,6 +4561,8 @@ void DisplayNetworkInfo()
 
 		if( GameStatus[ShipID] != STATUS_Normal || ShipID == WhoIAm )
 			continue;
+
+		int left_offset = x_center - (30*FontWidth);
 
 		// for packet loss 
 		DisplayConnectionStatus( ShipID, left_offset, top_offset );
