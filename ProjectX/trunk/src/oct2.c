@@ -4533,6 +4533,7 @@ void ShowGameStats( stats_mode_t mode )
 	int row_height = (FontHeight+(FontHeight/2));
 	int x_center = ( render_info.window_size.cx >>1 );
 	int y_center = ( render_info.window_size.cy >>1 );
+	_Bool FlashName = StatsNamePulse();
 
 	// generate active players
 
@@ -4597,6 +4598,13 @@ void ShowGameStats( stats_mode_t mode )
 
 		for (i = 0; i < active_players; i++)
 		{
+			// calculate name color
+			int color = GRAY;
+			if (!FlashName && GetPlayerByRank(i) == WhoIAm)
+				color = WHITE;
+			else if (TeamGame)
+				color = TeamCol[TeamNumber[GetPlayerByRank(i)]];
+
 			// x axis
 			int xpos = left_offset + name_width + (i * col_width);
 
@@ -4606,7 +4614,7 @@ void ShowGameStats( stats_mode_t mode )
 			FirstLetter[1] = 0;
 
 			//
-			Print4x5Text( FirstLetter,  xpos, top_offset, player_left(GetPlayerByRank(i)) ? DARKGRAY : GRAY );
+			Print4x5Text( FirstLetter,  xpos, top_offset, player_left(GetPlayerByRank(i)) ? DARKGRAY : color );
 		}
 
 		top_offset += row_height;
@@ -4620,8 +4628,15 @@ void ShowGameStats( stats_mode_t mode )
 			int j = 0;
 			int xpos = left_offset;
 
+			// calculate name color
+			int color = GRAY;
+			if (!FlashName && GetPlayerByRank(i) == WhoIAm)
+				color = WHITE;
+			else if (TeamGame)
+				color = TeamCol[TeamNumber[GetPlayerByRank(i)]];
+
 			// print name
-			Print4x5Text( (char*) &Names[GetPlayerByRank(i)], xpos, top_offset, GRAY );
+			Print4x5Text( (char*) &Names[GetPlayerByRank(i)], xpos, top_offset, color );
 			xpos += name_width;
 
 			// print kill matrix line
@@ -4704,10 +4719,10 @@ void ShowGameStats( stats_mode_t mode )
 			int left = player_left(GetPlayerByRank(i));
 
 			// calculate name color
-			int color = YELLOW;													// default name color is yellow
-			if (StatsNamePulse() && GetPlayerByRank(i) == WhoIAm)					// flash player name
-				color = GRAY;
-			else if (TeamGame)													// set color to team color
+			int color = GRAY;
+			if (!FlashName && GetPlayerByRank(i) == WhoIAm)
+				color = WHITE;
+			else if (TeamGame)
 				color = TeamCol[TeamNumber[GetPlayerByRank(i)]];
 
 			// get the ping

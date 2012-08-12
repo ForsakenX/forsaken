@@ -728,7 +728,7 @@ void PrintScoreSort( void )
 
 				// print name
 				if ( !( Ships[ShipID].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
-					Print4x5Text( &Names[ShipID][0], left_offset, top_offset, (( WhoIAm == ShipID ) ? GRAY : RED) );
+					Print4x5Text( &Names[ShipID][0], left_offset, top_offset, (( WhoIAm == ShipID ) ? WHITE : RED) );
 				else
 					Print4x5Text( &Names[ShipID][0], left_offset, top_offset, WHITE );
 
