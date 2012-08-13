@@ -4570,7 +4570,7 @@ void DisplayNetworkInfo()
 
 		// print name
 		if( TeamGame )
-			Print4x5Text( &Names[ShipID][0], left_offset, top_offset, TeamCol[TeamNumber[i]]);
+			Print4x5Text( &Names[ShipID][0], left_offset, top_offset, TeamCol[TeamNumber[ShipID]]);
 		else
 			Print4x5Text( &Names[ShipID][0], left_offset, top_offset,  WHITE );
 
