@@ -4562,7 +4562,7 @@ void DisplayNetworkInfo()
 		if( GameStatus[ShipID] != STATUS_Normal || ShipID == WhoIAm )
 			continue;
 
-		int left_offset = x_center - (30*FontWidth);
+		int left_offset = x_center - (20*FontWidth);
 
 		// for packet loss 
 		DisplayConnectionStatus( ShipID, left_offset, top_offset );
@@ -4586,12 +4586,10 @@ void DisplayNetworkInfo()
 
 			top_offset+=row_height;
 			
-			sprintf( (char*) &buf[0] ,"PING: %d LOSS: %d LOST: %d BW IN: %d BW OUT: %d", 
+			sprintf( (char*) &buf[0] ,"PING: %d LOSS: %d LOST: %d", 
 				Ships[ShipID].network_player->ping,
 				Ships[ShipID].network_player->packet_loss,
-				Ships[ShipID].network_player->packets_lost,
-				Ships[ShipID].network_player->bw_in,
-				Ships[ShipID].network_player->bw_out);
+				Ships[ShipID].network_player->packets_lost);
 
 			Print4x5Text( &buf[0] , left_offset, top_offset, GREEN );
 

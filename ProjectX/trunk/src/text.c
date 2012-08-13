@@ -1920,9 +1920,9 @@ void DisplayConnectionStatus( int num , int x , int y)
 		return;
 
 	// calculate which colour flag to use
-    if(Ships[num].network_player->packet_loss < 1000)
+    if(Ships[num].network_player->packets_lost == 0)
         dot = 84; // green
-    else if(Ships[num].network_player->packet_loss < 2000)
+    else if(Ships[num].network_player->packets_lost == 1)
         dot = 83; // blue
     else
         dot = 85; // red
