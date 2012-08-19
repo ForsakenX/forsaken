@@ -65,7 +65,6 @@ int	SecondaryStats[MAX_PLAYERS+1][TOTALSECONDARYWEAPONS];		// SecondaryStats[Kil
 int	KillStats[MAX_PLAYERS+1][MAX_PLAYERS+1];								// each player's KillStats[Killer][Victim];
 int BonusStats[MAX_PLAYERS+1];													// each player's ctf/bounty points
 int KillCounter[MAX_PLAYERS+1];													// number of kills made during this life
-int x, z;																						// index counters
 int	ScoreSortTab[MAX_PLAYERS + 1];												// player numbers in order of highest score to lowest 								
 char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITAL" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
@@ -112,6 +111,8 @@ int GetWeaponKillStats(int PlayerID, int WeaponType, int Weapon)
 /* Reset All Statistics */
 void ResetAllStats()
 {
+	int x, z;
+
 	// for every player
 	for(x = 0; x < MAX_PLAYERS; x++)
 	{
@@ -147,6 +148,8 @@ void ResetAllStats()
 /* Reset All Statistics */
 void ResetIndividualStats(int Player)
 {
+	int z;
+
 	// reset player's individual kill stats
 	for(z = 0; z < MAX_PLAYERS; z++)
 		KillStats[Player][z] = 0;
@@ -368,6 +371,7 @@ int GetBonusStats(int Player)
 /* Get A Player's Team's Total Kills */
 int GetTeamKills(int Killer)
 {
+	int x, z;
 	int TeamKills = 0; // total kills team made
 
 	// search all players
@@ -400,6 +404,7 @@ int GetTeamKills(int Killer)
 /* Get A Team's Total Score */
 int GetTeamScore(int Player)
 {
+	int z;
 	int TeamScore = 0; // total score team achieved
 
 	// add player's team's scores
@@ -420,6 +425,7 @@ int GetTeamScore(int Player)
 /* Get A Player's Total Kills */
 int GetTotalKills(int Killer)
 {
+	int x;
 	int kills = 0;
 	char tempstr[256];
 	char prefix[256];
@@ -443,6 +449,7 @@ int GetTotalKills(int Killer)
 /* Get A Player's Total Deaths */
 int GetTotalDeaths(int Victim)
 {
+	int x;
 	int deaths = 0; // total number of deaths
 
 	// sum deaths
@@ -521,6 +528,7 @@ void InitScoreSortTab(int Player)
 /* Get A Team's Total Score */
 int GetTeamScoreByTeamNumber(int Team)
 {
+	int z;
 	int TeamScore = 0;
 
 	// add selected team's scores
@@ -550,7 +558,7 @@ int GetRealScore(int Player)
 int GetKills(int Player)
 {
 	int score = 0;
-	int x = 0;
+	int x;
 
 	// search all players
 	for(x = 0; x < MAX_PLAYERS; x++)
@@ -569,7 +577,7 @@ int GetKills(int Player)
 int GetFriendlyKills( int Player )
 {
 	int kills = 0;
-	int x = 0;
+	int x;
 	if(!TeamGame)return 0;
 	for(x = 0; x < MAX_PLAYERS; x++)
 	{
