@@ -1737,7 +1737,7 @@ write_config( USERCONFIG *u, char *cfg_name )
 	write_keydef( f, "DROPAMMO", &u->drop_ammo );
 	write_keydef( f, "SHOW_MESSAGES", &u->show_messages );
 	write_keydef( f, "SHOW_STATS", &u->show_stats );
-	write_keydef( f, "SHOW_NET_INFO", &u->show_networkinfo );
+	write_keydef( f, "SHOW_NETWORKINFO", &u->show_networkinfo );
 
 	write_preferred( f, "PREFERRED1", u->primary_order, MAX_PRIMARY_WEAPONS );
 	write_preferred( f, "PREFERRED2", u->secondary_order, MAX_SECONDARY_WEAPONS );
