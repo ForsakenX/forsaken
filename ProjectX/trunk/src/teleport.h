@@ -2,6 +2,11 @@
 #ifndef TELEPORT_INCLUDED
 #define TELEPORT_INCLUDED
 
+#include "main.h"
+#include "new3d.h"
+#include "triggers.h"
+#include "trigarea.h"
+
 /*
  * Defines
  */
