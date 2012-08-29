@@ -176,7 +176,6 @@ void ResetIndividualStats(int Player)
 /* Update Individual Kill and Weapon Kill Statistics */
 void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 {
-	char tempstr[256];
 	int i=0;
 	// should we check for the first kill of the game?
 	if(!FirstBlood)
@@ -293,7 +292,6 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 /* Update number of kills made during this life */
 void UpdateKillCount(int Killer)
 {
-	char	tempstr[256];
 	char	prefix[256];
 	_Bool PlaySound = false;
 
@@ -445,8 +443,6 @@ int GetTotalKills(int Killer)
 {
 	int x;
 	int kills = 0;
-	char tempstr[256];
-	char prefix[256];
 
 	// add kills achieved on all players
 	for(x = 0; x < MAX_PLAYERS; x++)
