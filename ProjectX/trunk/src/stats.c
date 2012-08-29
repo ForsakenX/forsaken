@@ -252,9 +252,29 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 	KillStats[Killer][Victim]++;
 	// note weapon used
 	if(WeaponType == WEPTYPE_Primary)
-		PrimaryStats[Killer][Weapon]++;
+	{
+		if(Weapon >= 0 && Weapon < MAXPRIMARYWEAPONS+1)
+		{
+			PrimaryStats[Killer][Weapon]++;
+		}
+		else
+		{
+			DebugPrintf("Ignoring unknown primary weapon type %d at %s:%d\n",
+				Weapon,__FILE__,__LINE__);
+		}
+	}
 	else if (WeaponType == WEPTYPE_Secondary)
-		SecondaryStats[Killer][Weapon]++;
+	{
+		if(Weapon >= 0 && Weapon < TOTALSECONDARYWEAPONS)
+		{
+			SecondaryStats[Killer][Weapon]++;
+		}
+		else
+		{
+			DebugPrintf("Ignoring unknown secondary weapon type %d at %s:%d\n",
+				Weapon,__FILE__,__LINE__);
+		}
+	}
 
 	// update the current kills this life for the killer - but not if player killed himself or his team mate
 	if( (Killer != Victim) && ( !TeamGame || (TeamGame && (TeamNumber[Killer] != TeamNumber[Victim])) ) )
