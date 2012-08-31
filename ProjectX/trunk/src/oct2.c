@@ -69,6 +69,8 @@ VECTOR OldPos;
 float SpeedInterval = 0.0F;
 float BikeSpeed = 0.0F;
 
+extern SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
+extern u_int8_t ShipHealthColour[ MAX_PLAYERS+1 ];
 extern int HUDColour;
 extern _Bool ShowWeaponsPossessedOnHUD;
 extern _Bool ShowClockOnHUD;
@@ -1530,312 +1532,306 @@ void DrawSimplePanel()
 	u_int8_t b = Colourtrans[HUDColour][2];
     char MessageBuff[150];
 
-  if( WhoIAm == Current_Camera_View )
-  {
-		// Add Crosshair Polygon..
-		if(!CurrentMenu)
-			AddScreenPolyText( 
-				(u_int16_t) 63 , 
-				(float) (viewport.X + (viewport.Width>>1)) , 
-				(float) (viewport.Y + (viewport.Height>>1)) , 
-				r, g, b, 255 );
-
-		// trojax level
-		energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
-
-		// or lazer temperature
-		if( !energy )
-			energy = (int) ( ( LaserTemperature *0.01F ) * 9.0F );
-
-		// render trojax/lazer bar
-		if( energy )
+	if( Panel && !PlayDemo )
+	{
+		if( !DrawPanel ) 
 		{
-			// 72   (first frame) is power bar charging
-			// 72-8 (last frame)  is power bar at full charge
-			if( energy > 8 ) energy = 8;
-			AddScreenPolyText(
-				(72-energy), 
-				(float) (viewport.X + (viewport.Width>>1))-16 , 
-				(float) (viewport.Y + (viewport.Height>>1))+4 , 
-				r, g, b, 255 );
-		}
-
-		// nitro bar
-		if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
-		{
-			float bar = ( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram ) ?
-				(float) Ships[WhoIAm].SuperNashramTimer*0.008f :
-				(float) NitroFuel*0.04f;
-			AddScreenPolyTextScale( 
-				72, 
-				(float) ( (render_info.window_size.cx>>1) - (NitroFuel - 8) ), 
-				(float) (viewport.Y + (viewport.Height>>1)-7 ) ,
-				bar,
-				1.0F, 
-				r, g, b, 255 );
-		}
-
-	} // end of who i am == current camera
-
-  if( Panel && !PlayDemo )
-  {
-    if( !DrawPanel && (WhoIAm == Current_Camera_View ) ) 
-    {
-			if(ShowWeaponsPossessedOnHUD)
+			// HUD settings only shown in normal mode
+			if(!SwitchedToWatchMode)
 			{
-				// primaries using general ammo
-				for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
+				if(ShowWeaponsPossessedOnHUD)
 				{
-					if(Count == PYROLITE_RIFLE || Count == SUSS_GUN)
-						continue;
-					current = (Count == Ships[WhoIAm].Primary);
-					if( current || PrimaryWeaponsGot[ Count ] > 0 )
+					// primaries using general ammo
+					for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
 					{
-						Print4x5Text( PrimaryNames[ Count ], left, top, HUDColour );	
-						if( Count == PULSAR )
-							Printu_int16_t( GeneralAmmo, right, top, HUDColour );	
+						if(Count == PYROLITE_RIFLE || Count == SUSS_GUN)
+							continue;
+						current = (Count == Ships[WhoIAm].Primary);
+						if( current || PrimaryWeaponsGot[ Count ] > 0 )
+						{
+							Print4x5Text( PrimaryNames[ Count ], left, top, HUDColour );	
+							if( Count == PULSAR )
+								Printu_int16_t( GeneralAmmo, right, top, HUDColour );	
+						}	
+						top += FontHeight;
+					}
+		
+					// primaries using pyro ammo
+					current = (PYROLITE_RIFLE == Ships[WhoIAm].Primary);
+					if( current || PrimaryWeaponsGot[ PYROLITE_RIFLE ] > 0 )
+					{
+						Print4x5Text( PrimaryNames[ PYROLITE_RIFLE ], left, top, HUDColour );	
+						Printu_int16_t( PyroliteAmmo, right, top, HUDColour );	
 					}	
 					top += FontHeight;
-				}
-	
-				// primaries using pyro ammo
-				current = (PYROLITE_RIFLE == Ships[WhoIAm].Primary);
-				if( current || PrimaryWeaponsGot[ PYROLITE_RIFLE ] > 0 )
+
+					// primaries using suss ammo
+					current = (SUSS_GUN == Ships[WhoIAm].Primary);
+					if( current || PrimaryWeaponsGot[ SUSS_GUN ] > 0 )
+					{
+						Print4x5Text( PrimaryNames[ SUSS_GUN ], left, top, HUDColour );	
+						Printu_int16_t( SussGunAmmo, right, top, HUDColour );	
+					}
+					top += FontHeight*2;
+
+					// Secondaries
+					for( Count = 0; Count < MAXSECONDARYWEAPONS; Count++ )
+					{
+						current = ( Count == Ships[WhoIAm].Secondary || GetBestMine() == Count );
+						if(Count == 7) top += FontHeight; // add space for mines
+						if( current || (u_int16_t) SecondaryAmmo[ Count ] > 0 )
+						{
+							Print4x5Text( SecondaryNames[Count], left, top, HUDColour );	
+							Printu_int16_t( (u_int16_t) SecondaryAmmo[ Count ] , right, top, HUDColour );	
+						}	
+						top += FontHeight;
+					}
+				} // end of show full inventory
+
+				// top right
+				top = FontHeight;
+
+				// mine
+				int mine = (int) GetBestMine();
+				if( mine != 65535 )
 				{
-					Print4x5Text( PrimaryNames[ PYROLITE_RIFLE ], left, top, HUDColour );	
-					Printu_int16_t( PyroliteAmmo, right, top, HUDColour );	
-				}	
+					int left = render_info.window_size.cx;
+					Print4x5Text( SecondaryNames[mine], left-FontWidth*10, top, HUDColour );
+					Printu_int16_t( (u_int16_t) SecondaryAmmo[mine], left-FontWidth*2, top, HUDColour );
+				}
+		
+				// bottom right
+				top = render_info.window_size.cy - FontHeight * 7;
+
+				// chaos
+				if( Ships[WhoIAm].Invul )
+				{
+					Print4x5Text( "Chaos" , left, top, HUDColour );
+					Printu_int16_t( (u_int16_t) (Ships[WhoIAm].InvulTimer / 60.0F) , right, top, HUDColour );
+				}
 				top += FontHeight;
 
-				// primaries using suss ammo
-				current = (SUSS_GUN == Ships[WhoIAm].Primary);
-				if( current || PrimaryWeaponsGot[ SUSS_GUN ] > 0 )
+				// gulden power pod
+				if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
 				{
-					Print4x5Text( PrimaryNames[ SUSS_GUN ], left, top, HUDColour );	
-					Printu_int16_t( SussGunAmmo, right, top, HUDColour );	
+					Print4x5Text( "GPP" , left, top, HUDColour );
+					Printu_int16_t( (u_int16_t) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , right, top, HUDColour );
 				}
-				top += FontHeight*2;
+				top += FontHeight;
 
-				// Secondaries
-				for( Count = 0; Count < MAXSECONDARYWEAPONS; Count++ )
+				// stealth
+				if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
 				{
-					current = ( Count == Ships[WhoIAm].Secondary || GetBestMine() == Count );
-					if(Count == 7) top += FontHeight; // add space for mines
-					if( current || (u_int16_t) SecondaryAmmo[ Count ] > 0 )
+					Print4x5Text( "Stealth" , left, top, HUDColour );
+					Printu_int16_t( (u_int16_t) (Ships[WhoIAm].StealthTime / 60.0F) , right, top, HUDColour );
+				}
+				top += FontHeight;
+			
+				// power pods
+				Print4x5Text( "Power", left+FontWidth*3, top, HUDColour );
+				Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.PowerLevel+1, right, top, HUDColour );	
+				top += FontHeight;
+
+				// primary
+				Print4x5Text( PrimaryNames[Ships[WhoIAm].Primary], left, top, HUDColour );
+				Printu_int16_t( (u_int16_t) GetCurPrimAmmo() , right, top, HUDColour );
+				top += FontHeight;
+
+				// secondary
+				Print4x5Text( SecondaryNames[Ships[WhoIAm].Secondary], left, top, HUDColour );
+				Printu_int16_t( (u_int16_t) GetCurSecAmmo(), right, top, HUDColour );
+				top += FontHeight;
+
+				// bottom left
+				top   = render_info.window_size.cy - FontWidth*3;
+				left  = FontWidth;
+				right = FontWidth*8;
+				int bars  = right + FontWidth*4;
+
+				// shield
+				Print4x5Text( "Shield", left, top, HUDColour );	
+				Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.Shield, right, top, HUDColour );
+				top += FontHeight;
+
+				if( ShieldHit )
+					ShieldHit -=1;
+
+				// hull
+				top++;
+				Print4x5Text( "Hull", left, top, HUDColour );	
+
+				Printu_int16_t( Ships[WhoIAm].Object.Hull , right, top, HUDColour );
+				top += FontHeight;
+
+				if( HullHit )
+					HullHit -=1;
+			
+				// trojax level
+				energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
+
+				// or lazer temperature
+				if( !energy )
+					energy = (int) ( ( LaserTemperature *0.01F ) * 9.0F );
+
+				// render trojax/lazer bar
+				if( energy )
+				{
+					// 72   (first frame) is power bar charging
+					// 72-8 (last frame)  is power bar at full charge
+					if( energy > 8 ) energy = 8;
+					AddScreenPolyText(
+						(72-energy), 
+						(float) (viewport.X + (viewport.Width>>1))-16 , 
+						(float) (viewport.Y + (viewport.Height>>1))+4 , 
+						r, g, b, 255 );
+				}
+
+				// nitro bar
+				if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
+				{
+					float bar = ( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram ) ?
+						(float) Ships[WhoIAm].SuperNashramTimer*0.008f :
+						(float) NitroFuel*0.04f;
+					AddScreenPolyTextScale( 
+						72, 
+						(float) ( (render_info.window_size.cx>>1) - (NitroFuel - 8) ), 
+						(float) (viewport.Y + (viewport.Height>>1)-7 ) ,
+						bar,
+						1.0F, 
+						r, g, b, 255 );
+				}
+ 
+				// Average Kills Per Minute
+				if(ShowKPMOnHUD)
+				{
+					sprintf( MessageBuff, "KPM: %.2f", (float)
+							(GetTotalKills(WhoIAm) - GetFriendlyKills(WhoIAm)) 
+							/ (LevelTimeTaken / 60.0F) );
+					Print4x5Text( &MessageBuff[0], FontWidth, render_info.window_size.cy - FontWidth*6, RED);
+				}
+																		
+				// Current Speed
+				if(ShowSpeedOnHUD)
+				{
+					if(SpeedInterval <= 0.0F)
 					{
-						Print4x5Text( SecondaryNames[Count], left, top, HUDColour );	
-						Printu_int16_t( (u_int16_t) SecondaryAmmo[ Count ] , right, top, HUDColour );	
-					}	
-					top += FontHeight;
-				}
-			} // end of show full inventory
-
-			// top right
-			top = FontHeight;
-
-			// mine
-			int mine = (int) GetBestMine();
-			if( mine != 65535 )
-			{
-				int left = render_info.window_size.cx;
-				Print4x5Text( SecondaryNames[mine], left-FontWidth*10, top, HUDColour );
-				Printu_int16_t( (u_int16_t) SecondaryAmmo[mine], left-FontWidth*2, top, HUDColour );
+						SpeedInterval = 10.0F;
+						BikeSpeed = DistanceVector2Vector(&Ships[WhoIAm].Object.Pos, &OldPos);
+						OldPos.x = Ships[WhoIAm].Object.Pos.x;
+						OldPos.y = Ships[WhoIAm].Object.Pos.y;
+						OldPos.z = Ships[WhoIAm].Object.Pos.z;
+					}
+					sprintf( MessageBuff, "%.0f", BikeSpeed/3.0F); // attempt scale 0-100
+					Print4x5Text( &MessageBuff[0], FontWidth, render_info.window_size.cy - FontWidth*8, YELLOW);
+					SpeedInterval -= framelag;
+				} 
 			}
-	
-			// bottom right
-			top = render_info.window_size.cy - FontHeight * 7;
-
-			// chaos
-			if( Ships[WhoIAm].Invul )
+			// HUD settings only shown in watch mode
+			else
 			{
-				Print4x5Text( "Chaos" , left, top, HUDColour );
-				Printu_int16_t( (u_int16_t) (Ships[WhoIAm].InvulTimer / 60.0F) , right, top, HUDColour );
-			}
-			top += FontHeight;
+				// show who i am watching
+				Print4x5Text( 
+					(char *)GetName(WatchPlayerSelect.value), FontWidth,
+					render_info.window_size.cy - 2.0F*FontHeight,
+					WHITE );
 
-			// gulden power pod
-			if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
-			{
-				Print4x5Text( "GPP" , left, top, HUDColour );
-				Printu_int16_t( (u_int16_t) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , right, top, HUDColour );
-			}
-			top += FontHeight;
+				// show that player's health
+				sprintf( (char*) &MessageBuff[0], "%d", (u_int16_t) ((PlayerHealths[WatchPlayerSelect.value].Shield + 
+								PlayerHealths[WatchPlayerSelect.value].Hull) /2.56F));
+				Print4x5Text(
+						&MessageBuff[0], FontWidth*9, 
+						render_info.window_size.cy - FontHeight*2, 
+						ShipHealthColour[WatchPlayerSelect.value] );
 
-			// stealth
-			if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
-			{
-				Print4x5Text(	"Stealth" , left, top, HUDColour );
-				Printu_int16_t( (u_int16_t) (Ships[WhoIAm].StealthTime / 60.0F) , right, top, HUDColour );
-			}
-			top += FontHeight;
-	    
-			// power pods
-			Print4x5Text( "Power", left+FontWidth*3, top, HUDColour );
-			Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.PowerLevel+1, right, top, HUDColour );	
-			top += FontHeight;
-
-			// primary
-			Print4x5Text( PrimaryNames[Ships[WhoIAm].Primary], left, top, HUDColour );
-			Printu_int16_t( (u_int16_t) GetCurPrimAmmo() , right, top, HUDColour );
-			top += FontHeight;
-
-			// secondary
-			Print4x5Text( SecondaryNames[Ships[WhoIAm].Secondary], left, top, HUDColour );
-			Printu_int16_t( (u_int16_t) GetCurSecAmmo(), right, top, HUDColour );
-            top += FontHeight;
-
-			// bottom left
-			top   = render_info.window_size.cy - FontWidth*3;
-			left  = FontWidth;
-			right = FontWidth*8;
-			int bars  = right + FontWidth*4;
-
-			// shield
-			Print4x5Text( "Shield", left, top, HUDColour );	
-
-            // Game Clock
-            if(ShowClockOnHUD)
-            {
-                sprintf( MessageBuff, "%02d:%02d", (int)(LevelTimeTaken / 60), (int)((int)LevelTimeTaken % 60) );
-                Print4x5Text( &MessageBuff[0], left, top-(FontHeight*2), WHITE);
-            }
-
-            // Average Kills Per Minute
-            if(ShowKPMOnHUD)
-            {
-                sprintf( MessageBuff, "KPM: %.2f", (float)(GetTotalKills(WhoIAm)-GetFriendlyKills(WhoIAm)) / (LevelTimeTaken / 60.0F) );
-			    Print4x5Text( &MessageBuff[0], left, top-(FontHeight*3), RED);
-            }
-
-            // Current Speed
-            if(ShowSpeedOnHUD)
-            {
-				if(SpeedInterval <= 0.0F)
+				// Current Speed
+				if(ShowSpeedOnHUD)
 				{
-					SpeedInterval = 10.0F;
-					BikeSpeed = DistanceVector2Vector(&Ships[WhoIAm].Object.Pos, &OldPos);
-
-					OldPos.x = Ships[WhoIAm].Object.Pos.x;
-					OldPos.y = Ships[WhoIAm].Object.Pos.y;
-					OldPos.z = Ships[WhoIAm].Object.Pos.z;
-                }
-
-				sprintf( MessageBuff, "%.0f", BikeSpeed/3.0F); // attempt scale 0-100
-				Print4x5Text( &MessageBuff[0], left, top-(FontHeight*5), YELLOW);
-				SpeedInterval -= framelag;
-            }
-/*
-			{
-				int red = (u_int8_t)(r+(ShieldHit * (192/24) ));
-				int green = (u_int8_t)(g-(ShieldHit * (192/24) ));
-				int scale_x = (float) ( ( ( 1.0F / 256.0F ) * 
-						( Ships[WhoIAm].Object.Shield *0.25F ) ) *
-						( (32.0F-0.125F) + 0.125F ) );
-				AddScreenPolyTextScale( 72, bars, top+FontHeight*0.3, scale_x, 1.0f, red, green, b, 255 );
+					if(SpeedInterval <= 0.0F)
+					{
+						SpeedInterval = 10.0F;
+						BikeSpeed = DistanceVector2Vector(&Ships[WatchPlayerSelect.value].Object.Pos, &OldPos);
+						OldPos.x = Ships[WatchPlayerSelect.value].Object.Pos.x;
+						OldPos.y = Ships[WatchPlayerSelect.value].Object.Pos.y;
+						OldPos.z = Ships[WatchPlayerSelect.value].Object.Pos.z;
+					}
+					sprintf( MessageBuff, "%.0f", BikeSpeed/3.0F); // attempt scale 0-100
+					Print4x5Text( &MessageBuff[0], FontWidth, render_info.window_size.cy - FontWidth*7, YELLOW);
+					SpeedInterval -= framelag;
+				} 
+ 
+				// invulnerable
+				if( Ships[WatchPlayerSelect.value].Invul )
+					Print4x5Text( "Chaos", FontWidth,
+						render_info.window_size.cy-FontHeight*9, HUDColour );
+				// golden power pod
+				if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
+					Print4x5Text( "GPP", FontWidth, 
+						render_info.window_size.cy-FontHeight*10, HUDColour );
+				// stealthed
+				if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
+					Print4x5Text( "Stealth", FontWidth, 
+						render_info.window_size.cy-FontHeight*11, HUDColour ); 
 			}
-*/
 
-			Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.Shield, right, top, HUDColour );
-			top += FontHeight;
+			// HUD settings common to both normal and watch mode
+			
+			// Add Crosshair Polygon..
+			if(!CurrentMenu)
+				AddScreenPolyText( 
+					(u_int16_t) 63 , 
+					(float) (viewport.X + (viewport.Width>>1)) , 
+					(float) (viewport.Y + (viewport.Height>>1)) , 
+					r, g, b, 255 );
 
-			if( ShieldHit )
-				ShieldHit -=1;
-
-			// hull
-			top++;
-			Print4x5Text( "Hull", left, top, HUDColour );	
-
-/*
+			// Game Clock
+			if(ShowClockOnHUD)
 			{
-				int red = (u_int8_t)(r+(ShieldHit * (192/24) ));
-				int green = (u_int8_t)(g-(ShieldHit * (192/24) ));
-				int scale_x = (float) ( ( ( 1.0F / 256.0F ) * 
-						( Ships[WhoIAm].Object.Hull *0.25F ) ) *
-						( (32.0F-0.125F) + 0.125F ) );
-				AddScreenPolyTextScale( 72, bars, top+FontHeight*0.3, scale_x, 1.0f, red, green, b, 255 );
+				sprintf( MessageBuff, "%02d:%02d", (int)(LevelTimeTaken / 60), (int)((int)LevelTimeTaken % 60) );
+				Print4x5Text( &MessageBuff[0], FontWidth, render_info.window_size.cy - FontWidth*5, WHITE);
 			}
-*/
 
-			Printu_int16_t( Ships[WhoIAm].Object.Hull , right, top, HUDColour );
-			top += FontHeight;
-
-			if( HullHit )
-				HullHit -=1;
-
-    } // end of !DrawPanel && Iam = current camera view
-  
-    if( (NamesAreLegal != 0) || IsHost )
-    {
-      ScoreSort();
-      PrintScoreSort();
+		} // end of !DrawPanel
+	
+		if( (NamesAreLegal != 0) || IsHost )
+		{
+			ScoreSort();
+			PrintScoreSort();
 			CheckMetKillLimit();
-    }
-     
-	  // show long message history
-	  if(ShowMessages) 
-		  MessageQuePrintAll();
+		}
+		
+		// show long message history
+		if(ShowMessages) 
+			MessageQuePrintAll();
 
-	  // show last 3 recent messages
-	  else
+		// show last 3 recent messages
+		else
 		{
 			MessageQuePrint();
 			PlayerMessageQuePrint();	
 		}
 
-	  if( ! (CurrentMenu && CurrentMenuItem ) )
-	  {
-		  // if we are dead and waiting for a game
-		  // show statistics
-		  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE && !SwitchedToWatchMode )
-			  ShowDeathModeStats();
+		if( ! (CurrentMenu && CurrentMenuItem ) )
+		{
+			// if we are dead and waiting for a game
+			// show statistics
+			if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE && !SwitchedToWatchMode )
+				ShowDeathModeStats();
 
-		  // if we have show stats activated (ex: you pressed the stats button)
-		  // show statistics
-		  else if ( ShowStatistics)
-			  ShowInGameStats();
+			// if we have show stats activated (ex: you pressed the stats button)
+			// show statistics
+			else if ( ShowStatistics)
+				ShowInGameStats();
 
 			else if( ShowNetworkInfo )
 				DisplayNetworkInfo();
-	  }
-
-	  // watch mode
-	  if(SwitchedToWatchMode)
-	  {
-			// show who i am watching
-			Print4x5Text( 
-				(char *)GetName(WatchPlayerSelect.value), FontWidth,
-				render_info.window_size.cy - 2.0F*FontHeight,
-				WHITE );
-
-// TODO why is this here ? above code should just execute normally in watch mode to show hud
-
-			// display cross-hair
-			AddScreenPolyText(
-					(u_int16_t) 63 ,
-					(float) (viewport.X + (viewport.Width>>1)) , 
-					(float) (viewport.Y + (viewport.Height>>1)) ,
-					64, 255, 64, 255 );
-			// invulnerable
-			if( Ships[WatchPlayerSelect.value].Invul )
-				Print4x5Text( "Chaos" , FontWidth ,
-					render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
-			// golden power pod
-			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
-				Print4x5Text( "GPP" , FontWidth , 
-					render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
-			// stealthed
-			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
-				Print4x5Text( "Stealth" , FontWidth , 
-					render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
-	  }
-
-  } // end of ( Panel && !PlayDemo )
+		}
+	} // end of ( Panel && !PlayDemo )
 	else
 	{
 		if( Panel )
 		{
-       ScoreSort();
-       PrintScoreSort();
+			ScoreSort();
+			PrintScoreSort();
 
 			if(ShowMessages) 
 				MessageQuePrintAll();
@@ -1844,12 +1840,13 @@ void DrawSimplePanel()
 				MessageQuePrint();
 				PlayerMessageQuePrint();
 			}
+
 			if( DemoEyesSelect.value != MAX_PLAYERS )
-				Print4x5Text( 
-					Names[DemoEyesSelect.value],
-					render_info.window_size.cx - (FontWidth*9), 
-					FontHeight, 
-					0 );
+			Print4x5Text( 
+				Names[DemoEyesSelect.value],
+				render_info.window_size.cx - (FontWidth*9), 
+				FontHeight, 
+				0 );
 		}
 	}
 
@@ -1858,7 +1855,6 @@ void DrawSimplePanel()
 			"Game Over" , 
 			(render_info.window_size.cy >> 1) - (FontHeight*2) , 
 			2 );
-
 }
 
 void ReleaseLevel(void)
