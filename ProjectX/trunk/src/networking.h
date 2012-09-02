@@ -586,7 +586,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_DROPPICKUP						0x88
 #define MSG_KILLPICKUP						0x99
 #define MSG_NETSETTINGS					0xaa
-#define MSG_NETSETTINGS_HEALTHPPS       0xfb
 #define MSG_STATUS							0xbb
 #define MSG_SHORTPICKUP					0xee
 #define MSG_SHOCKWAVE						0xff
@@ -906,13 +905,6 @@ typedef struct _NETSETTINGSMSG
 	net_bool_t		CollisionPerspective;
 	net_bool_t		ShortPackets;	
 } NETSETTINGSMSG, *LPNETSETTINGSMSG;
-
-typedef struct _NETSETTINGS_HEALTHPPS_MSG
-{
-    BYTE MsgCode;
-    BYTE WhoIAm;
-    float HealthPacketsPerSecond;
-} NETSETTINGS_HEALTHPPS_MSG, *LPNETSETTINGS_HEALTHPPS_MSG;
 
 typedef struct _LONGSTATUSMSG
 {
