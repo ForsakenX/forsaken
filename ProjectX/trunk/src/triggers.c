@@ -835,7 +835,6 @@ _Bool Triggerload( char * Filename )
 					NumOfTrigVars, i, MAX_PLAYERS );
 				return false;
 			}
-			ZEROMEM(ShortTrigVarCopy[i]);
 		}
 	}
 
@@ -856,7 +855,6 @@ _Bool Triggerload( char * Filename )
 					NumOfTriggers, i, MAX_PLAYERS );
 				return false;
 			}
-			ZEROMEM(ShortTriggerCopy[i]);
 		}
 	}
 
