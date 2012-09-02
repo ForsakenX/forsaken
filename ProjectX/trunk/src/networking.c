@@ -3471,6 +3471,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpShipHealth->Hull = (u_int8_t) Ships[WhoIAm].Object.Hull;
         lpShipHealth->Shield = (u_int8_t) Ships[WhoIAm].Object.Shield;
         nBytes = sizeof( SHIPHEALTHMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
     case MSG_YOUQUIT:
