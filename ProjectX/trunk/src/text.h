@@ -77,7 +77,7 @@ FILE * SaveAllText( FILE * fp );
 
 void FillStatusTab( void );
 void BuildReliabilityTab( void );
-__inline void DisplayConnectionStatus( int num , int x , int y);
+void DisplayConnectionStatus( int num , int x , int y);
 
 
 

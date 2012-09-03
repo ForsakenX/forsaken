@@ -143,8 +143,6 @@ char StatsMessageFile[] = "data\\txt\\statsmessages.txt";
 
 STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 
-void DisplayConnectionStatus(int num, int x, int y);
-
 /*===================================================================
 	Procedure	:		Print a int16_t number in small 4x4 chars..
 	Input		:		int16_t num, u_int16_t x , u_int16_t y
