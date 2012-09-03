@@ -44,6 +44,10 @@ int my_local_port = 0; // used in net_tracker.c
 // the host player
 static ENetPeer* host;
 
+// net.h globals
+network_players_t network_players;
+network_state_t network_state;
+
 // my settings
 static int i_am_host = 0;
 char* my_player_name = NULL; // used in net_tracker.c

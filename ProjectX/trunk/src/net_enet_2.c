@@ -47,6 +47,10 @@ ENetHost* enet_host = NULL; // used in net_tracker.c
 // the host player
 static ENetPeer* host;
 
+// net.h globals
+network_players_t network_players;
+network_state_t network_state;
+
 // my settings
 static int i_am_host = 0;
 peer_id_t my_id = NO_ID; // used by nettest

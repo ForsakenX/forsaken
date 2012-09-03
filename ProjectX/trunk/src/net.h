@@ -41,7 +41,7 @@ typedef enum {
 	NETWORK_SYNCH_FAILED,	// failed to synch with other players
 } network_state_t;
 
-network_state_t network_state;
+extern network_state_t network_state;
 
 /*
  *  Main Functions
@@ -84,7 +84,7 @@ typedef struct {
 	network_player_t * last;
 } network_players_t;
 
-network_players_t network_players;
+extern network_players_t network_players;
 
 void network_set_player_name( char* name );
 
