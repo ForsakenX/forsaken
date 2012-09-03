@@ -121,7 +121,7 @@ typedef struct {
 	JOYSTICKAXIS Axis[MAX_JOYSTICK_AXIS];
 } JOYSTICKINFO;
 
-JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
+extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
 
 _Bool joysticks_init(void);
 _Bool joysticks_cleanup( void );

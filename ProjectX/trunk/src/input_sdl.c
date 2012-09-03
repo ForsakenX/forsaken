@@ -4,6 +4,8 @@
 #include "render.h"
 #include <SDL.h>
 
+JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
+
 extern _Bool RenderModeReset( void );
 extern void SetGamePrefs( void );
 extern void FadeHoloLight(float Brightness);

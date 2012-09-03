@@ -6,6 +6,8 @@
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 
+JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
+
 LPDIRECTINPUT lpdi = NULL;
 LPDIRECTINPUTDEVICE lpdiMouse;
 DIMOUSESTATE mouse;
@@ -93,8 +95,6 @@ _Bool  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
       ((PLONG) lpguid1)[2] == ((PLONG) lpguid2)[2] &&
       ((PLONG) lpguid1)[3] == ((PLONG) lpguid2)[3]);
 }
-
-extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS]; 
 
 LPDIRECTINPUT             lpdi = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];

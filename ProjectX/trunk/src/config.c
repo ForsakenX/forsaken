@@ -19,7 +19,6 @@
 
 extern LIST BikeList;
 extern LIST BikeComputer;
-extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];
 extern TEXT	MacroText1;
 extern TEXT	MacroText2;
 extern TEXT	MacroText3;
