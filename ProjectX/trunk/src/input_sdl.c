@@ -463,7 +463,7 @@ _Bool joysticks_init(void)
 	int i, j, k;
 
 	// initial memory cleaning
-	ZEROMEM(JoystickInfo);
+	ZERO_STACK_MEM(JoystickInfo);
 
 	joysticks_cleanup();
 

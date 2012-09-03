@@ -416,10 +416,10 @@ static _Bool AppInit( char * lpCmdLine )
 	_LIB_VERSION = _SVID_; // enable matherr
 #endif
 
-	ZEROMEM(render_info);
-	ZEROMEM(RenderBufs);
-	ZEROMEM(Portal_Execs);
-	ZEROMEM(Skin_Execs);
+	ZERO_STACK_MEM(render_info);
+	ZERO_STACK_MEM(RenderBufs);
+	ZERO_STACK_MEM(Portal_Execs);
+	ZERO_STACK_MEM(Skin_Execs);
 
 	render_info.vsync = false;
 

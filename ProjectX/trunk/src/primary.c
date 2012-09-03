@@ -6259,7 +6259,7 @@ void CreateNmeLightningPulse( u_int16_t i, float Distance, VECTOR * Dir, u_int16
 	VECTOR	NormLeftVector;
 	VECTOR	NormUpVector;
 	VECTOR	StartPos;
-	VECTOR	EndPos; ZEROMEM(EndPos);
+	VECTOR	EndPos; ZERO_STACK_MEM(EndPos);
 	int16_t	NumSegments;
 	int16_t	Count;
 	int16_t	NumSparks;

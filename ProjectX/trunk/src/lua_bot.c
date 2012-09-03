@@ -126,7 +126,7 @@ lua_State *Lbot;
 // game calls this each frame
 void ProcessBot1()
 {
-	ZEROMEM(bot);
+	ZERO_STACK_MEM(bot);
 	control_bot();
 	if ( bot.yaw )
 	{

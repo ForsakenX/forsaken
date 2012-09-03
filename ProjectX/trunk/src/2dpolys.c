@@ -1622,8 +1622,8 @@ _Bool FmPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuf
 	VECTOR			ZVector;
 	VECTOR			Xoff;
 	VECTOR			Yoff;
-	VECTOR			Xsize; ZEROMEM(Xsize);
-	VECTOR			Ysize; ZEROMEM(Ysize);
+	VECTOR			Xsize; ZERO_STACK_MEM(Xsize);
+	VECTOR			Ysize; ZERO_STACK_MEM(Ysize);
 	VECTOR			NewPos;
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
@@ -1983,8 +1983,8 @@ _Bool FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJE
 	VECTOR			ZVector;
 	VECTOR			Xoff;
 	VECTOR			Yoff;
-	VECTOR			Xsize; ZEROMEM(Xsize);
-	VECTOR			Ysize; ZEROMEM(Ysize);
+	VECTOR			Xsize; ZERO_STACK_MEM(Xsize);
+	VECTOR			Ysize; ZERO_STACK_MEM(Ysize);
 	VECTOR			NewPos;
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;

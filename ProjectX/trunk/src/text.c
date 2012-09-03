@@ -1938,7 +1938,7 @@ void InitFont( void )
 	u_int16_t i;
 	u_int8_t e;
 
-	ZEROMEM(CharTrans);
+	ZERO_STACK_MEM(CharTrans);
 
 	for( i = 0x30, e = 1 ; i < 0x3a ; i++ , e++ ) CharTrans[i] = e; // 0 - 9
 	for( i = 0x41, e = 11; i < 0x5b ; i++ , e++ ) CharTrans[i] = e; // A - Z

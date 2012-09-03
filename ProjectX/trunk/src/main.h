@@ -99,8 +99,8 @@ typedef struct
 #undef MIN
 #define MIN(x, y) ((x) > (y)) ? (y) : (x)
 
-#undef ZEROMEM
-#define ZEROMEM(x) memset(&x, 0, sizeof(x))
+#undef ZERO_STACK_MEM
+#define ZERO_STACK_MEM(x) memset(&x, 0, sizeof(x))
 
 #ifdef WIN32
 #include <string.h>

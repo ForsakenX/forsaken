@@ -666,7 +666,7 @@ _Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 {
 	float poffset, pdist;
 	VECTOR ppos, pmove, epos, tpos;
-	NORMAL fnorm, pnorm; ZEROMEM(pnorm);
+	NORMAL fnorm, pnorm; ZERO_STACK_MEM(pnorm);
 	u_int16_t group;
 	u_int16_t next_group;
 	u_int16_t last_group = 0;
@@ -1384,7 +1384,7 @@ _Bool OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader ,
 
 	VECTOR		ImpactNormal;
 	float		ImpactOffset;
-	MCFACE		BSPFace; ZEROMEM(BSPFace);
+	MCFACE		BSPFace; ZERO_STACK_MEM(BSPFace);
 	
 	if( group == (u_int16_t) -1)
 		return false;
@@ -3137,7 +3137,7 @@ _Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGO
 	float ImpactPlane;
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
-	VECTOR Pos_New; ZEROMEM(Pos_New);
+	VECTOR Pos_New; ZERO_STACK_MEM(Pos_New);
 	_Bool hit;
 	VECTOR ImpactPoint;
 	
@@ -3368,7 +3368,7 @@ _Bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Ta
 	float ImpactPlane;
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
-	VECTOR Pos_New; ZEROMEM(Pos_New);
+	VECTOR Pos_New; ZERO_STACK_MEM(Pos_New);
 	_Bool hit;
 	VECTOR ImpactPoint;
 	
@@ -3509,7 +3509,7 @@ _Bool QCollide( VECTOR *Start_Pos, u_int16_t Start_Group, VECTOR *Move_Off, floa
 	float Num, Div;
 	VECTOR FeelerStart;
 	u_int16_t FeelerGroup;
-	NORMAL ImpactNormal; ZEROMEM(ImpactNormal);
+	NORMAL ImpactNormal; ZERO_STACK_MEM(ImpactNormal);
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
 	_Bool hit;

@@ -1282,7 +1282,7 @@ FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max )
 	VISGROUP *vg;
 	LVLGROUP *mg;
 	u_int16_t in_groups;
-	EXTENT extent, *e=NULL; ZEROMEM(extent);
+	EXTENT extent, *e=NULL; ZERO_STACK_MEM(extent);
 	float extent_size, min_extent_size;
 
 	if ( outside_map )
