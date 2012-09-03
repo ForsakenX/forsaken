@@ -107,6 +107,8 @@ void * X_malloc( size_t size, char *in_file, int in_line )
 	BlockInLine[i] = in_line;
 	MemUsed += size;
 
+	memset(Pnt,0,sizeof(Pnt)); // this protects whole program against dirty memory
+
 	return Pnt;
 
 }
@@ -135,6 +137,8 @@ void * X_calloc( size_t num,size_t size, char *in_file, int in_line )
 	BlockInLine[i] = in_line;
 	MemUsed += num * size;
 	
+	memset(Pnt,0,sizeof(Pnt)); // this protects whole program against dirty memory
+
 	return Pnt;
 
 }
@@ -194,6 +198,10 @@ void * X_realloc( void * Pnt , size_t size, char *in_file, int in_line )
 	BlockPnts[i] = Pnt;
 	BlockInFile[i] = in_file;
 	BlockInLine[i] = in_line;
+
+	if(size > BlockSize[i]) // this protects whole program against dirty memory
+		memset(Pnt+BlockSize[i],0,size-BlockSize[i]);
+
 	MemUsed -= BlockSize[i];
 	BlockSize[i] = size;
 	MemUsed += size;
