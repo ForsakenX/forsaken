@@ -8134,6 +8134,8 @@ _Bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTO
 #ifdef SINT_PEACEFROG_CHEAT
 	TargetingWeaponCheat = -1;
 #endif
+
+#ifdef TRANSPULSE_TRACKING_ENABLED
 	switch( PrimBulls[i].OwnerType )
 	{
 		case OWNER_SHIP:
@@ -8211,6 +8213,9 @@ _Bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTO
 			}
 		}
 	}
+#else
+	NewDir = *Dir;
+#endif
 
 	PrimBulls[i].ColFlag = 0;
 	PrimBulls[i].Dir = NewDir;
