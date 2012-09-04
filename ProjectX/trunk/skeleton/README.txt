@@ -19,7 +19,7 @@
 
 == Networking ==
 
-	Any 1.15. version is compatible with any other 1.15. version
+	Any 1.18. version is compatible with any other 1.18. version
 
 == Chat ==
 
