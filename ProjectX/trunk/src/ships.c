@@ -1907,7 +1907,7 @@ int16_t DoDamage( _Bool OverrideInvul )
 					Ships[WhoIAm].Object.Shield = 0.0F;
 					HullHit = 6*4;
 					
-					if( Ships[WhoIAm].Object.Hull <= 0 )
+					if( Ships[WhoIAm].Object.Hull <= 0.0F )
 					{
 						// reset shield & hull critical flags...
 						ShieldCritical = false;
