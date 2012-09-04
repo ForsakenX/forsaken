@@ -754,7 +754,7 @@ void PrintScoreSort( void )
                         // Show % Health
                         if(ShowPlayerHealthByScores && GameStatus[ShipID] != STATUS_Left)
                         {
-							sprintf( (char*) &buf[0], "H:%d", (u_int16_t) ((PlayerHealths[ShipID].Shield + PlayerHealths[ShipID].Hull) /2.56F));
+							sprintf( (char*) &buf[0], "H:%d", (u_int16_t) ceil(((PlayerHealths[ShipID].Shield + PlayerHealths[ShipID].Hull) /2.56F)));
 							Print4x5TextSmall( &buf[0], left_offset+60.0F, top_offset+((FontHeight-8.0F)/2.0F), ShipHealthColour[ShipID] );
                         }
 

@@ -6667,7 +6667,7 @@ void DispHUDNames( void )
                 Ship = VisibleShipsPos[ Count ].Ship;
 
 				// format the ship health as a percentage
-                sprintf( (char*) &buf[0] ,"%d", (u_int16_t) (((PlayerHealths[Ship].Hull + PlayerHealths[Ship].Shield)/2.56F)));
+                sprintf( (char*) &buf[0] ,"%d", (u_int16_t) ceil((((PlayerHealths[Ship].Hull + PlayerHealths[Ship].Shield)/2.56F))));
 
 				// display using whatever scaled font player has chosen
                 if(ScaleFontPlayerHealthAboveBikes)
