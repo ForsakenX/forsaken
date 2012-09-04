@@ -1906,6 +1906,8 @@ int16_t DoDamage( _Bool OverrideInvul )
 					Ships[WhoIAm].Object.Hull += Ships[WhoIAm].Object.Shield;
 					Ships[WhoIAm].Object.Shield = 0.0F;
 					HullHit = 6*4;
+
+					Ships[WhoIAm].Object.Hull = ceilf(Ships[WhoIAm].Object.Hull);
 					
 					if( Ships[WhoIAm].Object.Hull <= 0.0F )
 					{

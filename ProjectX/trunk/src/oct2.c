@@ -1677,7 +1677,7 @@ void DrawSimplePanel()
 			Print4x5Text( "Hull", left, top, HUDColour );	
 			if( WatchPlayerSelect.value == WhoIAm )
 			{
-				Printu_int16_t( Ships[WhoIAm].Object.Hull , right, top, HUDColour );
+				Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.Hull, right, top, HUDColour );
 				if( HullHit ) HullHit -=1;          
 			}
 			else
