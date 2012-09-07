@@ -449,9 +449,9 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SEC_MISSILE,	// u_int16_t	SecType				// Missile/Mine
 		MIS_STRAIGHT,	// u_int16_t	State				// Starting state
 		MISMOVE_STRAIGHT, // u_int16_t	Move Type			// Straight/Homing
-		MISSILE_SPEED,	// float	StartSpeed;			// how fast do I move to start with
+		MISSILE_SPEED*2.0F,	// float	StartSpeed;			// how fast do I move to start with
 		0.0F ,			// float	SpeedInc;			// how fast do I Accelerate
-		MISSILE_SPEED,	// float	Speed;				// how fast do I move
+		MISSILE_SPEED*2.0F,	// float	Speed;				// how fast do I move
 		256.0F,			// float	Size;				// how big is my collide sphere
 		0.0F,			// float	TurnSpeed			// how fase can I turn
 		30,				// u_int16_t	FireDelay			// how fast can I fire
