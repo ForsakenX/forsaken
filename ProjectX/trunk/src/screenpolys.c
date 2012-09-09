@@ -1362,7 +1362,7 @@ void UpdateDigit( u_int16_t * DigitArray, float XPos, float YPos, int16_t Number
 			else
 			{
 				if( NumberSegments[ Number ][ Count ] ) Red = (u_int8_t) ( 255.0F * Col );
-				else Red = (u_int8_t) ( 80.0F * Col );
+				else Red = (u_int8_t) 0;// ( 80.0F * Col );
 			}
 
 			ScrPolys[i].Pos.x = XPos;
