@@ -621,8 +621,6 @@ BIKEMOD	BikeMods[MAXBIKETYPES+3] = {
 
 
 int		outside_map = 0;
-int		HullHit = 0;
-int		ShieldHit = 0;
 /*===================================================================
 		Globals ...
 ===================================================================*/
@@ -1853,78 +1851,83 @@ int16_t DoDamage( _Bool OverrideInvul )
 
 	Message[ 0 ] = 0;
 			
+	// do no damage if in god mode or chaos shield in singleplayer
 	if( GodMode ) return 0;
 	if( Ships[ WhoIAm ].Invul && !OverrideInvul && GameStatus[ WhoIAm ] == STATUS_SinglePlayer ) return 0;
 
-	if( Ships[WhoIAm].Object.Mode == NORMAL_MODE )
+	// in normal mode and there is some change to be made to the health
+	if( Ships[WhoIAm].Object.Mode == NORMAL_MODE && Ships[WhoIAm].Damage )
 	{
-		if( Ships[WhoIAm].Damage )
+		// chaos shield dampens damage by 50%
+		if( Ships[ WhoIAm ].Invul) 
+			Ships[WhoIAm].Damage *= -0.50F;
+		// no chaos, sustain full damage
+		else
+			Ships[WhoIAm].Damage *= -1.0F;
+
+		// round damage to integer because the health is displayed as an int
+		Ships[WhoIAm].Damage = floorf(Ships[WhoIAm].Damage);
+
+		// add damage here because damage is also used for gaining shields 	
+		Ships[WhoIAm].Object.Shield += Ships[WhoIAm].Damage;
+
+		// health decreased
+		if( Ships[WhoIAm].Damage < 0.0F )
 		{
-			if( Ships[ WhoIAm ].Invul) 
-				Ships[WhoIAm].Damage *= -0.50F;
-			else
-				Ships[WhoIAm].Damage *= -1.0F;
-			Ships[WhoIAm].Object.Shield += Ships[WhoIAm].Damage;
+			// flash the screen
+			MakeScreenFlash( 208, 0, 0, 128, &FlashScreenPoly, SCRSEQ_Fade );
 
-			if( Ships[WhoIAm].Damage < 0.0F )
+			// play pain cry once in a while ( will be overwritten if shield / hull critical )
+			// no speech will be played on death
+			if ( !Random_Range( 10 ) )
+				MessageSFX = SFX_BikerPain;
+
+			// shield critical sound
+			if ( ( Ships[ WhoIAm].Object.Shield < SHIELD_CRITICAL_LEVEL ) && !ShieldCritical )
 			{
-				if( Ships[WhoIAm].Object.Mode == NORMAL_MODE )
-				{
-					MakeScreenFlash( 208, 0, 0, 128, &FlashScreenPoly, SCRSEQ_Fade );
-
-					// play pain cry once in a while ( will be overwritten if shield / hull critical )
-					// no speech will be played on death
-					if ( !Random_Range( 10 ) )
-					{
-						MessageSFX = SFX_BikerPain;
-					}
-
-					if ( ( Ships[ WhoIAm].Object.Shield < SHIELD_CRITICAL_LEVEL ) && !ShieldCritical )
-					{
-						MessageSFX = SFX_BIKECOMP_SC;
-						TriggerSFX = SFX_BIKER_LE;
-						sprintf( &Message[0], SHIELD_CRITICAL );
-						ShieldCritical = true;
-					}
-
-					if ( ( Ships[ WhoIAm].Object.Hull < HULL_CRITICAL_LEVEL ) && !HullCritical )
-					{
-						MessageSFX = SFX_BIKECOMP_HC;
-						sprintf( &Message[0], HULL_CRITICAL );
-						HullCritical = true;
-					}
-				}
+				MessageSFX = SFX_BIKECOMP_SC;
+				TriggerSFX = SFX_BIKER_LE;
+				sprintf( &Message[0], SHIELD_CRITICAL );
+				ShieldCritical = true;
 			}
 
-			if( Ships[WhoIAm].Object.Shield  >= MAX_SHIELD )
+			// hull critical sound
+			if ( ( Ships[ WhoIAm].Object.Hull < HULL_CRITICAL_LEVEL ) && !HullCritical )
 			{
-				Ships[WhoIAm].Object.Shield  = MAX_SHIELD;
-			}else{
-				ShieldHit = 6*4;
-				if( Ships[WhoIAm].Object.Shield  < 0.0F )
+				MessageSFX = SFX_BIKECOMP_HC;
+				sprintf( &Message[0], HULL_CRITICAL );
+				HullCritical = true;
+			}
+		}
+
+		// upper bound check for shields
+		if( Ships[WhoIAm].Object.Shield >= MAX_SHIELD )
+			Ships[WhoIAm].Object.Shield = MAX_SHIELD;
+		// update the health
+		else
+		{
+			// no shields so update the hull
+			if( Ships[WhoIAm].Object.Shield < 0.0F )
+			{
+				Ships[WhoIAm].Object.Hull += Ships[WhoIAm].Object.Shield;
+				Ships[WhoIAm].Object.Shield = 0.0F;
+
+				// no hull means i'm dead
+				if( Ships[WhoIAm].Object.Hull <= 0.0F )
 				{
-					Ships[WhoIAm].Object.Hull += Ships[WhoIAm].Object.Shield;
-					Ships[WhoIAm].Object.Shield = 0.0F;
-					HullHit = 6*4;
+					// reset shield & hull critical flags...
+					ShieldCritical = false;
+					HullCritical = false;
 
-					Ships[WhoIAm].Object.Hull = ceilf(Ships[WhoIAm].Object.Hull);
-					
-					if( Ships[WhoIAm].Object.Hull <= 0.0F )
-					{
-						// reset shield & hull critical flags...
-						ShieldCritical = false;
-						HullCritical = false;
-
-						PlaySfx( SFX_Die, 1.0F );
-						Ships[WhoIAm].Object.Hull = 0.0F;
-						if( Ships[WhoIAm].ShipThatLastHitMe == WhoIAm )
-						{
-							// killed myself....Doh
-							// stats.c (not sure when this is callled or what weapon caused it??)
-							//UpdateKillStats(WhoIAm, WhoIAm, int WeaponType, int Weapon)
-						}
-						return 1;
-					}
+					PlaySfx( SFX_Die, 1.0F );
+					Ships[WhoIAm].Object.Hull = 0.0F;
+					//if( Ships[WhoIAm].ShipThatLastHitMe == WhoIAm )
+					//{
+						// killed myself....Doh
+						// stats.c (not sure when this is callled or what weapon caused it??)
+						//UpdateKillStats(WhoIAm, WhoIAm, int WeaponType, int Weapon)
+					//}
+					return 1;
 				}
 			}
 		}

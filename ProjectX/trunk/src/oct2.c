@@ -410,8 +410,6 @@ extern  char  biker_name[256];
 extern  int16_t SelectedBike;
 
 extern  float cral;
-extern  int   HullHit;
-extern  int   ShieldHit;
 extern  _Bool  TargetComputerOn;
 
 extern  int16_t NumPickupsPerGroup[ MAXGROUPS ];
@@ -1666,7 +1664,6 @@ void DrawSimplePanel()
 			if( WatchPlayerSelect.value == WhoIAm )
 			{
 				Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.Shield, right, top, HUDColour );
-				if( ShieldHit ) ShieldHit -=1;
 			}
 			else
 				Printu_int16_t( PlayerHealths[WatchPlayerSelect.value].Shield, right, top, HUDColour );
@@ -1678,7 +1675,6 @@ void DrawSimplePanel()
 			if( WatchPlayerSelect.value == WhoIAm )
 			{
 				Printu_int16_t( (u_int16_t) Ships[WhoIAm].Object.Hull, right, top, HUDColour );
-				if( HullHit ) HullHit -=1;          
 			}
 			else
 				Printu_int16_t( PlayerHealths[WatchPlayerSelect.value].Hull, right, top, HUDColour );
