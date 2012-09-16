@@ -153,9 +153,9 @@ typedef struct VERT {
 	3D Normal
 ===================================================================*/
 typedef struct NORMAL {
-	float	nx;
-	float	ny;
-	float	nz;
+	union { float nx; float x; };
+	union { float ny; float y; };
+	union { float nz; float z; };
 } NORMAL;
 
 /*===================================================================
