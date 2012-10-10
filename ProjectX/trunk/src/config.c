@@ -285,7 +285,7 @@ char * get_key_name( int i )
 
 // text ,  keydef
 #define KEY_MAP_LAST MOUSE_RANGE_END
-VIRTUALKEYMAP vkey_map[ KEY_MAP_LAST ];
+VIRTUALKEYMAP vkey_map[ KEY_MAP_LAST + 1 ];
 
 static void init_key_map( void )
 {
