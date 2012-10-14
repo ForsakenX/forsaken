@@ -16143,12 +16143,9 @@ _Bool ProcessText( int Key )
 	default:
 		if ( Key )
 		{
-			char *c;
-			c = (char *) key_char( Key );
-			if ( c && strlen( c ) == 1 )
-			{
+			char * c = key_char( Key );
+			if ( c && strlen(c) == 1)
 				TextType( (TEXT *)(TextItem->Variable), *c );
-			}
 		}
 	}
 
