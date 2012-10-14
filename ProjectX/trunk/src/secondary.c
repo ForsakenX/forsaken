@@ -82,7 +82,6 @@ extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	POLY			Polys[MAXPOLYS];
 extern	MODEL			Models[MAXNUMOFMODELS];
 extern	float			framelag;
-extern	GLOBALSHIP      Ships[MAX_PLAYERS+1];
 extern	BYTE			WhoIAm;
 extern	BYTE			Current_Camera_View;		// which object is currently using the camera view....
 extern	_Bool            bSoundEnabled;

@@ -29,7 +29,6 @@ extern	float	framelag;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
-extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern	RENDERMATRIX view;
 extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;

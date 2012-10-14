@@ -41,7 +41,6 @@
 extern _Bool TeamGame;
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BYTE WhoIAm;
-extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 extern MCLOADHEADER	MCloadheader;
 extern MCLOADHEADER	MCloadheadert0;
 extern MLOADHEADER Mloadheader;

@@ -83,7 +83,6 @@ extern	ENEMY			Enemies[ MAXENEMIES ];
 
 extern	MCLOADHEADER	MCloadheadert0;					//  0 thickness collision map...
 extern	MCLOADHEADER	MCloadheader;					//  ship collision map...
-extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	u_int16_t			IsGroupVisible[MAXGROUPS];
 
 extern _Bool	DebugInfo;

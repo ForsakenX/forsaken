@@ -21,7 +21,6 @@
 #include "lua_weapons.h"
 
 extern BYTE WhoIAm;
-extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 extern BYTE GameStatus[MAX_PLAYERS+1];
 
 extern int8_t PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];

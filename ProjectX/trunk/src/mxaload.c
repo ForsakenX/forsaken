@@ -83,7 +83,6 @@ extern	float	framelag;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
-extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern	int16_t	BikeModels[ MAXBIKETYPES ];
 extern	RENDERMATRIX view;
 extern	RENDERMATRIX identity;

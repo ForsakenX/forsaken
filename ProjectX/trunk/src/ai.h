@@ -229,7 +229,6 @@ extern	GUNTYPE	GunTypes[];
 extern	ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ];
 extern	float	framelag;
 extern	float	SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern	PRIMARYWEAPONKNOWLEDGE PrimaryKnowledge[];
 
 //--------------------------------------------------------------------------

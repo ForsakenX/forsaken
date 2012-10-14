@@ -668,7 +668,6 @@ extern  u_int16_t      FirstFmPolyUsed;
 extern  u_int16_t      FirstPolyUsed;
 extern  u_int16_t      FirstLineUsed;
 extern  u_int16_t      FirstScrPolyUsed;
-extern  GLOBALSHIP    Ships[MAX_PLAYERS+1];
 extern  BYTE      WhoIAm;
 extern  BYTE      Current_Camera_View;    // which object is currently using the camera view....
 extern  _Bool      RemoteCameraActive;

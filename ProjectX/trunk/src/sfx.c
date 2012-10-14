@@ -526,7 +526,6 @@ extern SLIDER BikerSpeechSlider;
 extern USERCONFIG	*player_config;
 extern VECTOR	SlideUp;
 extern VECTOR	Forward;
-extern GLOBALSHIP	Ships[MAX_PLAYERS+1];
 extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
 extern float	SoundInfo[MAXGROUPS][MAXGROUPS];
 extern SLIDER  SfxSlider; 

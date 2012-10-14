@@ -994,6 +994,9 @@ typedef struct _SHIPHEALTHMSG
 // expose Names to all that care
 extern SHORTNAMETYPE Names;
 
+extern GLOBALSHIP Ships[MAX_PLAYERS+1];
+
+
 /*
  * fn prototypes
  */

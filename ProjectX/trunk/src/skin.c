@@ -24,7 +24,6 @@ extern	MLOADHEADER Mloadheader;
 extern	u_int16_t		NumGroupsVisible;
 extern	u_int16_t		GroupsVisible[MAXGROUPS];
 extern	BYTE		WhoIAm;
-extern	GLOBALSHIP  Ships[MAX_PLAYERS+1];
 
 extern	DWORD		CurrentSrcBlend;
 extern	DWORD		CurrentDestBlend;

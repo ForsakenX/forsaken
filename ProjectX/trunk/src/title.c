@@ -213,7 +213,6 @@ void Build_View();
 extern	RENDEROBJECT RenderBufs[4];
 extern	int16_t		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
-extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 
 #define REGISTRY_EXPIRE_TIME	"ServiceID"
 #define DEFAULT_CONFIG_FILE		DEFAULT_PLAYER_NAME".txt"

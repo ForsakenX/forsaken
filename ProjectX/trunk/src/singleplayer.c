@@ -34,7 +34,6 @@ extern _Bool PlayDemo;
 extern	_Bool	CaptureTheFlag;
 extern	_Bool	CTF;
 extern	int16_t	SelectedBike;
-extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern	char	biker_name[256];
 extern	_Bool	CountDownOn;
 extern	_Bool	TeamGame;

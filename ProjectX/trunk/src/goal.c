@@ -35,7 +35,6 @@ extern	_Bool			DebugInfo;
 extern	_Bool			IsHost;
 extern	_Bool			CaptureTheFlag;
 extern	_Bool			CTF;
-extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	char			LevelNames[MAXLEVELS][128];
 extern	_Bool			Entry;
 extern	_Bool			Exit;

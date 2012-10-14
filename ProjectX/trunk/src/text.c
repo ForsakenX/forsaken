@@ -41,7 +41,6 @@ extern px_timer_t LastPacketTime[MAX_PLAYERS+1];
 extern _Bool	CTF;
 extern _Bool CaptureTheFlag;
 extern _Bool BountyHunt;
-extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
 extern float	real_framelag;
 extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...

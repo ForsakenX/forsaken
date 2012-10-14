@@ -60,7 +60,6 @@ num_zones : u_int16_t
 ===================================================================*/
 extern	_Bool			ShowTrigZones;
 extern	BYTE			WhoIAm;
-extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 _Bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side );
 _Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
 extern TRIGGERMOD	*	TrigMods;

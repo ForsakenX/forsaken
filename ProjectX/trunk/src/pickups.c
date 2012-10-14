@@ -82,7 +82,6 @@ extern	XLIGHT			XLights[ MAXXLIGHTS ];
 extern	FMPOLY			FmPolys[ MAXNUMOF2DPOLYS ];
 extern	MODEL			Models[ MAXNUMOFMODELS ];
 extern	float			framelag;
-extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	BYTE			WhoIAm;
 extern	LINE			Lines[ MAXLINES ];
 extern	MLOADHEADER		Mloadheader;

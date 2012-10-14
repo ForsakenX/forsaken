@@ -68,7 +68,6 @@ extern	TLOADHEADER Tloadheader;
 extern	MODEL	Models[MAXNUMOFMODELS];
 
 extern	_Bool	DrawPanel;
-extern	GLOBALSHIP	Ships[MAX_PLAYERS+1];
 extern	float	framelag;
 
 /*===================================================================
