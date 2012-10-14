@@ -1158,13 +1158,14 @@ void DestroyGame( void )
 	if( PlayDemo )
 		return;
 	
-	Ships[WhoIAm].enable = 0;
 	MyGameStatus = STATUS_Left;
 	IsHost = false;
 
-    if ( WhoIAm < MAX_PLAYERS )
-    {
+	if ( WhoIAm < MAX_PLAYERS )
+	{
 		DebugPrintf("Destroy game pos 1\n");
+
+		Ships[WhoIAm].enable = 0;
 
 		KillOwnersSecBulls( WhoIAm );
 
