@@ -1674,6 +1674,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	case MSG_SHORTTRIGVAR:
 	case MSG_SHORTTRIGGER:
 	case MSG_SHORTREGENSLOT:
+	case MSG_LONGSTATUS:
 
 		if(IsHost || (host_network_player != NULL && host_network_player != from))
 		{
@@ -3058,15 +3059,15 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
    		lpLongStatus = (LPLONGSTATUSMSG)MsgPnt;
 
-		if( ( GameStatus[lpLongStatus->Status.WhoIAm] != STATUS_Normal) && (lpLongStatus->Status.Status == STATUS_Normal ) ) 
-			CreateReGen( lpLongStatus->Status.WhoIAm );
-		GameStatus[lpLongStatus->Status.WhoIAm]			= lpLongStatus->Status.Status;
-		DebugPrintf("%s LongStatus = %d\n", Names[lpLongStatus->Status.WhoIAm], GameStatus[lpLongStatus->Status.WhoIAm] );
-		Ships[lpLongStatus->Status.WhoIAm].Pickups		= lpLongStatus->Status.Pickups;
-		Ships[lpLongStatus->Status.WhoIAm].RegenSlots	= lpLongStatus->Status.RegenSlots;
-		Ships[lpLongStatus->Status.WhoIAm].Mines			= lpLongStatus->Status.Mines;
-		Ships[lpLongStatus->Status.WhoIAm].Triggers		= lpLongStatus->Status.Triggers;
-		Ships[lpLongStatus->Status.WhoIAm].TrigVars		= lpLongStatus->Status.TrigVars;
+		if( ( GameStatus[lpLongStatus->WhoIAm] != STATUS_Normal) && (lpLongStatus->Status.Status == STATUS_Normal ) ) 
+			CreateReGen( lpLongStatus->WhoIAm );
+		GameStatus[lpLongStatus->WhoIAm]			= lpLongStatus->Status.Status;
+		DebugPrintf("%s LongStatus = %d\n", Names[lpLongStatus->WhoIAm], GameStatus[lpLongStatus->WhoIAm] );
+		Ships[lpLongStatus->WhoIAm].Pickups		= lpLongStatus->Status.Pickups;
+		Ships[lpLongStatus->WhoIAm].RegenSlots	= lpLongStatus->Status.RegenSlots;
+		Ships[lpLongStatus->WhoIAm].Mines			= lpLongStatus->Status.Mines;
+		Ships[lpLongStatus->WhoIAm].Triggers		= lpLongStatus->Status.Triggers;
+		Ships[lpLongStatus->WhoIAm].TrigVars		= lpLongStatus->Status.TrigVars;
 		
 		if( !IsHost )
    		{
@@ -3089,16 +3090,16 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
    				OverallGameStatus = lpLongStatus->Status.Status;
 			}
    		}
-		TeamNumber[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.TeamNumber;
-		PlayerReady[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.IAmReady;
+		TeamNumber[lpLongStatus->WhoIAm] = lpLongStatus->Status.TeamNumber;
+		PlayerReady[lpLongStatus->WhoIAm] = lpLongStatus->Status.IAmReady;
 
 		// update network pointer and name
-		UpdatePlayer( from, lpLongStatus->Status.WhoIAm );
+		UpdatePlayer( from, lpLongStatus->WhoIAm );
 
 #ifdef DEMO_SUPPORT
 		if( !PlayDemo )
 		{
-			if( CheckForName( lpLongStatus->Status.WhoIAm ) )
+			if( CheckForName( lpLongStatus->WhoIAm ) )
 			{
 				if( RecordDemo )
 				{
@@ -3110,8 +3111,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					Demo_fwrite( &my_network_id, sizeof(DPID), 1, DemoFp );
 					msg = MSG_NAME;
 					Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );
-					Demo_fwrite( &lpLongStatus->Status.WhoIAm, sizeof(BYTE), 1, DemoFp );
-					Demo_fwrite( &Names[lpLongStatus->Status.WhoIAm][0], 8, 1, DemoFp );
+					Demo_fwrite( &lpLongStatus->WhoIAm, sizeof(BYTE), 1, DemoFp );
+					Demo_fwrite( &Names[lpLongStatus->WhoIAm][0], 8, 1, DemoFp );
 				}
 			}
 		}
@@ -3975,7 +3976,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpLongStatus->MsgCode				= msg;
         lpLongStatus->WhoIAm				= WhoIAm;
         lpLongStatus->Status.MsgCode		= msg;
-        lpLongStatus->Status.WhoIAm			= WhoIAm;
+        //lpLongStatus->Status.WhoIAm			= WhoIAm; // do not use this field
         lpLongStatus->Status.IsHost			= IsHost;
 		// telling everyone what I am currently doing....
 		lpLongStatus->Status.Status			= MyGameStatus;
