@@ -13892,25 +13892,13 @@ void SendTitleMessage(MENUITEM *Item)
 
 void AddTitleMessage(LPTEXTMSG lpTextMsg)
 {
-	char tempname[8];
 	char tempbuf[ 256 ];
 	
 	if (TotalTitleMsgs != MAX_TITLE_MSGS)
 	{
-		if (WhoIAm == lpTextMsg->WhoIAm)
-		{
-		 	strncpy( tempname, &biker_name[0], 7 );
-			tempname[7] = 0;
-			sprintf( tempbuf ,"%s: %s", tempname,  &lpTextMsg->Text[0] );
-			strncpy( TitleMsgQue[TitleMsgQueStart].text, tempbuf, MAX_TITLE_MSG_SIZE );
-			TitleMsgQue[TitleMsgQueStart].text[ MAX_TITLE_MSG_SIZE - 1 ] = 0;
-		}
-		else
-		{
-			sprintf( tempbuf,"%s: %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-			strncpy( TitleMsgQue[TitleMsgQueStart].text, tempbuf, MAX_TITLE_MSG_SIZE );
-			TitleMsgQue[TitleMsgQueStart].text[ MAX_TITLE_MSG_SIZE - 1 ] = 0;
-		}
+		char * name = (WhoIAm == lpTextMsg->WhoIAm) ? biker_name : Names[lpTextMsg->WhoIAm];
+		snprintf( TitleMsgQue[TitleMsgQueStart].text, MAX_TITLE_MSG_SIZE,
+			"%s: %s", name, &lpTextMsg->Text[0] );
 		TitleMsgQue[TitleMsgQueStart].timer = MAX_TITLE_MSG_TIME;
 		TitleMsgQueStart++;
 		TotalTitleMsgs++;
