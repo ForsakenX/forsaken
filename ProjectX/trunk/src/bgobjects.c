@@ -781,7 +781,7 @@ void ChangeBGState( BGOBJECT * Object, u_int16_t OwnerType, u_int16_t Owner, int
 				{
 					if( ( OwnerType == OWNER_SHIP ) && ( Owner == WhoIAm ) )
 					{
-						if( Object->PickupNeeded != (u_int16_t) -1 )
+						if( Object->PickupNeeded != -1 )
 						{
 							if( PickupsGot[ Object->PickupNeeded ] )
 							{
@@ -810,7 +810,7 @@ void ChangeBGState( BGOBJECT * Object, u_int16_t OwnerType, u_int16_t Owner, int
 				{
 					if( ( OwnerType == OWNER_SHIP ) && ( Owner == WhoIAm ) )
 					{
-						if( Object->PickupNeeded != (u_int16_t) -1 )
+						if( Object->PickupNeeded != -1 )
 						{
 							if( PickupsGot[ Object->PickupNeeded ] )
 							{
