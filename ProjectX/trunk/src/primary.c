@@ -77,7 +77,6 @@ extern	POLY			Polys[MAXPOLYS];
 extern	LINE			Lines[ MAXLINES ];
 extern	float			framelag;
 extern	BYTE			WhoIAm;
-extern	BYTE			Current_Camera_View;		// which object is currently using the camera view....
 extern	MODEL			Models[ MAXNUMOFMODELS ];
 extern	RENDERMATRIX		identity;
 extern	u_int16_t			FirstSecBullUsed;

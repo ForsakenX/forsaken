@@ -97,7 +97,6 @@ extern	char	biker_name[256];
 extern	float	framelag;
 extern char MyName[];
 extern char NickName[];
-extern	BYTE					Current_Camera_View;		// which object is currently using the camera view....
 extern	BYTE                    WhoIAm;
 extern	int16_t					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16_t					StatsCount;

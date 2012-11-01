@@ -42,7 +42,6 @@ extern	VECTOR			SlideUp;
 extern	VECTOR			SlideDown;
 extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
-extern	BYTE			Current_Camera_View;
 extern	MATRIX			ProjMatrix;
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;

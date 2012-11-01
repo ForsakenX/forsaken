@@ -995,7 +995,7 @@ typedef struct _SHIPHEALTHMSG
 extern SHORTNAMETYPE Names;
 
 extern GLOBALSHIP Ships[MAX_PLAYERS+1];
-
+extern BYTE Current_Camera_View; // which object is currently using the camera view....
 
 /*
  * fn prototypes

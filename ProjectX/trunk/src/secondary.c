@@ -83,7 +83,6 @@ extern	POLY			Polys[MAXPOLYS];
 extern	MODEL			Models[MAXNUMOFMODELS];
 extern	float			framelag;
 extern	BYTE			WhoIAm;
-extern	BYTE			Current_Camera_View;		// which object is currently using the camera view....
 extern	_Bool            bSoundEnabled;
 extern	FRAME_INFO	*	Exp_Header;
 extern	FRAME_INFO	*	Exp2_Header;

@@ -54,7 +54,6 @@ extern	VECTOR			SlideUp;
 extern	VECTOR			SlideDown;
 extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
-extern	BYTE			Current_Camera_View;
 extern	MODEL			Models[MAXNUMOFMODELS];
 extern	MATRIX			MATRIX_Identity;
 extern	u_int16_t			IsGroupVisible[MAXGROUPS];

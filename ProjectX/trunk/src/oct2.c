@@ -669,7 +669,6 @@ extern  u_int16_t      FirstPolyUsed;
 extern  u_int16_t      FirstLineUsed;
 extern  u_int16_t      FirstScrPolyUsed;
 extern  BYTE      WhoIAm;
-extern  BYTE      Current_Camera_View;    // which object is currently using the camera view....
 extern  _Bool      RemoteCameraActive;
 
 extern  int16_t     ShowPortal;

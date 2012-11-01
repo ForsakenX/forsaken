@@ -90,7 +90,6 @@ extern	MCLOADHEADER	MCloadheadert0;
 extern	FRAME_INFO	*	Flare_Header;
 extern	FRAME_INFO	*	Circle_Header;
 extern	FRAME_INFO	*	PickupRegen_Header;
-extern	BYTE			Current_Camera_View;
 
 extern	_Bool			JustPickedUpShield;
 

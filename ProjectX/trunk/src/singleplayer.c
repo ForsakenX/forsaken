@@ -27,7 +27,6 @@
 
 
 extern _Bool IsHost;   // is the user hosting/joining a game
-extern BYTE Current_Camera_View; // which object is currently using the camera view....
 extern	BYTE	GameStatus[];	// Game Status for every Ship...
 extern u_int16_t RandomStartPosModify;
 extern _Bool PlayDemo;

@@ -53,7 +53,6 @@ extern	MATRIX			MATRIX_Identity;
 extern	int16_t			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
 extern	BYTE			GameStatus[MAX_PLAYERS];
-extern	BYTE			Current_Camera_View;
 extern	int16_t			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	TRIGGERMOD	*	TrigMods;
 extern	u_int16_t	IsGroupVisible[MAXGROUPS];

@@ -61,7 +61,6 @@ extern	MLOADHEADER		Mloadheader;
 extern	ENEMY			Enemies[ MAXENEMIES ];
 extern	ENEMY		*	EnemyGroups[ MAXGROUPS ];
 extern	ENEMY_TYPES		EnemyTypes[ MAX_ENEMY_TYPES ];
-extern	BYTE			Current_Camera_View;		// which object is currently using the camera view....
 extern	PICKUP	*		PickupGroups[ MAXGROUPS ];
 extern	MXLOADHEADER	ModelHeaders[MAXMODELHEADERS];
 extern	ENEMY	*		FirstEnemyUsed;
