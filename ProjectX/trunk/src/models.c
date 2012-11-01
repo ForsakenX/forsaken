@@ -1150,7 +1150,14 @@ _Bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePn
 
 		if( Models[ i ].Visible )
 		{
-			if( InTitle || ( IsGroupVisible[ Models[ i ].Group ] || VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Models[ i ].Group, NULL ) ) )
+			if( InTitle || IsGroupVisible[ Models[ i ].Group ] || (
+				CAMERA_VIEW_IS_VALID &&
+				VisibleOverlap(
+					Ships[ Current_Camera_View ].Object.Group,
+					Models[ i ].Group,
+					NULL
+				)
+			))
 			{
 				if( Models[ i ].Flags & MODFLAG_UseClipGroup ) 
 					ClipGroup = Models[i].ClipGroup;
@@ -2267,6 +2274,7 @@ void ProcessModels( void )
 						{
 							Models[i].SpotFXTimeInterval[ Count ] = (float) 1;
 
+							if ( ! CAMERA_VIEW_IS_VALID ) return false;
 							VisNum = VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Models[i].Group, &VisGroups[ 0 ] );
 
 							switch( Models[i].SpotFXState[ Count ] )
@@ -2338,7 +2346,7 @@ void ProcessModels( void )
 														}
 													}
 
-													if( GroupsAreVisible( SpotFXGroup, Ships[ Current_Camera_View ].Object.Group ) )
+													if( CAMERA_VIEW_IS_VALID && GroupsAreVisible( SpotFXGroup, Ships[ Current_Camera_View ].Object.Group ) )
 													{
 														switch( SpotFXPtr->Type )
 														{
@@ -2492,7 +2500,7 @@ void ProcessModels( void )
 													}
 												}
 
-												if( GroupsAreVisible( SpotFXGroup, Ships[ Current_Camera_View ].Object.Group ) )
+												if( CAMERA_VIEW_IS_VALID && GroupsAreVisible( SpotFXGroup, Ships[ Current_Camera_View ].Object.Group ) )
 												{
 													switch( SpotFXPtr->Type )
 													{
@@ -4535,6 +4543,7 @@ void ThrowOutRider( u_int16_t Ship )
 {
 	VECTOR	Dir;
 
+	if ( ! CAMERA_VIEW_IS_VALID ) return;
 	if(!SoundInfo[ Ships[ Ship ].Object.Group ][ Ships[ Current_Camera_View ].Object.Group ] )
 	{
 		Dir = Ships[ Ship ].LastMove;

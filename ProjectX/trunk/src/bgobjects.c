@@ -1927,9 +1927,10 @@ void UpdateBGObjectsClipGroup( CAMERA * Camera )
 	{
 		NextObject = Object->NextUsed;
 
-		if( IsGroupVisible[ Object->Group ] ||
-			IsGroupVisible[ Ships[ Current_Camera_View ].Object.Group ] ||
-			VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Object->Group, NULL ) )
+		if( IsGroupVisible[ Object->Group ] || (CAMERA_VIEW_IS_VALID && (
+				IsGroupVisible[ Ships[ Current_Camera_View ].Object.Group ] ||
+				VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Object->Group, NULL )
+		)))
 		{
 			ClipGroup = FindClipGroup( Camera, &Mloadheader, &Object->TopLeft, &Object->BottomRight );
 			UpdateCompObjClipGroup( Object->Children, Object->NumChildren, ClipGroup );

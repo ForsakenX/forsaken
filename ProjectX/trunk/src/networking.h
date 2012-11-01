@@ -996,6 +996,8 @@ extern SHORTNAMETYPE Names;
 
 extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 extern BYTE Current_Camera_View; // which object is currently using the camera view....
+#define INVALID_CAMERA_VIEW MAX_PLAYERS+2
+#define CAMERA_VIEW_IS_VALID (Current_Camera_View >= 0 && Current_Camera_View < MAX_PLAYERS+1)
 
 /*
  * fn prototypes

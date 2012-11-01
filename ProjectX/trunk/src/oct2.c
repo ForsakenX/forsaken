@@ -4218,7 +4218,7 @@ _Bool MainGame( void ) // bjd
         float main_fov;
 
         TempMissileCam = Current_Camera_View;
-        Current_Camera_View = -1;
+        Current_Camera_View = INVALID_CAMERA_VIEW;
         if( ActiveRemoteCamera )
         {
           CameraRendering = CAMRENDERING_Pip;
@@ -4271,7 +4271,7 @@ _Bool MainGame( void ) // bjd
 			{
         float main_fov;
         TempMissileCam = Current_Camera_View;
-        Current_Camera_View = -1;
+        Current_Camera_View = INVALID_CAMERA_VIEW;
         CameraRendering = CAMRENDERING_Pip;
         CurrentCamera.enable = 1;
         CurrentCamera.Viewport = viewport;
