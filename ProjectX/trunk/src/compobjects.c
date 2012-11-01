@@ -63,9 +63,9 @@ extern	MXALOADHEADER	MxaModelHeaders[MAXMODELHEADERS];
 extern	LINE			Lines[ MAXLINES ];
 extern	MLOADHEADER		Mloadheader;
 
-_Bool GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+bool GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					   VECTOR * BottomRight );
-_Bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					    VECTOR * BottomRight );
 
 //#ifdef OPT_ON
@@ -82,10 +82,10 @@ MODELNAME	*	ModNames = &ModelNames[ 0 ];
 	Procedure	:	PreLoad Componented Object Data
 	Input		:	int8_t		*	Filename of .COB data
 				:	u_int16_t		*	BaseModel
-				:	_Bool			Level Specific?
-	Output		:	_Bool			true/false
+				:	bool			Level Specific?
+	Output		:	bool			true/false
 ===================================================================*/
-_Bool PreLoadCompObj( int8_t * path, u_int16_t * BaseModel, _Bool LevelSpecific )
+bool PreLoadCompObj( int8_t * path, u_int16_t * BaseModel, bool LevelSpecific )
 {
 	int16_t		i;
 	FILE	*	fp;
@@ -189,7 +189,7 @@ _Bool PreLoadCompObj( int8_t * path, u_int16_t * BaseModel, _Bool LevelSpecific 
 				:	float		*	Overall Anim Time
 				:	float		*	Mid Time
 				:	u_int16_t		*	BaseModel
-				:	_Bool			Level Specific?
+				:	bool			Level Specific?
 				:	u_int16_t			OwnerType
 				:	u_int16_t			OwnerID
 	Output		:	COMP_OBJ	*	Components
@@ -1220,9 +1220,9 @@ COMP_OBJ * GetCompObjAddress( int16_t ID, int16_t NumChildren, COMP_OBJ * Childr
 /*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Component
-	Output		:	_Bool			True/False
+	Output		:	bool			True/False
 ===================================================================*/
-_Bool GetCompObjAxis( COMP_OBJ * Comp )
+bool GetCompObjAxis( COMP_OBJ * Comp )
 {
 	int16_t				Trans;
 	ANI_ROTATE		*	RotData;
@@ -1260,10 +1260,10 @@ _Bool GetCompObjAxis( COMP_OBJ * Comp )
 	Procedure	:	Enable Component Object models
 	Input		:	COMP_OBJ	*	Start of Componented Object
 				:	int16_t			Number of Children
-				:	_Bool			True/False ( Visible / Invisible )
+				:	bool			True/False ( Visible / Invisible )
 	Output		:	Nothing
 ===================================================================*/
-void SetCompObjModelsState( COMP_OBJ * Children, int16_t NumChildren, _Bool Visible )
+void SetCompObjModelsState( COMP_OBJ * Children, int16_t NumChildren, bool Visible )
 {
 	int16_t			Count;
 
@@ -1402,7 +1402,7 @@ void ShowCompObjColZones( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Gr
 				:		float		Collision Radius
 	Output		:		void
 ===================================================================*/
-_Bool RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16_t StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius )
+bool RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16_t StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius )
 {
 	float		d1, d2;
 	float		DistToPlane;
@@ -1445,9 +1445,9 @@ _Bool RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, in
 	Input		:		VECTOR	*	Pos
 				:		ZONESIDE *	Sides
 				:		int16_t		NumSides
-	Output		:		_Bool		true/false
+	Output		:		bool		true/false
 ===================================================================*/
-_Bool PointInside( VECTOR * Pos, ZONESIDE * Sides, int16_t NumSides, float Radius, int16_t Side )
+bool PointInside( VECTOR * Pos, ZONESIDE * Sides, int16_t NumSides, float Radius, int16_t Side )
 {
 	float		d1;
 
@@ -1855,7 +1855,7 @@ void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight )
 				:	u_int16_t			Group
 	Output		:	Nothing
 ===================================================================*/
-_Bool AmIInvulnerable( COMP_OBJ * Children, int16_t NumChildren, float Time )
+bool AmIInvulnerable( COMP_OBJ * Children, int16_t NumChildren, float Time )
 {
 	int16_t				Count;
 	int16_t				Trans;
@@ -1971,7 +1971,7 @@ FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren )
 			fwrite( &Children->OldDisplayPos, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->OldDisplayMatrix, sizeof( MATRIX ), 1, fp );
 			fwrite( &Children->OldInvDisplayMatrix, sizeof( MATRIX ), 1, fp );
-			fwrite( &Children->UserControl, sizeof( _Bool ), 1, fp );
+			fwrite( &Children->UserControl, sizeof( bool ), 1, fp );
 			fwrite( &Children->UserAxis, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->UserAxisPoint, sizeof( VECTOR ), 1, fp );
 			fwrite( &Children->UserAngle, sizeof( float ), 1, fp );
@@ -2027,7 +2027,7 @@ FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren )
 			fread( &Children->OldDisplayPos, sizeof( VECTOR ), 1, fp );
 			fread( &Children->OldDisplayMatrix, sizeof( MATRIX ), 1, fp );
 			fread( &Children->OldInvDisplayMatrix, sizeof( MATRIX ), 1, fp );
-			fread( &Children->UserControl, sizeof( _Bool ), 1, fp );
+			fread( &Children->UserControl, sizeof( bool ), 1, fp );
 			fread( &Children->UserAxis, sizeof( VECTOR ), 1, fp );
 			fread( &Children->UserAxisPoint, sizeof( VECTOR ), 1, fp );
 			fread( &Children->UserAngle, sizeof( float ), 1, fp );

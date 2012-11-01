@@ -12,7 +12,7 @@ LPDIRECTINPUT lpdi = NULL;
 LPDIRECTINPUTDEVICE lpdiMouse;
 DIMOUSESTATE mouse;
 
-_Bool dx_init_mouse( void )
+bool dx_init_mouse( void )
 {
 	HRESULT  err;
 	GUID guid_mouse = GUID_SysMouse;
@@ -87,7 +87,7 @@ mouse_state_t* read_mouse( void )
 
 int Num_Joysticks = 0;
 
-_Bool  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
+bool  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
 {
    return (
       ((PLONG) lpguid1)[0] == ((PLONG) lpguid2)[0] &&
@@ -100,7 +100,7 @@ LPDIRECTINPUT             lpdi = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 
-_Bool FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef) 
+bool FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef) 
 { 
    LPDIRECTINPUT pdi = pvRef; 
    LPDIRECTINPUTDEVICE pdev;
@@ -140,7 +140,7 @@ _Bool FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 
 /* this is called for object in our joystick */
 /* objects can be buttons, axis, sliders etc... */
-_Bool CALLBACK DIEnumDeviceObjectsProc( 
+bool CALLBACK DIEnumDeviceObjectsProc( 
        LPCDIDEVICEOBJECTINSTANCE lpddoi, /* the object instance */
        LPVOID pvRef) /* pointer to void we passed in from calling block */
 { 
@@ -316,7 +316,7 @@ _Bool CALLBACK DIEnumDeviceObjectsProc(
 
 extern render_info_t render_info;
 
-_Bool joysticks_init(void)
+bool joysticks_init(void)
 {
   HRESULT  err;
   DIPROPDWORD dipdw =
@@ -332,7 +332,7 @@ _Bool joysticks_init(void)
 	LPDIRECTINPUTDEVICE     tempJoystick = NULL;
 	LPVOID joysticknumptr;
 	int i, j, k;
-	_Bool failjoystick;
+	bool failjoystick;
 
     err = DirectInputCreate(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &lpdi, NULL);
 	if (FAILED(err))//DirectInput8Create(hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
@@ -456,7 +456,7 @@ void  ReleaseJoysticks( void )
   }
 }
 
-_Bool joysticks_cleanup( void )
+bool joysticks_cleanup( void )
 {
 	int i;
 

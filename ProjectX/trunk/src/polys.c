@@ -579,7 +579,7 @@ void RemovePolyFromTPage( u_int16_t i, int16_t TPage )
 	Polys[ i ].NextInTPage = (u_int16_t) -1;
 }
 
-_Bool DisplayGroupClippedPolys(RENDEROBJECT *renderObject, u_int16_t Group )
+bool DisplayGroupClippedPolys(RENDEROBJECT *renderObject, u_int16_t Group )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -606,7 +606,7 @@ _Bool DisplayGroupClippedPolys(RENDEROBJECT *renderObject, u_int16_t Group )
 	return( false );
 }
 
-_Bool DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject )
+bool DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -643,7 +643,7 @@ _Bool DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject )
 	Output		:	True/False
 ===================================================================*/
 
-_Bool PolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
+bool PolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;
@@ -875,7 +875,7 @@ _Bool PolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffe
 				:	u_int16_t	*					Current Poly
 	Output		:	True/False
 ===================================================================*/
-_Bool PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
+bool PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;
@@ -1096,7 +1096,7 @@ _Bool PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int
 	return( true );
 }
 
-_Bool DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group )
+bool DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -1124,7 +1124,7 @@ _Bool DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group
 	return( false );
 }
 
-_Bool DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject )
+bool DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -1157,7 +1157,7 @@ _Bool DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject )
 				:	u_int16_t	*					Current Poly
 	Output		:	True/False
 ===================================================================*/
-_Bool SolidPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
+bool SolidPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;
@@ -1390,7 +1390,7 @@ _Bool SolidPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER Exec
 				:	u_int16_t	*					Current Poly
 	Output		:	True/False
 ===================================================================*/
-_Bool SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
+bool SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;

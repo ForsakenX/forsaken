@@ -86,21 +86,21 @@ extern	u_int16_t			GlobalPrimBullsID;
 extern	u_int16_t			GlobalSecBullsID;
 extern	int16_t			BikeModels[ MAXBIKETYPES ];
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
-extern	_Bool			IsHost;
+extern	bool			IsHost;
 extern	float			NmeDamageModifier;
 extern	int32_t			ColPerspective;
-extern	_Bool			TeamGame;
+extern	bool			TeamGame;
 extern	BYTE			TeamNumber[MAX_PLAYERS];
-extern _Bool BikeExpanded;
+extern bool BikeExpanded;
 extern	ENEMY			Enemies[ MAXENEMIES ];
 extern	BIKEINFO		BikeCompFiles[ MAXBIKETYPES ];
-extern	_Bool			BikeExhausts;
+extern	bool			BikeExhausts;
 extern	int16_t			CameraRendering;
-extern	_Bool			PlayDemo;
+extern	bool			PlayDemo;
 extern	BYTE			ChangeLevel_MyGameStatus;
-extern	_Bool			CaptureTheFlag;
-extern	_Bool			CTF;
-extern	_Bool			BikeEnginesOn;
+extern	bool			CaptureTheFlag;
+extern	bool			CTF;
+extern	bool			BikeEnginesOn;
 
 extern int KillMessageColour;
 extern int MatureContent;
@@ -125,7 +125,7 @@ MODEL	Models[MAXNUMOFMODELS];
 u_int16_t	FirstModelUsed;
 u_int16_t	FirstModelFree;
 int16_t	NextNewModel = -1;
-_Bool	ShowBoundingBoxes = false;
+bool	ShowBoundingBoxes = false;
 
 int8_t	*	ModelPath = "data\\models\\";
 
@@ -134,7 +134,7 @@ MXLOADHEADER ModelHeaders[MAXMODELHEADERS];
 #define	RETAIN_POLYS		true
 #define	DISCARD_POLYS		false
 void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * Blue );
-_Bool	ENVMxa( MXALOADHEADER * Mxaloadheader , MATRIX * Mat ,VECTOR * Pos);
+bool	ENVMxa( MXALOADHEADER * Mxaloadheader , MATRIX * Mat ,VECTOR * Pos);
 
 /*===================================================================
 	In game models
@@ -775,11 +775,11 @@ void OnceOnlyInitModel( void )
 	Procedure	:	Pre-Init models
 	Input		:	LPDIRECT3DDEVICE	Direct 3D Device
 				:	MODELNAME	*		Current Model Name
-	Output		:	_Bool				true/false
+	Output		:	bool				true/false
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
-_Bool PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
+bool PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 {
 	int			i;
 	int8_t		TempFilename[ 256 ];
@@ -843,9 +843,9 @@ _Bool PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 	Procedure	:	Init models
 	Input		:	LPDIRECT3DDEVICE	Direct 3D Device
 				:	MODELNAME	*		Current Model Name
-	Output		:	_Bool				true/false
+	Output		:	bool				true/false
 ===================================================================*/
-_Bool InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
+bool InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
 {
 	int i;
 	int8_t		TempFilename[ 256 ];
@@ -1124,7 +1124,7 @@ void KillAttachedSpotFX( u_int16_t i )
 *		display all active Models...
 ===================================================================*/
 
-_Bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ) // bjd
+bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ) // bjd
 {
 	RENDERMATRIX TempWorld;
 	u_int16_t	i;
@@ -1137,8 +1137,8 @@ _Bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePn
 	VECTOR	x1, x2;
 	u_int16_t	ClipGroup;
 	float r , g , b;
-	_Bool	InTitle;
-	_Bool	DoDisplay;
+	bool	InTitle;
+	bool	DoDisplay;
 
 	if( NamePnt == &ModelNames[0] ) InTitle = false;
 	else InTitle = true;
@@ -1503,7 +1503,7 @@ _Bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePn
 /*===================================================================
 *		Set up 2d exec buff etc...
 ===================================================================*/
-_Bool ReleaseTitleModels( )
+bool ReleaseTitleModels( )
 {
 	int i;
 
@@ -1531,7 +1531,7 @@ _Bool ReleaseTitleModels( )
 /*===================================================================
 *		Set up 2d exec buff etc...
 ===================================================================*/
-_Bool ReleaseModels( )
+bool ReleaseModels( )
 {
 	int i;
 
@@ -2791,9 +2791,9 @@ void CreateModelSpotFXFirePrimary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
 				:	int8_t	R
 				:	int8_t	G
 				:	int8_t	B
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
+bool ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	u_int16_t					Group;
@@ -2857,9 +2857,9 @@ _Bool ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 				:	int8_t	R
 				:	int8_t	G
 				:	int8_t	B
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
+bool ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
@@ -2936,7 +2936,7 @@ _Bool ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale,
 /*===================================================================
 	Procedure	:	Process model
 ===================================================================*/
-_Bool ProcessModelExec( RENDEROBJECT *renderObject, int16_t NumVerts, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
+bool ProcessModelExec( RENDEROBJECT *renderObject, int16_t NumVerts, float Scale, float MaxScale, int8_t R, int8_t G, int8_t B )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	COLOR				Colour;
@@ -2989,9 +2989,9 @@ _Bool ProcessModelExec( RENDEROBJECT *renderObject, int16_t NumVerts, float Scal
 				:	u_int8_t	R
 				:	u_int8_t	G
 				:	u_int8_t	B
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16_t NumVerts, u_int8_t R, u_int8_t G, u_int8_t B )
+bool ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16_t NumVerts, u_int8_t R, u_int8_t G, u_int8_t B )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	COLOR				Colour;
@@ -3152,9 +3152,9 @@ void CreateTracker( void )
 	Procedure	:	Light model
 	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool TintModel( u_int16_t Model, float RF, float GF, float BF, float TF )
+bool TintModel( u_int16_t Model, float RF, float GF, float BF, float TF )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	u_int16_t					Group;
@@ -3198,9 +3198,9 @@ _Bool TintModel( u_int16_t Model, float RF, float GF, float BF, float TF )
 	Procedure	:	Light model
 	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF, float TF )
+bool TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF, float TF )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	u_int16_t					Group;
@@ -3249,9 +3249,9 @@ _Bool TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF
 /*===================================================================
 	Procedure	:	Update Colours
 	Input		:	MXALOADHEADER	ModelHeader
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool UpdateMxaModel( MXALOADHEADER * MXAloadheader )
+bool UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 {
     LPLVERTEX	lpPointer = NULL;
 	LPLVERTEX	lpLVERTEX;
@@ -3318,9 +3318,9 @@ _Bool UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 	Procedure	:	Ambient Light model
 	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
+bool AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	LPLVERTEX			SrclpD3DLVERTEX = NULL;
@@ -3461,9 +3461,9 @@ __asm
 	Procedure	:	Ambient Light MX model
 	Input		:	u_int16_t		Model Number
 				:	float		R,G,B,Trans
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
+bool AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
@@ -3622,9 +3622,9 @@ __asm
 				:	MATRIX	*	Matrix
 				:	float		Z Translation
 				:	float		Range
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool ShadeModel( u_int16_t Model, MATRIX * Matrix, float ZTrans, float Range )
+bool ShadeModel( u_int16_t Model, MATRIX * Matrix, float ZTrans, float Range )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
@@ -3703,9 +3703,9 @@ _Bool ShadeModel( u_int16_t Model, MATRIX * Matrix, float ZTrans, float Range )
 	Input		:	u_int16_t		Model Number
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool LightModel( u_int16_t Model, VECTOR * Pos )
+bool LightModel( u_int16_t Model, VECTOR * Pos )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
@@ -3806,9 +3806,9 @@ _Bool LightModel( u_int16_t Model, VECTOR * Pos )
 	Input		:	u_int16_t		Model Number
 				:	MATRIX	*	Matrix
 				:	VECTOR	*	Pos
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool LightModel2( u_int16_t Model, VECTOR * Pos )
+bool LightModel2( u_int16_t Model, VECTOR * Pos )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
@@ -3913,9 +3913,9 @@ _Bool LightModel2( u_int16_t Model, VECTOR * Pos )
 				:	float		Starting GREEN ( 0-255 )
 				:	float		Starting BLUE ( 0-255 )
 				:	float		Starting TRANSPARANCY ( 0-255 )
-	Output		:	_Bool	True/False ( Visible/Not )
+	Output		:	bool	True/False ( Visible/Not )
 ===================================================================*/
-_Bool LightMxModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
+bool LightMxModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
@@ -4020,9 +4020,9 @@ _Bool LightMxModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF,
 				:	float		Starting GREEN ( 0-255 )
 				:	float		Starting BLUE ( 0-255 )
 				:	float		Starting TRANSPARANCY ( 0-255 )
-	Output		:	_Bool	True/False ( Visible/Not )
+	Output		:	bool	True/False ( Visible/Not )
 ===================================================================*/
-_Bool LightMxaModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
+bool LightMxaModel( u_int16_t Model, VECTOR * Pos, float RF, float GF, float BF, float TF )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
@@ -4495,9 +4495,9 @@ void GravityWave( VECTOR * Pos, float Radius, u_int16_t Owner, float Center_Grav
 /*===================================================================
 	Procedure	:	Check if within range of gravgon
 	Input		:	VECTOR	*	Pos
-	Output		:	_Bool		True/False ( True if collision )
+	Output		:	bool		True/False ( True if collision )
 ===================================================================*/
-_Bool CheckForGravgons( VECTOR * Pos )
+bool CheckForGravgons( VECTOR * Pos )
 {
 	u_int16_t		i;
 	u_int16_t		nextmodel;
@@ -5152,9 +5152,9 @@ u_int16_t CreateLine( float x1, float y1, float z1, float x2, float y2, float z2
 				:	VECTOR	*	Pos
 				:	VECTOR	*	TopLeft
 				:	VECTOR	*	BottomRight
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+bool GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					   VECTOR * BottomRight )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
@@ -5242,9 +5242,9 @@ char *GetName(int Player)
 				:	VECTOR	*	Pos
 				:	VECTOR	*	TopLeft
 				:	VECTOR	*	BottomRight
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
+bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					    VECTOR * BottomRight )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
@@ -5321,9 +5321,9 @@ _Bool GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 				:	VECTOR	*	Pos
 				:	u_int16_t	*	Line Array
 				:	u_int16_t		Group
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group2 )
+bool CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group2 )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
@@ -5404,9 +5404,9 @@ _Bool CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTO
 				:	VECTOR	*	Pos
 				:	u_int16_t	*	Line Array
 				:	u_int16_t		Group
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group2 )
+bool CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, u_int16_t * LineArray, u_int16_t Group2 )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
@@ -5540,11 +5540,11 @@ void SetupModelSpotFX( u_int16_t i )
 ===================================================================*/
 //#define	PHIL_TESTSFX
 
-extern _Bool TeamGame;
+extern bool TeamGame;
 extern int TeamCol[ MAX_TEAMS ];
 extern u_int8_t Colourtrans[MAXFONTCOLOURS][3];
 extern BYTE	TeamNumber[MAX_PLAYERS];
-extern _Bool TintBikeTeamColor;
+extern bool TintBikeTeamColor;
 
 void UpdateShipModel( u_int16_t Ship )
 {
@@ -6107,7 +6107,7 @@ FILE * SaveModels( FILE * fp )
 			fwrite( &Models[ i ].Type, sizeof( int16_t ), 1, fp );
 			fwrite( &Models[ i ].Flags, sizeof( u_int16_t ), 1, fp );
 			fwrite( &Models[ i ].SecWeapon, sizeof( BYTE ), 1, fp );
-			fwrite( &Models[ i ].Visible, sizeof( _Bool ), 1, fp );
+			fwrite( &Models[ i ].Visible, sizeof( bool ), 1, fp );
 			fwrite( &Models[ i ].ModelNum, sizeof( u_int16_t ), 1, fp );
 			fwrite( &Models[ i ].Group, sizeof( u_int16_t ), 1, fp );
 			fwrite( &Models[ i ].OwnerType, sizeof( u_int16_t ), 1, fp );
@@ -6185,7 +6185,7 @@ FILE * LoadModels( FILE * fp )
 			fread( &Models[ i ].Type, sizeof( int16_t ), 1, fp );
 			fread( &Models[ i ].Flags, sizeof( u_int16_t ), 1, fp );
 			fread( &Models[ i ].SecWeapon, sizeof( BYTE ), 1, fp );
-			fread( &Models[ i ].Visible, sizeof( _Bool ), 1, fp );
+			fread( &Models[ i ].Visible, sizeof( bool ), 1, fp );
 			fread( &Models[ i ].ModelNum, sizeof( u_int16_t ), 1, fp );
 			fread( &Models[ i ].Group, sizeof( u_int16_t ), 1, fp );
 			fread( &Models[ i ].OwnerType, sizeof( u_int16_t ), 1, fp );
@@ -6255,9 +6255,9 @@ FILE * LoadModels( FILE * fp )
 /*===================================================================
 	Procedure	:	Reinitialise Sound FX on Models
 	Input		:	u_int16_t		Model Index
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool ReinitSpotFXSFX( u_int16_t i )
+bool ReinitSpotFXSFX( u_int16_t i )
 {
 	int16_t		Count;
 	u_int16_t		NumSpotFX = 0;
@@ -6315,7 +6315,7 @@ void SetShipsVisibleFlag( void )
 {
 	int16_t	Ship;
 	u_int16_t	Model;
-	_Bool	ShipVisible;
+	bool	ShipVisible;
 
 	for( Ship = 0; Ship < MAX_PLAYERS; Ship++ )
 	{
@@ -6538,7 +6538,7 @@ void KillAllBikeEngines( void )
 				:	return true else return false
 	Output		:	Nothing
 ===================================================================*/
-_Bool EngineEnabled( u_int16_t OwnerType, u_int16_t Owner )
+bool EngineEnabled( u_int16_t OwnerType, u_int16_t Owner )
 {
 	if( BikeEnginesOn ) return( true );
 	if( ( OwnerType != OWNER_SHIP ) || ( Owner >= MAX_PLAYERS ) ) return( true );
@@ -6548,7 +6548,7 @@ _Bool EngineEnabled( u_int16_t OwnerType, u_int16_t Owner )
 /*===================================================================
 		True EnviroMent Mapping for an Mxaloadheader...
 ===================================================================*/
-_Bool	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
+bool	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 {
 	VECTOR Temp;
 //	D3DEXECUTEBUFFERDESC	debDesc;

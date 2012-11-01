@@ -8,8 +8,8 @@
 #include "string.h"
 #include "title.h"
 
-extern _Bool Debug;
-_Bool DebugLog = false;
+extern bool Debug;
+bool DebugLog = false;
 
 #ifdef WIN32
 #include <windows.h>	// for various things
@@ -241,10 +241,10 @@ void DebugState( const char * str )
 //#include "render.h"
 //extern render_info_t render_info;
 extern void MenuGoFullScreen( MENUITEM *Item );
-extern void input_grab( _Bool clip );
+extern void input_grab( bool clip );
 int Msg( const char * msg, ... )
 {
-//	_Bool was_fullscreen = render_info.fullscreen;
+//	bool was_fullscreen = render_info.fullscreen;
 
 	char txt[ 1024 ];
 	va_list args;

@@ -106,7 +106,7 @@ void AI_EXOGENON_MOVEDOWN( register ENEMY * Enemy )
 	VECTOR	TempUpVector;
 	VECTOR	FireDir;
 
-	_Bool	ClearLos = true;
+	bool	ClearLos = true;
 	VECTOR	TempOffset = { 0.0F, 0.0F, 180.0F };
 	ExogenonAim( Enemy );
 

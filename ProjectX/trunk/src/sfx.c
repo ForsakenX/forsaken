@@ -6,11 +6,11 @@
 #ifndef SOUND_SUPPORT
 
 float LastDistance[MAX_SFX];
-_Bool  bSoundEnabled = false;
+bool  bSoundEnabled = false;
 char  CurrentTauntVariant;
-_Bool  NoSFX = true;
+bool  NoSFX = true;
 
-_Bool InitializeSound( int flags ){return 1;}
+bool InitializeSound( int flags ){return 1;}
 
 void PlayEnemyBikerTaunt( ENEMY *Enemy ){}
 u_int32_t PlaySfx( int16_t Sfx, float Vol ){return 0;}
@@ -23,7 +23,7 @@ u_int32_t PlayFixedSpotSfx(int16_t Sfx, u_int16_t Group , VECTOR * SfxPos, float
 u_int32_t PlayPannedSfxWithVolModify(int16_t Sfx, u_int16_t Group, VECTOR * SfxPos, float Freq, float Vol ){return 0;}
 
 void StopEnemyBikerTaunt( ENEMY *Enemy ){}
-_Bool StopSfx( u_int32_t uid ){return 0;}
+bool StopSfx( u_int32_t uid ){return 0;}
 void StopTaunt( void ){}
 
 void DestroySound( int flags ){}
@@ -36,7 +36,7 @@ void UpdateSfxForBikeComputer( u_int16_t bikecomp ){}
 void ProcessLoopingSfx( void ){}
 void ProcessEnemyBikerTaunt( void ){}
 
-_Bool RestoreSfxData( u_int32_t id, VECTOR *pos, u_int16_t *group ){return 0;}
+bool RestoreSfxData( u_int32_t id, VECTOR *pos, u_int16_t *group ){return 0;}
 int16_t ReturnSFXIndex( char *file ){return -1;}
 void ReTriggerSfx( void ){}
 
@@ -44,7 +44,7 @@ void ModifyLoopingSfx( u_int32_t uid, float Freq, float Volume ){}
 
 void CheckSBufferList( void ){}
 
-_Bool SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat ){return 0;}
+bool SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat ){return 0;}
 void SetSoundLevels( int *dummy ){}
 
 float ReturnDistanceVolumeVector( VECTOR *sfxpos, u_int16_t sfxgroup, VECTOR *listenerpos, u_int16_t listenergroup, long *vol, VECTOR *sfxvector ){return 0;}
@@ -155,7 +155,7 @@ typedef struct SFXNAME{
 
 typedef struct{
 	u_int16_t Num_Variants;
-	_Bool Requested;
+	bool Requested;
 } SNDLOOKUP;
 
 SNDLOOKUP SndLookup[ MAX_SFX ];
@@ -166,7 +166,7 @@ globals
 ENEMY *EnemyTaunter;
 BYTE Taunter = 0xFF;
 u_int32_t TauntID = 0;
-_Bool TauntUpdatable = false;
+bool TauntUpdatable = false;
 //float TauntDist = 0.0F;
 char CurrentTauntVariant;
 #define MAX_ANY_SFX 256 // openal soft max is 256 so this feels good
@@ -402,22 +402,22 @@ SFXNAME	Sfx_Filenames[MAX_SFX] =
 
 typedef struct
 {
-        _Bool Used;
+        bool Used;
         u_int32_t  UniqueID;
         int SndObjIndex;
         int SfxFlags;
         int16_t TriggerSfx;
-        _Bool OnPause;
+        bool OnPause;
         float PauseValue;
 	int SfxBufferIndex;
 	sound_source_t * source;
 } SFX_HOLDER;
 
 SFX_HOLDER	SfxHolder[ MAX_ANY_SFX ];
-_Bool		NoSFX = false;
+bool		NoSFX = false;
 float		GlobalSoundAttenuation = 0.8F;
 
-_Bool bSoundEnabled = false;
+bool bSoundEnabled = false;
 u_int32_t CurrentBikerSpeech = 0;
 u_int32_t CurrentBikeCompSpeech = 0;
 
@@ -485,7 +485,7 @@ sound_source_t * sound_source_create( char *file, int sfxnum )
 
 typedef struct _SPOT_SFX_LIST
 {
-	_Bool     used;       // is sfx in use?
+	bool     used;       // is sfx in use?
 	int16_t    sfxindex;   // sfx num, from enum list
 	int      variant;    // sfx num, from enum list
 	int      flags;
@@ -510,7 +510,7 @@ int sfxref = 0;
 int dupbufref = 0;
 char TauntPath[ 128 ];
 
-_Bool BikerSpeechPlaying = false;
+bool BikerSpeechPlaying = false;
 
 u_int32_t SfxUniqueID = 1;
 
@@ -849,7 +849,7 @@ void GetSfxPath( int sfxnum, char *path )
 
 }
 
-_Bool SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
+bool SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 {
 	VECTOR UpVector;
 	VECTOR ForwardVector;
@@ -1007,7 +1007,7 @@ void ClearLevelSpecSfx( void )
 	notes		: <name> exists if <path>/name.wav or <path>/name01.wav exists
 				  this implies that sfx with variants must be numbered 01 to x.
 *****************************************/
-_Bool SfxExists( u_int16_t sfx, char *name )
+bool SfxExists( u_int16_t sfx, char *name )
 {
 	char fullpath[128] = "";
 	char dirname[128]  = "";
@@ -1053,7 +1053,7 @@ _Bool SfxExists( u_int16_t sfx, char *name )
 }
 
 
-_Bool IsDigit( char check )
+bool IsDigit( char check )
 {
 	if ( ( check >= 48 ) && ( check <= 57 ) )
 		return true;
@@ -1075,7 +1075,7 @@ int16_t ReturnSFXIndex( char *file )
 	int16_t i, level_spec_flags, filelen;
 	char *suffix;
 	char filetocheck[ 256 ];
-	_Bool found;
+	bool found;
 
 	// if zero length string, return error
 	if( !file || !file[0] )
@@ -1256,7 +1256,7 @@ void PauseAllSfx( void )
 #define LOOPING_SFX_FixedGroup 0
 #define LOOPING_SFX_VariableGroup 1
 
-_Bool RestoreSfxData( u_int32_t id, VECTOR *pos, u_int16_t *group )
+bool RestoreSfxData( u_int32_t id, VECTOR *pos, u_int16_t *group )
 {
 	int i;
 
@@ -1780,7 +1780,7 @@ void RequestTitleSfx( void )
 	Output		: none
 *****************************************/
 #define DESTROYSOUND_KeepLevelSpecTable 1
-_Bool InitializeSound( int flags )
+bool InitializeSound( int flags )
 {
 	int i;
 	u_int16_t Num_Sfx = 0;
@@ -1904,7 +1904,7 @@ void SetPannedSourceParams( void* sound_source, VECTOR *SfxPos, float Freq, VECT
 #define SPEECH_AMPLIFY	( 1.0F / GLOBAL_MAX_SFX )
 #define SFX_2D 2
 
-_Bool StartPannedSfx(int16_t Sfx, u_int16_t *Group , VECTOR * SfxPos, float Freq, int type, int HolderIndex, float VolModify, u_int16_t Effects, _Bool OverideDistanceCheck )
+bool StartPannedSfx(int16_t Sfx, u_int16_t *Group , VECTOR * SfxPos, float Freq, int type, int HolderIndex, float VolModify, u_int16_t Effects, bool OverideDistanceCheck )
 {
 	VECTOR	Temp;
 	float	Distance, MaxDistance;
@@ -2196,7 +2196,7 @@ u_int32_t PlaySfx( int16_t Sfx, float Vol )
 	return 0;
 }
 
-u_int32_t PlayGeneralPannedSfx(int16_t Sfx, u_int16_t Group , VECTOR * SfxPos, float Freq, _Bool OverideDistanceCheck, u_int16_t Effects, float VolModify )
+u_int32_t PlayGeneralPannedSfx(int16_t Sfx, u_int16_t Group , VECTOR * SfxPos, float Freq, bool OverideDistanceCheck, u_int16_t Effects, float VolModify )
 {
 	int index;
 
@@ -2302,7 +2302,7 @@ int GetSfxHolderIndex( u_int32_t uid )
 	return -1;
 }
 
-_Bool StopSfx( u_int32_t uid )
+bool StopSfx( u_int32_t uid )
 {
 	int i;
 
@@ -2659,7 +2659,7 @@ void ProcessLoopingSfx( void )
 	float	Modify = 0.0f, Distance = 0.0f, MaxDistance = 0.0f;
 	int i=0, flags=0;
 	long Volume = 0;
-	_Bool InRange = false;
+	bool InRange = false;
 	VECTOR Temp = {0.0f,0.0f,0.0f};
 	VECTOR Pos = {0.0f,0.0f,0.0f};
 
@@ -2849,7 +2849,7 @@ FILE *LoadAllSfx( FILE *fp )
 	return( fp );
 }
 
-void PlaySpecificBikerSpeech( int16_t sfx, u_int16_t Group, VECTOR *SfxPos, float Freq, int biker, char variant, _Bool update )
+void PlaySpecificBikerSpeech( int16_t sfx, u_int16_t Group, VECTOR *SfxPos, float Freq, int biker, char variant, bool update )
 {
 	char *last_slash;
 	char numstr[ 3 ];
@@ -2940,7 +2940,7 @@ float ReturnDistanceVolumeVector( VECTOR *sfxpos, u_int16_t sfxgroup, VECTOR *li
 	}
 }
 
-_Bool UpdateTaunt( u_int32_t uid, u_int16_t Group, VECTOR *SfxPos )
+bool UpdateTaunt( u_int32_t uid, u_int16_t Group, VECTOR *SfxPos )
 {
 	int i;
 	float	Distance;

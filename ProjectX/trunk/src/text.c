@@ -34,25 +34,25 @@
 		Externals ...
 ===================================================================*/
 
-extern _Bool Debug;
-extern _Bool	CanDoDamage[MAX_PLAYERS+1];
-extern _Bool	PlayDemo;
+extern bool Debug;
+extern bool	CanDoDamage[MAX_PLAYERS+1];
+extern bool	PlayDemo;
 extern px_timer_t LastPacketTime[MAX_PLAYERS+1];
-extern _Bool	CTF;
-extern _Bool CaptureTheFlag;
-extern _Bool BountyHunt;
+extern bool	CTF;
+extern bool CaptureTheFlag;
+extern bool BountyHunt;
 extern float	framelag;
 extern float	real_framelag;
 extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 
-extern	_Bool	TeamGame;
+extern	bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
-extern	_Bool	ShowTeamInfo;
+extern	bool	ShowTeamInfo;
 extern	MLOADHEADER Mloadheader;
 extern	int16_t			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16_t					Lives;
 extern	int16_t					MaxKills;
-extern	_Bool                    IsHost;
+extern	bool                    IsHost;
 extern	int16_t			NewLevelNum;
 extern	int16_t			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
@@ -80,7 +80,7 @@ extern int SystemMessageColour;
 extern int PlayerMessageColour;
 extern int MyMessageColour;
 extern SLIDER TextScaleSlider;
-extern _Bool ShowPlayerHealthByScores;
+extern bool ShowPlayerHealthByScores;
 // (stats.c)
 extern int GetPlayerByRank(int Player);
 
@@ -637,19 +637,19 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 ===================================================================*/
 #define	FLASH_RATE	( 15.0F )
 float	FlashSpeed = 0.0F;
-_Bool	FlashToggle = false;
+bool	FlashToggle = false;
 
 // (stats.c)
 extern int GetScoreStats(int Player);
 
 
-extern _Bool ShowPlayersOnHUD;
-extern _Bool ShowPlayersOnHUDbyKills;
+extern bool ShowPlayersOnHUD;
+extern bool ShowPlayersOnHUDbyKills;
 extern BYTE MyGameStatus;
 void PrintScoreSort( void )
 {
-	_Bool teamOK[MAX_TEAMS];
-	_Bool teamleft[MAX_TEAMS];
+	bool teamOK[MAX_TEAMS];
+	bool teamleft[MAX_TEAMS];
 	int i,e, pos;
 	int16_t TeamBounty[MAX_TEAMS];
 	int TeamBadConnection[MAX_TEAMS];
@@ -812,7 +812,7 @@ void PrintScoreSort( void )
 		{
 			if (teamOK[i])
 			{
-				_Bool show;
+				bool show;
 
 				show = false;
 				if ( CaptureTheFlag || CTF )
@@ -876,9 +876,9 @@ void PrintScoreSort( void )
 /*===================================================================
 	Procedure	:		Read in the level specific text messages.......
 	Input		:		char *Filename
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool ReadTxtFile( char *Filename )
+bool ReadTxtFile( char *Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -948,7 +948,7 @@ void FreeTxtFile( void )
 void TriggerTextMessage( u_int16_t * Data )
 {
 	TEXTMSGINFO * Tmi;
-	_Bool	DoneBefore = false;
+	bool	DoneBefore = false;
 
 	Tmi = TextMsgInfo;
 	if( Tmi )
@@ -1038,8 +1038,8 @@ void InitStatsMessages( void )
 /*
 typedef struct
 {
-	_Bool valid;
-	_Bool valid_this_time;
+	bool valid;
+	bool valid_this_time;
 	u_int16_t num_variations;
 	u_int16_t current_variation;
 	char text[MAX_STATS_MESSAGE_VARIATIONS][MAX_STATS_MESSAGE_LENGTH];
@@ -1146,9 +1146,9 @@ typedef struct
 /*===================================================================
 	Procedure	:		Read in the level specific text message Info.......
 	Input		:		char *Filename
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool ReadMsgFile( char *Filename )
+bool ReadMsgFile( char *Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -1733,7 +1733,7 @@ void LastTextMessage( void )
 /*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
-	Output		:		_Bool
+	Output		:		bool
 ===================================================================*/
 FILE * SaveAllText( FILE * fp )
 {
@@ -1760,7 +1760,7 @@ FILE * SaveAllText( FILE * fp )
 /*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
-	Output		:		_Bool
+	Output		:		bool
 ===================================================================*/
 FILE *	LoadAllText( FILE * fp )
 {

@@ -81,7 +81,7 @@ BGO_FILE	*	BGOFilesPtr = NULL;
 BGOBJECT	*	FirstBGObjectUsed = NULL;
 BGOBJECT	*	FirstBGObjectFree = NULL;
 BGOBJECT		BGObjects[ MAXBGOBJECTS ];
-_Bool			ShowColZones = false;
+bool			ShowColZones = false;
 
 DOORTYPESFX DoorTypeSFX[] = {
 
@@ -235,16 +235,16 @@ void KillUsedBGObject( BGOBJECT * Object )
 
 /*===================================================================
 	Procedure	:	Process all Background Objects
-	Input		:	_Bool	Collide with objects?
+	Input		:	bool	Collide with objects?
 	Output		:	nothing
 ===================================================================*/
-void ProcessBGObjects( _Bool Collide )
+void ProcessBGObjects( bool Collide )
 {
 	float			Damage = 0.0F;
 	BGOBJECT	*	Object;
 	BGOBJECT	*	NextObject;
 	VECTOR			PushVector;
-	_Bool			UndoAnim = false;	
+	bool			UndoAnim = false;	
 
 	Object = FirstBGObjectUsed;
 
@@ -743,12 +743,12 @@ void KillAllBGObjects( void )
 				:	u_int16_t			Owner Type
 				:	u_int16_t			Owner
 				:	int16_t			How
-				:	_Bool			Override
+				:	bool			Override
 	Output		:	Nothing
 ===================================================================*/
 void ChangeBGState( BGOBJECT * Object, u_int16_t OwnerType, u_int16_t Owner, int16_t How, float Damage )
 {
-	_Bool	Activate;
+	bool	Activate;
 
 	switch( Object->Type )
 	{
@@ -1001,11 +1001,11 @@ void ChangeBGState( BGOBJECT * Object, u_int16_t OwnerType, u_int16_t Owner, int
 /*===================================================================
 	Procedure	:	PreLoad All Background Animating Objects
 	Input		:	int8_t	*	Filename
-	Output		:	_Bool		true/false
+	Output		:	bool		true/false
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
-_Bool PreLoadBGOFiles( void )
+bool PreLoadBGOFiles( void )
 {
 	BGO_FILE	*	FilePtr = NULL;
 	char			TempFilename[ 256 ];
@@ -1219,9 +1219,9 @@ _Bool PreLoadBGOFiles( void )
 /*===================================================================
 	Procedure	:	Load All Background Animating Objects
 	Input		:	Nothing
-	Output		:	_Bool		true/false
+	Output		:	bool		true/false
 ===================================================================*/
-_Bool LoadBGOFiles( void )
+bool LoadBGOFiles( void )
 {
 	BGO_FILE	*	FilePtr;
 	BGOBJECT	*	Object;
@@ -2000,9 +2000,9 @@ float CalcObjectRadius( VECTOR * Pos, VECTOR * TopLeft, VECTOR * BottomRight )
 /*===================================================================
 	Procedure	:	Check if Background object hit enemy
 	Input		:	BGOBJECT	*	Object
-	Output		:	_Bool			True/False
+	Output		:	bool			True/False
 ===================================================================*/
-_Bool CheckBGObjectToEnemies( BGOBJECT * Object )
+bool CheckBGObjectToEnemies( BGOBJECT * Object )
 {
 	int16_t		Count;
 	GROUPLIST * GroupsVisible;
@@ -2011,7 +2011,7 @@ _Bool CheckBGObjectToEnemies( BGOBJECT * Object )
 	u_int16_t		DebugCount = 0;
 	ENEMY	*	Enemy;
 	ENEMY	*	NextEnemy;
-	_Bool		HitFlag = false;
+	bool		HitFlag = false;
 	VECTOR		PushVector;
 	float		Damage;
 
@@ -2076,10 +2076,10 @@ _Bool CheckBGObjectToEnemies( BGOBJECT * Object )
 /*===================================================================
 	Procedure	:	Check if Background object hit pickup
 	Input		:	BGOBJECT	*	Object
-	Output		:	_Bool			True/False
+	Output		:	bool			True/False
 ===================================================================*/
 extern  BYTE          MyGameStatus;
-_Bool CheckBGObjectToPickups( BGOBJECT * Object )
+bool CheckBGObjectToPickups( BGOBJECT * Object )
 {
 	int16_t		Count;
 	GROUPLIST * GroupsVisible;
@@ -2088,7 +2088,7 @@ _Bool CheckBGObjectToPickups( BGOBJECT * Object )
 	u_int16_t		DebugCount = 0;
 	PICKUP	*	Pickup;
 	PICKUP	*	NextPickup;
-	_Bool		HitFlag = false;
+	bool		HitFlag = false;
 	VECTOR		PushVector;
 	float		Damage;
 
@@ -2157,9 +2157,9 @@ _Bool CheckBGObjectToPickups( BGOBJECT * Object )
 /*===================================================================
 	Procedure	:	Check if Background object hit Mine
 	Input		:	BGOBJECT	*	Object
-	Output		:	_Bool			True/False
+	Output		:	bool			True/False
 ===================================================================*/
-_Bool CheckBGObjectToMines( BGOBJECT * Object )
+bool CheckBGObjectToMines( BGOBJECT * Object )
 {
 	int16_t		Count;
 	GROUPLIST * GroupsVisible;
@@ -2167,7 +2167,7 @@ _Bool CheckBGObjectToMines( BGOBJECT * Object )
 	u_int16_t		CurrentGroup;
 	SECONDARYWEAPONBULLET * SecBull;
 	SECONDARYWEAPONBULLET * NextSecBull;
-	_Bool		HitFlag = false;
+	bool		HitFlag = false;
 	VECTOR		PushVector;
 	float		Damage;
 
@@ -2573,9 +2573,9 @@ BIKEINFO BikeCompFiles[ MAXBIKETYPES ] = {
 /*===================================================================
 	Procedure	:	PreLoad All Components for Ships
 	Input		:	Nothing
-	Output		:	_Bool		true/false
+	Output		:	bool		true/false
 ===================================================================*/
-_Bool PreLoadShips( void )
+bool PreLoadShips( void )
 {
 	int16_t	Count;
 	u_int16_t	BaseModel;
@@ -2620,9 +2620,9 @@ _Bool PreLoadShips( void )
 /*===================================================================
 	Procedure	:	Allocate all Components for Ship
 	Input		:	u_int16_t	Ship
-	Output		:	_Bool	true/false
+	Output		:	bool	true/false
 ===================================================================*/
-_Bool AllocateCompShip( u_int16_t Ship )
+bool AllocateCompShip( u_int16_t Ship )
 {
 	int16_t			Type;
 	u_int16_t			StartModel, BaseModel;
@@ -2756,9 +2756,9 @@ float FlyGirlAnim;
 /*===================================================================
 	Procedure	:	PreLoad All Components for FlyGirl
 	Input		:	Nothing
-	Output		:	_Bool		true/false
+	Output		:	bool		true/false
 ===================================================================*/
-_Bool PreLoadFlyGirl( void )
+bool PreLoadFlyGirl( void )
 {
 	u_int16_t	BaseModel;
 	char	TempFilename[ 256 ];
@@ -2786,9 +2786,9 @@ _Bool PreLoadFlyGirl( void )
 /*===================================================================
 	Procedure	:	Allocate all Components for Ship
 	Input		:	Nothing
-	Output		:	_Bool	true/false
+	Output		:	bool	true/false
 ===================================================================*/
-_Bool AllocateCompFlyGirl( void )
+bool AllocateCompFlyGirl( void )
 {
 	u_int16_t			BaseModel;
 	char			TempFilename[ 256 ];
@@ -2851,10 +2851,10 @@ void ReleaseFlyGirl( void )
 	Procedure	:	Animate And Update Components
 	Input		:	VECTOR	*	Pos
 				:	MATRIX	*	Matrix
-				:	_Bool		Visible
+				:	bool		Visible
 	Output		:	Nothing
 ===================================================================*/
-void UpdateFlyGirl( VECTOR * Pos, MATRIX * Matrix, _Bool Visible )
+void UpdateFlyGirl( VECTOR * Pos, MATRIX * Matrix, bool Visible )
 {
 	FlyGirlAnim += framelag;
 

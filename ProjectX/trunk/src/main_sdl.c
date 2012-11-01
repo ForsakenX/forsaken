@@ -8,9 +8,9 @@
 #endif
 
 extern render_info_t render_info;
-extern _Bool render_init( render_info_t * info );
+extern bool render_init( render_info_t * info );
 
-_Bool sdl_init( void )
+bool sdl_init( void )
 {
 	SDL_version ver;
 	SDL_VERSION(&ver);
@@ -172,7 +172,7 @@ static u_int32_t create_video_flags( void )
 	return flags;
 }
 
-static _Bool create_video_surface( u_int32_t flags )
+static bool create_video_surface( u_int32_t flags )
 {
 #ifndef RENDER_DISABLED
 	render_info.screen = SDL_SetVideoMode(
@@ -207,7 +207,7 @@ static void set_aspect_ratio( void )
 	DebugPrintf("aspect ratio: %d:%d\n",render_info.ThisMode.w,render_info.ThisMode.h);
 }
 
-_Bool sdl_init_video( void )
+bool sdl_init_video( void )
 {
 	u_int32_t flags = create_video_flags();
 

@@ -66,7 +66,7 @@ extern USERCONFIG *player_config;
 extern	SHIPCONTROL control;
 extern	int16_t	NextNewModel;
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
-extern	_Bool			IsHost;
+extern	bool			IsHost;
 extern	MXALOADHEADER	MxaModelHeaders[ MAXMXAMODELHEADERS ];
 extern	MXLOADHEADER	ModelHeaders[MAXMODELHEADERS];
 extern	AIMDATA AimData;
@@ -95,8 +95,8 @@ extern	float	NmeDamageModifier;
 extern	VECTOR	FleshmorphPos;
 extern	MODELNAME	*	ModNames;
 
-_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
-_Bool FindPointAboveGround( VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup );
+bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
+bool FindPointAboveGround( VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup );
 void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy );
 
 /*===================================================================
@@ -110,7 +110,7 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy );
 	Global Variables
 ===================================================================*/
 int		EnemiesActive = 0;
-_Bool	ShowUntriggeredNMEs = false;
+bool	ShowUntriggeredNMEs = false;
 int		Exogenon_Num_StartPos = 0;
 VECTOR	Exogenon_StartPos[6];
 
@@ -441,7 +441,7 @@ GUNTYPE	GunTypes[] = {
 
 };
 
-//	_Bool	OnlyOnce = true;// Use this to display an enemy...
+//	bool	OnlyOnce = true;// Use this to display an enemy...
 
 	int16_t		NumInitEnemies;
 	int16_t		NumKilledEnemies = 0;
@@ -3760,16 +3760,16 @@ ENEMY * TestEnemy = NULL;
 	Enemy Control Routines...
 ===================================================================*/
 ENEMY * PutEnemiesAtNodes(void);
-void AutoMovement( OBJECT * Object , ENEMY * Enemy , _Bool AngleDecellBefore );
+void AutoMovement( OBJECT * Object , ENEMY * Enemy , bool AngleDecellBefore );
 void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy );
 void AutoDisplay( OBJECT * Object );
 void CarryOutAIMovementCommands( ENEMY * Enemy );
 void CarryOutPreciseAIMovementCommands( ENEMY * Enemy );
 void CarryOutGUN_AIMovementCommands( GUNOBJECT * Object );
 void CarryOutGUN_PreciseAIMovementCommands( GUNOBJECT * GObject );
-void GunRotation( GUNOBJECT * Object, _Bool AngleDecellBefore  );
+void GunRotation( GUNOBJECT * Object, bool AngleDecellBefore  );
 void RestrictMovement( ENEMY * Enemy , VECTOR * Move );
-_Bool SplineAutoMovement( OBJECT * Object , ENEMY * Enemy );
+bool SplineAutoMovement( OBJECT * Object , ENEMY * Enemy );
 void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy );
 
 void EnemyFlyUnderPlayerControl( ENEMY * Enemy );
@@ -3784,8 +3784,8 @@ void EnemyUnderFleshMorphControl( ENEMY * Enemy );
 void EnemyUnderLittleGeekControl( ENEMY * Enemy );
 void InitGuns( BYTE how_many_guns , u_int16_t * GunType , OBJECT * Object );
 void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, u_int16_t Group , u_int16_t * DestGroup );
-_Bool Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move );
-_Bool Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos);
+bool Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move );
+bool Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos);
 void AutoDisplayMatrix( OBJECT * Object );
 
 	
@@ -4215,11 +4215,11 @@ void ReleaseAllEnemies( void )
 /*===================================================================
 	Procedure	:	PreLoad Enemies
 	Input		:	Nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
-_Bool PreLoadEnemies( void )
+bool PreLoadEnemies( void )
 {
 	FILE	*	fp;
 	int16_t		Count;
@@ -4426,9 +4426,9 @@ _Bool PreLoadEnemies( void )
 /*===================================================================
 	Procedure	:	Load Enemies
 	Input		:	Nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool LoadEnemies( void )
+bool LoadEnemies( void )
 {
 	FILE	*	fp;
 	int16_t		Count;
@@ -5365,7 +5365,7 @@ void ProcessEnemies( void )
 	u_int16_t			Model;
 	u_int16_t			OldGroup;
 	VECTOR			OldPos;
-	_Bool			OldComponentCollide;
+	bool			OldComponentCollide;
 
 #if ENABLEENEMYCOLLISIONS
 	VECTOR			PushVector;
@@ -6140,7 +6140,7 @@ void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 	Output		:	OBJECt * Object
 	Output		:	Nothing
 ===================================================================*/
-void AutoMovement( OBJECT * Object , ENEMY * Enemy , _Bool AngleDecellBefore )
+void AutoMovement( OBJECT * Object , ENEMY * Enemy , bool AngleDecellBefore )
 {
 	VECTOR	ImpactPoint;
 	float	Speed;
@@ -6151,7 +6151,7 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , _Bool AngleDecellBefore )
 	VECTOR	Bob;
 	BGOBJECT * BGObject;
 	VECTOR	ExtForce;
-	_Bool	HasBeenExternal;
+	bool	HasBeenExternal;
 	VECTOR	StartPos;
 	u_int16_t	OldGroup;
 	float	ShieldModifier;
@@ -6877,7 +6877,7 @@ void CarryOutGUN_PreciseAIMovementCommands( GUNOBJECT * GObject )
 	Output		:	GUNOBJECT * Object
 	Output		:	Nothing
 ===================================================================*/
-void GunRotation( GUNOBJECT * Object, _Bool AngleDecellBefore  )
+void GunRotation( GUNOBJECT * Object, bool AngleDecellBefore  )
 {
 	GUNTYPE	* GunType;
 	GunType = &GunTypes[Object->Type];
@@ -6954,9 +6954,9 @@ void GunRotation( GUNOBJECT * Object, _Bool AngleDecellBefore  )
 				:	MATRIX	*	Transposed Matrix ( TBFI )
 				:	VECTOR	*	FirePos
 				:	int16_t		BaseIndex
-	Output		:	_Bool		true/false
+	Output		:	bool		true/false
 ===================================================================*/
-_Bool GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16_t BaseIndex )
+bool GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16_t BaseIndex )
 {
 	int16_t	Last = -1;
 
@@ -7105,7 +7105,7 @@ void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 				:	VECTOR * Move offset....
 	Output		:	Nothing
 ===================================================================*/
-_Bool Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
+bool Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 {
 	ENEMY * TEnemy;
 	float Move_Length;
@@ -7159,7 +7159,7 @@ _Bool Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
 ===================================================================*/
-_Bool Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
+bool Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 {
 	ENEMY * TEnemy;
 	float Move_Length;
@@ -7200,7 +7200,7 @@ _Bool Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
 ===================================================================*/
-_Bool Ship2EnemyCollide( u_int16_t i , VECTOR * Move_Off )
+bool Ship2EnemyCollide( u_int16_t i , VECTOR * Move_Off )
 {
 	float Move_Length;
 	float Next_Move_Length;
@@ -7211,7 +7211,7 @@ _Bool Ship2EnemyCollide( u_int16_t i , VECTOR * Move_Off )
 	VECTOR	Norm_Move_Off;
 	VECTOR	Temp_Move_Off;
 	VECTOR	NewPos;
-	_Bool	HasBeen = false;
+	bool	HasBeen = false;
 	ENEMY * TEnemy;
 
 	Norm_Move_Off = *Move_Off;
@@ -8075,7 +8075,7 @@ static int read_Gun_WeaponType( FILE *f, char *last_token )
 /*===================================================================
 	Procedure	:	Read in the enemy txt file..
 	Input		:	char * Filename
-	Output		:	_Bool true/false
+	Output		:	bool true/false
 ===================================================================*/
 typedef int (*ReadEnemy)( FILE *, char * );
 typedef struct {
@@ -8083,7 +8083,7 @@ typedef struct {
 	ReadEnemy handle;
 } READENEMYTXTFILE;
 
-_Bool ReadEnemyTxtFile( char *Filename )
+bool ReadEnemyTxtFile( char *Filename )
 {
 	static READENEMYTXTFILE jumptab[] = {
 		{ "EnemyType",				read_EnemyType				},
@@ -8251,16 +8251,16 @@ void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 /*===================================================================
 	Procedure	:	Carry out all External force modifiers for Spline Following enemies..
 	Output		:	OBJECt * Object
-	Output		:	_Bool TURE/false....Wether there was any 
+	Output		:	bool TURE/false....Wether there was any 
 ===================================================================*/
-_Bool SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
+bool SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 {
 	VECTOR	ImpactPoint;
 	VECTOR	Move_Off;	
 	u_int16_t	ImpactGroup;
 	BGOBJECT * BGObject;
 	VECTOR	ExtForce;
-	_Bool	HasBeenExternal;
+	bool	HasBeenExternal;
 	VECTOR	StartPos;
 	u_int16_t	OldGroup;
 	float	ShieldModifier;
@@ -8431,9 +8431,9 @@ u_int16_t FindDuplicateModel( int8_t * Filename, int16_t NumModels )
 	Procedure	:	Perform Damage on an Enemy....If its not in a death
 				:	MODE then put it in one or Destroy it....
 	Input		:	ENEMY * Enemy
-	Output		:	_Bool Destroyed 
+	Output		:	bool Destroyed 
 ===================================================================*/
-_Bool DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed , u_int16_t Owner , u_int16_t OwnerType )
+bool DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed , u_int16_t Owner , u_int16_t OwnerType )
 {
 	u_int16_t Random;
 	VECTOR	TempVector;
@@ -8590,15 +8590,15 @@ void ObjectRotateExternal( OBJECT * Object, VECTOR * Pos , VECTOR *point, VECTOR
 /*===================================================================
 	Procedure	:		Find Point 75.0F above the ground...
 	Input		:		VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup
-	Output		:		_Bool false/true
+	Output		:		bool false/true
 ===================================================================*/
-_Bool FindPointAboveGround( VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup )
+bool FindPointAboveGround( VECTOR * Pos , u_int16_t Group , VECTOR * NewPos , u_int16_t * NewGroup )
 {
 	int			i;
 	NORMAL		TempNormal;
 	VECTOR		TempPos_New;
 	VECTOR		Move_Off = { 0.0F , -4000.0F , 0.0F };
-	_Bool		LegalGroup;
+	bool		LegalGroup;
 
 	*NewGroup = Group;
 	*NewPos = *Pos;
@@ -8789,9 +8789,9 @@ typedef struct _FSHORTGLOBALSHIP
 /*===================================================================
 	Procedure	:		Enemy Save...
 	Input		:		FILE * fp
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool Enemy_Save( FILE * fp )
+bool Enemy_Save( FILE * fp )
 {
 	int i;
 	int e;
@@ -8994,9 +8994,9 @@ _Bool Enemy_Save( FILE * fp )
 /*===================================================================
 	Procedure	:		Enemy Load...
 	Input		:		FILE * fp
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool Enemy_Load( FILE * fp )
+bool Enemy_Load( FILE * fp )
 {
 	int i;
 	int e;
@@ -9242,9 +9242,9 @@ _Bool Enemy_Load( FILE * fp )
 /*===================================================================
 	Procedure	:		Object Save...
 	Input		:		FILE * fp , OBJECT * Obj
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool Object_Save( FILE * fp , OBJECT * Obj )
+bool Object_Save( FILE * fp , OBJECT * Obj )
 {
 	int i;
 	int e;
@@ -9364,9 +9364,9 @@ _Bool Object_Save( FILE * fp , OBJECT * Obj )
 /*===================================================================
 	Procedure	:		Gun Save...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
+bool Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 {
 	int i;
 
@@ -9392,9 +9392,9 @@ _Bool Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 /*===================================================================
 	Procedure	:		Object Load...
 	Input		:		FILE * fp , OBJECT * Obj
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool Object_Load( FILE * fp , OBJECT * Obj )
+bool Object_Load( FILE * fp , OBJECT * Obj )
 {
 	int e;
 	int16_t	NumChildren;
@@ -9511,9 +9511,9 @@ _Bool Object_Load( FILE * fp , OBJECT * Obj )
 /*===================================================================
 	Procedure	:		Gun Load...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
+bool Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 {
 	int i;
 

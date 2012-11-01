@@ -19,7 +19,7 @@
 /*===================================================================
 	Externals
 ===================================================================*/
-extern	_Bool		DebugInfo;
+extern	bool		DebugInfo;
 extern	MLOADHEADER Mloadheader;
 extern	u_int16_t		NumGroupsVisible;
 extern	u_int16_t		GroupsVisible[MAXGROUPS];
@@ -31,15 +31,15 @@ extern	DWORD		CurrentTextureBlend;
 
 extern	LINE		Lines[ MAXLINES ];
 extern	CAMERA		CurrentCamera;
-extern	_Bool		NodeCube;
-extern	_Bool		OldNodeCube;
-extern	_Bool		NodeCubeType;
+extern	bool		NodeCube;
+extern	bool		OldNodeCube;
+extern	bool		NodeCubeType;
 
 extern	int			Depth;
 extern	BSP_NODE *	BSP_Nodes[ 256 ];
-extern	_Bool		Inside;
+extern	bool		Inside;
 extern	float		CollisionRadius;
-extern	_Bool		ShowColZones;
+extern	bool		ShowColZones;
 
 extern	MODEL		Models[MAXNUMOFMODELS];
 extern	MATRIX		MATRIX_Identity;
@@ -72,9 +72,9 @@ extern	MATRIX		MATRIX_Identity;
 	RENDEROBJECT			Skin_Execs[ MAXSKINEXECS ];
 	int16_t					Num_Skin_Execs = 0;
 	int16_t					ShowSkin = 0;
-	_Bool					ShowTrigZones = false;
-	_Bool					ShowEFZones = false;
-	_Bool					ShowTeleports = false;
+	bool					ShowTrigZones = false;
+	bool					ShowEFZones = false;
+	bool					ShowTeleports = false;
 
 	static int16_t			NumNodeCubeLines = 0;
 	u_int16_t					NodeCubeLines[ MAXLINES ];
@@ -108,7 +108,7 @@ void InitSkinExecs( void )
 				:		int16_t			Number of Groups Visible
 	Output		:		Nothing
 ===================================================================*/
-_Bool CreateSkinExecList( MCLOADHEADER * MCloadheader, int16_t NumVisible )
+bool CreateSkinExecList( MCLOADHEADER * MCloadheader, int16_t NumVisible )
 {
 	COLOR		color;
 	COLOR		skincolor;
@@ -334,7 +334,7 @@ _Bool CreateSkinExecList( MCLOADHEADER * MCloadheader, int16_t NumVisible )
 /*===================================================================
 	Procedure	:		Create New Execute Buffer
 	Input		:		Nothing
-	Output		:		_Bool		True/False
+	Output		:		bool		True/False
 ===================================================================*/
 void DisplayBSPNode( BSP_NODE * Node )
 {
@@ -989,9 +989,9 @@ void KillNodeCubeLines( void )
 /*===================================================================
 	Procedure	:		Create New Execute Buffer
 	Input		:		Nothing
-	Output		:		_Bool		True/False
+	Output		:		bool		True/False
 ===================================================================*/
-_Bool MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t	NumVerts, int16_t NumTris )
+bool MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t	NumVerts, int16_t NumTris )
 {
     LPLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
 
@@ -1099,7 +1099,7 @@ void ReleaseSkinExecs( void )
 				:		int16_t			Number of Groups Visible
 	Output		:		Nothing
 ===================================================================*/
-_Bool CreatePortalExecList( MLOADHEADER * Mloadheader, int16_t NumVisible )
+bool CreatePortalExecList( MLOADHEADER * Mloadheader, int16_t NumVisible )
 {
 	COLOR		color;
 	int16_t			g;
@@ -1225,9 +1225,9 @@ _Bool CreatePortalExecList( MLOADHEADER * Mloadheader, int16_t NumVisible )
 /*===================================================================
 	Procedure	:		Create New Execute Buffer for portal polys
 	Input		:		Nothing
-	Output		:		_Bool		True/False
+	Output		:		bool		True/False
 ===================================================================*/
-_Bool MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t NumVerts, int16_t NumTris )
+bool MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t NumVerts, int16_t NumTris )
 {
     LPLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
 
@@ -1329,7 +1329,7 @@ void ReleasePortalExecs( void )
 struct
 {
 	float	x, y, z;
-	_Bool	flag;
+	bool	flag;
 
 } PointList[ 12 ];
 
@@ -2022,7 +2022,7 @@ int GimmeNodeVertices( BSP_NODE * plane_ptr, BSP_NODE * space_ptr, int side, VEC
 				:		int16_t			Num Sides in Space
 				:		int16_t			Side
 				:		VECTOR		*	Vertices to output
-	Output		:		_Bool			True/False
+	Output		:		bool			True/False
 ===================================================================*/
 int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr, int NumSides, int side, VECTOR * out_ptr )
 {
@@ -2318,7 +2318,7 @@ int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr
 				:		int16_t			Num Sides in Space
 				:		int16_t			Side
 				:		VECTOR		*	Vertices to output
-	Output		:		_Bool			True/False
+	Output		:		bool			True/False
 ===================================================================*/
 int GimmeColZoneVertices( ZONESIDE * plane_ptr, ZONESIDE * space_ptr, int NumSides, int side, VECTOR * out_ptr )
 {

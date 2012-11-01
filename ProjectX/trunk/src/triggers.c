@@ -44,8 +44,8 @@
 extern	BYTE			WhoIAm;
 extern	float framelag;
 extern	BYTE	ChangeLevel_MyGameStatus;
-extern	_Bool	CountDownOn;
-extern	_Bool	KilledPlayer;
+extern	bool	CountDownOn;
+extern	bool	KilledPlayer;
 /*===================================================================
 		Globals ...
 ===================================================================*/
@@ -159,7 +159,7 @@ void ApplyTriggerMod( TRIGGERMOD * TrigMod )
 ===================================================================*/
 void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val )
 {
-	_Bool	Doit;
+	bool	Doit;
 	int		i;
 	TRIGGER	* Trig;
 	int		old_state;
@@ -682,9 +682,9 @@ void EVENT_TeleportDisable( u_int8_t * Data )
 /*===================================================================
 	Procedure	:		Load .Trg File
 	Input		:		char	*	Filename
-	Output		:		_Bool	true/false
+	Output		:		bool	true/false
 ===================================================================*/
-_Bool Triggerload( char * Filename )
+bool Triggerload( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -1409,9 +1409,9 @@ void HowManySecrets( int * NumOfSecrets , int * SecretsFound )
 /*===================================================================
 	Procedure	:	Has the level ended
 	Input		:	Nothing
-	Output		:	_Bool yes/no
+	Output		:	bool yes/no
 ===================================================================*/
-_Bool HasLevelEnded( void )
+bool HasLevelEnded( void )
 {
 	TRIGGERVAR	* TVpnt;
 
@@ -1432,9 +1432,9 @@ _Bool HasLevelEnded( void )
 /*===================================================================
 	Procedure	:	Am i in cool pool
 	Input		:	Nothing
-	Output		:	_Bool yes/no
+	Output		:	bool yes/no
 ===================================================================*/
-_Bool CheckDecreaseTemperature( void )
+bool CheckDecreaseTemperature( void )
 {
 	TRIGGERVAR	* TVpnt;
 
@@ -1488,9 +1488,9 @@ void CheckTimeLimit( void )
 /*===================================================================
 	Procedure	:	Has the Avatar Boss been activated...
 	Input		:	Nothing
-	Output		:	_Bool yes/no
+	Output		:	bool yes/no
 ===================================================================*/
-_Bool IsAvatarActive( void )
+bool IsAvatarActive( void )
 {
 	TRIGGERVAR	* TVpnt;
 

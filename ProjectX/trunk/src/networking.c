@@ -39,7 +39,7 @@
 
 BYTE WhoIAm = UNASSIGNED_SHIP;
 
-extern _Bool Debug;
+extern bool Debug;
 
 int	PacketGot[256];
 int	PacketSize[256];
@@ -64,7 +64,7 @@ extern	int8_t	TeamFlagPickup[ MAX_TEAMS ];
 
 extern int16_t	NumPrimaryPickups;
 
-extern	_Bool	CountDownOn;
+extern	bool	CountDownOn;
 extern char LevelNames[MAXLEVELS][128];
 
 extern	SLIDER	MaxPlayersSlider;
@@ -74,14 +74,14 @@ extern SLIDER	GoalScoreSlider;
 extern LIST	LevelList;
 extern	SLIDER	TimeLimit;
 extern	int		GameType;
-extern	_Bool	MyBrightShips;
-extern _Bool BountyBonus;
+extern	bool	MyBrightShips;
+extern bool BountyBonus;
 
 extern float GetPlayerNumCount1;
 extern float GetPlayerNumCount2;
 extern int   GetPlayerNumCount;
 
-extern _Bool	PickupValid[ MAXPICKUPTYPES ];
+extern bool	PickupValid[ MAXPICKUPTYPES ];
 
 #define YourVersion "YOUR VERSION: " PXVersion
 
@@ -93,11 +93,11 @@ extern _Bool	PickupValid[ MAXPICKUPTYPES ];
 #define	SHORTANGLEMODIFIERUNPACK (45.0F / 32767.0F)
 
 extern char CTFMessage[];
-extern	_Bool IMustQuit;
+extern	bool IMustQuit;
 
-extern _Bool NeedFlagAtHome;
-extern _Bool OwnFlagTeleportsHome;
-extern _Bool CanCarryOwnFlag;
+extern bool NeedFlagAtHome;
+extern bool OwnFlagTeleportsHome;
+extern bool CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
 void SetTeamGoals( u_int16_t *TeamGoals );
@@ -108,11 +108,11 @@ void UnPackShipFlags( BYTE Player , u_int32_t Flags );
 extern int FlagsToGenerate;
 extern  u_int32_t  Host_Flags[ MAX_PLAYERS ];
 
-extern _Bool BountyHunt;
+extern bool BountyHunt;
 extern int BountyBonusInterval;
 
-extern _Bool	CTF;
-extern _Bool CaptureTheFlag;
+extern bool	CTF;
+extern bool CaptureTheFlag;
 extern int GoalScore;
 extern int GameCompleted;
 extern USERCONFIG	*player_config;
@@ -121,11 +121,11 @@ extern char *TeamName[ MAX_TEAMS ];
 
 extern int	AllowedBike[ ALLOWED_BIKETYPES ];
 extern int32_t ColPerspective;
-extern _Bool Panel;
+extern bool Panel;
 
-extern _Bool	BrightShips;
-extern _Bool	BikeExhausts;
-extern	_Bool IllegalTime;
+extern bool	BrightShips;
+extern bool	BikeExhausts;
+extern	bool IllegalTime;
 extern	float	Countdown_Float;
 extern	SLIDER  PacketsSlider;
 
@@ -160,18 +160,18 @@ extern	LONGLONG	Freq;
 
 extern	float	DemoAvgFps;
 extern	MENUITEM	NewJoinItem;
-extern	_Bool	Buffer1InUse;
+extern	bool	Buffer1InUse;
 extern	int		Buffer1Count;
 extern	DWORD	Buffer1Offset;
 extern	BYTE *	Buffer1Pnt;
 
-extern	_Bool	Buffer2InUse;
+extern	bool	Buffer2InUse;
 extern	int		Buffer2Count;
 extern	DWORD	Buffer2Offset;
 extern	BYTE *	Buffer2Pnt;
 
-extern	_Bool	RecordDemo;
-extern	_Bool	PlayDemo;
+extern	bool	RecordDemo;
+extern	bool	PlayDemo;
 extern	FILE	*	DemoFp;
 extern	FILE	*	DemoFpClean;
 extern	LIST	DemoList;
@@ -181,7 +181,7 @@ extern	LONGLONG	GameCurrentTime;		// How long the game has been going...
 #endif
 
 extern	char	ShortLevelNames[MAXLEVELS][32];
-extern _Bool	bSoundEnabled;
+extern bool	bSoundEnabled;
 
 extern float framelag;
 
@@ -191,7 +191,7 @@ extern	float	Start_Hull;
 void SpecialDestroyGame( void );
 void GetLevelName( char *buf, int bufsize, int level );
 
-_Bool	CanDoDamage[MAX_PLAYERS+1];
+bool	CanDoDamage[MAX_PLAYERS+1];
 
 extern	MATRIX			MATRIX_Identity;
 
@@ -204,10 +204,10 @@ extern  TEXT	QuickTextWhisper;
 extern	int8_t	PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
 extern	int8_t	SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
 extern	float	GlobalFramelagAddition;
-extern	_Bool ResetKillsPerLevel;
+extern	bool ResetKillsPerLevel;
 
-_Bool		JustGenerated = false;
-_Bool		JustPickedUpShield = false;
+bool		JustGenerated = false;
+bool		JustPickedUpShield = false;
 
 int16_t	NextworkOldBikeNum = -1;
 
@@ -230,7 +230,7 @@ extern	u_int16_t		Seed1;
 extern	u_int16_t		Seed2;
 extern	u_int16_t		CopyOfSeed1;
 extern	u_int16_t		CopyOfSeed2;
-extern	_Bool		RandomPickups;
+extern	bool		RandomPickups;
 
 
 int16_t	BikeModels[ MAXBIKETYPES ] = {
@@ -274,14 +274,14 @@ network_player_t * host_network_player = NULL;
 void SfxForCollectPickup( u_int16_t Owner, u_int16_t ID );
 
 void CreateReGen( u_int16_t ship );
-_Bool InitLevels( char *levels_list );
+bool InitLevels( char *levels_list );
 extern	MODEL	Models[MAXNUMOFMODELS];
 
-_Bool	HostDuties = false;
-_Bool					IsHost = true;
+bool	HostDuties = false;
+bool					IsHost = true;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
-_Bool					RemoteCameraActive = false;
+bool					RemoteCameraActive = false;
 
 PRIMBULLPOSDIR				TempPrimBullPosDir;
 SECBULLPOSDIR				TempSecBullPosDir;
@@ -322,7 +322,7 @@ int16_t								NumMissedKillMines = 0;
 extern u_int16_t	num_start_positions;
 
 GLOBALSHIP              Ships[MAX_PLAYERS+1];
-_Bool	DemoShipInit[MAX_PLAYERS+1];
+bool	DemoShipInit[MAX_PLAYERS+1];
 
 px_timer_t	LastPacketTime[MAX_PLAYERS+1];
 BYTE	CommBuff[MAX_BUFFER_SIZE];
@@ -345,13 +345,13 @@ extern	SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	SHIPCONTROL control;
 extern	char * Messages[];
 extern	int16_t	SelectedBike;
-extern	_Bool	GodMode;
+extern	bool	GodMode;
 
-extern	_Bool	TeamGame;
+extern	bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	u_int16_t	RandomStartPosModify;
 
-_Bool	ChAngleevel( void );
+bool	ChAngleevel( void );
 void	DebugPrintf( const char * format, ... );
 void AddTitleMessage(LPTEXTMSG LpTextMsg);
 
@@ -367,8 +367,8 @@ extern	int16_t			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
-_Bool	UseShortPackets;
-_Bool	MyUseShortPackets;
+bool	UseShortPackets;
+bool	MyUseShortPackets;
 
 extern	int16_t	NumOrbs;
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
@@ -433,7 +433,7 @@ extern u_int8_t	KillStats[MAX_PLAYERS][MAX_PLAYERS];
 extern u_int8_t	BonusStats[MAX_PLAYERS];
 extern u_int8_t	KillCounter[MAX_PLAYERS];	
 
-_Bool msg_is_valid( int msg_type )
+bool msg_is_valid( int msg_type )
 {
 	switch( msg_type )
 	{
@@ -817,7 +817,7 @@ void TitanBitsSend( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_
 	SendGameMessage(MSG_TITANBITS, 0, 0, 0, 0);
 }
 
-void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, _Bool FramelagRecoil )
+void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, bool FramelagRecoil )
 {
 	VECTOR	Recoil_Off;		
 	if( Ships[ you ].Object.Mode != LIMBO_MODE )
@@ -866,7 +866,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 }
 
 
-void	DropPickupSend( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t IDCount, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod )
+void	DropPickupSend( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t IDCount, int16_t RegenSlot, bool Sparkle, float LifeCount, u_int16_t TriggerMod )
 {
 	if( !UseShortPackets )
 	{
@@ -1090,7 +1090,7 @@ void SetupNetworkGame()
 	}
 }
 
-void InitShipStructure( int i , _Bool ResetScore )
+void InitShipStructure( int i , bool ResetScore )
 {
 	int16_t Count;
 
@@ -4320,7 +4320,7 @@ void DemoClean( void )
     LPVERYSHORTFUPDATEMSG		lpVeryShortFUpdate;
 	INTERPOLATEMSG Interpolate;
 	VERYSHORTINTERPOLATEMSG VeryShortInterpolate;
-	_Bool		IsShortPackets = false;
+	bool		IsShortPackets = false;
 	int			FoundOne;
 
 	while(1)
@@ -4654,9 +4654,9 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt )
 /*===================================================================
 	Procedure	:		Update Ammo And Validate Message...
 	Input		:		void	*	Message
-	Output		:		_Bool		True/False ( Valid Message )
+	Output		:		bool		True/False ( Valid Message )
 ===================================================================*/
-_Bool UpdateAmmoAndValidateMessage( void * Message )
+bool UpdateAmmoAndValidateMessage( void * Message )
 {
 	BYTE					Weapon = 0;
 	BYTE					TempWeapon;

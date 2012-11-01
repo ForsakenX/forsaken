@@ -26,21 +26,21 @@
 #include "util.h"
 
 
-extern _Bool IsHost;   // is the user hosting/joining a game
+extern bool IsHost;   // is the user hosting/joining a game
 extern	BYTE	GameStatus[];	// Game Status for every Ship...
 extern u_int16_t RandomStartPosModify;
-extern _Bool PlayDemo;
-extern	_Bool	CaptureTheFlag;
-extern	_Bool	CTF;
+extern bool PlayDemo;
+extern	bool	CaptureTheFlag;
+extern	bool	CTF;
 extern	int16_t	SelectedBike;
 extern	char	biker_name[256];
-extern	_Bool	CountDownOn;
-extern	_Bool	TeamGame;
+extern	bool	CountDownOn;
+extern	bool	TeamGame;
 extern  int16_t   NewLevelNum;
 extern  BYTE          MyGameStatus;
 extern SLIDER WatchPlayerSelect;
 
-_Bool LoadASinglePlayerGame( MENUITEM * Item )
+bool LoadASinglePlayerGame( MENUITEM * Item )
 {
 	int i;
 	PlayDemo = false;
@@ -75,7 +75,7 @@ _Bool LoadASinglePlayerGame( MENUITEM * Item )
 	return true;
 }
 
-_Bool StartASinglePlayerGame( MENUITEM * Item )
+bool StartASinglePlayerGame( MENUITEM * Item )
 {
 	int i;
 

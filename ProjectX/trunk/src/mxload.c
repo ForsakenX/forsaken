@@ -67,7 +67,7 @@ extern	DWORD				CurrentTextureBlend;
 extern	TLOADHEADER Tloadheader;
 extern	MODEL	Models[MAXNUMOFMODELS];
 
-extern	_Bool	DrawPanel;
+extern	bool	DrawPanel;
 extern	float	framelag;
 
 /*===================================================================
@@ -99,7 +99,7 @@ void TintDisc(u_int16_t Model);
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-_Bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool StoreTriangles )
+bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool StoreTriangles )
 {
 
 	char		*	Buffer;
@@ -834,18 +834,18 @@ _Bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool 
 	Output		:		FLASE/true
 ===================================================================*/
 
-_Bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model  )
+bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model  )
 {
 	int		i,e,f;
 	int		group;
 	RENDERMATRIX Matrix;
-	_Bool	Display;
+	bool	Display;
     LPLVERTEX	lpPointer = NULL;
 	LPLVERTEX	lpLVERTEX = NULL;
 	POLYANIM * PolyAnim;
 	u_int32_t * u_int32Pnt;
 	TANIMUV * TanimUV;
-	_Bool	VertBufferLocked;
+	bool	VertBufferLocked;
 
 	ModelTextureAnimation( Mxloadheader );
 
@@ -1097,7 +1097,7 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
-_Bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool LevelSpecific )
+bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool LevelSpecific )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -1207,7 +1207,7 @@ _Bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bo
 				:		u_int16_t		Models[] Index
 	Output		:		FLASE/true
 ===================================================================*/
-_Bool ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model )
+bool ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model )
 {
 	int			i;
 	int			group;
@@ -1290,7 +1290,7 @@ void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  )
 	Output		:		FLASE/true
 ===================================================================*/
 
-_Bool RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
+bool RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 {
 	int		i,e;
 	int		group;

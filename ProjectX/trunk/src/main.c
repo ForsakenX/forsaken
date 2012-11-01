@@ -26,9 +26,9 @@
 // GLOBAL VARIABLES
 //
 
-_Bool Debug = true;
-_Bool ShowFrameRate = false;
-_Bool ShowInfo = false;
+bool Debug = true;
+bool ShowFrameRate = false;
+bool ShowInfo = false;
 
 int cliSleep = 0;
 
@@ -38,7 +38,7 @@ render_info_t render_info;
 // Parses the directory to change to from the command line options
 //
 
-static _Bool parse_chdir( char *cli )
+static bool parse_chdir( char *cli )
 {
     char * option;
 	char cmdline[256];
@@ -96,7 +96,7 @@ static _Bool parse_chdir( char *cli )
 //
 
 #define CRITICAL_FOLDERS 4
-static _Bool missing_folders( void )
+static bool missing_folders( void )
 {
 	int x = 0;
 	char* folders[CRITICAL_FOLDERS] = {"Configs","Data","Pilots","Scripts"};
@@ -116,22 +116,22 @@ static _Bool missing_folders( void )
 // Parse the Command Line
 //
 
-extern _Bool NoSFX;
+extern bool NoSFX;
 extern float normal_fov;
 extern float UV_Fix;
 extern int NetUpdateIntervalCmdLine;
 extern char *config_name;
 extern int cliSleep;
 extern TEXT local_port_str;
-extern _Bool SpaceOrbSetup;
+extern bool SpaceOrbSetup;
 extern TEXT TCPAddress;
 extern TEXT local_port_str;
 extern TEXT host_port_str;
-extern _Bool DebugLog;
+extern bool DebugLog;
 extern u_int8_t QuickStart;
-extern _Bool IpOnCLI;
+extern bool IpOnCLI;
 
-static _Bool ParseCommandLine(char* lpCmdLine)
+static bool ParseCommandLine(char* lpCmdLine)
 {
 	
 	//
@@ -340,7 +340,7 @@ extern void DestroySound( int flags );
 extern void render_cleanup( render_info_t * info );
 extern void ReleaseScene(void);
 
-_Bool QuitRequested = false;
+bool QuitRequested = false;
 void CleanUpAndPostQuit(void)
 {
 	// check if this function was ran already
@@ -392,25 +392,25 @@ void CleanUpAndPostQuit(void)
 #ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..
 #ifndef __WINE__
-extern _Bool breakpad_init( void );
+extern bool breakpad_init( void );
 #endif
 #endif
 
-extern _Bool InitView( void );
+extern bool InitView( void );
 extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
 extern void GetDefaultPilot(void);
-extern _Bool InitScene(void);
+extern bool InitScene(void);
 extern BYTE MyGameStatus;
-extern _Bool sdl_init_video( void );
-extern _Bool sdl_init( void );
+extern bool sdl_init_video( void );
+extern bool sdl_init( void );
 
 #include "mload.h"
 extern RENDEROBJECT Portal_Execs[ MAXGROUPS ];
 extern RENDEROBJECT Skin_Execs[ MAXGROUPS ];
 extern RENDEROBJECT RenderBufs[4];
 
-static _Bool AppInit( char * lpCmdLine )
+static bool AppInit( char * lpCmdLine )
 {
 #if defined(DEBUG_ON) && defined(_SVID_)
 	_LIB_VERSION = _SVID_; // enable matherr
@@ -534,9 +534,9 @@ static _Bool AppInit( char * lpCmdLine )
 // Render the next frame and update the window
 //
 
-extern _Bool RenderScene( void );
+extern bool RenderScene( void );
 
-static _Bool RenderLoop()
+static bool RenderLoop()
 {
     if ( !render_info.ok_to_render || render_info.minimized || render_info.bPaused || QuitRequested )
 		return true;
@@ -580,7 +580,7 @@ static _Bool RenderLoop()
 
 extern int DebugMathErrors( void );
 extern void network_cleanup( void );
-extern _Bool SeriousError;
+extern bool SeriousError;
 extern void CleanUpAndPostQuit(void);
 
 int main( int argc, char* argv[] )

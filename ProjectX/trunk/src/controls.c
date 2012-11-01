@@ -32,10 +32,10 @@ extern MENU MENU_NEW_Battle;
 extern MENU *CurrentMenu;
 
 extern render_info_t render_info;
-extern  _Bool  Cheated;
-extern _Bool WaitingToQuit;
-extern _Bool CheatsDisabled;
-extern  _Bool  JoystickInput;
+extern  bool  Cheated;
+extern bool WaitingToQuit;
+extern bool CheatsDisabled;
+extern  bool  JoystickInput;
 
 extern  BYTE  MyGameStatus;
 extern  float framelag;
@@ -57,13 +57,13 @@ extern  float RollDecell;
 extern  float MaxBankAngle;
 extern  float BankAccell;
 extern  float BankDecell;
-extern _Bool DebugInfo;
+extern bool DebugInfo;
 
 extern  int8_t  PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
-extern  _Bool  PrimaryWeaponCheat;
+extern  bool  PrimaryWeaponCheat;
 extern  int8_t  SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
-extern  _Bool  SecondaryWeaponCheat;
-extern  _Bool  GodMode;
+extern  bool  SecondaryWeaponCheat;
+extern  bool  GodMode;
 
 extern  int FontHeight;
 
@@ -107,7 +107,7 @@ extern  int FontHeight;
 
 int GetPOVMask( DWORD pov );
 
-_Bool CheatsEnabled = false;
+bool CheatsEnabled = false;
 
 #define TOTAL_JOYSTICK_ACTIONS  140 // 5 axis positions, 3 axis rotations, 4 POV hats and 128 buttons!
 #define TOTAL_JOYSTICK_AXIS   8 // 5 axis positions, 3 axis rotations
@@ -129,7 +129,7 @@ extern MENU MENU_NEW_StartSinglePlayer;
 int old_input = 0;
 int new_input = 1;
 
-_Bool joystick_poll( int joysticknum );
+bool joystick_poll( int joysticknum );
 
 #ifdef DINPUTJOY
 BYTE 
@@ -141,7 +141,7 @@ js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTION
 // (Sfx.c)
 extern void SendBikerTaunt();
 
-_Bool flush_input = true;
+bool flush_input = true;
 
 u_int8_t key_state[ INPUT_BUFFERS ][ SDLK_LAST ];
 
@@ -207,11 +207,11 @@ char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2] = {
 char FlashText[ 128 ];
 float FlashTextActive = 0.0F;
 
-_Bool FullRearView = false;
-_Bool ShowStats = false;
-_Bool ShowMessages = false;	// display long list of chat messages
-_Bool ShowStatistics = false;	// display statistics in game
-_Bool ShowNetworkInfo = false;	// display enet info in game 
+bool FullRearView = false;
+bool ShowStats = false;
+bool ShowMessages = false;	// display long list of chat messages
+bool ShowStatistics = false;	// display statistics in game
+bool ShowNetworkInfo = false;	// display enet info in game 
 
 void FlashMenuText( char *text, float activetime, u_int16_t sfx )
 {
@@ -334,7 +334,7 @@ static struct
 {
   unsigned char cheatcode[ 16 ];
   int (*cheatfunc)( char * );
-  _Bool allowmultiplayer;
+  bool allowmultiplayer;
   int next;
 } CheatTable[] = 
 {
@@ -1111,7 +1111,7 @@ HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
 void SetUpJoystickAxis(int joystick)
 {
   DIPROPRANGE diprg;
-  _Bool DeadzoneNotSet = false;
+  bool DeadzoneNotSet = false;
   int i;
   
   // set axis range to (-100 ... +100)
@@ -1389,7 +1389,7 @@ int GetPOVMask( DWORD pov )
   return mask;
 }
 
-_Bool joystick_poll( int joysticknum )
+bool joystick_poll( int joysticknum )
 {
    HRESULT hRes;
    int i, j, povdir;
@@ -1508,7 +1508,7 @@ void SetUpJoystickAxis(int joystick)
 {
 }
 
-_Bool joystick_poll( int joysticknum )
+bool joystick_poll( int joysticknum )
 {
 	int i;
 
@@ -1613,9 +1613,9 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
   Procedure : Check if any buttons of a specific joystick are
         : pressed
   Input   : int     Joystick Number
-  Output    : _Bool    true/false
+  Output    : bool    true/false
 ===================================================================*/
-_Bool IsJoystickButtonPressed( int joysticknum )
+bool IsJoystickButtonPressed( int joysticknum )
 {
   int i;
 
@@ -1642,9 +1642,9 @@ _Bool IsJoystickButtonPressed( int joysticknum )
   Procedure : Check if any buttons of a specific joystick are
         : released
   Input   : int     Joystick Number
-  Output    : _Bool    true/false
+  Output    : bool    true/false
 ===================================================================*/
-_Bool IsJoystickButtonReleased( int joysticknum )
+bool IsJoystickButtonReleased( int joysticknum )
 {
   int i;
 
@@ -1671,9 +1671,9 @@ _Bool IsJoystickButtonReleased( int joysticknum )
   Procedure : Check if any buttons of a any connected joystick
         : are pressed
   Input   : Nothing
-  Output    : _Bool    true/false
+  Output    : bool    true/false
 ===================================================================*/
-_Bool IsAnyJoystickButtonPressed( void )
+bool IsAnyJoystickButtonPressed( void )
 {
   int joystick;
 
@@ -1691,9 +1691,9 @@ _Bool IsAnyJoystickButtonPressed( void )
   Procedure : Check if any buttons of a any connected joystick
         : are released
   Input   : Nothing
-  Output    : _Bool    true/false
+  Output    : bool    true/false
 ===================================================================*/
-_Bool IsAnyJoystickButtonReleased( void )
+bool IsAnyJoystickButtonReleased( void )
 {
   int joystick;
 

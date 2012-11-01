@@ -32,7 +32,7 @@ static int luacoll_bgcollide(lua_State *L)
 {
 	VECTOR *startpos, *move_off, *endpos, *normal, *newtarget;
 	u_int16_t startgroup, endgroup;
-	_Bool bgcol;
+	bool bgcol;
 
 	/* get input parameters */
 	startpos = luaL_checkudata(L, 1, "VECTOR");

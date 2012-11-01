@@ -48,7 +48,7 @@
 #define OUTSIDE_GROUP_TOLERANCE		(25.0F)
 
 
-extern _Bool PISDistRecursive( VECTOR *Pos, BSP_NODE *node);
+extern bool PISDistRecursive( VECTOR *Pos, BSP_NODE *node);
 extern void ObjForceExternalOneOff( OBJECT *Obj, VECTOR *force );
 
 extern	float	MaxMoveSpeed;
@@ -85,7 +85,7 @@ extern	MCLOADHEADER	MCloadheadert0;					//  0 thickness collision map...
 extern	MCLOADHEADER	MCloadheader;					//  ship collision map...
 extern	u_int16_t			IsGroupVisible[MAXGROUPS];
 
-extern _Bool	DebugInfo;
+extern bool	DebugInfo;
 int no_collision = 0;
 int outside_group = 0;
 
@@ -121,18 +121,18 @@ extern	RESTART	*	FirstRestartUsed;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	ENEMY	*		FirstEnemyUsed;
 
-_Bool CheckRestartPointCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
+bool CheckRestartPointCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject );
 
-_Bool CheckEnemyPolyCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
+bool CheckEnemyPolyCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject );
 
 /*===================================================================
 	Procedure	:		Load .mc File Collision file..
 	Input		:		char	*	Filename , MCLOADHEADER * MCloadheader
-	Output		:		_Bool
+	Output		:		bool
 ===================================================================*/
-_Bool MCload( char * Filename , MCLOADHEADER * MCloadheader )
+bool MCload( char * Filename , MCLOADHEADER * MCloadheader )
 {
 #ifdef POLYGONAL_COLLISIONS
 	long			File_Size;
@@ -209,7 +209,7 @@ _Bool MCload( char * Filename , MCLOADHEADER * MCloadheader )
 #ifdef USEINLINE
 __inline
 #endif
-_Bool RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
+bool RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	 				 VERT *  Point, NORMAL * FaceNormal , float D , float * TempDistance)
 {
 	float		t;
@@ -396,7 +396,7 @@ typedef enum
 #ifdef USEINLINE
 __inline
 #endif
-_Bool ColRayPolyIntersect( MCFACE *face )
+bool ColRayPolyIntersect( MCFACE *face )
 {
 	float		t;
 	float		Div, Num;
@@ -410,7 +410,7 @@ _Bool ColRayPolyIntersect( MCFACE *face )
 	float		v3y;
 	float		ix;
 	float		iy;
-	_Bool		Clockwise;
+	bool		Clockwise;
 
 	if ( !DebugInfo && ( face->type & 0x800000L ) )
 		return false; // ignore backfacing patch collision polys unless debugging
@@ -540,7 +540,7 @@ _Bool ColRayPolyIntersect( MCFACE *face )
 
 
 
-_Bool ColRayPlaneIntersect( VECTOR *normal, float offset )
+bool ColRayPlaneIntersect( VECTOR *normal, float offset )
 {
 	float		t;
 	float		Div, Num;
@@ -658,10 +658,10 @@ static float hit_portal_offset = 0.0F;
  *	true if collided with background, false if no collision
  */
 #ifdef BSP_ONLY
-_Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
+bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
 					  VECTOR *EndPos, u_int16_t *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
+					  NORMAL *FaceNormal, VECTOR *NewTarget, bool BGCol, BGOBJECT ** BGObject )
 {
 	float poffset, pdist;
 	VECTOR ppos, pmove, epos, tpos;
@@ -669,7 +669,7 @@ _Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 	u_int16_t group;
 	u_int16_t next_group;
 	u_int16_t last_group = 0;
-	_Bool hit_bg, hit_portal, hit_any_portal;
+	bool hit_bg, hit_portal, hit_any_portal;
 	float dist_bg;
 	VECTOR dv;
 	float impact_offset;
@@ -790,10 +790,10 @@ _Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 
 #else // !BSP_ONLY
 
-_Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
+bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
 					  VECTOR *EndPos, u_int16_t *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
+					  NORMAL *FaceNormal, VECTOR *NewTarget, bool BGCol, BGOBJECT ** BGObject )
 {
 	float poffset, pdist;
 	VECTOR ppos, pmove, epos, tpos;
@@ -801,7 +801,7 @@ _Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 	u_int16_t group;
 	u_int16_t next_group;
 	u_int16_t last_group;
-	_Bool hit_bg, hit_portal, hit_any_portal;
+	bool hit_bg, hit_portal, hit_any_portal;
 	float dist_bg, dist_portal;
 	VECTOR dv;
 	float impact_offset;
@@ -993,16 +993,16 @@ _Bool BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
  *	true if collided with background, false if no collision
  */
 #ifdef BSP_ONLY
-_Bool BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
+bool BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
 					  VECTOR *EndPos, u_int16_t *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
+					  NORMAL *FaceNormal, VECTOR *NewTarget, bool BGCol, BGOBJECT ** BGObject )
 {
 	VECTOR ppos, pmove, epos, tpos;
 	NORMAL fnorm;
 	u_int16_t group;
 	u_int16_t next_group;
-	_Bool hit_bg, hit_portal;
+	bool hit_bg, hit_portal;
 	float dist_bg;
 	VECTOR dv;
 	float impact_offset;
@@ -1100,16 +1100,16 @@ _Bool BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 #else // ! BSP_ONLY
 
 
-_Bool BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
+bool BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 					  VECTOR *StartPos, u_int16_t StartGroup, VECTOR *MoveOffset, 
 					  VECTOR *EndPos, u_int16_t *EndGroup,
-					  NORMAL *FaceNormal, VECTOR *NewTarget, _Bool BGCol, BGOBJECT ** BGObject )
+					  NORMAL *FaceNormal, VECTOR *NewTarget, bool BGCol, BGOBJECT ** BGObject )
 {
 	VECTOR ppos, pmove, epos, tpos;
 	NORMAL fnorm;
 	u_int16_t group;
 	u_int16_t next_group;
-	_Bool hit_bg, hit_portal;
+	bool hit_bg, hit_portal;
 	float dist_bg, dist_portal;
 	VECTOR dv;
 	float impact_offset;
@@ -1274,7 +1274,7 @@ u_int16_t MoveGroup( MLOADHEADER *m, VECTOR *StartPos, u_int16_t StartGroup, VEC
 	NORMAL pnorm;
 	u_int16_t group;
 	u_int16_t next_group;
-	_Bool hit_portal;
+	bool hit_portal;
 	VECTOR dv;
 
 	next_group = StartGroup;
@@ -1308,7 +1308,7 @@ u_int16_t MoveGroup( MLOADHEADER *m, VECTOR *StartPos, u_int16_t StartGroup, VEC
 	NORMAL pnorm;
 	u_int16_t group;
 	u_int16_t next_group;
-	_Bool hit_portal;
+	bool hit_portal;
 	VECTOR dv;
 
 #ifdef NO_SEPARATE_BSP_PORTAL_COLLIDE
@@ -1360,12 +1360,12 @@ u_int16_t MoveGroup( MLOADHEADER *m, VECTOR *StartPos, u_int16_t StartGroup, VEC
 				:	VECTOR * ImpactPoint
 				:	NORMAL * FaceNormal
 				:	VECTOR * Pos_New
-				:	_Bool	BGCol
-  Output		:	_Bool
+				:	bool	BGCol
+  Output		:	bool
 ===================================================================*/
-_Bool OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , u_int16_t group ,
+bool OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , u_int16_t group ,
 					 VECTOR * Pos, VECTOR * Dir  ,
-					 VECTOR * ImpactPoint , NORMAL  * FaceNormal , VECTOR * Pos_New, _Bool BGCol, BGOBJECT ** BGColObject )
+					 VECTOR * ImpactPoint , NORMAL  * FaceNormal , VECTOR * Pos_New, bool BGCol, BGOBJECT ** BGColObject )
 #ifdef BSP_ONLY
 {
 #ifdef POLYGONAL_COLLISIONS
@@ -1794,9 +1794,9 @@ _Bool OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader ,
 				:	VECTOR * ImpactPoint
 				:	NORMAL * FaceNormal
 				:	u_int16_t * PortalHit
-  Output		:	_Bool
+  Output		:	bool
 ===================================================================*/
-_Bool OneGroupPortalCol( MLOADHEADER * Mloadheader , u_int16_t group ,
+bool OneGroupPortalCol( MLOADHEADER * Mloadheader , u_int16_t group ,
 						VECTOR * Pos, VECTOR * Dir  ,
 						VECTOR * ImpactPoint , NORMAL * FaceNormal, u_int16_t *Next_Group,
 						int collisionhint )
@@ -1804,7 +1804,7 @@ _Bool OneGroupPortalCol( MLOADHEADER * Mloadheader , u_int16_t group ,
 {
 	float		Distance = 0.0f;
 	u_int16_t		flag = 0;	
-	_Bool		res;
+	bool		res;
 	BSP_PORTAL_GROUP	*pg;
 	BSP_PORTAL			*bp;
 	int					j;
@@ -1866,7 +1866,7 @@ _Bool OneGroupPortalCol( MLOADHEADER * Mloadheader , u_int16_t group ,
 	u_int16_t		i;
 	float		Distance;
 	u_int16_t		flag = 0;	
-	_Bool		res;
+	bool		res;
 	float		SkinThickness = 300.0F * GLOBAL_SCALE;
 	int			k;
 	
@@ -1987,7 +1987,7 @@ _Bool OneGroupPortalCol( MLOADHEADER * Mloadheader , u_int16_t group ,
 }
 #endif // !BSP_ONLY
 
-_Bool AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, u_int16_t EndGroup )
+bool AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, u_int16_t EndGroup )
 {
 	VECTOR	dv;
 
@@ -2006,7 +2006,7 @@ static BGOBJECT	*	CurParent = NULL;
 	Input		:	u_int16_t	Group
 	Output		:	Nothing
 ===================================================================*/
-_Bool CheckBGObjectsCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
+bool CheckBGObjectsCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject )
 {
 	float			D;
@@ -2111,9 +2111,9 @@ _Bool CheckBGObjectsCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 				:	VECTOR	*	New_Pos
 				:	NORMAL	*	Collision Normal
 				:	BGOBJECT ** Bgobject
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool CheckRestartPointCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
+bool CheckRestartPointCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject )
 {
 	float			D;
@@ -2189,9 +2189,9 @@ _Bool CheckRestartPointCol( u_int16_t Group, float Distance, VECTOR * ImpactPoin
 				:	VECTOR	*	New_Pos
 				:	NORMAL	*	Collision Normal
 				:	BGOBJECT ** Bgobject
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool CheckEnemyPolyCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
+bool CheckEnemyPolyCol( u_int16_t Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject )
 {
 	float			D;
@@ -2438,9 +2438,9 @@ void CollideBGOChildren( COMP_OBJ * Children, int16_t NumChildren )
 				:	VECTOR	*	Pos_New
 				:	BGOBJECT **	BGObject collided with
 				:	float		Radius
-  Output		:	_Bool
+  Output		:	bool
 ===================================================================*/
-_Bool OneGroupBGObjectCol( float Distance, int16_t Collided, u_int16_t Group, VECTOR * Pos, VECTOR * Dir  ,
+bool OneGroupBGObjectCol( float Distance, int16_t Collided, u_int16_t Group, VECTOR * Pos, VECTOR * Dir  ,
 					 VECTOR * ImpactPoint , NORMAL  * FaceNormal , VECTOR * Pos_New, BGOBJECT ** BGObject, float Radius )
 {
 #if ENABLEENEMYCOLLISIONS
@@ -2492,7 +2492,7 @@ _Bool OneGroupBGObjectCol( float Distance, int16_t Collided, u_int16_t Group, VE
 				:	float		Radius
 	Output		:	Nothing
 ===================================================================*/
-_Bool CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVector, float * DamagePtr, float Radius )
+bool CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVector, float * DamagePtr, float Radius )
 {
 	float	Speed;
 
@@ -2552,7 +2552,7 @@ _Bool CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVect
 				:	float		Radius
 	Output		:	Nothing
 ===================================================================*/
-_Bool CheckCompObjectCollision( VECTOR * Pos, COMP_OBJ * Comps, VECTOR * PushVector, float * DamagePtr, float Radius )
+bool CheckCompObjectCollision( VECTOR * Pos, COMP_OBJ * Comps, VECTOR * PushVector, float * DamagePtr, float Radius )
 {
 	float	Speed;
 
@@ -2765,14 +2765,14 @@ void CollideBGOToCompObjChildren( COMP_OBJ * Children, int16_t NumChildren )
 }
 
 
-static _Bool move_object = true;
-static _Bool bounce_object = true;
-static _Bool NoBGObject = true;
+static bool move_object = true;
+static bool bounce_object = true;
+static bool NoBGObject = true;
 
 
 #if 0
 
-_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -2836,7 +2836,7 @@ _Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGO
 	float FeelerLength = 1.25F * radius;
 	VECTOR StartPos;
 	VECTOR Pos_New;
-	_Bool hit;
+	bool hit;
 	VECTOR ImpactPoint;
 	
 	hit = false;
@@ -3089,7 +3089,7 @@ _Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGO
 #define FEELER_LENGTH_TO_RADIUS_RATIO	(1.25F)
 
 
-_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -3137,7 +3137,7 @@ _Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGO
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
 	VECTOR Pos_New; ZERO_STACK_MEM(Pos_New);
-	_Bool hit;
+	bool hit;
 	VECTOR ImpactPoint;
 	
 	hit = false;
@@ -3285,9 +3285,9 @@ _Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGO
 #endif
 
 
-_Bool WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+bool WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
-	_Bool collide;
+	bool collide;
 
 	move_object = false;
 	collide = ObjectCollide( Obj, Move_Off, radius, BGObject );
@@ -3297,9 +3297,9 @@ _Bool WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT 
 }
 
 
-_Bool ObjectCollideNoBounce( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
+bool ObjectCollideNoBounce( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject )
 {
-	_Bool collide;
+	bool collide;
 
 	bounce_object = false;
 	collide = ObjectCollide( Obj, Move_Off, radius, BGObject );
@@ -3309,9 +3309,9 @@ _Bool ObjectCollideNoBounce( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJE
 }
 
 
-_Bool ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius )
+bool ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius )
 {
-	_Bool collide;
+	bool collide;
 
 	NoBGObject = false;
 	collide = ObjectCollide( Obj, Move_Off, radius, NULL );
@@ -3322,7 +3322,7 @@ _Bool ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius )
 
 
 
-_Bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject )
+bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -3368,7 +3368,7 @@ _Bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Ta
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
 	VECTOR Pos_New; ZERO_STACK_MEM(Pos_New);
-	_Bool hit;
+	bool hit;
 	VECTOR ImpactPoint;
 	
 	hit = false;
@@ -3471,7 +3471,7 @@ _Bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Ta
 }
 
 
-_Bool QCollide( VECTOR *Start_Pos, u_int16_t Start_Group, VECTOR *Move_Off, float radius, VECTOR *Impact_Point, u_int16_t *Impact_Group, NORMAL *Impact_Normal )
+bool QCollide( VECTOR *Start_Pos, u_int16_t Start_Group, VECTOR *Move_Off, float radius, VECTOR *Impact_Point, u_int16_t *Impact_Group, NORMAL *Impact_Normal )
 {
 	VECTOR Up, Right;
 	QUAT MoveQuat;
@@ -3511,7 +3511,7 @@ _Bool QCollide( VECTOR *Start_Pos, u_int16_t Start_Group, VECTOR *Move_Off, floa
 	NORMAL ImpactNormal; ZERO_STACK_MEM(ImpactNormal);
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
-	_Bool hit;
+	bool hit;
 	VECTOR ImpactPoint;
 	
 	hit = false;

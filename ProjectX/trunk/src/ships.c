@@ -59,12 +59,12 @@
 #define BOB_YFREQ		(2.0F * PI / BOB_YPERIOD)
 
 
-_Bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
-_Bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject );
-_Bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off );
-_Bool CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i);
+bool ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
+bool ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Target_Off, BGOBJECT **BGObject );
+bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off );
+bool CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i);
 
-_Bool	IsStartPosVacant( int16_t i , u_int16_t startpos );
+bool	IsStartPosVacant( int16_t i , u_int16_t startpos );
 void SpecialDestroyGame( void );
 void MultiSfxHandle( void );
 
@@ -72,17 +72,17 @@ void MultiSfxHandle( void );
 		Externals ...
 ===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
-extern _Bool SeriousError;
+extern bool SeriousError;
 
 extern float LevelTimeTaken;
-extern	_Bool			CaptureTheFlag;
-extern	_Bool			CTF;
-extern	_Bool			BountyHunt;
-extern _Bool	NeedFlagAtHome;
+extern	bool			CaptureTheFlag;
+extern	bool			CTF;
+extern	bool			BountyHunt;
+extern bool	NeedFlagAtHome;
 extern int8_t TeamFlagPickup[ MAX_TEAMS ];
 extern u_int16_t	FlashScreenPoly;
 
-_Bool TeamFlagAtHome[ MAX_TEAMS ];
+bool TeamFlagAtHome[ MAX_TEAMS ];
 u_int32_t TeamFlagMask[ MAX_TEAMS ] = {
 	SHIP_CarryingFlag1,
 	SHIP_CarryingFlag2,
@@ -94,8 +94,8 @@ extern int GoalScore;
 extern int16_t PickupsGot[ MAXPICKUPTYPES ];
 extern int FlagsToGenerate;
 extern char *TeamName[ MAX_TEAMS ];
-extern _Bool	bSoundEnabled;
-extern	_Bool ShowNode;
+extern bool	bSoundEnabled;
+extern	bool ShowNode;
 extern	int16_t	SelectedBike;
 extern u_int16_t	num_start_positions;
 extern u_int16_t	last_start_position;
@@ -104,15 +104,15 @@ extern	int16_t					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16_t					Lives;
 extern int  no_collision;
 extern	XLIGHT	XLights[MAXXLIGHTS];
-extern	_Bool	flush_input;
+extern	bool	flush_input;
 extern	MATRIX TempMatrix;
 extern USERCONFIG *player_config;
 extern char MyName[];
 extern char NickName[];
 extern	MLOADHEADER ModelHeaders[MAXMODELHEADERS];
 extern	MXALOADHEADER MxaModelHeaders[MAXMXAMODELHEADERS];
-extern	_Bool	DebugInfo;
-extern	_Bool	GodMode;
+extern	bool	DebugInfo;
+extern	bool	GodMode;
 extern MLOADHEADER Mloadheader;
 extern MCLOADHEADER MCloadheader;
 extern MCLOADHEADER MCloadheadert0;
@@ -137,10 +137,10 @@ extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	u_int16_t	FirstPickupUsed;
 extern	float	PickupMessageCount;
 extern	int16_t	PickupMessageIndex;
-extern	_Bool	RemoteCameraActive;
+extern	bool	RemoteCameraActive;
 extern	u_int16_t	RandomStartPosModify;
-extern	_Bool	DrawPanel;
-extern	_Bool	OldDrawPanel;
+extern	bool	DrawPanel;
+extern	bool	OldDrawPanel;
 extern	u_int16_t IsGroupVisible[MAXGROUPS];
 extern	int16_t	NumStealths;
 extern	int16_t	NumInvuls;
@@ -151,17 +151,17 @@ extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 											// this tells the drones what status the host thinks hes in..
 
 extern	int		outside_group;
-extern	_Bool	PickupInvulnerability;
+extern	bool	PickupInvulnerability;
 
 extern	int16_t	BikeModels[ MAXBIKETYPES ];
 
-extern	_Bool	TeamGame;
+extern	bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	int		CrystalsFound;
 extern	int16_t	NumGoldBars;
 extern	u_int16_t	FirstStartPositionInGroup[MAXGROUPS];
-extern	_Bool		JustGenerated;
-extern	_Bool		JustPickedUpShield;
+extern	bool		JustGenerated;
+extern	bool		JustPickedUpShield;
 
 // watch mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
@@ -626,8 +626,8 @@ u_int32_t UnderwaterSfxID;
 float BountyTime = 0.0F;
 extern int BountyBonusInterval;
 
-_Bool ShieldCritical = false;
-_Bool HullCritical = false;
+bool ShieldCritical = false;
+bool HullCritical = false;
 
 RENDERMATRIX  TempWorld;	
 
@@ -640,19 +640,19 @@ SHIPCONTROL control;
 float	NitroFuel = 0.0F;
 float	NitroFuelUsed = 0.0F;
 extern	CAMERA			CurrentCamera;
-extern	_Bool	PlayDemo;
-extern	_Bool	PauseDemo;
+extern	bool	PlayDemo;
+extern	bool	PauseDemo;
 float AutoLevelRot( u_int16_t ship, float autolevel_rate );
 void BobShip( u_int16_t ship, VECTOR *bob );
 void	UpdateStartPos( void );
 void CreateSteam( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
 float	SteamTime = 0.0F;
-_Bool	IsStartPosVacantMutualyVisibleGroup( int16_t i , u_int16_t startpos );
-_Bool	IsStartPosVacantVisibleGroup( int16_t i , u_int16_t startpos );
-_Bool ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius );
-_Bool SwitchedToWatchMode =false;
+bool	IsStartPosVacantMutualyVisibleGroup( int16_t i , u_int16_t startpos );
+bool	IsStartPosVacantVisibleGroup( int16_t i , u_int16_t startpos );
+bool ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius );
+bool SwitchedToWatchMode =false;
 
-_Bool	RearCameraDisable = false;
+bool	RearCameraDisable = false;
 
 /*===================================================================
 	Function		:			Ship Control Mode Jump Table
@@ -679,7 +679,7 @@ void (* RemoteCameraModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		Init All Ships ...
 ===================================================================*/
 
-_Bool SetUpShips()
+bool SetUpShips()
 {
 	sprintf( NickName, "%s", player_config->name );
 
@@ -696,7 +696,7 @@ static	LONGLONG	TempTime2;
 static	float	Interp;	
 extern  BYTE          MyGameStatus;
 
-_Bool ProcessShips()
+bool ProcessShips()
 {
 	BYTE	i;
 #if 0
@@ -719,15 +719,15 @@ _Bool ProcessShips()
 	u_int16_t	NumToDo;
 	u_int16_t	OldGroup;
 	VECTOR	ExtForce;
-	_Bool HasBeenExternal;
+	bool HasBeenExternal;
 	float	ShieldModifier;
 	u_int32_t	OldInWater;
-	_Bool	Object2Object;
+	bool	Object2Object;
 	NODE * NodePnt;
 	OBJECT * ShipObjPnt;
 	GLOBALSHIP * ShipPnt;
 	int		goalcheck;
-	_Bool OldWaterOneshot;
+	bool OldWaterOneshot;
 
 	UpdateStartPos();
 	MultiSfxHandle();
@@ -1169,7 +1169,7 @@ _Bool ProcessShips()
 
 					if ( CTF && ShipObjPnt->Flags & SHIP_CarryingFlags )
 					{
-						static _Bool IKnowINeedFlag = false;
+						static bool IKnowINeedFlag = false;
 
 						goalcheck = GoalCheckTeam( &StartPos, &ShipObjPnt->Pos, ShipObjPnt->Group, TeamNumber[ i ] );
 						if ( goalcheck == GOAL_SCORED )
@@ -1777,7 +1777,7 @@ void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 /*===================================================================
 		True EnviroMent Mapping for an Mloadheader...
 ===================================================================*/
-_Bool	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
+bool	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 {
 	VECTOR Temp;
 //	D3DEXECUTEBUFFERDESC	debDesc;
@@ -1841,7 +1841,7 @@ _Bool	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 			Input : Nothing....Ships[WhoIAm].Damage must be set
 			Output: 0 no kill...1 last hit killed me...
 /*===================================================================ÄÄÄ*/
-int16_t DoDamage( _Bool OverrideInvul )
+int16_t DoDamage( bool OverrideInvul )
 {
 	u_int8_t	Message[ 128 ];
 	int16_t	MessageSFX = -1;
@@ -2179,7 +2179,7 @@ void InitShipStartPos( int16_t i, int16_t pos )
 					char *	roomname
 	Output		:	true if room found, false otherwise
 /*===================================================================ÄÄÄ*/
-_Bool GotoRoom( int16_t i, char *roomname )
+bool GotoRoom( int16_t i, char *roomname )
 {
 	u_int16_t startpos;
 	VECTOR	MineVec;
@@ -2342,7 +2342,7 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 	VECTOR	Move_Dir;
 	VECTOR	Move_Off;
 	VECTOR	ScatterDir;
-	_Bool	Impact = false;
+	bool	Impact = false;
 
 	input_grab(false);
 
@@ -2760,7 +2760,7 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 __inline
 #endif
 #endif
-_Bool	IsStartPosVacant( int16_t i , u_int16_t startpos )
+bool	IsStartPosVacant( int16_t i , u_int16_t startpos )
 {
 	int	e;
 	for( e = 0 ; e < MAX_PLAYERS ; e++ )
@@ -2788,7 +2788,7 @@ _Bool	IsStartPosVacant( int16_t i , u_int16_t startpos )
 __inline
 #endif
 #endif
-_Bool	IsStartPosVacantMutualyVisibleGroup( int16_t i , u_int16_t startpos )
+bool	IsStartPosVacantMutualyVisibleGroup( int16_t i , u_int16_t startpos )
 {
 	int	e;
 	for( e = 0 ; e < MAX_PLAYERS ; e++ )
@@ -2816,7 +2816,7 @@ _Bool	IsStartPosVacantMutualyVisibleGroup( int16_t i , u_int16_t startpos )
 __inline
 #endif
 #endif
-_Bool	IsStartPosVacantVisibleGroup( int16_t i , u_int16_t startpos )
+bool	IsStartPosVacantVisibleGroup( int16_t i , u_int16_t startpos )
 {
 	int	e;
 	for( e = 0 ; e < MAX_PLAYERS ; e++ )
@@ -2847,7 +2847,7 @@ void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
 	if ( DemoEyesSelect.value != MAX_PLAYERS )
 	{
 		int j, k;
-		_Bool ok;
+		bool ok;
 
 		// make sure we are looking through the eyes of a valid player in demo playback
 		ok = false;
@@ -2984,7 +2984,7 @@ void SetBikeMods( u_int16_t Bike )
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
 ===================================================================*/
-_Bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off )
+bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off )
 {
 	u_int16_t Count;
 	float Move_Length;
@@ -2996,8 +2996,8 @@ _Bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off )
 	VECTOR	Norm_Move_Off;
 	VECTOR	Temp_Move_Off;
 	VECTOR	NewPos;
-	_Bool	HasBeen = false;
-	_Bool	ok;
+	bool	HasBeen = false;
+	bool	ok;
 	u_int16_t	NewGroup;
 	
 	Norm_Move_Off = *Move_Off;
@@ -3083,14 +3083,14 @@ _Bool Ship2ShipCollide( u_int16_t i , VECTOR * Move_Off )
 	return HasBeen;
 }
 #if 1
-_Bool CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
+bool CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 {
 	VECTOR	Move_Off;	
 	QUAT	StepQuat;	
 	BGOBJECT * BGObject;
 	float	ShieldModifier;
 	u_int32_t	OldInWater;
-	_Bool Impact = false;
+	bool Impact = false;
 
 	AccellDecell( &ShipPnt->Object.Angle.y , TurnDecell );
 	AccellDecell( &ShipPnt->Object.Angle.x , TurnDecell );
@@ -3173,7 +3173,7 @@ _Bool CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 #define	CAMPINGTIME 45			// how long you have to stay in 1 approx position...
 #define	CAMPINGRANGE ( 1024.0F * GLOBAL_SCALE * 4.0F )	// Range for camping
 
-_Bool MultiSfxTaunt1Off = false;
+bool MultiSfxTaunt1Off = false;
 
 u_int16_t CurrentKillPos = 0;
 px_timer_t	KillMemoryTime[MAXKILLMEMORY];
@@ -3181,7 +3181,7 @@ int16_t	KillMemory[MAXKILLMEMORY];
 
 px_timer_t	camping_time;
 VECTOR		CampingPos;
-_Bool	CampingPos1Off = false;
+bool	CampingPos1Off = false;
 
 
 int16_t OldKills = 0;
@@ -3189,7 +3189,7 @@ int16_t OldKills = 0;
 void MultiSfxHandle( void )
 {
 	int16_t	KillIndex;
-	_Bool	NewKill;
+	bool	NewKill;
 
 	if( MyGameStatus != STATUS_Normal || WhoIAm >= MAX_PLAYERS )
 		return;

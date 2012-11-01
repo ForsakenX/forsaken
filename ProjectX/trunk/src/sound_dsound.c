@@ -14,13 +14,13 @@
 //
 
 LPDIRECTSOUND lpDS = NULL;
-_Bool Sound3D = false;
+bool Sound3D = false;
 
 //
 // Generic Functions
 //
 
-_Bool sound_init( void )
+bool sound_init( void )
 {
 	int iErr;
 	lpDS = NULL;
@@ -60,17 +60,17 @@ _Bool sound_init( void )
 //   which this game does not currently use
 //   this is left here for openAL later
 
-_Bool sound_listener_position( float x, float y, float z )
+bool sound_listener_position( float x, float y, float z )
 {
 	return true;
 }
 
-_Bool sound_listener_velocity( float x, float y, float z )
+bool sound_listener_velocity( float x, float y, float z )
 {
 	return true;
 }
 
-_Bool sound_listener_orientation( 
+bool sound_listener_orientation( 
 	float fx, float fy, float fz, // forward vector
 	float ux, float uy, float uz  // up vector
 )
@@ -112,7 +112,7 @@ void sound_release( sound_t * buffer )
 	buffer = NULL;
 }
 
-_Bool sound_is_playing( sound_t * buffer )
+bool sound_is_playing( sound_t * buffer )
 {
 	DWORD dwStatus;
 	IDirectSoundBuffer_GetStatus( buffer, &dwStatus );
@@ -236,7 +236,7 @@ sound_t * sound_load(char *name)
     return sound_buffer;
 }
 
-_Bool sound_duplicate( sound_t * source, sound_t ** destination )
+bool sound_duplicate( sound_t * source, sound_t ** destination )
 {
 	return IDirectSound_DuplicateSoundBuffer( lpDS, source, destination	) == DS_OK;
 }

@@ -72,14 +72,14 @@ float BikeSpeed = 0.0F;
 extern SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
 extern u_int8_t ShipHealthColour[ MAX_PLAYERS+1 ];
 extern int HUDColour;
-extern _Bool ShowWeaponsPossessedOnHUD;
-extern _Bool ShowClockOnHUD;
-extern _Bool ShowKPMOnHUD;
-extern _Bool ShowSpeedOnHUD;
+extern bool ShowWeaponsPossessedOnHUD;
+extern bool ShowClockOnHUD;
+extern bool ShowKPMOnHUD;
+extern bool ShowSpeedOnHUD;
 
 extern render_info_t render_info;
-extern _Bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
-extern _Bool Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
+extern bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
+extern bool Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;
 
 extern	render_viewport_t viewport;
@@ -90,14 +90,14 @@ extern int    FlagsInLevel;
 extern int    TeamFlagsInLevel[ MAX_TEAMS ];
 extern int    TeamFlagsInShips[ MAX_TEAMS ];
 
-extern void input_grab( _Bool clip );
-extern _Bool NeedFlagAtHome;
-extern _Bool OwnFlagTeleportsHome;
-extern _Bool CanCarryOwnFlag;
+extern void input_grab( bool clip );
+extern bool NeedFlagAtHome;
+extern bool OwnFlagTeleportsHome;
+extern bool CanCarryOwnFlag;
 
-_Bool OriginalLevels = false;
-_Bool CheatsDisabled = false;
-_Bool WaitingToQuit;
+bool OriginalLevels = false;
+bool CheatsDisabled = false;
+bool WaitingToQuit;
 
 void ConfigureSpaceorbAxis( int joystick );
 void DefaultJoystickSettings( USERCONFIG *u );
@@ -116,7 +116,7 @@ extern  u_int32_t MaxCurrentBytesPerSecSent;
 extern char *JoystickPOVDirections[];
 extern VECTOR BikePos;
 
-extern _Bool CTF;
+extern bool CTF;
 
 extern u_int8_t QuickStart;
 
@@ -128,7 +128,7 @@ extern void Printint16_t( int16_t num , int x , int y , int col );
 extern void InitIndirectVisible( u_int16_t g );
 
 extern void AddIndirectVisible( u_int16_t g );
-extern  _Bool  RearCameraDisable;
+extern  bool  RearCameraDisable;
 extern  MODELNAME   SplashModelNames[MAXMODELHEADERS];
 extern USERCONFIG *player_config;
 extern char biker_config[];
@@ -139,8 +139,8 @@ extern float LevelTimeTaken;
 extern BYTE PreDemoEndMyGameStatus;
 extern  TEXT  DemoGameName;
 
-extern  _Bool FullRearView;
-extern  _Bool ShowStats;
+extern  bool FullRearView;
+extern  bool ShowStats;
 
 extern  int AckMsgsActiveMax;
 extern  int AckMsgsActive;
@@ -164,7 +164,7 @@ extern  size_t  MemUsed;
 extern u_int32_t CurrentBikeCompSpeech;
 #endif
 
-_Bool Cheated = false;
+bool Cheated = false;
 
 void InitSoundInfo( MLOADHEADER * Mloadheader );
 void InitShipSpeeds( void );
@@ -173,35 +173,35 @@ void InitShipSpeeds( void );
 
 u_int32_t        AnimOncePerFrame = 0;         // used for stuff that is displayed more than once in a single frame..
 
-extern _Bool bSoundEnabled;
+extern bool bSoundEnabled;
 
 extern int	TeamCol[ MAX_TEAMS ];
 extern int Num_StatsMessage_Parts;
 extern LIST BikeList;
 extern LIST LevelList;
 
-extern  _Bool ResetKillsPerLevel;
+extern  bool ResetKillsPerLevel;
 
 extern int  outside_map;
 
 extern  int16_t NextNewModel;
 extern MENUSTATE MenuState;
-extern  _Bool  ShowEFZones;
-extern  _Bool  ShowTeleports;
-extern _Bool MenuFrozen;
+extern  bool  ShowEFZones;
+extern  bool  ShowTeleports;
+extern bool MenuFrozen;
 extern  int16_t MaxKills;
 extern  int16_t NumGoldBars;
-extern _Bool ReloadSfx;
+extern bool ReloadSfx;
 extern float ReloadSfxPause;
-extern  _Bool  IllegalTime;
+extern  bool  IllegalTime;
 extern  int   SinglePlayerTimeLimit;
-extern  _Bool  BilinearSolidScrPolys;
+extern  bool  BilinearSolidScrPolys;
 extern  u_int16_t  RandomStartPosModify;
 extern  char * StatusTab[256];
 
-extern _Bool ShowMessages; // show long list of chat messages
-extern _Bool ShowStatistics; // show in-game statistics
-extern _Bool ShowNetworkInfo; // show in-game enet info
+extern bool ShowMessages; // show long list of chat messages
+extern bool ShowStatistics; // show in-game statistics
+extern bool ShowNetworkInfo; // show in-game enet info
 
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
@@ -237,15 +237,15 @@ extern  int EnemiesActive;
 void CheckTimeLimit( void );
 extern  int16_t InGameLoadGameLevelNum;
 
-_Bool  ScoreDisplaySfx = true;
-_Bool  IMustQuit = false;
+bool  ScoreDisplaySfx = true;
+bool  IMustQuit = false;
 // Capture The Flag Stuff
-_Bool  CaptureTheFlag	= false;
-_Bool  IHaveAFlag			= false;
+bool  CaptureTheFlag	= false;
+bool  IHaveAFlag			= false;
 // End of Capture The Flag
 
 // Bounty Hunt
-_Bool  BountyHunt = false;
+bool  BountyHunt = false;
 
 extern int CameraStatus;  
 
@@ -279,7 +279,7 @@ extern  float MaxBankAngle;
 extern  float BankAccell;
 extern  float BankDecell;
 
-extern _Bool BrightShips;
+extern bool BrightShips;
 
 extern  float LastDistance[MAX_SFX];
 
@@ -292,14 +292,14 @@ extern  int   DifficultyLevel;
 
 extern int outside_group;
 
-extern  _Bool  ScreenSaving;
+extern  bool  ScreenSaving;
 extern  float WhiteOut;
 extern float mouse_dx;
 extern float mouse_dy;
 
 void	MessageQuePrintAll( void );
 
-_Bool  InsideResizeViewport = false;
+bool  InsideResizeViewport = false;
 
 DWORD CurrentSrcBlend;
 DWORD CurrentDestBlend;
@@ -314,9 +314,9 @@ LONGLONG  TimeDiff;
 LONGLONG  Freq;
 #endif
 
-_Bool  JustExitedMenu =false;
+bool  JustExitedMenu =false;
 
-_Bool  Inside;
+bool  Inside;
 int   Depth;
 
 void CalculateFramelag( void );
@@ -327,13 +327,13 @@ MENU  MENU_EditMacro3;
 
 extern  FILE  * DemoFp;
 extern  FILE  * DemoFpClean;
-extern  _Bool  PlayDemo;
-extern  _Bool  PauseDemo;
-extern  _Bool  RecordDemo;
+extern  bool  PlayDemo;
+extern  bool  PauseDemo;
+extern  bool  RecordDemo;
 extern  SLIDER  DemoSpeed;
 extern  SLIDER  DemoEyesSelect;
-extern  _Bool  ShowWeaponKills;
-extern  _Bool ShowStats; 
+extern  bool  ShowWeaponKills;
+extern  bool ShowStats; 
 
 extern  u_int16_t  IsGroupVisible[MAXGROUPS];
 
@@ -378,11 +378,11 @@ extern  LONGLONG  DemoTimeSoFar;
 
 extern  TLOADHEADER Tloadheader;
 extern  int16_t   SecondaryAmmo[ MAXSECONDARYWEAPONS ];
-_Bool LockOutWindows = true;
+bool LockOutWindows = true;
 
 extern u_int16_t OnceOnly;
 extern char         MyName[ 32 ];
-extern  _Bool                    IsHost;
+extern  bool                    IsHost;
 extern float  MessageTime[MAX_MESSAGES];
 extern  char MessageBank[MAX_MESSAGES][200];
 extern  int CurrentMessage;
@@ -412,37 +412,37 @@ extern  int16_t SelectedBike;
 extern  float cral;
 extern  int   HullHit;
 extern  int   ShieldHit;
-extern  _Bool  TargetComputerOn;
+extern  bool  TargetComputerOn;
 
 extern  int16_t NumPickupsPerGroup[ MAXGROUPS ];
 extern  PICKUP  Pickups[ MAXPICKUPS ];
 
-extern  _Bool  DebugInfo;
-extern  _Bool  GodMode;
-extern  _Bool  GodModeOnceOnly;
+extern  bool  DebugInfo;
+extern  bool  GodMode;
+extern  bool  GodModeOnceOnly;
 
-extern  _Bool  TeamGame;
+extern  bool  TeamGame;
 extern  BYTE  TeamNumber[MAX_PLAYERS];
 
 extern  int   no_collision;   // disables player ship-to-background collisions
 extern  SLIDER  TimeLimit;
-extern  _Bool  CountDownOn;
+extern  bool  CountDownOn;
 extern  REGENPOINT  * RegenSlotsCopy[ MAX_PLAYERS ];
 
-extern  _Bool  ShowTrigZones;
-extern  _Bool  ShowColZones;
-extern  _Bool  NodeCube;
-extern  _Bool  OldNodeCube;
+extern  bool  ShowTrigZones;
+extern  bool  ShowColZones;
+extern  bool  NodeCube;
+extern  bool  OldNodeCube;
 extern  MATRIX  MATRIX_Identity;
 
 extern  u_int32_t  TotalFmPolysInUse;
 extern  u_int32_t  TotalPolysInUse;
 extern  u_int32_t  TotalScrPolysInUse;
 extern  MODELNAME ModelNames[MAXMODELHEADERS];
-extern  _Bool  quitting; 
-extern  _Bool  ShowBoundingBoxes;
+extern  bool  quitting; 
+extern  bool  ShowBoundingBoxes;
 
-_Bool InitViewport( void );
+bool InitViewport( void );
 
 
 BYTE  InitView_MyGameStatus;
@@ -461,24 +461,24 @@ px_timer_t framelag_timer;
 
 int i, j; // index counters
 
-_Bool RearCameraActive;
+bool RearCameraActive;
 int MissileCameraActive = 0;
 u_int16_t  CameraMissile = (u_int16_t) -1;
-extern _Bool MissileCameraEnable;
+extern bool MissileCameraEnable;
 BYTE  TempMissileCam;
 
 extern  REMOTECAMERA * ActiveRemoteCamera;
 
-_Bool
+bool
 Our_CalculateFrameRate(void);
-_Bool VduFinished( MENU *Menu );
-_Bool WriteMessage(const char *format, ...); // printf-a-like for bottom line of window
+bool VduFinished( MENU *Menu );
+bool WriteMessage(const char *format, ...); // printf-a-like for bottom line of window
 
-_Bool ScoreDisplay();
-_Bool InitScoreDisplay();
-_Bool StatsDisplay();
-_Bool InitStatsDisplay();
-_Bool ScoreDisplayOrig(void);
+bool ScoreDisplay();
+bool InitScoreDisplay();
+bool StatsDisplay();
+bool InitStatsDisplay();
+bool ScoreDisplayOrig(void);
 
 typedef enum {
 	NO_BG,
@@ -486,7 +486,7 @@ typedef enum {
 	BOX_BG
 } stats_mode_t;
 
-void ShowDetailedStats(int NumActivePlayers, _Bool TeamsGame, _Bool KillsBased, _Bool DetailedStats);
+void ShowDetailedStats(int NumActivePlayers, bool TeamsGame, bool KillsBased, bool DetailedStats);
 void ShowBasicStats(int NumActivePlayers);
 void ShowInGameStats();
 void ShowDeathModeStats();
@@ -499,19 +499,19 @@ int CrystalsFound = 0;
 extern  int16_t   NumInitEnemies;
 extern  int16_t   NumKilledEnemies;
 
-_Bool  ResizeViewport( void );
-_Bool  FullScreenViewport();
-_Bool  ClearBuffers( void );
-_Bool  ClearZBuffer( void );
+bool  ResizeViewport( void );
+bool  FullScreenViewport();
+bool  ClearBuffers( void );
+bool  ClearZBuffer( void );
 
-_Bool clear_black(void)
+bool clear_black(void)
 {
   if ( WhiteOut > 0.0f )
     return true;
 	return FSClearBlack();
 }
 
-_Bool RenderCurrentCamera( void );
+bool RenderCurrentCamera( void );
 
 void  PlotSimplePanel( void );
 
@@ -523,13 +523,13 @@ float hfov = START_FOV;
 float chosen_fov = START_FOV;
 float normal_fov = START_FOV;
 
-_Bool  DrawPanel = false;
-_Bool  ReMakeSimplePanel = true;
+bool  DrawPanel = false;
+bool  ReMakeSimplePanel = true;
 
-_Bool  OldDrawPanel = true;
-_Bool  Panel = true;
+bool  OldDrawPanel = true;
+bool  Panel = true;
 
-_Bool ChangeLevel( void );
+bool ChangeLevel( void );
 void SelectQuitCurrentGame( MENUITEM *Item );
 
 float pixel_aspect_ratio;
@@ -570,17 +570,17 @@ char level_names[MAXLEVELS][128];
 
 int16_t CameraRendering = CAMRENDERING_None;
 
-_Bool SeriousError = false;
-_Bool DoClipping = true;
-_Bool OnceOnlyChangeLevel = false;
+bool SeriousError = false;
+bool DoClipping = true;
+bool OnceOnlyChangeLevel = false;
 
 //bjdLPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ] = { NULL, NULL };
 RENDEROBJECT RenderBufs[4];
 
 void InitRenderBufs(/*LPDIRECT3DDEVICE lpDev*/ ); // bjd
 void ReleaseRenderBufs( void );
-//_Bool ChangeBackgroundColour( float R, float G, float B );
-_Bool SetMatrixViewPort( void );
+//bool ChangeBackgroundColour( float R, float G, float B );
+bool SetMatrixViewPort( void );
 void PrintInitViewStatus( BYTE Status );
 
 void UpdateBGObjectsClipGroup( CAMERA * Camera );
@@ -669,17 +669,17 @@ extern  u_int16_t      FirstPolyUsed;
 extern  u_int16_t      FirstLineUsed;
 extern  u_int16_t      FirstScrPolyUsed;
 extern  BYTE      WhoIAm;
-extern  _Bool      RemoteCameraActive;
+extern  bool      RemoteCameraActive;
 
 extern  int16_t     ShowPortal;
 extern  int16_t     ShowSkin;
 extern  int16_t         NamesAreLegal;
 extern  SHORTNAMETYPE     Names;  // all the players short Names....
 
-_Bool MainGame(); // bjd
+bool MainGame(); // bjd
 
 void Build_View();
-_Bool DispTracker( void ); // bjd
+bool DispTracker( void ); // bjd
 
 
 /*===================================================================
@@ -749,7 +749,7 @@ RENDERMATRIX world = {
     RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0)
 };
 
-extern _Bool StereoEnabled;
+extern bool StereoEnabled;
 stereo_mode_t StereoMode;
 extern float StereoEyeSep;
 extern float StereoFocalDist;
@@ -782,7 +782,7 @@ void stereo_adjust( RENDERMATRIX *m )
 	m->_31 = (right+left)/(right-left);
 }
 
-_Bool SetFOV( float fov )
+bool SetFOV( float fov )
 {
 	float screen_width, screen_height;
 	float Scale, NewNear;
@@ -1245,14 +1245,14 @@ void ProcessGameKeys( void )
   } // end normal keys
 } // ProcessGameKeys
 
-_Bool
+bool
 ResizeViewport( void )
 {
 	int left, top;
 	int width, height;
 	int maxwidth, maxheight;
-	_Bool  NewDrawPanel;
-	_Bool  NewDrawSimplePanel;
+	bool  NewDrawPanel;
+	bool  NewDrawSimplePanel;
 	float scale = 1.0F;
   
 	InsideResizeViewport = true;
@@ -1331,7 +1331,7 @@ ResizeViewport( void )
 	return true;
 }
 
-_Bool FullScreenViewport()
+bool FullScreenViewport()
 {
 	int left, top;
 	int width, height;
@@ -1377,7 +1377,7 @@ _Bool FullScreenViewport()
 	return true;
 }
 
-_Bool InitLevels( char * levels_list )
+bool InitLevels( char * levels_list )
 {
 
   FILE *f;
@@ -1466,7 +1466,7 @@ _Bool InitLevels( char * levels_list )
 }
 
 
-_Bool SetMatrixViewPort( void )
+bool SetMatrixViewPort( void )
 {
 /* TODO - what did this function do in d3d6 ?
 	if (lpView->lpVtbl->SetBackground(lpView, hBmat) != D3D_OK) {
@@ -1955,7 +1955,7 @@ void ReleaseView(void)
   }
 }
 
-_Bool
+bool
 InitScene(void)
 {
   int i;
@@ -2007,10 +2007,10 @@ InitScene(void)
 
 /*===================================================================
   Procedure :   Init the view...This might be title or score or main game....
-  Output    :   _Bool true/FLASE
+  Output    :   bool true/FLASE
 ===================================================================*/
 
-_Bool InitView( void )
+bool InitView( void )
 {
 	DebugPrintf("InitView Starting...\n");
 
@@ -2217,7 +2217,7 @@ char TriggerName[256];
   Input   :   nothing...
   Output    :   nothing
 ===================================================================*/
-_Bool ChangeLevel( void )
+bool ChangeLevel( void )
 {
 	//if( NewLevelNum != LevelNum )
 	//  return true;
@@ -2308,14 +2308,14 @@ char NodeName[256];
   Output    :   nothing
 ===================================================================*/
 extern void ReleaseView(void);
-_Bool RenderScene( void )
+bool RenderScene( void )
 {
   u_int16_t  i,e;
   char  buf[256];
   //struct _stat stat_buf;
   //int result;
   static int WaitFrames = 2;
-  _Bool done;
+  bool done;
 
   //DebugPrintf("RenderScene Started\n");
 
@@ -4033,8 +4033,8 @@ void CheckLevelEnd ( void )
   Input   :   nothing...
   Output    :   nothing
 ===================================================================*/
-_Bool RenderMainCamera2dPolys(void);
-_Bool MainGame( void ) // bjd
+bool RenderMainCamera2dPolys(void);
+bool MainGame( void ) // bjd
 {
   int i;
   static float fov_inc = 0.0F;
@@ -4483,7 +4483,7 @@ void PaintBackground( rect_t * box ) // pass NULL to black out all of the screen
 	/* would simply blit the area defined by box on the backbuffer to black */
 }
 
-_Bool StatsNamePulse( void )
+bool StatsNamePulse( void )
 {
 	static float pulse = 0.0F;
 	pulse += real_framelag;
@@ -4576,7 +4576,7 @@ void ShowGameStats( stats_mode_t mode )
 	int row_height = (FontHeight+(FontHeight/2));
 	int x_center = ( render_info.window_size.cx >>1 );
 	int y_center = ( render_info.window_size.cy >>1 );
-	_Bool FlashName = StatsNamePulse();
+	bool FlashName = StatsNamePulse();
 
 	// generate active players
 
@@ -4799,10 +4799,10 @@ void ShowGameStats( stats_mode_t mode )
 /*===================================================================
   Procedure :   Score Display...
   Input   :   nothing...
-  Output    :   _Bool true/false
+  Output    :   bool true/false
 ===================================================================*/
 /* Display the Statistics */
-_Bool ScoreDisplay()
+bool ScoreDisplay()
 {
 	ShowGameStats( FULL_BG ); // use BLT background
 	CenterPrint4x5Text( "Press Space to continue" , render_info.window_size.cy - (FontHeight*2) , 0 );	
@@ -4813,9 +4813,9 @@ _Bool ScoreDisplay()
 /*===================================================================
   Procedure :   Init Score Display Stuff...
   Input   :   nothing...
-  Output    :   _Bool true/false
+  Output    :   bool true/false
 ===================================================================*/
-_Bool  InitScoreDisplay()
+bool  InitScoreDisplay()
 {
 #ifdef SCROLLING_MESSAGES
   int i;
@@ -4841,7 +4841,7 @@ _Bool  InitScoreDisplay()
 }
 
 // Clears the target(back) and zbuffer for the current camera
-_Bool ClearBuffers( void )
+bool ClearBuffers( void )
 {
 	XYRECT dummy;
 
@@ -4863,7 +4863,7 @@ _Bool ClearBuffers( void )
 }
 
 // Clear the Zbuffer
-_Bool ClearZBuffer()
+bool ClearZBuffer()
 {
 	XYRECT dummy;
 
@@ -4904,7 +4904,7 @@ void ReleaseRenderBufs( void )
 }
 
 
-_Bool RenderMainCamera2dPolys( void)
+bool RenderMainCamera2dPolys( void)
 {
 	Build_View();
 	CurrentCamera.View = view;
@@ -4951,9 +4951,9 @@ _Bool RenderMainCamera2dPolys( void)
 /*===================================================================
   Procedure :  Render 1 Frame Using CurrentCamera...
   Input   :
-  Output    : _Bool true/false
+  Output    : bool true/false
 ===================================================================*/
-_Bool RenderCurrentCamera( void )
+bool RenderCurrentCamera( void )
 {
 	int16_t Count;
 	VISGROUP  *g;
@@ -5211,17 +5211,17 @@ extern  int   NumOfVertsTouched;
 /*===================================================================
   Procedure :  Our Calculate frame rate...
   Input   :
-  Output    : _Bool true/false
+  Output    : bool true/false
 ===================================================================*/
 
 px_timer_t our_timer;
 float our_count = 0;
-extern _Bool ShowFrameRate;
-extern _Bool ShowInfo;
+extern bool ShowFrameRate;
+extern bool ShowInfo;
 extern	u_int16_t		NumGroupsVisible;
 extern u_int16_t	GroupImIn;
 
-_Bool Our_CalculateFrameRate(void)
+bool Our_CalculateFrameRate(void)
 {
 	char buf[256];
 	static int avg_time_per_frame = 0;
@@ -5330,7 +5330,7 @@ _Bool Our_CalculateFrameRate(void)
   Input   : Nothing
   Output    : Nothing
 ===================================================================*/
-_Bool
+bool
 InitViewport( void )
 {
 	int left, top;
@@ -5508,9 +5508,9 @@ void CalculateFramelag( void )
 
 /*===================================================================
   Procedure : Disp Tracker
-  Output    : _Bool        true/false
+  Output    : bool        true/false
 ===================================================================*/
-_Bool DispTracker( void ) // bjd
+bool DispTracker( void ) // bjd
 {
 	u_int16_t      i;
 	XYRECT     dummy;
@@ -5687,11 +5687,11 @@ _Bool DispTracker( void ) // bjd
   Input   : float R ( 0.0F - 1.0F )
         : float G ( 0.0F - 1.0F )
         : float B ( 0.0F - 1.0F )
-  Output    : _Bool  true/false
+  Output    : bool  true/false
 ===================================================================*/
 // TODO - might want this
 /*
-_Bool ChangeBackgroundColour( float R, float G, float B )
+bool ChangeBackgroundColour( float R, float G, float B )
 {
 	return true;
 }
@@ -5724,9 +5724,9 @@ void PrintInitViewStatus( BYTE Status )
 /*===================================================================
   Procedure :   Init Stats Display Stuff...
   Input   :   nothing...
-  Output    :   _Bool true/false
+  Output    :   bool true/false
 ===================================================================*/
-_Bool  InitStatsDisplay()
+bool  InitStatsDisplay()
 {
   // Create the offscreen surface, by loading our bitmap.
 
@@ -5741,9 +5741,9 @@ _Bool  InitStatsDisplay()
 /*===================================================================
   Procedure :   Stats Display...
   Input   :   nothing...
-  Output    :   _Bool true/false
+  Output    :   bool true/false
 ===================================================================*/
-_Bool StatsDisplay()
+bool StatsDisplay()
 {
   rect_t    src;
   rect_t    dest;
@@ -5900,9 +5900,9 @@ void RenderSnapshot( void )
         :   u_int32_t    GreenMask
         :   u_int32_t    BlueMask
         :   u_int32_t    x1, y1, x2 ,y2 ( Portion of Screen )
-  Output    :   _Bool    True/False
+  Output    :   bool    True/False
 ===================================================================*/
-_Bool SavePPM( u_int8_t * Filename, u_int8_t * ScreenPtr, u_int32_t Width, u_int32_t Height, u_int32_t BytesPerPixel,
+bool SavePPM( u_int8_t * Filename, u_int8_t * ScreenPtr, u_int32_t Width, u_int32_t Height, u_int32_t BytesPerPixel,
         u_int32_t LineSize, u_int32_t RedMask, u_int32_t GreenMask, u_int32_t BlueMask,
         u_int32_t x1, u_int32_t y1, u_int32_t x2, u_int32_t y2 )
 {
@@ -6005,9 +6005,9 @@ _Bool SavePPM( u_int8_t * Filename, u_int8_t * ScreenPtr, u_int32_t Width, u_int
 /*===================================================================
   Procedure :   Save SnapShot screen for saved game
   Input   :   int8_t  * Filename
-  Output    :   _Bool    True/False
+  Output    :   bool    True/False
 ===================================================================*/
-_Bool SaveSnapShot( int8_t * Filename )
+bool SaveSnapShot( int8_t * Filename )
 {
 	return true;
 #if 0 // bjd
@@ -6076,9 +6076,9 @@ _Bool SaveSnapShot( int8_t * Filename )
 // if we met the max kills limit then set flag to change level
 void CheckMetKillLimit()
 {
-	_Bool	KillsReached = false;
-	_Bool teamOK[MAX_TEAMS];
-	_Bool teamleft[MAX_TEAMS];
+	bool	KillsReached = false;
+	bool teamOK[MAX_TEAMS];
+	bool teamleft[MAX_TEAMS];
 
 	// i'm the host so i should check if we have met the level kill threshold if there is one
 	if(IsHost && MaxKills && (MyGameStatus == STATUS_Normal) )

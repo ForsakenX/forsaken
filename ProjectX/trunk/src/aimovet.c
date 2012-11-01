@@ -31,7 +31,7 @@ extern	AIMDATA AimData;
 extern	VECTOR	Forward;
 extern	VECTOR	SlideUp;
 void CreateSparks( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
-extern	_Bool ShowNode;
+extern	bool ShowNode;
 /*===================================================================
 	Procedure	:	AIR Move to a Target
 	Input		:	ENEMY * Enemy

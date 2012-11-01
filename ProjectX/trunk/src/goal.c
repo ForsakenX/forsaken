@@ -30,19 +30,19 @@
 
 
 // externs
-extern	_Bool			PlayDemo;
-extern	_Bool			DebugInfo;
-extern	_Bool			IsHost;
-extern	_Bool			CaptureTheFlag;
-extern	_Bool			CTF;
+extern	bool			PlayDemo;
+extern	bool			DebugInfo;
+extern	bool			IsHost;
+extern	bool			CaptureTheFlag;
+extern	bool			CTF;
 extern	char			LevelNames[MAXLEVELS][128];
-extern	_Bool			Entry;
-extern	_Bool			Exit;
-extern	_Bool			In;
+extern	bool			Entry;
+extern	bool			Exit;
+extern	bool			In;
 extern	char		*	TeamName[ MAX_TEAMS ];
 extern	u_int32_t			TeamFlagMask[ MAX_TEAMS ];
 extern	int8_t			TeamFlagPickup[ MAX_TEAMS ];
-extern	_Bool			TeamFlagAtHome[ MAX_TEAMS ];
+extern	bool			TeamFlagAtHome[ MAX_TEAMS ];
 extern	int16_t			NumPickupType[ MAXPICKUPTYPES ];
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	FRAME_INFO	*	GreyFlare_Header;
@@ -56,8 +56,8 @@ extern	int16_t			PickupsGot[ MAXPICKUPTYPES ];
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	u_int32_t			Host_Flags[ MAX_PLAYERS ];
 
-_Bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side );
-_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
+bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side );
+bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
 void ShowGoal( GOAL * Goal, u_int8_t Red, u_int8_t Green, u_int8_t Blue, u_int8_t Trans );
 void TeamGoalsSend( u_int16_t * TeamGoals );
 
@@ -73,7 +73,7 @@ int LastEnable[ MAX_PLAYERS ];
 
 
 extern int16_t   LevelNum;
-_Bool GoalLoad( void )
+bool GoalLoad( void )
 {
 	int8_t		Filename[ 256 ];
 	char	*	NewExt = ".GOL";
@@ -231,8 +231,8 @@ void ReleaseGoal( void )
 
 static void GoalCheck( VECTOR * OldPos , VECTOR * NewPos , GOAL * goal )
 {
-	_Bool	OldIn;
-	_Bool	NewIn;
+	bool	OldIn;
+	bool	NewIn;
 
 	Entry = false;
 	Exit = false;
@@ -271,7 +271,7 @@ GOAL *TeamGoal( int team )
 }
 
 
-_Bool GenerateFlagAtHome( int team )
+bool GenerateFlagAtHome( int team )
 {
 	int j;
 

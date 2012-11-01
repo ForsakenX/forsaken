@@ -1551,7 +1551,7 @@ void RemoveFmPolyFromTPage( u_int16_t i, int16_t TPage )
 	FmPolys[ i ].NextInTPage = (u_int16_t) -1;
 }
 
-_Bool DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, u_int16_t Group )
+bool DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, u_int16_t Group )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -1575,7 +1575,7 @@ _Bool DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, u_int16_t Group )
 	return( false );
 }
 
-_Bool DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
+bool DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -1607,7 +1607,7 @@ _Bool DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
 				:	u_int16_t	*					Current FmPoly
 	Output		:	True/False
 ===================================================================*/
-_Bool FmPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly )
+bool FmPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;
@@ -1968,7 +1968,7 @@ _Bool FmPolyDispGroupClipped( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuf
 				:	u_int16_t	*					Current FmPoly
 	Output		:	True/False
 ===================================================================*/
-_Bool FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly )
+bool FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;

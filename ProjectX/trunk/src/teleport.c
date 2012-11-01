@@ -39,11 +39,11 @@
 extern	VECTOR Forward;
 extern	VECTOR SlideUp;
 extern	float framelag;
-extern	_Bool	Entry;
-extern	_Bool	Exit;
-extern	_Bool	In;
-extern	_Bool	ShowTeleports;
-_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
+extern	bool	Entry;
+extern	bool	Exit;
+extern	bool	In;
+extern	bool	ShowTeleports;
+bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
 void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, u_int16_t Group );
 
 /*===================================================================
@@ -58,9 +58,9 @@ TELEPORT * Teleports = NULL;
 /*===================================================================
 	Procedure	:	Teleports load...
 	Input		:	char * filename....
-	Output		:	_Bool
+	Output		:	bool
 ===================================================================*/
-_Bool TeleportsLoad( char * Filename )
+bool TeleportsLoad( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -254,7 +254,7 @@ void ReleaseTeleports( void )
 	Input		:	void
 	Output		:	true/false
 ===================================================================*/
-_Bool TeleportsAreaCheck( VECTOR * NewPos , VECTOR * OldPos ,u_int16_t Group, OBJECT *obj )
+bool TeleportsAreaCheck( VECTOR * NewPos , VECTOR * OldPos ,u_int16_t Group, OBJECT *obj )
 {
 	TELEPORT * TPpnt;
 	TELEPORT * newTPpnt;
@@ -343,8 +343,8 @@ void DisplayTeleportsInGroup( u_int16_t Group )
 void TeleportsZoneCheck( VECTOR * OldPos , VECTOR * NewPos , TELEPORT * TPpnt )
 {
 
-	_Bool	OldIn;
-	_Bool	NewIn;
+	bool	OldIn;
+	bool	NewIn;
 	Entry = false;
 	Exit = false;
 	In = false;

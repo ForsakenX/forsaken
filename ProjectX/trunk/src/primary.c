@@ -88,7 +88,7 @@ extern	int16_t			SecAmmoUsed[ MAXSECONDARYWEAPONS ];
 extern	USERCONFIG	*	player_config;
 extern	float			NitroFuel;
 extern	float			NitroFuelUsed;
-extern	_Bool            bSoundEnabled;
+extern	bool            bSoundEnabled;
 
 extern	FRAME_INFO	*	Pulsar_Header;
 extern	FRAME_INFO	*	Pulsar_Trail_Header;
@@ -111,13 +111,13 @@ extern	FRAME_INFO	*	BigExp1_Header;
 
 extern BYTE				GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 													// this tells the drones what status the host thinks hes in..
-extern	_Bool			DebugInfo;
-extern	_Bool			GodMode;
+extern	bool			DebugInfo;
+extern	bool			GodMode;
 extern	int				no_collision;		// disables player ship-to-background collisions
 extern	int16_t			NumOrbs;
 extern	u_int16_t			IsGroupVisible[MAXGROUPS];
 extern	int16_t			NumSuperNashrams;
-extern	_Bool			PickupInvulnerability;
+extern	bool			PickupInvulnerability;
 extern	int16_t			NumInvuls;
 
 extern	COMP_OBJ	*	ColChild;
@@ -127,11 +127,11 @@ extern	ENEMY			Enemies[ MAXENEMIES ];
 extern	ENEMY_TYPES		EnemyTypes[ MAX_ENEMY_TYPES ];
 extern	int16_t			NumSecBullsPerGroup[ MAXGROUPS ];
 extern	SECONDARYWEAPONBULLET *	SecBullGroups[ MAXGROUPS ];
-extern	_Bool            IsHost;
+extern	bool            IsHost;
 extern	MXLOADHEADER	ModelHeaders[MAXMODELHEADERS];
 extern	MXALOADHEADER	MxaModelHeaders[ MAXMXAMODELHEADERS ];
 extern	int				outside_map;
-extern	_Bool			PlayDemo;
+extern	bool			PlayDemo;
 
 extern	int16_t	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
 extern	int16_t	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
@@ -213,8 +213,8 @@ float	SussgunTable[ MAXPOWERLEVELS ] = { 30720.0F, 25600.0F, 20480.0F }; //( 204
 u_int16_t	GlobalPrimBullsID = 0;
 int32_t	ColPerspective;
 int32_t	MyColPerspective;
-_Bool	GodModeOnceOnly = true;
-_Bool	PyroLightFlag = true;
+bool	GodModeOnceOnly = true;
+bool	PyroLightFlag = true;
 
 int8_t	*	DebugPrimStrings[] = {
 
@@ -256,7 +256,7 @@ char *PrimaryDescription[MAXPRIMARYWEAPONS] =
 };
 
 // is weapon valid as far as order processing & keydefs concerned?
-_Bool PrimaryValid[ MAXPRIMARYWEAPONS ] =
+bool PrimaryValid[ MAXPRIMARYWEAPONS ] =
 {
 
 	true,	// pulsar
@@ -288,7 +288,7 @@ int8_t PrimaryToFireLookup[ MAXPRIMARYWEAPONS ] = {
 	LASER,
 };
 
-_Bool	PrimaryWeaponCheat = false;
+bool	PrimaryWeaponCheat = false;
 
 PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 
@@ -1632,7 +1632,7 @@ void ProcessPrimaryBullets( void )
 	u_int16_t			TempEnemyIndex;
 	GUNOBJECT	*	GunPtr;		// the first gun...
 	FIREPOS		*	FirePosPnt;
-	_Bool			Killed;
+	bool			Killed;
 	PVSPOTFX	*	SpotFXPtr;
 	VECTOR			TrigPos;
 	float			NewFramelag = 0.0F;
@@ -3579,10 +3579,10 @@ void CreateNmeShrapnelExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group )
 /*===================================================================
 	Procedure	:	Clean up and kill a Prim Bull
 	Input		:	u_int16_t	Prim Bullet Number
-				:	_Bool	Kill Light ( true/false )
+				:	bool	Kill Light ( true/false )
 	Output		:	nothing
 ===================================================================*/
-void CleanUpPrimBull( u_int16_t i, _Bool LightFlag  )
+void CleanUpPrimBull( u_int16_t i, bool LightFlag  )
 {
 	u_int16_t	line;
 	u_int16_t	light;
@@ -3653,13 +3653,13 @@ void CleanUpPrimBull( u_int16_t i, _Bool LightFlag  )
 				:	VECTOR	*	UpVector
 				:	int16_t		PowerLevel
 				:	float		PowerLevel ( Charging )
-				:	_Bool		NetFlag ( Send to everyone )
+				:	bool		NetFlag ( Send to everyone )
 	Output		:	nothing
 ===================================================================*/
 extern  BYTE          MyGameStatus;
 u_int16_t InitOnePrimBull( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
 						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16_t PowerLevel, float PLevel, _Bool NetFlag )
+						int16_t PowerLevel, float PLevel, bool NetFlag )
 {
 	u_int16_t		i;
 	u_int16_t		light;
@@ -7104,9 +7104,9 @@ u_int16_t CheckHitSecondary( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, VECTOR
 				:	VECTOR	*	IntPoint
 				:	VECTOR	*	Object Pos
 				:	u_int16_t		Object Group
-	Output		:	_Bool		True/False = Valid/Not
+	Output		:	bool		True/False = Valid/Not
 ===================================================================*/
-_Bool ValidGroupCollision( VECTOR * StartPos, u_int16_t StartGroup, VECTOR * IntPoint, VECTOR * ObjPos, u_int16_t ObjGroup )
+bool ValidGroupCollision( VECTOR * StartPos, u_int16_t StartGroup, VECTOR * IntPoint, VECTOR * ObjPos, u_int16_t ObjGroup )
 {
 	u_int16_t	Group;
 	VECTOR	MoveOff;
@@ -8017,7 +8017,7 @@ void DropAmmo( void )
 	float	LifeCount;
 	int16_t	PickupNum;
 	VECTOR	DirVector;
-	_Bool	DropFlag = false;
+	bool	DropFlag = false;
 	u_int16_t	i;
 
 	if( ( Ships[ WhoIAm ].Object.Flags & SHIP_SuperNashram ) )
@@ -8108,9 +8108,9 @@ void DropAmmo( void )
 				:	VECTOR	*	NewPos
 				:	VECTOR	*	MoveOffset
 				:	VECTOR	*	New Direction
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTOR * Dir )
+bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTOR * Dir )
 {
 	u_int16_t	Ship;
 	u_int16_t	Enemy;
@@ -8232,7 +8232,7 @@ _Bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTO
 	Procedure	:	Change Direction of Pulsar
 	Input		:	u_int16_t		Primary Bullet Index
 				:	VECTOR	*	New Direction
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
 void ChangePulsarDir( u_int16_t i, VECTOR * Dir )
 {
@@ -8296,7 +8296,7 @@ void ChangePulsarDir( u_int16_t i, VECTOR * Dir )
 	Procedure	:	Change Direction of Pulsar
 	Input		:	u_int16_t		Primary Bullet Index
 				:	VECTOR	*	New Direction
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
 void ChangeTrojaxDir( u_int16_t i, VECTOR * Dir )
 {
@@ -8322,7 +8322,7 @@ void ChangeTrojaxDir( u_int16_t i, VECTOR * Dir )
 	Procedure	:	Change Direction of Pulsar
 	Input		:	u_int16_t		Primary Bullet Index
 				:	VECTOR	*	New Direction
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
 void ChangeSussgunDir( u_int16_t i, VECTOR * Dir )
 {
@@ -8334,7 +8334,7 @@ void ChangeSussgunDir( u_int16_t i, VECTOR * Dir )
 	Procedure	:	Change Direction of OrbitPulsar
 	Input		:	u_int16_t		Primary Bullet Index
 				:	VECTOR	*	New Direction
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
 void ChangeOrbitPulsarDir( u_int16_t i, VECTOR * Dir )
 {
@@ -8346,7 +8346,7 @@ void ChangeOrbitPulsarDir( u_int16_t i, VECTOR * Dir )
 	Procedure	:	Change Direction of Laser
 	Input		:	u_int16_t		Primary Bullet Index
 				:	VECTOR	*	New Direction
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
 void ReflectLaser( u_int16_t i, VECTOR * Dir )
 {
@@ -8619,13 +8619,13 @@ void CreateInvEffect( u_int16_t ShipHit, int16_t Num, u_int8_t RVal, u_int8_t GV
 				:	VECTOR	*	UpVector
 				:	int16_t		PowerLevel
 				:	float		PowerLevel ( Charging )
-				:	_Bool		NetFlag ( Send to everyone )
+				:	bool		NetFlag ( Send to everyone )
 				:	GUNBOJECT *	Gun ( Enemies Only )
 	Output		:	nothing
 ===================================================================*/
 u_int16_t EnemyFirePrimary( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
 						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16_t PowerLevel, float PLevel, _Bool NetFlag, void * Gun )
+						int16_t PowerLevel, float PLevel, bool NetFlag, void * Gun )
 {
 	int16_t	Count;
 	u_int16_t	i = (u_int16_t) -1;
@@ -8973,7 +8973,7 @@ FILE * SavePrimBulls( FILE * fp )
 
 		while( i != (u_int16_t) -1 )
 		{
-			fwrite( &PrimBulls[ i ].Used, sizeof( _Bool ), 1, fp );
+			fwrite( &PrimBulls[ i ].Used, sizeof( bool ), 1, fp );
 			fwrite( &PrimBulls[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			fwrite( &PrimBulls[ i ].Prev, sizeof( u_int16_t ), 1, fp );
 			fwrite( &PrimBulls[ i ].Type, sizeof( u_int16_t ), 1, fp );
@@ -9078,7 +9078,7 @@ FILE * LoadPrimBulls( FILE * fp )
 
 		while( i != (u_int16_t) -1 )
 		{
-			fread( &PrimBulls[ i ].Used, sizeof( _Bool ), 1, fp );
+			fread( &PrimBulls[ i ].Used, sizeof( bool ), 1, fp );
 			fread( &PrimBulls[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			fread( &PrimBulls[ i ].Prev, sizeof( u_int16_t ), 1, fp );
 			fread( &PrimBulls[ i ].Type, sizeof( u_int16_t ), 1, fp );

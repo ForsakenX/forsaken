@@ -41,51 +41,51 @@ extern int OldPPSValue;
 extern int OldColPerspective;
 extern int OldUseShortPackets;
 
-_Bool ResetKillsPerLevel;
-_Bool TintBikeTeamColor;
-_Bool MyResetKillsPerLevel;
-_Bool IpOnCLI = false;
+bool ResetKillsPerLevel;
+bool TintBikeTeamColor;
+bool MyResetKillsPerLevel;
+bool IpOnCLI = false;
 
 extern u_int8_t QuickStart;
-extern _Bool BrightShips;
-extern _Bool BikeExhausts;
+extern bool BrightShips;
+extern bool BikeExhausts;
 extern int32_t ColPerspective;
 
-extern _Bool NoMenuBack;
-extern _Bool Debug;
+extern bool NoMenuBack;
+extern bool Debug;
 
-extern _Bool NeedFlagAtHome;
-extern _Bool OwnFlagTeleportsHome;
-extern _Bool CanCarryOwnFlag;
+extern bool NeedFlagAtHome;
+extern bool OwnFlagTeleportsHome;
+extern bool CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
-extern	_Bool	UseShortPackets;
-extern _Bool	Panel;
+extern	bool	UseShortPackets;
+extern bool	Panel;
 
 extern MENUITEM TeamGameHostMenuItem;
 extern BYTE	PreSynchupStatus;
-extern _Bool DemoShipInit[];
+extern bool DemoShipInit[];
 extern	float NetUpdateInterval;
-extern	_Bool	BrightShips;
-extern	_Bool	MyBrightShips;
+extern	bool	BrightShips;
+extern	bool	MyBrightShips;
 
 extern float Pulse;
 extern char *EmptyString;
 
-extern	_Bool					IsHost;   // is the user hosting/joining a game
+extern	bool					IsHost;   // is the user hosting/joining a game
 extern	int16_t					Lives;
 
-extern	_Bool	BountyHunt;
-extern	_Bool	CaptureTheFlag;
-extern	_Bool	CTF;
+extern	bool	BountyHunt;
+extern	bool	CaptureTheFlag;
+extern	bool	CTF;
 extern	TEXT	DemoGameName;
-extern	_Bool	RecordDemo;
+extern	bool	RecordDemo;
 extern	LIST	PlayersList;
 extern	LIST	LevelList;
 extern	LIST	TeamList[MAX_TEAMS];
 extern	MENUITEM	TeamItem;
 extern	MENUITEM	NewTeamItem;
-extern	_Bool	TeamGame;
+extern	bool	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	SLIDER	TimeLimit;
 extern	SLIDER	MyTimeLimit;
@@ -106,19 +106,19 @@ extern	int MenuStackLevel;
 extern	BYTE	GameStatus[];	// Game Status for every Ship...
 extern	SLIDER  PacketsSlider;
 extern	TEXT TCPAddress;
-extern	_Bool	CountDownOn;
+extern	bool	CountDownOn;
 extern	float	GetPlayerNumCount1;
 extern	float	GetPlayerNumCount2;
 extern	int		GetPlayerNumCount;
 extern	FILE	*	DemoFp;
 extern	FILE	*	DemoFpClean;
-_Bool ChangeLevel( void );
-_Bool InitLevels( char *levels_list );
+bool ChangeLevel( void );
+bool InitLevels( char *levels_list );
 extern	int16_t		LevelNum;
 extern	int16_t		NewLevelNum;
 
 #ifdef DEMO_SUPPORT
-extern	_Bool	PlayDemo;
+extern	bool	PlayDemo;
 extern	LONGLONG	GameElapsedTime;		// when the game started
 extern	LIST	DemoList;
 extern	float Demoframelag;
@@ -131,7 +131,7 @@ extern  MENUITEM	WatchTeamSelectionItem;
 extern int CameraStatus;
 extern	BYTE					OverallGameStatus;
 extern char *CurrentLevelsList;
-extern	_Bool AutoSelectConnection;
+extern	bool AutoSelectConnection;
 extern  MENUSTATE MenuState;
 extern  char TeamCurrentScore[MAX_TEAMS][64];
 #ifdef DEMO_SUPPORT
@@ -144,7 +144,7 @@ extern	u_int16_t		Seed1;
 extern	u_int16_t		Seed2;
 extern	u_int16_t		CopyOfSeed1;
 extern	u_int16_t		CopyOfSeed2;
-extern	_Bool		RandomPickups;
+extern	bool		RandomPickups;
 
 /*
  * Globals to this module
@@ -155,7 +155,7 @@ int						TeamMembers[MAX_TEAMS];
 MENU  *				GetPlayerNumMenu;
 float	Bodge	= 1.0F;
 
-_Bool	Modem2Modem = false;
+bool	Modem2Modem = false;
 
 u_int16_t	RandomStartPosModify = 0;							
 
@@ -242,12 +242,12 @@ void SetUpGameType( int type )
 ===================================================================*/
 extern void SetGamePrefs( void );
 extern TEXT local_port_str;
-extern _Bool	PickupValid[ MAXPICKUPTYPES ];
-extern _Bool	MyPickupValid[ MAXPICKUPTYPES ];
+extern bool	PickupValid[ MAXPICKUPTYPES ];
+extern bool	MyPickupValid[ MAXPICKUPTYPES ];
 extern SLIDER MyPacketsSlider;
 extern int32_t MyColPerspective;
-extern _Bool MyRandomPickups;
-extern _Bool MyUseShortPackets;
+extern bool MyRandomPickups;
+extern bool MyUseShortPackets;
 
 // these settings get over ridden when you join a game
 // so we need a separate copy of them to backup our settings
@@ -646,7 +646,7 @@ void CheckForMenuChange(int *dummy)
 void DistributeTeamsToLists(int *dummy)
 {
 	int team, player, num_players;
-	_Bool OkayToStart = true;
+	bool OkayToStart = true;
 	int16_t TeamScore[MAX_TEAMS];
 
 	UpdateSessions( NULL );

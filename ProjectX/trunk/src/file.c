@@ -45,7 +45,7 @@
 #define S_IWRITE 0200
 #endif
 
-extern _Bool Debug;
+extern bool Debug;
 
 FILE * file_open(char * filename, char * mode)
 {
@@ -58,7 +58,7 @@ void touch_file( char* path )
 		Write_File(path, "", 0);
 }
 
-_Bool is_folder( char* str )
+bool is_folder( char* str )
 {
 	static struct stat s;
 	char * path = convert_path(str);
@@ -107,7 +107,7 @@ int folder_exists( char *pathspec, ... )
 	return 0;
 }
 
-_Bool File_Exists( char * str )
+bool File_Exists( char * str )
 {
 	char * path = convert_path(str);
 	int rval  = (access( path, 0 ) == 0);
@@ -178,7 +178,7 @@ long Get_File_Size( char * Filename )
 }
 
 #ifdef WIN32
-_Bool file_time( const char * path, struct filetime *t )
+bool file_time( const char * path, struct filetime *t )
 {
 	HANDLE hfile;
 	FILETIME Time;
@@ -212,7 +212,7 @@ _Bool file_time( const char * path, struct filetime *t )
 	return true;
 }
 #else
-_Bool file_time( const char * path, struct filetime *t )
+bool file_time( const char * path, struct filetime *t )
 {
 	struct stat st;
 	struct tm lt;
@@ -268,7 +268,7 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 	return ( Bytes_Read );
 }
 
-_Bool delete_file( char * str )
+bool delete_file( char * str )
 {
 #ifdef WIN32
 	return DeleteFile( str );

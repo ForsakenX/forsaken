@@ -71,7 +71,7 @@ void ExecuteTransExe( u_int16_t group )
 {
 	int16_t	i;
 	u_int16_t	Model;
-	_Bool	Display;
+	bool	Display;
 
 	for( i = 0 ; i < NumOfTransExe ; i++ )
 	{
@@ -159,7 +159,7 @@ void ExecuteTransExeUnclipped( u_int16_t group )
 {
 	int16_t	i;
 	u_int16_t	Model;
-	_Bool	Display;
+	bool	Display;
 
 	for( i = 0 ; i < NumOfTransExe ; i++ )
 	{

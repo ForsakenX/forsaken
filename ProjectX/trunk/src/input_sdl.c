@@ -6,15 +6,15 @@
 
 JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
 
-extern _Bool RenderModeReset( void );
+extern bool RenderModeReset( void );
 extern void SetGamePrefs( void );
 extern void FadeHoloLight(float Brightness);
 extern float HoloLightBrightness;
 extern float RoomDarkness;
 extern void DarkenRoom2(float darkness);
 extern void ProcessVduItems( MENU * Menu );
-extern _Bool InitialTexturesSet;
-extern _Bool cursor_clipped;
+extern bool InitialTexturesSet;
+extern bool cursor_clipped;
 extern BYTE MyGameStatus;
 extern render_info_t render_info;
 extern void CleanUpAndPostQuit(void);
@@ -25,7 +25,7 @@ int Num_Joysticks = 0;
 // Generic Routines
 //////////////////////////////////////////////
 
-void input_grab( _Bool grab )
+void input_grab( bool grab )
 {
 	// 1. always acquire and hide mouse if in fullscreen
 	// 2. took this out cause a player asked... if there is issues add it back...
@@ -126,7 +126,7 @@ void app_active( SDL_ActiveEvent active )
 // TODO
 //	when this is ready then pass SDL_RESIZABLE to SDL_SetVideoMode
 //  need to resize video with SDL_SetVideoMode
-_Bool bIgnoreWM_SIZE = false; // ignores resize events
+bool bIgnoreWM_SIZE = false; // ignores resize events
 void app_resize( SDL_ResizeEvent resize )
 {
 	DebugPrintf("Window size changed.\n");
@@ -458,7 +458,7 @@ void app_joy_hat( SDL_JoyHatEvent hat )
 }
 
 #ifndef DINPUTJOY
-_Bool joysticks_init(void)
+bool joysticks_init(void)
 {
 	int i, j, k;
 
@@ -571,7 +571,7 @@ _Bool joysticks_init(void)
 	return true;
 }
 
-_Bool joysticks_cleanup( void )
+bool joysticks_cleanup( void )
 {
 	int i, j, k;
 	for (i = 0; i < MAX_JOYSTICKS; i++)
@@ -659,7 +659,7 @@ void reset_events( void )
 	input_buffer_reset();
 }
 
-_Bool handle_events( void )
+bool handle_events( void )
 {
 	SDL_Event _event;
 

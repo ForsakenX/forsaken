@@ -119,8 +119,8 @@ extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	float framelag;
 extern	u_int32_t	AnimOncePerFrame;	// used for stuff that is displayed more than once in a single frame..
-_Bool FindGroupConnections( MLOADHEADER *m );
-_Bool ReadGroupConnections( MLOADHEADER *m, char **pbuf );
+bool FindGroupConnections( MLOADHEADER *m );
+bool ReadGroupConnections( MLOADHEADER *m, char **pbuf );
 void FreeGroupConnections( void );
 void ReadSoundInfo( MLOADHEADER *m, char **pbuf );
 
@@ -144,7 +144,7 @@ u_int16_t	FirstStartPositionInGroup[MAXGROUPS];
 
 
 float	SoundInfo[MAXGROUPS][MAXGROUPS];
-_Bool	TempGroups[MAXGROUPS];
+bool	TempGroups[MAXGROUPS];
 void InitSoundInfo( MLOADHEADER * Mloadheader );
 u_int16_t	GroupTris[ MAXGROUPS ];
 
@@ -153,9 +153,9 @@ u_int16_t	GroupTris[ MAXGROUPS ];
 	Input		:		Who can tell...
 	Output		:		int93???
 ===================================================================*/
-static _Bool read_visible( MLOADHEADER * Mloadheader, VISTREE *v, u_int16_t group, u_int16_t **Uint16PntPtr )
+static bool read_visible( MLOADHEADER * Mloadheader, VISTREE *v, u_int16_t group, u_int16_t **Uint16PntPtr )
 {
-	_Bool ok;
+	bool ok;
 	u_int16_t *ptr;
 	u_int16_t vnum;
 
@@ -197,7 +197,7 @@ static _Bool read_visible( MLOADHEADER * Mloadheader, VISTREE *v, u_int16_t grou
 	return ok;
 }
 
-extern _Bool bSquareOnly;
+extern bool bSquareOnly;
 void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, u_int16_t Tpage, LPLVERTEX Orig_Vert )
 {
 	static LPLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
@@ -308,7 +308,7 @@ FixUV_Anim( POLYANIM *PolyAnim, LPLVERTEX Vert, LPLVERTEX Orig_Vert )
 	Input		:		char	*	Filename , MLOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-_Bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
+bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 {
 	char		*	FileNamePnt;
 	char		*	Buffer;
@@ -1193,7 +1193,7 @@ _Bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	Output		:		FLASE/true
 ===================================================================*/
 
-_Bool ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
+bool ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
 {
 	int group;
 	if (Mloadheader->state == true )
@@ -1213,7 +1213,7 @@ _Bool ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
 
 // bjd - this function seems to draw static geometry?
 
-_Bool ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, u_int16_t group  )
+bool ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, u_int16_t group  )
 {
 	u_int16_t i;
 	RENDERMATRIX Matrix;
@@ -1405,7 +1405,7 @@ static void Unscramble( char *buf, long size, char *fname )
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
-_Bool PreMload( char * Filename, MLOADHEADER * Mloadheader  )
+bool PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -1688,7 +1688,7 @@ float IsGroupVisibleSoundInfo2( MLOADHEADER * Mloadheader , u_int16_t group , u_
 	u_int16_t i;
 	float Distance;
 	float Min;
-	_Bool TempGroups2[MAXGROUPS];
+	bool TempGroups2[MAXGROUPS];
 	for( i = 0 ; i < Mloadheader->num_groups ; i++ )
 	{
 		TempGroups2[i] = TempGroups[i];

@@ -73,11 +73,11 @@ extern	MODEL		Models[ MAXNUMOFMODELS ];
 extern	int				FontWidth;
 extern	int				FontHeight;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	_Bool			CountDownOn;
+extern	bool			CountDownOn;
 extern	int16_t			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
 extern	int16_t			Lives;
-extern	_Bool			DebugInfo;
+extern	bool			DebugInfo;
 extern	TRIGGERVAR	*	DecreaseTemperature;
 extern	FRAME_INFO	*	Flag_Header;
 extern	FRAME_INFO	*	Flags_Header;
@@ -99,8 +99,8 @@ extern int PlayerMessageColour;
 /*===================================================================
 	Globals
 ===================================================================*/
-		_Bool		CountDownOn = false;
-static 	_Bool		Toggle = false;
+		bool		CountDownOn = false;
+static 	bool		Toggle = false;
 static 	float		ScaleInc = 0.0F;
 static	float		Interp_Time = 0.0F;
 static	float		CountDown_X = TIMERSTARTSCREENX;
@@ -124,7 +124,7 @@ u_int16_t	FirstScrPolyFree;
 float	Countdown_Float = 3000.0F;	// 30 Seconds
 float	ZValue;
 float	RHWValue;
-_Bool	BilinearSolidScrPolys = false;
+bool	BilinearSolidScrPolys = false;
 float	ThermalTemp = 0.0F;
 float	WantedThermalTemp = 0.0F;
 float	ThermalMinimum = 0.0F;
@@ -133,8 +133,8 @@ FRAME_INFO	**	CountDownFontGraphics[ 2 ] = { &Numbers2_Header, &Numbers_Header }
 float	CountDownFontWidth[ 2 ] = { 16.0F, 23.0F };
 int16_t	CurrentCountDownFont = 1;
 float		Time_Diff= 0.0F;
-_Bool		KilledPlayer = false;
-_Bool		IllegalTime = false;
+bool		KilledPlayer = false;
+bool		IllegalTime = false;
 
 int16_t	NumberSegments[ 11 ][ 7 ] = {
 //		  0   1   2   3   4   5   6 
@@ -796,9 +796,9 @@ void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	Input		:	VECTOR	*	Vertex
 				:	VECTOR	*	2D Vertex
 				:	MATRIX	*	Final View Matrix
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
+bool ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 {
 	DWORD	Flags;
 	VECTOR	TempVert;
@@ -855,7 +855,7 @@ _Bool ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	Output		:	false if box is inside viewport, true if outside
 ===================================================================*/
 
-_Bool ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
+bool ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
 {
 	float xmin = 0.0f, ymin = 0.0f, xmax = 0.0f, ymax = 0.0f;
 	int clip_topleft, clip_bottomright;
@@ -1972,9 +1972,9 @@ void KillThermo( void )
 /*===================================================================
 	Procedure	:	Check if MMX present
 	Input		:	Nothing
-	Output		:	_Bool	true/false
+	Output		:	bool	true/false
 ===================================================================*/
-_Bool IsMMX( void )
+bool IsMMX( void )
 {
 	int MMX = 0;
     SYSTEM_INFO si;
@@ -2064,7 +2064,7 @@ void RemoveScrPolyFromTPage( u_int16_t i, int16_t TPage )
 	ScrPolys[ i ].NextInTPage = (u_int16_t) -1;
 }
 
-_Bool DisplaySolidScrPolys( RENDEROBJECT *renderObject )
+bool DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -2088,7 +2088,7 @@ _Bool DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 	return( false );
 }
 
-_Bool DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
+bool DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
 {
 	int16_t	TPage;
 	u_int16_t	i;
@@ -2119,7 +2119,7 @@ _Bool DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
 				:	u_int16_t	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-_Bool ScrPolyDispSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly )
+bool ScrPolyDispSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;
@@ -2141,7 +2141,7 @@ _Bool ScrPolyDispSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t *
     LPTLVERTEX	lpBufStart;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
-	_Bool			Textured;
+	bool			Textured;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -2598,7 +2598,7 @@ _Bool ScrPolyDispSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t *
 				:	u_int16_t	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-_Bool ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly )
+bool ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextScrPoly )
 {
 	u_int16_t			i;
 	int16_t			Count;
@@ -2620,7 +2620,7 @@ _Bool ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_
     LPTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
-	_Bool			Textured;
+	bool			Textured;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 

@@ -14,7 +14,7 @@
 #include "camera.h"
 
 extern	CAMERA	CurrentCamera;
-extern	_Bool	DebugInfo;
+extern	bool	DebugInfo;
 
 /*===================================================================
 	Globals
@@ -111,7 +111,7 @@ void KillUsedLine( u_int16_t i )
 				:	u_int16_t	* StartLine
 	Output		:	Nothing
 ===================================================================*/
-_Bool LinesDispGroup( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, u_int16_t * StartLine )
+bool LinesDispGroup( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, u_int16_t * StartLine )
 {
 	LPLVERTEX	Vert_Ptr;
 	COLOR		color;
@@ -230,7 +230,7 @@ _Bool LinesDispGroup( u_int16_t Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/REN
 }
 
 
-_Bool ExecuteLines( u_int16_t group, RENDEROBJECT *renderObject ) 
+bool ExecuteLines( u_int16_t group, RENDEROBJECT *renderObject ) 
 {
 	u_int16_t  i = 0;
 

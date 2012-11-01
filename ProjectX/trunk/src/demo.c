@@ -30,20 +30,20 @@
 
 extern BYTE TeamNumber[MAX_PLAYERS];
 extern LIST DemoList;
-extern _Bool TeamGame;
-extern _Bool CTF;
-extern _Bool CaptureTheFlag;
-extern _Bool BountyHunt;
+extern bool TeamGame;
+extern bool CTF;
+extern bool CaptureTheFlag;
+extern bool BountyHunt;
 extern u_int16_t RandomStartPosModify;
 extern int CameraStatus;  
-extern _Bool CountDownOn;
-extern _Bool DemoShipInit[];
+extern bool CountDownOn;
+extern bool DemoShipInit[];
 extern u_int16_t CopyOfSeed1;
 extern u_int16_t CopyOfSeed2;
-extern _Bool RandomPickups;
-extern _Bool PlayDemo;
+extern bool RandomPickups;
+extern bool PlayDemo;
 extern void DebugLastError( void );
-extern _Bool ChangeLevel( void );
+extern bool ChangeLevel( void );
 
 FILE	*	DemoFp = NULL;
 FILE	*	DemoFpClean = NULL;
@@ -92,7 +92,7 @@ void StartDemoCleaning( MENUITEM * Item )
 	u_int32_t flags;
 	char *clean_name;
 	u_int16_t	TempSeed1, TempSeed2;
-	_Bool	TempRandomPickups;
+	bool	TempRandomPickups;
 	u_int32_t	TempPackedInfo[ MAX_PICKUPFLAGS ];
 
 	NewLevelNum = -1;

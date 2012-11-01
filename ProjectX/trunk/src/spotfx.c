@@ -82,9 +82,9 @@ extern	ENEMY			Enemies[ MAXENEMIES ];
 /*===================================================================
 	Procedure	:	Load all SpotFX
 	Input		:	nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool LoadSpotFX( void )
+bool LoadSpotFX( void )
 {
 	FILE	*	fp;
 	int16_t		Count;

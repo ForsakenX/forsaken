@@ -11,7 +11,7 @@
 //#include <efx-creative.h>
 #include <math.h>
 
-_Bool Sound3D = false; // enable 3d sound
+bool Sound3D = false; // enable 3d sound
 
 struct {
 	int buffers;
@@ -29,7 +29,7 @@ struct sound_buffer_t {
 struct sound_source_t {
 	ALuint id;
 	ALuint buffer;
-	_Bool playing;
+	bool playing;
 	char path[MAX_PATH];
 };
 
@@ -107,7 +107,7 @@ static void print_info ( void )
 	DebugPrintf("openal: info end\n");
 }
 
-_Bool sound_init( void )
+bool sound_init( void )
 {
 	// TODO - disabling the ability to re-init sound system
 	// on ubuntu using "drivers = pulse" will handle in alcOpenDevice
@@ -164,19 +164,19 @@ void sound_destroy( void )
 // 3d routines
 //
 
-_Bool sound_listener_position( float x, float y, float z )
+bool sound_listener_position( float x, float y, float z )
 {
 	alListener3f(AL_POSITION, x, y, -z);
 	return true;
 }
 
-_Bool sound_listener_velocity( float x, float y, float z )
+bool sound_listener_velocity( float x, float y, float z )
 {
 	alListener3f(AL_VELOCITY, x, y, -z);
 	return true;
 }
 
-_Bool sound_listener_orientation( 
+bool sound_listener_orientation( 
 	float fx, float fy, float fz, // forward vector
 	float ux, float uy, float uz  // up vector
 )
@@ -268,7 +268,7 @@ void sound_stop( sound_source_t * source )
 	//DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
-_Bool sound_is_playing( sound_source_t * source )
+bool sound_is_playing( sound_source_t * source )
 {
 	ALint state;
 	alGetSourcei( source->id, AL_SOURCE_STATE, &state );

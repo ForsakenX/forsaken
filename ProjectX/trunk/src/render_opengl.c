@@ -42,14 +42,14 @@ void render_mode_fill(void)
 }
 
 // unused in opengl
-_Bool FSBeginScene(){ return true; }
-_Bool FSEndScene(){ return true; }
+bool FSBeginScene(){ return true; }
+bool FSEndScene(){ return true; }
 
 // prototypes
 void reset_trans( void );
 
 // TODO	- should get this from gl caps ?
-_Bool bSquareOnly = true;
+bool bSquareOnly = true;
 
 //
 // Texture Routines
@@ -87,7 +87,7 @@ void release_texture( LPTEXTURE texture ){
 	texture = NULL;
 }
 
-_Bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey)
+bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t *height, int numMips, bool * colorkey)
 {
 	GLuint * id = NULL;
 	texture_image_t image;
@@ -108,7 +108,7 @@ _Bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t
 	// return values
 	*width  = (u_int16_t) image.w;
 	*height = (u_int16_t) image.h;
-	(*colorkey) = (_Bool) image.colorkey;
+	(*colorkey) = (bool) image.colorkey;
 
 	// employ colour key and gamma correction
 	{
@@ -183,13 +183,13 @@ _Bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t
 	return true;
 }
 
-_Bool update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colorkey)
+bool update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, bool * colorkey)
 {
 	create_texture(&dstTexture, fileName, width, height, numMips, colorkey);
 	return true;
 }
 
-_Bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, _Bool * colourkey)
+bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, bool * colourkey)
 {	
 	return create_texture(texture, fileName, width, height, numMips, colourkey);
 }
@@ -260,7 +260,7 @@ static void bind_gl_funcs(void)
 #endif // WIN32
 */
 
-_Bool render_init( render_info_t * info )
+bool render_init( render_info_t * info )
 {
 /*
 #ifdef WIN32
@@ -283,8 +283,8 @@ void render_cleanup( render_info_t * info )
 	// ???
 }
 
-extern _Bool sdl_init_video( void );
-_Bool render_mode_select( render_info_t * info )
+extern bool sdl_init_video( void );
+bool render_mode_select( render_info_t * info )
 {
 	render_cleanup( info );
 	if(!sdl_init_video())
@@ -298,9 +298,9 @@ _Bool render_mode_select( render_info_t * info )
 //		lost as in alt+tab (etc) which caused video memory to dump
 //		at this point we should set needs_reset = true
 
-static _Bool needs_reset = false;
+static bool needs_reset = false;
 
-_Bool render_reset( render_info_t * info )
+bool render_reset( render_info_t * info )
 {
 	if(!needs_reset)
 		return false;
@@ -310,12 +310,12 @@ _Bool render_reset( render_info_t * info )
 	return true;
 }
 
-void render_set_filter( _Bool red, _Bool green, _Bool blue )
+void render_set_filter( bool red, bool green, bool blue )
 {
 	glColorMask(red?1:0, green?1:0, blue?1:0, 1);
 }
 
-_Bool render_flip( render_info_t * info )
+bool render_flip( render_info_t * info )
 {
 	SDL_GL_SwapBuffers();
 	CHECK_GL_ERRORS;
@@ -430,7 +430,7 @@ void set_whiteout_state( void )
 //        perhaps we can automate and remove need for rect arg ?
 
 // clears color/zbuff same time to opaque black
-_Bool FSClear(XYRECT * rect)
+bool FSClear(XYRECT * rect)
 {
 	int width, height, x, y;
 	width = rect->x2 - rect->x1;
@@ -450,21 +450,21 @@ _Bool FSClear(XYRECT * rect)
 	return true;
 }
 
-_Bool FSClearBlack(void)
+bool FSClearBlack(void)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	return true;
 }
 
-_Bool FSClearDepth(XYRECT * rect)
+bool FSClearDepth(XYRECT * rect)
 {
 	glClearDepth(1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	return true;
 }
 
-_Bool FSGetViewPort(render_viewport_t *view)
+bool FSGetViewPort(render_viewport_t *view)
 {
 	GLint i[4];
 	GLfloat f[2];
@@ -485,7 +485,7 @@ _Bool FSGetViewPort(render_viewport_t *view)
 // TODO - we can probably use glScalef and glTranslatef
 //        to invert the viewport dimentions
 
-_Bool FSSetViewPort(render_viewport_t *view)
+bool FSSetViewPort(render_viewport_t *view)
 {
 	// render_viewport_t x/y starts top/left
 	// but glViewport starts from bottom/left
@@ -513,7 +513,7 @@ _Bool FSSetViewPort(render_viewport_t *view)
 }
 
 GLfloat proj_matrix[4][4];
-_Bool FSSetProjection( RENDERMATRIX *matrix )
+bool FSSetProjection( RENDERMATRIX *matrix )
 {
 	memmove(&proj_matrix,&matrix->m,sizeof(proj_matrix));//memcpy
 	glMatrixMode(GL_PROJECTION);
@@ -544,21 +544,21 @@ static void reset_modelview( void )
 	glLoadMatrixf((GLfloat*)&mv_matrix);
 }
 
-_Bool FSSetView( RENDERMATRIX *matrix )
+bool FSSetView( RENDERMATRIX *matrix )
 {
 	memmove(&view_matrix,&matrix->m,sizeof(view_matrix));//memcpy
 	reset_modelview();
 	return true;
 }
 
-_Bool FSSetWorld( RENDERMATRIX *matrix )
+bool FSSetWorld( RENDERMATRIX *matrix )
 {	
 	memmove(&world_matrix,&matrix->m,sizeof(world_matrix));//memcpy
 	reset_modelview();
 	return true;
 }
 
-_Bool FSGetWorld(RENDERMATRIX *matrix)
+bool FSGetWorld(RENDERMATRIX *matrix)
 {
 	memmove(&matrix->m,&world_matrix,sizeof(matrix->m));//memcpy
 	return true;
@@ -574,46 +574,46 @@ _Bool FSGetWorld(RENDERMATRIX *matrix)
 // so we can render the static objects as display lists
 //
 
-_Bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(LVERTEX) );
 	return true;
 }
-_Bool FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+bool FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {FSCreateVertexBuffer(renderObject, numVertices); return true;}
 
-_Bool FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+bool FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 { renderObject->lpNormalBuffer = malloc( numNormals * sizeof(NORMAL) ); return true; }
 
-_Bool FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+bool FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 {FSCreateNormalBuffer(renderObject, numNormals); return true;}
 
-_Bool FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+bool FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	renderObject->lpIndexBuffer = malloc( numIndices * 3 * sizeof(WORD) );
 	return true;
 }
-_Bool FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+bool FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {return FSCreateIndexBuffer(renderObject,numIndices);}
 
-_Bool FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+bool FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {(*indices) = renderObject->lpIndexBuffer; return true;}
 
-_Bool FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
+bool FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {(*verts) = renderObject->lpVertexBuffer; return true;}
-_Bool FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return true;}
-_Bool FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return true;}
+bool FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return true;}
+bool FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return true;}
 
-_Bool FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
+bool FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
 {(*normals) = renderObject->lpNormalBuffer; return true;}
-_Bool FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return true;}
+bool FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return true;}
 
-_Bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(TLVERTEX) ); 
 	return true;
 }
-_Bool FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
+bool FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {*verts = (void*)renderObject->lpVertexBuffer; return true;}
 
 static void set_color( COLOR c )
@@ -871,7 +871,7 @@ void light_vert( LVERTEX * vert, u_int8_t * color )
 	}
 }
 
-static void draw_vert( void * _vert, _Bool orthographic )
+static void draw_vert( void * _vert, bool orthographic )
 {
 	LVERTEX * vert = (LVERTEX*) _vert;
 	TLVERTEX * tlvert = (TLVERTEX*) _vert;
@@ -895,7 +895,7 @@ static void draw_vert( void * _vert, _Bool orthographic )
 	}
 }
 
-static _Bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, _Bool orthographic )
+static bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool orthographic )
 {
 	int group;
 	LVERTEX * verts = (LVERTEX*) renderObject->lpVertexBuffer;
@@ -980,9 +980,9 @@ static _Bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type,
 	return true;
 }
 
-_Bool draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,false);}
-_Bool draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,true);}
-_Bool draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,false);}
+bool draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,false);}
+bool draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,true);}
+bool draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,false);}
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {

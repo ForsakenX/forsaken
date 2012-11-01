@@ -68,7 +68,7 @@ RT_LIGHT *rt_light = NULL;
 	Load real-time game lights for level
 *******************************************************************************************/
 extern int16_t		LevelNum;
-_Bool LoadRTLights( void )
+bool LoadRTLights( void )
 {
 	FILE	*	fp;
 	int8_t		Filename[ 256 ];
@@ -243,7 +243,7 @@ _Bool LoadRTLights( void )
 /******************************************************************************************
 	Release real-time game lights for level
 *******************************************************************************************/
-_Bool ReleaseRTLights( void )
+bool ReleaseRTLights( void )
 {
 	int j;
 	RT_LIGHT *light;
@@ -724,7 +724,7 @@ FILE * SaveRealTimeLights( FILE * fp )
 		for( i = 0; i < rt_lights; i++ )
 		{
 			fwrite( &RTLPtr->xlight, sizeof( u_int16_t ), 1, fp );
-			fwrite( &RTLPtr->enabled, sizeof( _Bool ), 1, fp );
+			fwrite( &RTLPtr->enabled, sizeof( bool ), 1, fp );
 			fwrite( &RTLPtr->state, sizeof( LIGHTSTATE ), 1, fp );
 			fwrite( &RTLPtr->now_time, sizeof( float ), 1, fp );
 			fwrite( &RTLPtr->delay, sizeof( float ), 1, fp );
@@ -762,7 +762,7 @@ FILE * LoadRealTimeLights( FILE * fp )
 		for( i = 0; i < rt_lights; i++ )
 		{
 			fread( &RTLPtr->xlight, sizeof( u_int16_t ), 1, fp );
-			fread( &RTLPtr->enabled, sizeof( _Bool ), 1, fp );
+			fread( &RTLPtr->enabled, sizeof( bool ), 1, fp );
 			fread( &RTLPtr->state, sizeof( LIGHTSTATE ), 1, fp );
 			fread( &RTLPtr->now_time, sizeof( float ), 1, fp );
 			fread( &RTLPtr->delay, sizeof( float ), 1, fp );

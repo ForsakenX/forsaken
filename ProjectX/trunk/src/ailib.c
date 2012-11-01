@@ -45,7 +45,7 @@ extern	LINE			Lines[ MAXLINES ];
 extern	NODENETWORKHEADER	NodeNetworkHeader;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	u_int16_t		FirstSecBullUsed;
-_Bool WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
+bool WouldObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
 
 //--------------------------------------------------------------------------
 // Global Data
@@ -194,7 +194,7 @@ void AI_GetNearestNODETarget( OBJECT * Object )
 	float TempAngle;
 	NODE * Node;
 	NODE * NodeLink;
-	_Bool	FoundOne = false;
+	bool	FoundOne = false;
 
 	if( !NodeNetworkHeader.State )
 		return;
@@ -292,9 +292,9 @@ void AI_AimAtTarget( MATRIX * InvMat , VECTOR * SPos, VECTOR * TPos )
 				:	MATRIX *	Mat
 				:	VECTOR *	TargetPos
 				:	float		View Cone Cosine
-	Output		:	_Bool true/false
+	Output		:	bool true/false
 ===================================================================*/
-_Bool AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeCos )
+bool AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeCos )
 {
 	float	Cos;
 	VECTOR	NormVector;
@@ -324,9 +324,9 @@ _Bool AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeC
 	Input		:	VECTOR * Pos
 				:	u_int16_t Group
 				:	VECTOR * TargetPos
-	Output		:	_Bool true/false
+	Output		:	bool true/false
 ===================================================================*/
-_Bool AI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos )
+bool AI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos )
 {
 	VECTOR	Dir;
 	VECTOR	Int_Point;
@@ -352,9 +352,9 @@ _Bool AI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos )
 	Input		:	OBJECT * SObject
 				:	VECTOR * TargetPos
 				:	float radius
-	Output		:	_Bool true/false
+	Output		:	bool true/false
 ===================================================================*/
-_Bool AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
+bool AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 {
 	VECTOR	Dir;
 	BGOBJECT * BGObject;
@@ -375,9 +375,9 @@ _Bool AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 	Input		:	OBJECT * SObject
 				:	VECTOR * TargetPos
 				:	float radius
-	Output		:	_Bool true/false
+	Output		:	bool true/false
 ===================================================================*/
-_Bool AI_ClearLOSNonZeroNonObject( VECTOR * SPos, u_int16_t Group , VECTOR * Pos , float radius )
+bool AI_ClearLOSNonZeroNonObject( VECTOR * SPos, u_int16_t Group , VECTOR * Pos , float radius )
 {
 	VECTOR	Dir;
 	VECTOR Impact_Point;

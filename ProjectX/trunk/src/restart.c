@@ -63,7 +63,7 @@ RESTART	*	FirstRestartFree = NULL;
 RESTART		RestartPoints[ MAXRESTARTPOINTS ];
 RESTART	*	RestartPointGroups[ MAXGROUPS ];
 int16_t		NumRestartPointsPerGroup[ MAXGROUPS ];
-_Bool		ShowStartPoints = false;
+bool		ShowStartPoints = false;
 
 ANIM_SEQ	RestartSeqs[] = {
 
@@ -240,9 +240,9 @@ void ReleaseAllRestartPoints( void )
 /*===================================================================
 	Procedure	:	Load StartPoints
 	Input		:	Nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool LoadStartPoints( void )
+bool LoadStartPoints( void )
 {
 	FILE	*	fp;
 	int16_t		Count;
@@ -312,9 +312,9 @@ _Bool LoadStartPoints( void )
 /*===================================================================
 	Procedure	:	PreLoad Restart Points
 	Input		:	Nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool PreLoadRestartPoints( void )
+bool PreLoadRestartPoints( void )
 {
 	char	*	RestartFilename = "data\\bgobjects\\Restart.cob";
 	int16_t		TempModel;
@@ -352,9 +352,9 @@ _Bool PreLoadRestartPoints( void )
 /*===================================================================
 	Procedure	:	Load RestartPoints
 	Input		:	Nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool LoadRestartPoints( void )
+bool LoadRestartPoints( void )
 {
 	int16_t		Count;
 	char	*	RestartFilename = "data\\bgobjects\\Restart.cob";

@@ -81,12 +81,12 @@
 #define MAX_SAVEGAME_FILENAME		128
 
 
-_Bool SaveSnapShot( int8_t * Filename );
+bool SaveSnapShot( int8_t * Filename );
 																   
 /*===================================================================
 		Externals ...
 ===================================================================*/
-extern _Bool Cheated;
+extern bool Cheated;
 extern	char biker_name[];
 extern	float framelag;
 extern	int CrystalsFound;
@@ -132,7 +132,7 @@ char *SaveGamePicFileName( int slot )
 int8_t	LoadGameFilename[ 256 ];
 extern	int16_t			NumLevels;
 
-_Bool PreInGameLoad( MENUITEM * MenuItem )
+bool PreInGameLoad( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
 	int16_t		i;
@@ -366,7 +366,7 @@ void InGameLoad( MENUITEM * MenuItem )
 		fp = LoadAllText( fp );
 		if( !fp ) return;
 
-		fread( &Cheated, sizeof( _Bool ), 1, fp );
+		fread( &Cheated, sizeof( bool ), 1, fp );
 
 		DebugPrintf( "Loaded OK\n" );
 		fclose( fp );
@@ -420,9 +420,9 @@ char *GetMissionName( char *levelname )
 /*===================================================================
 	Procedure	:	InGame Save
 	Input		:	MENUITEM * MenuItem
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool InGameSave( MENUITEM * MenuItem )
+bool InGameSave( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
 	FILE	*	f;
@@ -552,7 +552,7 @@ _Bool InGameSave( MENUITEM * MenuItem )
 		fp = SaveAllText( fp );
 		if( !fp ) return false;
 		
-		fwrite( &Cheated, sizeof( _Bool ), 1, fp );
+		fwrite( &Cheated, sizeof( bool ), 1, fp );
 
 		fclose( fp );
 		return true;
@@ -635,7 +635,7 @@ char *SavedGameInfo( int slot )
 }
 
 
-_Bool SaveGameSlotUsed( int slot )
+bool SaveGameSlotUsed( int slot )
 {
 	FILE	*	fp;
 	u_int32_t		MagicNumber;

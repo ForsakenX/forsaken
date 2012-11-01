@@ -58,10 +58,10 @@ num_zones : u_int16_t
 /*===================================================================
 		Externals ...
 ===================================================================*/
-extern	_Bool			ShowTrigZones;
+extern	bool			ShowTrigZones;
 extern	BYTE			WhoIAm;
-_Bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side );
-_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
+bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side );
+bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
 extern TRIGGERMOD	*	TrigMods;
 void TriggerAreaProcess( VECTOR * OldPos , VECTOR * NewPos , TRIGGER_AREA * Area );
 extern	float framelag;
@@ -84,9 +84,9 @@ TRIGGER_AREA * GroupTriggerArea_enemy_shoots[MAXGROUPS];
 /*===================================================================
 	Procedure	:		Load .zon File
 	Input		:		char	*	Filename
-	Output		:		_Bool	true/false
+	Output		:		bool	true/false
 ===================================================================*/
-_Bool TriggerAreaload( char * Filename )
+bool TriggerAreaload( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -345,15 +345,15 @@ void ReleaseTriggerArea( void )
 }
 
 
-_Bool	Entry;
-_Bool	Exit;
-_Bool	In;
+bool	Entry;
+bool	Exit;
+bool	In;
 /*===================================================================
  	Procedure	:		Check Player...
 	Input		:		void
 	Output		:		void
 ===================================================================*/
-_Bool	TriggerAreaPlayerCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group )
+bool	TriggerAreaPlayerCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group )
 {
 	TRIGGER_AREA * Area;
 
@@ -393,12 +393,12 @@ _Bool	TriggerAreaPlayerCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Grou
 				:		u_int16_t		Group
 				:		u_int8_t		Weapon Type
 				:		u_int8_t		Weapon
-	Output		:		_Bool		true
+	Output		:		bool		true
 ===================================================================*/
-_Bool	TriggerAreaPlayerShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon )
+bool	TriggerAreaPlayerShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon )
 {
 	TRIGGER_AREA * Area;
-	_Bool	CanActivate;
+	bool	CanActivate;
 
 	Area = GroupTriggerArea_player_shoots[Group];
 	while( Area )
@@ -453,7 +453,7 @@ _Bool	TriggerAreaPlayerShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_
 	Input		:		void
 	Output		:		void
 ===================================================================*/
-_Bool	TriggerAreaEnemyCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group )
+bool	TriggerAreaEnemyCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group )
 {
 	TRIGGER_AREA * Area;
 
@@ -493,12 +493,12 @@ _Bool	TriggerAreaEnemyCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group
 				:		u_int16_t		Group
 				:		u_int8_t		Weapon Type
 				:		u_int8_t		Weapon
-	Output		:		_Bool		true
+	Output		:		bool		true
 ===================================================================*/
-_Bool	TriggerAreaEnemyShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon )
+bool	TriggerAreaEnemyShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon )
 {
 	TRIGGER_AREA * Area;
-	_Bool	CanActivate;
+	bool	CanActivate;
 
 	Area = GroupTriggerArea_enemy_shoots[Group];
 	while( Area )
@@ -561,7 +561,7 @@ _Bool	TriggerAreaEnemyShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t
 				:		float		Collision Radius
 	Output		:		void
 ===================================================================*/
-_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides )
+bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides )
 {
 	float		d1, d2;
 	float		DistToPlane;
@@ -626,9 +626,9 @@ _Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos 
 	Input		:		VECTOR	*	Pos
 				:		ZONESIDE *	Sides
 				:		int16_t		NumSides
-	Output		:		_Bool		true/false
+	Output		:		bool		true/false
 ===================================================================*/
-_Bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side )
+bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides, int16_t Side )
 {
 	float		d1;
 
@@ -653,8 +653,8 @@ _Bool ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16_t NumSides,
 
 void TriggerAreaProcess( VECTOR * OldPos , VECTOR * NewPos , TRIGGER_AREA * Area )
 {
-	_Bool	OldIn;
-	_Bool	NewIn;
+	bool	OldIn;
+	bool	NewIn;
 
 	Entry = false;
 	Exit = false;

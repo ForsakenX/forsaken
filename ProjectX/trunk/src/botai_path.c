@@ -2,7 +2,7 @@
 #include "botai_main.h"
 #include "botai_path.h"
 
-extern _Bool ReverseNetwork;
+extern bool ReverseNetwork;
 extern int CurrentNode;
 extern VECTOR FollowTargetPos;
 extern int FollowTargetGroup;
@@ -346,7 +346,7 @@ int BOTAI_GetNearestNode(OBJECT * TObj)
 	return node;
 }
 
-void BOTAI_FollowNodeNetwork( _Bool SlideOnly, _Bool FollowingTarget )
+void BOTAI_FollowNodeNetwork( bool SlideOnly, bool FollowingTarget )
 {
 	VECTOR ThisTargetPos;
 	VECTOR TempNodePos;

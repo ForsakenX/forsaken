@@ -238,9 +238,9 @@ static int luaship_index(lua_State *L)
 #undef FIELD
 
 /* TODO: move to a common function file and export */
-static _Bool isudatatype(lua_State *L, int index, const char *mt)
+static bool isudatatype(lua_State *L, int index, const char *mt)
 {
-	_Bool ret;
+	bool ret;
 	if (!lua_getmetatable(L, index))
 		return false;
 	lua_getfield(L, LUA_REGISTRYINDEX, mt);

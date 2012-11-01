@@ -66,7 +66,7 @@ float	Fc[MAXMESHX*MAXMESHY];
 
 void UpdateWaterMesh( WATEROBJECT * WO );
 void DisplayWaterObject(WATEROBJECT * WO);
-_Bool InitWaterObject(WATEROBJECT * WO);
+bool InitWaterObject(WATEROBJECT * WO);
 
 VECTOR	WaterNormal = { 0.0F, 1.0F, 0.0F };
 
@@ -76,11 +76,11 @@ float WaterFade = 1.0F;
 /*===================================================================
 	Procedure	:	Pre Water Load..
 	Input		:	char * filename....
-	Output		:	_Bool
+	Output		:	bool
 ===================================================================*/
 extern char ShortLevelNames[MAXLEVELS][32];
 extern int16_t LevelNum;
-_Bool PreWaterLoad( char * Filename )
+bool PreWaterLoad( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -158,9 +158,9 @@ _Bool PreWaterLoad( char * Filename )
 /*===================================================================
 	Procedure	:	Water Load..
 	Input		:	char * filename....
-	Output		:	_Bool
+	Output		:	bool
 ===================================================================*/
-_Bool WaterLoad( void )
+bool WaterLoad( void )
 {
 	char		*	Buffer;
 	char		*	OrgBuffer;
@@ -343,9 +343,9 @@ void AddWaterLink(WATEROBJECT * WO)
 /*===================================================================
 	Procedure	:		Init Everything to do with a Water Mesh...
 	Input		:		Nothing
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool InitWaterObject(WATEROBJECT * WO)
+bool InitWaterObject(WATEROBJECT * WO)
 {
 	int x,y;
 	LPTRIANGLE	FacePnt = NULL;
@@ -654,7 +654,7 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 	Output		:		Nothing
 ===================================================================*/
 
-_Bool WaterObjectCollide( u_int16_t group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage )
+bool WaterObjectCollide( u_int16_t group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage )
 {
 	WATEROBJECT * Wo;
 
@@ -676,7 +676,7 @@ _Bool WaterObjectCollide( u_int16_t group , VECTOR *Origin, VECTOR *Offset, VECT
 	Output		:		Nothing
 ===================================================================*/
 
-_Bool InWater( u_int16_t group , VECTOR *OrgPos , float * Damage)
+bool InWater( u_int16_t group , VECTOR *OrgPos , float * Damage)
 {
 	WATEROBJECT * Wo;
 
@@ -709,7 +709,7 @@ _Bool InWater( u_int16_t group , VECTOR *OrgPos , float * Damage)
 	Input		:		Nothing
 	Output		:		Nothing
 ===================================================================*/
-_Bool SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage)
+bool SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage)
 {
 	float	WaterOffset;
 	float	Div;

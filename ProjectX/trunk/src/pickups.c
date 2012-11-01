@@ -58,17 +58,17 @@
 	Externs
 ===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
-extern _Bool CTF;
-extern _Bool CanCarryOwnFlag;
-extern _Bool OwnFlagTeleportsHome;
+extern bool CTF;
+extern bool CanCarryOwnFlag;
+extern bool OwnFlagTeleportsHome;
 extern u_int32_t TeamFlagMask[ MAX_TEAMS ];
-extern _Bool TeamFlagAtHome[ MAX_TEAMS ];
+extern bool TeamFlagAtHome[ MAX_TEAMS ];
 
 extern float BountyTime;
 
-extern _Bool BountyHunt;
-extern _Bool CaptureTheFlag;
-extern _Bool ShieldCritical;
+extern bool BountyHunt;
+extern bool CaptureTheFlag;
+extern bool ShieldCritical;
 
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern char *TeamName[ MAX_TEAMS ];
@@ -91,7 +91,7 @@ extern	FRAME_INFO	*	Flare_Header;
 extern	FRAME_INFO	*	Circle_Header;
 extern	FRAME_INFO	*	PickupRegen_Header;
 
-extern	_Bool			JustPickedUpShield;
+extern	bool			JustPickedUpShield;
 
 extern	int16_t			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
@@ -113,7 +113,7 @@ extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
 extern	SECONDARYWEAPONATTRIB SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ];
 extern	int				no_collision;		// disables player ship-to-background collisions
 extern	u_int16_t			IsGroupVisible[MAXGROUPS];
-extern	_Bool			IsHost;
+extern	bool			IsHost;
 
 extern	MISSEDPICKUPMSG	MissedPickups[ MAXMISSEDPICKUPS ];
 extern	SHORTPICKUP		MissedInitPickups[ MAXMISSEDPICKUPS ];
@@ -125,16 +125,16 @@ extern	int16_t			NumMissedKillPickups;
 extern	float			NitroFuel;
 extern	float			NitroFuelUsed;
 
-extern	_Bool            bSoundEnabled;
+extern	bool            bSoundEnabled;
 
 extern	int16_t			NumOfActivePlayers;
 
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
-extern	_Bool			DebugInfo;
+extern	bool			DebugInfo;
 
 extern	TRIGGERMOD	*	TrigMods;
 extern	int				NumOfTrigMods;
-extern	_Bool			TargetComputerOn;
+extern	bool			TargetComputerOn;
 
 extern	BYTE			CopyOfOrbitals;
 extern	float			CopyOfOrbAmmo[ MAXMULTIPLES ];
@@ -144,7 +144,7 @@ extern	float			CopyOfGeneralAmmo;
 extern	float			CopyOfSussGunAmmo;
 extern	float			CopyOfPyroliteAmmo;
 extern	int				outside_group;
-extern	_Bool			PlayDemo;
+extern	bool			PlayDemo;
 extern	int16_t			Lives;
 extern	int				CrystalsFound;
 extern	BYTE			ChangeLevel_MyGameStatus;
@@ -156,7 +156,7 @@ extern	u_int16_t			FirstSecBullUsed;
 extern	SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
 
-extern _Bool	NeedFlagAtHome;
+extern bool	NeedFlagAtHome;
 extern int GoalScore;
 
 extern	char PrimaryNames[7][16];
@@ -170,8 +170,8 @@ extern int PickupMessageColour;
 /*===================================================================
 	Globals
 ===================================================================*/
-_Bool			RandomPickups;
-_Bool			MyRandomPickups;
+bool			RandomPickups;
+bool			MyRandomPickups;
 REGENPOINT	*	RegenPoints = NULL;
 int16_t			NumRegenPoints = 0;
 int16_t			NumPickupsPerGroup[ MAXGROUPS ];
@@ -190,11 +190,11 @@ int16_t			NumSuperNashrams = 0;
 int16_t			NumOrbs = 0;
 int16_t			NumPowerPods = 0;
 int16_t			NumPrimWeapons[ MAXPRIMARYWEAPONS ] = { 0, 0, 0, 0, 0, 0 };
-_Bool			PickupInvulnerability = false;
+bool			PickupInvulnerability = false;
 int16_t			NumGoldBars = 0;
 int16_t			PickupsGot[ MAXPICKUPTYPES ];
-_Bool			MyPickupValid[ MAXPICKUPTYPES ];
-_Bool			PickupValid[ MAXPICKUPTYPES ];
+bool			MyPickupValid[ MAXPICKUPTYPES ];
+bool			PickupValid[ MAXPICKUPTYPES ];
 int				FlagsToGenerate = 0;
 int				BountyToGenerate = 0;
 int8_t			TeamFlagPickup[ MAX_TEAMS ] = {
@@ -1022,9 +1022,9 @@ void GetFreeSlots( int16_t Type, int16_t * NumRandomSlots, FREESLOTINFO * Random
 /*===================================================================
 	Procedure	:	Add Primary Weapon To Regeneration Que
 	Input		:	int16_t	Primary Weapon
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool AddPrimaryToRegenQue( int8_t Weapon )
+bool AddPrimaryToRegenQue( int8_t Weapon )
 {
 	return( AddPickupToRegenQue( PrimWeaponPickups[ Weapon ] ) );
 }
@@ -1032,9 +1032,9 @@ _Bool AddPrimaryToRegenQue( int8_t Weapon )
 /*===================================================================
 	Procedure	:	Add Secondary Weapon To Regeneration Que
 	Input		:	int16_t	Primary Weapon
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool AddSecondaryToRegenQue( int8_t Weapon )
+bool AddSecondaryToRegenQue( int8_t Weapon )
 {
 	return( AddPickupToRegenQue( SecWeaponPickups[ Weapon ] ) );
 }
@@ -1042,9 +1042,9 @@ _Bool AddSecondaryToRegenQue( int8_t Weapon )
 /*===================================================================
 	Procedure	:	Add Pickup to end of regeneration que
 	Input		:	int16_t	Type
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool AddPickupToRegenQue( int16_t Type )
+bool AddPickupToRegenQue( int16_t Type )
 {
 	QUEDPICKUP	*	QuedPickup;
 
@@ -1230,9 +1230,9 @@ void ClearPickupsGot( void )
 /*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	u_int16_t	Pickup to get
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool CollectPickup( u_int16_t i )
+bool CollectPickup( u_int16_t i )
 {
 	int16_t	PickupEnable = true;
 	float	Sfx_Volume = 1.0F;
@@ -1242,8 +1242,8 @@ _Bool CollectPickup( u_int16_t i )
 	u_int8_t	Message[ 128 ];
 	int16_t	MessageSFX = -1;
 	int16_t	TriggeredSFX = -1;
-	_Bool	ShowTextAnyway = false;
-	_Bool	Speech = true;
+	bool	ShowTextAnyway = false;
+	bool	Speech = true;
 	
 	sprintf( &Message[0], "%s", Messages[ Pickups[i].Type ] );
 
@@ -2513,14 +2513,14 @@ void CleanUpPickup( u_int16_t i )
 				:	u_int16_t		Owner
 				:	u_int16_t		ID
 				:	int16_t		Regen Slot
-				:	_Bool		Twinkle Into life?
+				:	bool		Twinkle Into life?
 				:	float		LifeCount
 				:	u_int16_t		TriggerMod Index
 	Output		:	u_int16_t		-1 if none free
 				:				-2 if too many of same type
 ===================================================================*/
 extern  BYTE          MyGameStatus;
-u_int16_t InitOnePickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod )
+u_int16_t InitOnePickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, bool Sparkle, float LifeCount, u_int16_t TriggerMod )
 {
 	u_int16_t	i;
 	u_int16_t	light;
@@ -2775,13 +2775,13 @@ u_int16_t InitOnePickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Spee
 				:	u_int16_t		Owner
 				:	u_int16_t		ID
 				:	int16_t		Regen Slot
-				:	_Bool		Twinkle Into life?
+				:	bool		Twinkle Into life?
 				:	float		LifeCount
 				:	u_int16_t		TriggerMod Index
 	Output		:	u_int16_t		-1 if none free
 				:				-2 if too many of same type
 ===================================================================*/
-u_int16_t InitJoinPickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod )
+u_int16_t InitJoinPickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, bool Sparkle, float LifeCount, u_int16_t TriggerMod )
 {
 	u_int16_t	i;
 	u_int16_t	light;
@@ -3331,9 +3331,9 @@ void RandomizePickups( void )
 /*===================================================================
 	Procedure	:		Check and correct valid regen slots
 	Input		:		int16_t	Slot
-	Output		:		_Bool	True/False
+	Output		:		bool	True/False
 ===================================================================*/
-_Bool CheckValidRegenSlot( int16_t Slot )
+bool CheckValidRegenSlot( int16_t Slot )
 {
 	/* if the position is inside the group */
 	if( PointInsideSkin( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group ) )
@@ -3362,9 +3362,9 @@ _Bool CheckValidRegenSlot( int16_t Slot )
 /*===================================================================
 	Procedure	:	Save Pickup Positions
 	Input		:	Nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool LoadPickupsPositions( void )
+bool LoadPickupsPositions( void )
 {
 
   /* the extension of the file with pickup data */
@@ -4022,10 +4022,10 @@ void RegenerateQuedPickups( void )
 /*===================================================================
 	Procedure	:	Regenerate required pickups
 	Input		:	u_int16_t		Pickup Type
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
 
-_Bool RegeneratePickup( u_int16_t Type )
+bool RegeneratePickup( u_int16_t Type )
 {
 	int16_t				Slot;
 	u_int16_t				i;
@@ -4530,7 +4530,7 @@ u_int16_t FindClosestShip( void )
 /*===================================================================
 	Procedure	:	Play Sfx for Collect Pickup from scene
 	Input		:	u_int16_t	pickup to get
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
 void SfxForCollectPickup( u_int16_t Owner, u_int16_t ID )
 {
@@ -4734,9 +4734,9 @@ void InitValidPickups()
 /*===================================================================
 	Procedure	:	Filter Pickup
 	Input		:	u_int16_t		Pickup Type
-	Output		:	_Bool		( True/False ( Allowed/Not )
+	Output		:	bool		( True/False ( Allowed/Not )
 ===================================================================*/
-_Bool FilterPickup( u_int16_t PickupType )
+bool FilterPickup( u_int16_t PickupType )
 {
 	if ( PickupType < 0 || PickupType > MAXPICKUPTYPES )
 		return false;
@@ -4822,7 +4822,7 @@ FILE * SaveAllPickups( FILE * fp )
 			fwrite( &NumPickupType[ i ], sizeof( int16_t ), 1, fp );
 			fwrite( &MaxPickupType[ i ], sizeof( int16_t ), 1, fp );
 			fwrite( &PickupsGot[ i ], sizeof( int16_t ), 1, fp );
-			fwrite( &PickupValid[ i ], sizeof( _Bool ), 1, fp );
+			fwrite( &PickupValid[ i ], sizeof( bool ), 1, fp );
 		}
 
 		for( i = 0; i < MAXPRIMARYWEAPONS; i++ )
@@ -4837,7 +4837,7 @@ FILE * SaveAllPickups( FILE * fp )
 		fwrite( &NumSuperNashrams, sizeof( int16_t ), 1, fp );
 		fwrite( &NumOrbs, sizeof( int16_t ), 1, fp );
 		fwrite( &NumPowerPods, sizeof( int16_t ), 1, fp );
-		fwrite( &PickupInvulnerability, sizeof( _Bool ), 1, fp );
+		fwrite( &PickupInvulnerability, sizeof( bool ), 1, fp );
 		fwrite( &NumGoldBars, sizeof( int16_t ), 1, fp );
 		fwrite( &FirstPickupUsed, sizeof( u_int16_t ), 1, fp );
 		fwrite( &FirstPickupFree, sizeof( u_int16_t ), 1, fp );
@@ -4905,7 +4905,7 @@ FILE * SaveAllPickups( FILE * fp )
 			fwrite( &Pickups[ i ].ColGroup, sizeof( u_int16_t ), 1, fp );
 			fwrite( &Pickups[ i ].ColPoint, sizeof( VERT ), 1, fp );
 			fwrite( &Pickups[ i ].ColPointNormal, sizeof( NORMAL ), 1, fp );
-			fwrite( &Pickups[ i ].CouldNotPickup, sizeof( _Bool ), 1, fp );
+			fwrite( &Pickups[ i ].CouldNotPickup, sizeof( bool ), 1, fp );
 			i = Pickups[ i ].Prev;
 		}
 
@@ -4946,7 +4946,7 @@ FILE * LoadAllPickups( FILE * fp )
 			fread( &NumPickupType[ i ], sizeof( int16_t ), 1, fp );
 			fread( &MaxPickupType[ i ], sizeof( int16_t ), 1, fp );
 			fread( &PickupsGot[ i ], sizeof( int16_t ), 1, fp );
-			fread( &PickupValid[ i ], sizeof( _Bool ), 1, fp );
+			fread( &PickupValid[ i ], sizeof( bool ), 1, fp );
 		}
 
 		for( i = 0; i < MAXPRIMARYWEAPONS; i++ )
@@ -4961,7 +4961,7 @@ FILE * LoadAllPickups( FILE * fp )
 		fread( &NumSuperNashrams, sizeof( int16_t ), 1, fp );
 		fread( &NumOrbs, sizeof( int16_t ), 1, fp );
 		fread( &NumPowerPods, sizeof( int16_t ), 1, fp );
-		fread( &PickupInvulnerability, sizeof( _Bool ), 1, fp );
+		fread( &PickupInvulnerability, sizeof( bool ), 1, fp );
 		fread( &NumGoldBars, sizeof( int16_t ), 1, fp );
 		fread( &FirstPickupUsed, sizeof( u_int16_t ), 1, fp );
 		fread( &FirstPickupFree, sizeof( u_int16_t ), 1, fp );
@@ -5033,7 +5033,7 @@ FILE * LoadAllPickups( FILE * fp )
 			fread( &Pickups[ i ].ColGroup, sizeof( u_int16_t ), 1, fp );
 			fread( &Pickups[ i ].ColPoint, sizeof( VERT ), 1, fp );
 			fread( &Pickups[ i ].ColPointNormal, sizeof( NORMAL ), 1, fp );
-			fread( &Pickups[ i ].CouldNotPickup, sizeof( _Bool ), 1, fp );
+			fread( &Pickups[ i ].CouldNotPickup, sizeof( bool ), 1, fp );
 			i = Pickups[ i ].Prev;
 		}
 
@@ -5290,9 +5290,9 @@ void PickupModelValid( void )
 /*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	u_int16_t	Pickup to get
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool CanPlayerCollectPickup( u_int16_t i, u_int16_t Player )
+bool CanPlayerCollectPickup( u_int16_t i, u_int16_t Player )
 {
 	int16_t	PickupEnable = false;
 	int16_t	Temp;
@@ -5883,9 +5883,9 @@ _Bool CanPlayerCollectPickup( u_int16_t i, u_int16_t Player )
 /*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	u_int16_t	Pickup to get
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool ActuallyCollectPickup( u_int16_t i )
+bool ActuallyCollectPickup( u_int16_t i )
 {
 	int16_t	PickupEnable = true;
 	float	Sfx_Volume = 1.0F;
@@ -5894,8 +5894,8 @@ _Bool ActuallyCollectPickup( u_int16_t i )
 	u_int8_t	Message[ 128 ];
 	int16_t	MessageSFX = -1;
 	int16_t	TriggeredSFX = -1;
-	_Bool	ShowTextAnyway = false;
-	_Bool	Speech = true;
+	bool	ShowTextAnyway = false;
+	bool	Speech = true;
 	
 	sprintf( &Message[0], "%s", Messages[ Pickups[i].Type ] );
 
@@ -6484,17 +6484,17 @@ _Bool ActuallyCollectPickup( u_int16_t i )
 /*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	u_int16_t	Pickup to get
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool PretendCollectPickup( u_int16_t i )
+bool PretendCollectPickup( u_int16_t i )
 {
 	int16_t	PickupEnable = true;
 	float	Sfx_Volume = 1.0F;
 	u_int8_t	Message[ 128 ];
 	int16_t	MessageSFX = -1;
 	int16_t	TriggeredSFX = -1;
-	_Bool	ShowTextAnyway = false;
-	_Bool	Speech = true;
+	bool	ShowTextAnyway = false;
+	bool	Speech = true;
 	
 	sprintf( &Message[0], "%s", Messages[ Pickups[i].Type ] );
 
@@ -7752,9 +7752,9 @@ void InitFailedKillSlots( void )
 				:	u_int16_t	ID
 				:	int16_t	Style
 				:	u_int16_t	NewOwner
-	Output		:	_Bool	true/false
+	Output		:	bool	true/false
 ===================================================================*/
-_Bool AddFailedKillToQue( u_int16_t Owner, u_int16_t ID, int16_t Style, u_int16_t NewOwner )
+bool AddFailedKillToQue( u_int16_t Owner, u_int16_t ID, int16_t Style, u_int16_t NewOwner )
 {
 	int16_t	i;
 

@@ -50,7 +50,7 @@ extern  BYTE  TeamNumber[MAX_PLAYERS];	// which team each player is on
 // (Ships.c)
 extern char* GetName(int Player);				// returns player's short name
 // (Title.c)
-extern _Bool TeamGame;										// team game?  
+extern bool TeamGame;										// team game?  
 extern int MilestoneMessagesColour;			// colour to display messages 
 extern SLIDER WatchPlayerSelect;				// which player is being watched 
 extern float LevelTimeTaken; // time elapsed in this game
@@ -68,8 +68,8 @@ int KillCounter[MAX_PLAYERS+1];													// number of kills made during this 
 int	ScoreSortTab[MAX_PLAYERS + 1];												// player numbers in order of highest score to lowest 								
 char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITAL" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
-_Bool FirstBlood = false;
-_Bool FirstToFifty = false;
+bool FirstBlood = false;
+bool FirstToFifty = false;
 
 /*===================================================================
   Procedure :   Get Weapon Name...
@@ -293,7 +293,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 void UpdateKillCount(int Killer)
 {
 	char	prefix[256];
-	_Bool PlaySound = false;
+	bool PlaySound = false;
 
 	// update counter
 	KillCounter[Killer]++;
@@ -494,7 +494,7 @@ void ScoreSort()
 
 	while( true )
 	{
-		_Bool swapped = false;
+		bool swapped = false;
 		for( i = 0; i < (players-1); i++ ) // -1 because we need to compare with next valid player
 		{
 			// if my score is worse than player bellow me

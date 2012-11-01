@@ -65,16 +65,16 @@
 extern render_info_t render_info;
 extern float MaxMessageTime;
 extern void SetViewportError( char *where, render_viewport_t *vp );
-extern _Bool ShowNamesAnyway;
+extern bool ShowNamesAnyway;
 
-_Bool SpaceOrbSetup = false;
+bool SpaceOrbSetup = false;
 void DefaultJoystickSettings( USERCONFIG *u );
 void ReInitJoysticks( void );
 
 #define MAX_KEYDEF_PAGES	(4)
 int CurrentPage = 0;
 int MaxPage = 0;
-_Bool MissileCameraEnable;
+bool MissileCameraEnable;
 void MenuItemSelect( MENUITEM * item );
 void GetLevelName( char *buf, int bufsize, int level );
 void MenuItemDrawPageName( MENUITEM *Item );
@@ -93,28 +93,28 @@ static void KeyDelete( DEFKEY *kdef, int key );
 static void KeyDeleteRepeating( DEFKEY *key );
 static void KeySelect( DEFKEY *kdef, int key );
 
-_Bool DeletePilot( LIST *l, int item );
+bool DeletePilot( LIST *l, int item );
 void MoveConfigFile( MENU *Menu );
 
 extern void ShowNodeNetwork( u_int32_t NetMask );
 void ProcessTextItems (void);
 
-_Bool	Last_SWMonoChrome = false;
+bool	Last_SWMonoChrome = false;
 
 /*===================================================================
 		Externals ...
 ===================================================================*/
-extern _Bool WaitingToQuit;
+extern bool WaitingToQuit;
 extern int16_t	NumPrimaryPickups;
 extern float FlashTextActive;
 extern float GlobalSoundAttenuation;
 extern float WATER_CELLSIZE;
-extern _Bool flush_input;
+extern bool flush_input;
 extern double	Gamma;
-extern _Bool MyUseShortPackets;
-extern _Bool UseShortPackets;
-extern _Bool MyResetKillsPerLevel;
-extern _Bool TintBikeTeamColor;
+extern bool MyUseShortPackets;
+extern bool UseShortPackets;
+extern bool MyResetKillsPerLevel;
+extern bool TintBikeTeamColor;
 extern int CrystalsFound;
 extern	int16_t	NumGoldBars;
 extern int Secrets;
@@ -131,22 +131,22 @@ int GameCompleted = GAMECOMPLETE_NotComplete;
 #define TITLE_LOOP_VduAmbience 1
 u_int32_t TitleLoopId[ NUM_TITLE_LOOPS ];
 
-_Bool JoystickInput = true;
+bool JoystickInput = true;
 
-_Bool CTF = false;
-_Bool NeedFlagAtHome = true;
-_Bool CanCarryOwnFlag = false;
-_Bool OwnFlagTeleportsHome = true;
+bool CTF = false;
+bool NeedFlagAtHome = true;
+bool CanCarryOwnFlag = false;
+bool OwnFlagTeleportsHome = true;
 
-_Bool ShowWeaponsPossessedOnHUD;
-_Bool ShowClockOnHUD;
-_Bool ShowKPMOnHUD;
-_Bool ShowSpeedOnHUD;
-_Bool ShowPlayersOnHUD;
-_Bool ShowPlayersOnHUDbyKills;
-_Bool ShowPlayerHealthAboveBikes;
-_Bool ScaleFontPlayerHealthAboveBikes;
-_Bool ShowPlayerHealthByScores;
+bool ShowWeaponsPossessedOnHUD;
+bool ShowClockOnHUD;
+bool ShowKPMOnHUD;
+bool ShowSpeedOnHUD;
+bool ShowPlayersOnHUD;
+bool ShowPlayersOnHUDbyKills;
+bool ShowPlayerHealthAboveBikes;
+bool ScaleFontPlayerHealthAboveBikes;
+bool ShowPlayerHealthByScores;
 
 int	NetUpdateIntervalCmdLine = 0;
 int	GoalScore = 5;
@@ -154,7 +154,7 @@ int BountyBonusInterval = 10;
 
 float LevelTimeTaken;
 
-_Bool NoMenuBack = false;
+bool NoMenuBack = false;
 
 int16_t DummyTextureIndex;
 extern FRAME_INFO	*	Title_LevelPics_Header;
@@ -163,19 +163,19 @@ extern char MissionTextNames[MAXLEVELS][128];
 extern char MissionTextPics[MAXLEVELS][128];
 extern int32_t ColPerspective;
 extern int32_t MyColPerspective;
-extern _Bool	JustExitedMenu;
-extern _Bool	PickupValid[ MAXPICKUPTYPES ];
-extern _Bool	MyPickupValid[ MAXPICKUPTYPES ];
-extern _Bool LockOutWindows;
+extern bool	JustExitedMenu;
+extern bool	PickupValid[ MAXPICKUPTYPES ];
+extern bool	MyPickupValid[ MAXPICKUPTYPES ];
+extern bool LockOutWindows;
 extern SLIDER BikerSpeechSlider;
 extern int16_t Lives;
 extern BYTE	GameStatus[];	// Game Status for every Ship...
-extern _Bool bSoundEnabled;
-extern _Bool ShowTrigZones;
-extern _Bool ShowEFZones;
-extern _Bool ShowTeleports;
-extern _Bool ShowBoundingBoxes;
-extern _Bool ShowColZones;
+extern bool bSoundEnabled;
+extern bool ShowTrigZones;
+extern bool ShowEFZones;
+extern bool ShowTeleports;
+extern bool ShowBoundingBoxes;
+extern bool ShowColZones;
 
 #ifdef DEMO_SUPPORT
 extern float DemoAvgFps;
@@ -184,7 +184,7 @@ extern int32_t DemoGameLoops;
 #endif
 
 extern	int16_t actual_volume;
-extern	_Bool RearCameraActive;
+extern	bool RearCameraActive;
 char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2];
 extern char *JoystickPOVDirections[];
 extern char *ShipAxisText[];
@@ -223,11 +223,11 @@ char	biker_config[256] = DEFAULT_CONFIG_FILE;
 char	biker_name[256] = DEFAULT_PLAYER_NAME;
 char	bike_name[16];
 char	biker_text[512];
-_Bool	quitting = false;
+bool	quitting = false;
 int16_t	SelectedBike = 0; //MODEL_Borg;
 int16_t	NumTitleModelsToLoad;
 float TriggerInitialAnimation = 0.0F;
-_Bool	Our_CalculateFrameRate(void);
+bool	Our_CalculateFrameRate(void);
 extern	u_int16_t			FirstFmPolyUsed;
 extern	u_int16_t			FirstPolyUsed;
 extern	u_int16_t			FirstLineUsed;
@@ -239,19 +239,19 @@ extern	int		FontWidth;
 extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
-_Bool	ShowWeaponKills = false;
+bool	ShowWeaponKills = false;
 extern	float	ModeScaleX;
 extern	float	ModeScaleY;
-extern	_Bool					HostDuties;
+extern	bool					HostDuties;
 extern	int16_t	BikeModels[ MAXBIKETYPES ];
 extern	MLOADHEADER Mloadheader;
 extern int16_t		LevelNum;
 extern int16_t		NewLevelNum;
 extern int16_t		NumLevels;
 extern char	ShortLevelNames[MAXLEVELS][32];
-extern	_Bool                    IsHost;
+extern	bool                    IsHost;
 extern	RENDERMATRIX view;
-extern	_Bool ClearBuffers( void );
+extern	bool ClearBuffers( void );
 extern	MATRIX	MATRIX_Identity;
 extern	render_viewport_t viewport;
 extern	MODEL	Models[];
@@ -263,10 +263,10 @@ extern	MODELNAME	TitleModelNames[];
 extern	MODELNAME	InterLevelModelNames[];
 extern	char *PrimaryDescription[];
 extern	char *SecondaryDescription[];
-extern	_Bool	ShowUntriggeredNMEs;
-extern	_Bool	BilinearSolidScrPolys;
-extern	_Bool	MyRandomPickups;
-extern  _Bool bIgnoreWM_SIZE;
+extern	bool	ShowUntriggeredNMEs;
+extern	bool	BilinearSolidScrPolys;
+extern	bool	MyRandomPickups;
+extern  bool bIgnoreWM_SIZE;
 
 /*===================================================================
 		Mode changing stuff..
@@ -307,8 +307,8 @@ int CurrentJoyPOV;
 int	CurrentJoyPOVDirection;
 LIST JoystickAxisList = { 0 };
 LIST AxisActionList = { 0 };
-_Bool AxisInvert = false;
-_Bool FineControl = false;
+bool AxisInvert = false;
+bool FineControl = false;
 SLIDER DeadzoneSlider = {0, 100, 5, 30 };
 SLIDER SensitivitySlider = {0, 100, 5, 50 };
 SLIDER AxisSlider;
@@ -327,7 +327,7 @@ float AxisPtr_xmin, AxisPtr_xmax, AxisPtr_ymin, AxisPtr_ymax, AxisPtr_mid;
 #define JOYCONFIG_AssignButton 1
 int JoystickConfigState;
 
-_Bool InTitleRoom;
+bool InTitleRoom;
 
 char DemoAvgFpsText[128];
 char DemoTotalFramesText[128];
@@ -339,7 +339,7 @@ char ErrorMessage[256];
 char NotifyMessage[ 256 ];
 int	ErrorMoveBackBy;
 MENU * ErrorNewMenu;
-_Bool IgnoreMenuFuncs = false;
+bool IgnoreMenuFuncs = false;
 
 /*===================================================================
 		Fucntions without a header..
@@ -407,19 +407,19 @@ void WatchPlayerSelected( MENUITEM *Item);
 char *SearchKey( char c );
 void PauseDemoToggle( MENUITEM *Item );
 
-_Bool InitLevels( char *levels_list );
+bool InitLevels( char *levels_list );
 void InitLevelSelect( MENU *Menu );
 void ExitLevelSelect( MENU * Menu );
 void GoToStats( MENUITEM *Item );
 void GetSavedGameData( void );
 
-_Bool SetFOV( float fov );
-_Bool TintModelVertices( u_int16_t Model, float percent, EXCLUDEDVERTICES *Exclude );
-_Bool MakeTranslucent( u_int16_t Model );
+bool SetFOV( float fov );
+bool TintModelVertices( u_int16_t Model, float percent, EXCLUDEDVERTICES *Exclude );
+bool MakeTranslucent( u_int16_t Model );
 void GetExtremeOffsets( u_int16_t Model, PLANE *plane, float *minoffset, float *maxoffset );
-_Bool TintOneVertex( u_int16_t Model, u_int16_t Group, u_int16_t ExecBuf, int VertexNo, float tr, float tg, float tb, float ta );
+bool TintOneVertex( u_int16_t Model, u_int16_t Group, u_int16_t ExecBuf, int VertexNo, float tr, float tg, float tb, float ta );
 
-_Bool CompareVectors(VECTOR vector1, VECTOR vector2);
+bool CompareVectors(VECTOR vector1, VECTOR vector2);
 void SetDiscStatus(MENU *menu);
 void PlaceObjects (void);
 void HighlightDisc(int disc);
@@ -441,14 +441,14 @@ void PlotBikeScanLine(void);
 void PulsateVDU(void);
 void MorphHoloLight(void);
 
-_Bool DeleteSavedGame( LIST *l, int item );
-_Bool DeleteDemo( LIST *l, int item );
-_Bool ListDelete( LIST *l, int item );
+bool DeleteSavedGame( LIST *l, int item );
+bool DeleteDemo( LIST *l, int item );
+bool ListDelete( LIST *l, int item );
 
 char *AxisName( SLIDER *s );
 char *AxisActionName( SLIDER *s );
-_Bool SetAxisSlider( SLIDER *s );
-_Bool SetAxisActionSlider( SLIDER *s );
+bool SetAxisSlider( SLIDER *s );
+bool SetAxisActionSlider( SLIDER *s );
 
 void InitHostMenu( MENU *Menu );
 void HostListPlayerSelected( MENUITEM *Item );
@@ -457,16 +457,16 @@ void InitWatchList( MENU *Menu );
 /**************************
 new text functions
 ***************************/
-_Bool DrawTextEditCursor( TEXTINFO *TextInfo, int font );
+bool DrawTextEditCursor( TEXTINFO *TextInfo, int font );
 void GetTextPos(TEXTINFO *TextInfo, float *xpos, float *ypos, int line, float totalheight);
-_Bool DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight);
+bool DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight);
 void Print3Dots(TEXTINFO *TextInfo, float totalheight);
 void DisplayTextItem (TEXTINFO *TextInfo);
 void GetFinalChars( TEXTINFO *TextInfo, int currentpos, int length);
 void PrintTextItem (TEXTINFO *TextInfo);
-_Bool FormatTextItem(int start, int end, TEXTINFO *TextInfo, _Bool *newline);
+bool FormatTextItem(int start, int end, TEXTINFO *TextInfo, bool *newline);
 int GetScreenFont(int fontsize);
-_Bool Plot2dBox (TEXTINFO *TextInfo);
+bool Plot2dBox (TEXTINFO *TextInfo);
 void InitScreenFonts (void);
 TEXTINFO *InitTextInfo( void );
 void DrawFlatMenuListText ( MENUITEM *Item );
@@ -533,16 +533,16 @@ void InitCrystalsFoundText( MENU *Menu );
 void SelectGoldBarModel( MENU *Menu );
 void AfterSpecialMessage( MENUITEM *Item );
 void NextLevelOrGameComplete( MENUITEM *Item );
-_Bool SetUpLines (u_int16_t Model, PLANE plane, VECTOR *rot);
+bool SetUpLines (u_int16_t Model, PLANE plane, VECTOR *rot);
 void KillLines(void);
 void KillDerivedPlane(void);
 void KillPlane(void);
 void SwapBikes(void);
-_Bool LoadBike(void);
+bool LoadBike(void);
 void GetVduTextFormattingInfo (TEXT *t);
 void RestoreDefaultControlSettings( MENUITEM *Item );
 void PlayCursorSfx( void );
-_Bool ChangeLevel( void );
+bool ChangeLevel( void );
 void AddBikeArrow( char *name, int num );
 void CheckMenuTimer( void );
 
@@ -621,8 +621,8 @@ void LoadBikeChar(MENUITEM *Item);
 void LoadLevelPic(MENUITEM *Item);
 void LoadBikeCharPic(MENUITEM *Item);
 void KillBikeCharPic( MENU *Menu );
-_Bool LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, u_int16_t *scrpoly, _Bool *displayed);
-_Bool DisplayPicOnTV( FRAME_INFO **header, int *frame, u_int16_t *poly, _Bool *displayed, float zoffset );
+bool LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, u_int16_t *scrpoly, bool *displayed);
+bool DisplayPicOnTV( FRAME_INFO **header, int *frame, u_int16_t *poly, bool *displayed, float zoffset );
 void LoadSavedGamePic( char *file );
 
 void ExitEventRotateInRightVDU(TITLE_EVENT *TitleEvent);
@@ -639,7 +639,7 @@ void InitLeftVDUPanTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void ChooseDiscTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void InitVisualsTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void NewMenuSelectMode( MENUITEM *Item );
-_Bool ProcessSlider2( int Key );
+bool ProcessSlider2( int Key );
 void SelectConnectionToStart (MENUITEM *Item);
 void SelectConnectionToJoin (MENUITEM *Item);
 void GetInitialPlayers ( MENU *menu );
@@ -667,9 +667,9 @@ void GoToNextLevel( MENUITEM *Item );
 void TitleLoadGame( MENUITEM *Item );
 void StartTimer( int timer );
 void SaveMacros( MENUITEM *Item );
-_Bool SetWaterDetail( SLIDER *slider );
-_Bool SetTextScale( SLIDER *slider );
-_Bool SetNumPrimaryPickups( SLIDER *slider );
+bool SetWaterDetail( SLIDER *slider );
+bool SetTextScale( SLIDER *slider );
+bool SetNumPrimaryPickups( SLIDER *slider );
 void InitHostWaitingToStart( MENU *Menu );
 void BackToJoinSession( MENUITEM *Item );
 
@@ -679,7 +679,7 @@ Highlight box functions
 u_int16_t PlotHighlightPoly (float xmin, float ymin, float xmax, float ymax, u_int8_t r, u_int8_t g, u_int8_t b);
 void ProcessHighlightBox(void);
 void DrawHighlightBox(TEXTINFO *TextInfo, u_int8_t r, u_int8_t g, u_int8_t b);
-_Bool ProcessWeaponOrder ( int Key );
+bool ProcessWeaponOrder ( int Key );
 
 /***********************************
 text messaging
@@ -692,7 +692,7 @@ void GetTitleMessage(void);
 ===================================================================*/
 
 extern BYTE	TeamNumber[MAX_PLAYERS];
-extern _Bool	ShowStartPoints;
+extern bool	ShowStartPoints;
 
 enum
 {
@@ -804,37 +804,37 @@ SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
 SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS+1, 1, 0, 0, 0.0F }; // which player's pov to watch
 SLIDER TextScaleSlider				= { 0, 5, 1, 1, 0, 0.0F, 0.0F, 0, false, NULL, NULL, SetTextScale };
 
-_Bool ShowTeamInfo;
-_Bool MenuFrozen					= false;
-_Bool NoTeamSelect				= false;
-_Bool UseNewMenus				= true;
-_Bool GameRestricted				= false;
-_Bool Autoleveling				= true;
-_Bool DebugInfo					= false;
-_Bool GodMode					= false;
-_Bool TexturesEnabled			= true;
-_Bool ShowPlaneRGB				= false;
-_Bool PlayDemo					= false;
-_Bool PauseDemo					= false;
-_Bool RecordDemo					= false;
-_Bool BrightShips;
-_Bool MyBrightShips;
-_Bool BikeExhausts;
-_Bool ScreenSaving				= true;
-_Bool ShowNode					= false;
-_Bool NodeCube					= false;
-_Bool OldNodeCube				= false;
-_Bool NodeCubeType				= false;
-_Bool TeamGame					= false;
-_Bool BountyBonus;
-_Bool BikeEnginesOn;
-_Bool ToggleTest;
+bool ShowTeamInfo;
+bool MenuFrozen					= false;
+bool NoTeamSelect				= false;
+bool UseNewMenus				= true;
+bool GameRestricted				= false;
+bool Autoleveling				= true;
+bool DebugInfo					= false;
+bool GodMode					= false;
+bool TexturesEnabled			= true;
+bool ShowPlaneRGB				= false;
+bool PlayDemo					= false;
+bool PauseDemo					= false;
+bool RecordDemo					= false;
+bool BrightShips;
+bool MyBrightShips;
+bool BikeExhausts;
+bool ScreenSaving				= true;
+bool ShowNode					= false;
+bool NodeCube					= false;
+bool OldNodeCube				= false;
+bool NodeCubeType				= false;
+bool TeamGame					= false;
+bool BountyBonus;
+bool BikeEnginesOn;
+bool ToggleTest;
 
-_Bool StereoEnabled;
+bool StereoEnabled;
 float StereoEyeSep, StereoFocalDist;
 stereo_right_color_t StereoRightColor;
 
-_Bool	CanSelectBike[ MAXBIKETYPES ] =
+bool	CanSelectBike[ MAXBIKETYPES ] =
 {
 	true,	// Borg,
 	true,	// Beard,
@@ -1614,7 +1614,7 @@ MENU	MENU_NEW_Controls = {
 };
 
 // Out-of-game menu
-extern _Bool ShowInfo;
+extern bool ShowInfo;
 MENU	MENU_NEW_DetailLevels = {
 	"", NULL, ExitDetailLevels, NULL, 0,
 	{
@@ -1658,7 +1658,7 @@ char *StereoColorSliderFunc( SLIDER *slider )
 	}
 }
 
-_Bool SetStereoColor( SLIDER *slider )
+bool SetStereoColor( SLIDER *slider )
 {
 	DebugPrintf( "Setting stereo color to %d\n", slider->value );
 	switch( slider->value )
@@ -2074,8 +2074,8 @@ MENU	MENU_NEW_DemoPlayBack = {
 #endif
 
 int16_t InGameLoadGameLevelNum;
-extern	_Bool	CountDownOn;
-_Bool InGameLoadASinglePlayerGame( MENUITEM * Item )
+extern	bool	CountDownOn;
+bool InGameLoadASinglePlayerGame( MENUITEM * Item )
 {
 	int16_t OldNewLevelNum;
 	OldNewLevelNum = NewLevelNum;
@@ -2271,8 +2271,8 @@ MENU	MENU_STATS_Start = {
 };
 
 px_timer_t quick_text_timer;
-_Bool quick_text_timer_initialized = false;
-_Bool quick_text_timer_ok( void )
+bool quick_text_timer_initialized = false;
+bool quick_text_timer_ok( void )
 {
 	if(!quick_text_timer_initialized)
 	{
@@ -2845,8 +2845,8 @@ MENU	MENU_Visuals = {
 	}
 };
 
-extern _Bool ShowFrameRate;
-extern _Bool ShowInfo;
+extern bool ShowFrameRate;
+extern bool ShowInfo;
 
 MENU	MENU_Options = {
 	LT_MENU_Options0/*"Options"*/, NULL, (MenuFunc) SetGamePrefs, NULL, 0,
@@ -3151,9 +3151,9 @@ TEXTINFO *TextStack[ MAXTEXTITEMS ];
 TEXTINFO *BikeNameTextPtr;
 int MenuStackLevel = 0;
 int TextStackLevel = 0;
-_Bool ForceConfigSave = false;
+bool ForceConfigSave = false;
 
-_Bool TitleOnceOnly = true;
+bool TitleOnceOnly = true;
 
 VECTOR View, Look, Up, PanFrom, PanTo, PanFrom2, PanTo2, VDULookPos, DiscLookPos, DiscViewPos, VDUViewPos, StartLookPos, StartViewPos;
 float CurrentFOV;
@@ -3172,7 +3172,7 @@ int DiscStatus, StackStatus, StackMode, RotWiggle[6], CurrentTextures[6], Curren
 
 float JudderAngle[Judders] = {180.0F, 182.0F, 178.0F, 181.0F, 179.0F, 180.0F, 180.0F};
 
-_Bool Turned[6], LastTurned[6], RotateSetup, DoHighlight, 
+bool Turned[6], LastTurned[6], RotateSetup, DoHighlight, 
 	 OnRotateVDU, OnVDUflip, RotVDU, PanDone, VDU_Active;
 
 
@@ -3215,14 +3215,14 @@ int KeyDefLines[MAXVDULINES];
 
 int CurrentToggle, CurrentTextItem, NoOfLists, CurrentKeyDef;
 
-_Bool VduProcessed, LineExists;
-_Bool AutoSelectConnection = false;
-_Bool InitialTexturesSet;
-_Bool LevelDisplayed;
-_Bool BikerDisplayed;
+bool VduProcessed, LineExists;
+bool AutoSelectConnection = false;
+bool InitialTexturesSet;
+bool LevelDisplayed;
+bool BikerDisplayed;
 int BikerSet;
 
-_Bool DoNotRotateText;
+bool DoNotRotateText;
 int BikeChars[MAXBIKETYPES] = {0,7,11,10,6,15,14,12,4,8,2,9,13,5,1, 3, -1};
 u_int16_t BikeModelLookup[MAXBIKETYPES] = {TITLE_MODEL_Lokasenna, TITLE_MODEL_Beard, TITLE_MODEL_LAJay, TITLE_MODEL_ExCop, TITLE_MODEL_RexHardy,
 								TITLE_MODEL_Foetoid, TITLE_MODEL_NimSoo, TITLE_MODEL_Nutta, TITLE_MODEL_Sceptre, TITLE_MODEL_Jo,
@@ -3243,9 +3243,9 @@ u_int16_t *HoloModelLookup;
 float	DiscExpand;
 float	DiscSpeed; 
 float	DiscWiggleDistance;
-_Bool	DiscExpandOut;
+bool	DiscExpandOut;
 float	DiscPauseTime;
-_Bool	DiscWiggleUp;
+bool	DiscWiggleUp;
 float WipeTime;
 float VduDisplayTime = 0.5F;
 float HoloRotx = 0.0F;
@@ -3254,7 +3254,7 @@ float HoloRotz = 0.0F;
 
 #define	WipeOut	true
 #define	WipeIn	false
-_Bool WipeStatus;
+bool WipeStatus;
 
 VECTOR Holopad = {-486.0F, -86.0F, 497.0F};
 float HolopadRange = 150.0F;
@@ -3293,7 +3293,7 @@ new text globals
 
 TEXTINFO VDUTextItems[MAXTEXTITEMS];
 int Current2dBox;
-_Bool DrawTextItemBox;
+bool DrawTextItemBox;
 float VDUoffsetX = 105.0F;
 float VDUoffsetY = 15.0F;
 u_int16_t screenpoly[MAXNUMOFSCRPOLYS];
@@ -3311,10 +3311,10 @@ u_int16_t TextLookup[NUMSCREENFONTS][256];
 int character = 0;
 int CurrentTeletype;
 MENUITEM *LastMenuItem;
-_Bool ScreenPolyCursorActive;
+bool ScreenPolyCursorActive;
 u_int16_t CursorScreenPoly;
-_Bool NewCursorActive;
-_Bool ForceNewLine;
+bool NewCursorActive;
+bool ForceNewLine;
 
 /***************
 holo-bike stuff
@@ -3325,16 +3325,16 @@ u_int16_t OldBikeModel;
 float BikeRot = 0.0F;
 u_int16_t BikeLine[MAXNUMOF2DPOLYS];
 u_int16_t CurrentHoloModel = (u_int16_t)-1;
-_Bool LinesActive;
+bool LinesActive;
 int CurrentLine;
 VECTOR BikePos;
 SCANLINES scanline[MAXNUMOF2DPOLYS];
-_Bool KnowExtremeVerts, BikeLoaded;
+bool KnowExtremeVerts, BikeLoaded;
 float CurrentOffset;
-_Bool BikeOnSwap, OnBikeShrink, LoadNewBike;
-_Bool LightHolopad;
+bool BikeOnSwap, OnBikeShrink, LoadNewBike;
+bool LightHolopad;
 
-_Bool BikeExpanded = false;
+bool BikeExpanded = false;
 
 /**************
 new event globals
@@ -3344,7 +3344,7 @@ VECTOR OldViewPos;
 float OldVDUrot;
 float RoomDarkness, OldRoomDarkness;
 
-_Bool VDU_Ready;
+bool VDU_Ready;
 
 float HoloLightBrightness, OldHoloLightBrightness;
 
@@ -3353,7 +3353,7 @@ float StackRot;
 
 VECTOR stackpos[8];
 
-_Bool StackDown;
+bool StackDown;
 float MinStackTheta = 0.0F;
 float MaxStackTheta = 170.0F;
 
@@ -3366,15 +3366,15 @@ float BikeSwapScale, OldBikeSwapScale;
 float SelectedBikeScale, OldSelectedBikeScale;
 int	OldSelectedBike;
 float	OldBikeCharAlpha, BikeCharAlpha, LevelPicAlpha;
-_Bool HolopadJudderReq;
+bool HolopadJudderReq;
 
 float BracketRot, OldBracketRot;
 
 float TeleTypeTimer;
 int TeleTypeSkip;
-_Bool NewTextCharDisplayed = false;
+bool NewTextCharDisplayed = false;
 
-_Bool ListRedrawReq;
+bool ListRedrawReq;
 
 int OldMenuStatus;
 
@@ -3411,7 +3411,7 @@ new slider globals
 typedef struct
 {
 	MENUITEM *Item;
-	_Bool	needs_refresh;
+	bool	needs_refresh;
 }ACTIVESLIDERINFO;
 
 ACTIVESLIDERINFO ActiveSliderItem[MAXSLIDERSPERMENU];
@@ -3432,29 +3432,29 @@ int HighlightPolyListStart;
 int HighlightPolyListEnd;
 #define HIGHLIGHT_SPEED			0.5F	// lowest res pixels per frame
 #define HIGHLIGHT_POLY_WIDTH	10	// lowest res pixels
-_Bool HighlightListEmpty;
-_Bool TestPoly = false;
-_Bool WasteAFrame = false;
+bool HighlightListEmpty;
+bool TestPoly = false;
+bool WasteAFrame = false;
 
 /********************
 weapon priority
 *********************/
-extern _Bool PrimaryValid[];
-extern _Bool SecondaryValid[];
+extern bool PrimaryValid[];
+extern bool SecondaryValid[];
 int WeaponList[ MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) ];
 int16_t SelectedWeapon;
 u_int16_t Num_Unused_Weapons;
 MENUITEM *WeaponItem;
 #define WEAPON_ChoosingFirst	false
 #define WEAPON_ChoosingSecond	true
-_Bool WeaponOrderStatus;
+bool WeaponOrderStatus;
 u_int16_t MaxWeapons;
 int16_t *PriorityList;
 int16_t *OrderList;
 char **DescriptionList;
 TEXTINFO *IdiotText;
 char *IdiotTextPtr;
-_Bool *WeaponValid;
+bool *WeaponValid;
 
 /*******************
 text editing
@@ -3463,11 +3463,11 @@ float CursorTimer = 0.0F;
 #define CursorInterval	1.0F
 
 
-_Bool RescanLists = true;
+bool RescanLists = true;
 int oldlistitems;
 
-_Bool TitleInitDone;
-_Bool HostQuitting = false;
+bool TitleInitDone;
+bool HostQuitting = false;
 
 /*******************
 Team Select
@@ -3586,9 +3586,9 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 	{-1.0F, -1.0F, TITLE_EVENT_TIMER_IDLE, NULL}
 };
 
-extern _Bool InitView( void );
-extern _Bool render_mode_select( render_info_t * info );
-_Bool RenderModeSelect( int mode, _Bool fullscreen, _Bool vsync )
+extern bool InitView( void );
+extern bool render_mode_select( render_info_t * info );
+bool RenderModeSelect( int mode, bool fullscreen, bool vsync )
 {
 	render_info_t old_info = render_info;
 	// this happens if Msg() or something else is called during resize etc...
@@ -3627,8 +3627,8 @@ DebugPrintf("2 vsync = %d\n",render_info.vsync);
 	return true;
 }
 
-extern _Bool render_reset( render_info_t * info );
-_Bool RenderModeReset( void )
+extern bool render_reset( render_info_t * info );
+bool RenderModeReset( void )
 {
 	if(!render_reset( &render_info ))
 		return true;
@@ -3643,10 +3643,10 @@ _Bool RenderModeReset( void )
 
 /*===================================================================
 	Procedure	:		Init Title load in all graphics etc for Titles..
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-extern void input_grab( _Bool clip );
-_Bool InitTitle()
+extern void input_grab( bool clip );
+bool InitTitle()
 {
 	framelag = 0;
 
@@ -3830,7 +3830,7 @@ void SetInitialTitleParams()
 	MessagesDisplayed = 0;
 
 	// team game stuff....
-	memset( &PlayerReady, false, sizeof(_Bool) * MAX_PLAYERS);
+	memset( &PlayerReady, false, sizeof(bool) * MAX_PLAYERS);
 	memset( TitleMessage, 0, sizeof(char) * MAXTEXTMSG * TITLE_TEXT_MSGS_STORED);
 
 }
@@ -3838,9 +3838,9 @@ void SetInitialTitleParams()
 /*===================================================================
 	Procedure	:		LoadTitleModels
 	Input		:		nothing...
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool LoadTitleModels(void)
+bool LoadTitleModels(void)
 {
 	int i;
 	u_int16_t CurrentModel;
@@ -3933,7 +3933,7 @@ void KillLines(void)
 
 #define POINT_TO_PLANE( P, N ) ( (P)->x * (N)->Normal.x + (P)->y * (N)->Normal.y + (P)->z * (N)->Normal.z + ( (N)->Offset) )
 
-_Bool SetUpLines (u_int16_t Model, PLANE plane, VECTOR *rot)
+bool SetUpLines (u_int16_t Model, PLANE plane, VECTOR *rot)
 {
 	int num_polys;	
 	int poly, edge;
@@ -3949,7 +3949,7 @@ _Bool SetUpLines (u_int16_t Model, PLANE plane, VECTOR *rot)
 	int font;
 	int edgebits;
 	int scanlinenum;
-	_Bool startset, endset;
+	bool startset, endset;
 	MXALOADHEADER	* mxaheader;
 	MXLOADHEADER	* mxheader;
 	int Group, ExecBuf;
@@ -4606,7 +4606,7 @@ void RotateAllDiscs(void)
 {
 
 	int i, count;
-	static _Bool onceonly = false;
+	static bool onceonly = false;
 
 
 	switch (StackStatus)
@@ -4662,7 +4662,7 @@ void RotateAllDiscs(void)
 void RotateOneDisc(int disc)
 {
 
-	static _Bool onceonly = false;
+	static bool onceonly = false;
 	
 	switch (StackStatus)
 	{
@@ -4780,10 +4780,10 @@ u_int8_t QuickStart = QUICKSTART_None;
 	Procedure	:		Title Display...
 
 	Input		:		nothing...
-	Output		:		_Bool true/false
+	Output		:		bool true/false
 ===================================================================*/
-_Bool IpOnCLI;
-_Bool DisplayTitle(void)
+bool IpOnCLI;
+bool DisplayTitle(void)
 {
 #if 1 // bjd - CHECK IMPORTANT
 	u_int16_t i;
@@ -5736,7 +5736,7 @@ void MenuBack()
 	}
 }
 
-void MenuBackSpecific( MENU *Menu, _Bool UseExitFuncs )
+void MenuBackSpecific( MENU *Menu, bool UseExitFuncs )
 {
 	IgnoreMenuFuncs = !UseExitFuncs;
 	
@@ -5820,7 +5820,7 @@ void PlayCursorSfx( void )
 		PlaySfx( SFX_VidText, 1.0F );
 }
 
-_Bool ItemSelectable( MENUITEM *item )
+bool ItemSelectable( MENUITEM *item )
 {
 	if (item->highlightflags & TEXTFLAG_Unselectable)
 		return false;
@@ -6268,9 +6268,9 @@ KeyDefine( MENUITEM *item, VirtualKeycode key )
 
 
 
-_Bool ProcessDefKey( int Key )
+bool ProcessDefKey( int Key )
 {
-	_Bool done;
+	bool done;
 
 	done = false;
 	switch( Key )
@@ -6644,7 +6644,7 @@ void SelectToggle( MENUITEM *Item )
 
 	if ( Item->Variable )
 	{
-		*(_Bool *)(Item->Variable) = !*(_Bool *)(Item->Variable);
+		*(bool *)(Item->Variable) = !*(bool *)(Item->Variable);
 		if ( Item->Value )
 		{
 			set_toggle = (MenuItemFunc)(Item->Value);
@@ -6671,7 +6671,7 @@ void DrawToggle( MENUITEM *Item )
 	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 	if ( Item->Variable )
 	{
-		if ( *(_Bool *)(Item->Variable ) )
+		if ( *(bool *)(Item->Variable ) )
 		{
 			Print4x5Text( LT_ToggleOn/*" ON"*/, -1 , y , 1 );
 		}
@@ -6952,7 +6952,7 @@ void DrawKeyDef( MENUITEM *Item )
 	Output		:		Nothing
 ===================================================================*/
 
-extern _Bool InitView(void);
+extern bool InitView(void);
 extern void ReleaseView(void);
 void ExitDetailLevels( MENU *Menu )
 {
@@ -8058,7 +8058,7 @@ void GetDefaultPilot(void)
 	int size = sizeof( pilot_name );
 
 	// did we find a player name ?
-	_Bool found = false;
+	bool found = false;
 
 	config_get_strncpy( &pilot_name[0], size, "PlayerName", "" );
 
@@ -8582,8 +8582,8 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 void AddBikeArrow( char *name, int num )
 {
 	int i;
-	_Bool leftarrow = false;
-	_Bool rightarrow = false;
+	bool leftarrow = false;
+	bool rightarrow = false;
 	char tempbikename[16];
 	char leftarrowchar[2];
 	char rightarrowchar[2];
@@ -9000,7 +9000,7 @@ void InitDemoList( MENU * Menu )
 			{
 				u_int16_t CopyOfSeed1;
 				u_int16_t CopyOfSeed2;
-				_Bool RandomPickups;
+				bool RandomPickups;
 				u_int32_t flags;
 				u_int32_t PackedInfo[ MAX_PICKUPFLAGS ];
 				u_int16_t RandomStartPosModify;
@@ -9479,7 +9479,7 @@ void SetGamePrefs( void )
 	config_save();
 }
 
-_Bool CompareVectors(VECTOR vector1, VECTOR vector2)
+bool CompareVectors(VECTOR vector1, VECTOR vector2)
 {
 	if ((vector1.x == vector2.x) && (vector1.y == vector2.y) && (vector1.z == vector2.z))
 		return true;
@@ -9514,7 +9514,7 @@ void SetDiscStatus(MENU *menu)
 
 	Note		:		Only allows vertices to be excluded from one group & exec buffer at present.
 ===================================================================*/
-_Bool TintModelVertices( u_int16_t Model, float percent, EXCLUDEDVERTICES *Exclude )
+bool TintModelVertices( u_int16_t Model, float percent, EXCLUDEDVERTICES *Exclude )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	u_int16_t					Group;
@@ -9684,7 +9684,7 @@ void GetExtremeOffsets( u_int16_t Model, PLANE *plane, float *minoffset, float *
 
 
 
-_Bool MakeTranslucent( u_int16_t Model )
+bool MakeTranslucent( u_int16_t Model )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
@@ -9824,7 +9824,7 @@ _Bool MakeTranslucent( u_int16_t Model )
 }
 
 
-_Bool TintOneVertex( u_int16_t Model, u_int16_t Group, u_int16_t ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
+bool TintOneVertex( u_int16_t Model, u_int16_t Group, u_int16_t ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
 {
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
@@ -10387,7 +10387,7 @@ void DrawFlatMenuItem( MENUITEM *Item )
 
 void DrawConditionalText( MENUITEM *Item )
 {
-	if ( *(_Bool *)(Item->Value ) )
+	if ( *(bool *)(Item->Value ) )
 	{
 	 	DrawFlatMenuItem( Item );
 	}
@@ -10395,7 +10395,7 @@ void DrawConditionalText( MENUITEM *Item )
 
 void DrawConditionalName( MENUITEM *Item )
 {
-	if ( *(_Bool *)(Item->Value ) )
+	if ( *(bool *)(Item->Value ) )
 	{
 	 	DrawFlatMenuName( Item );
 	}
@@ -10461,7 +10461,7 @@ TEXTINFO * DrawFlatToggleStatus( MENUITEM *Item )
 	TEXTINFO *TextInfo;
 	char *status;
 
-	if ( *(_Bool *)(Item->Variable ) )
+	if ( *(bool *)(Item->Variable ) )
 	{
 		status = ToggleStatusOn;
 	}
@@ -10492,7 +10492,7 @@ TEXTINFO * DrawColFlatToggleStatus( MENUITEM *Item )
 	TEXTINFO *TextInfo;
 	char *status;
 
-	if ( *(_Bool *)(Item->Variable ) )
+	if ( *(bool *)(Item->Variable ) )
 	{
 		status = ToggleStatusShooter;
 	}
@@ -10549,10 +10549,10 @@ void SelectMultiToggle( MENUITEM *Item )
 	{
 		if ( Item->Variable )
 		{
-			*(_Bool *)(Item->Variable) = !*(_Bool *)(Item->Variable);
+			*(bool *)(Item->Variable) = !*(bool *)(Item->Variable);
 			if ( Item->Value )
 			{
-				*(_Bool *)(Item->Value) = !*(_Bool *)(Item->Value);
+				*(bool *)(Item->Value) = !*(bool *)(Item->Value);
 			}
 		}
 
@@ -11066,7 +11066,7 @@ SLIDER *GetSlider( MENUITEM *Item, int *slidertype )
 void DrawFlatMenuSlider( MENUITEM *Item )
 {
 	SLIDER *slider;
-	_Bool SliderStored;
+	bool SliderStored;
 	int i;
 	int slidertype;
 
@@ -11307,7 +11307,7 @@ void DrawGeneralWeaponText( MENUITEM *Item )
 
 }
 
-static u_int16_t GetNumUsed( int16_t *priority, _Bool *valid, u_int16_t Max )
+static u_int16_t GetNumUsed( int16_t *priority, bool *valid, u_int16_t Max )
 {
 	u_int16_t i, unused;
 
@@ -11375,9 +11375,9 @@ void DrawGeneralWeapons( MENUITEM *Item )
 {
 	int i, num_weapons;
 
-	_Bool used[ MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) ];
+	bool used[ MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) ];
 
-	memset( used, false, MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) * sizeof ( _Bool ) ); 
+	memset( used, false, MAX( MAX_PRIMARY_WEAPONS, MAX_SECONDARY_WEAPONS ) * sizeof ( bool ) ); 
 
 	SelectedWeapon = 0;
 	WeaponItem = Item;
@@ -11538,7 +11538,7 @@ void VduClear ( void )
 start of VDU text routines
 *********************************************************************************************************/
 
-_Bool Plot2dBox (TEXTINFO *TextInfo)
+bool Plot2dBox (TEXTINFO *TextInfo)
 {
 	u_int8_t r, g, b;
 
@@ -11605,11 +11605,11 @@ int GetScreenFont(int fontsize)
 	return FONT_512X384_Small + fontsize;
 }
 
-_Bool FormatTextItem(int start, int end, TEXTINFO *TextInfo, _Bool *newline)
+bool FormatTextItem(int start, int end, TEXTINFO *TextInfo, bool *newline)
 {
 	int i,font;
 	float TotalWidth, RemainingWidth, WordWidth, TrailingSpaceWidth, TotalHeight, PreviousHeight;
-	_Bool TrailingSpace, ForceNewLineNext;
+	bool TrailingSpace, ForceNewLineNext;
 	u_int16_t CurrentChar;
 	float xmin, xmax, ymin, ymax;
 
@@ -11770,7 +11770,7 @@ _Bool FormatTextItem(int start, int end, TEXTINFO *TextInfo, _Bool *newline)
 }
 
 
-_Bool DrawTextEditCursor( TEXTINFO *TextInfo, int font )
+bool DrawTextEditCursor( TEXTINFO *TextInfo, int font )
 {
 	float xmin, ymin;
 	char cursor = '!';
@@ -11876,14 +11876,14 @@ void GetTextPos(TEXTINFO *TextInfo, float *xpos, float *ypos, int line, float to
 
 }
 
-_Bool DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight)
+bool DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float totalheight)
 {
    
 	float xpos, ypos, currentx, currenty, xmin;
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	_Bool	OKtoProcess;
+	bool	OKtoProcess;
 	u_int16_t TempPoly;
 
 	currentx = TextInfo->currentx[line];
@@ -12040,10 +12040,10 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	}
 }
 
-_Bool VduFinished( MENU *Menu )
+bool VduFinished( MENU *Menu )
 {
 	int i, j;
-	_Bool eventsactive = false;
+	bool eventsactive = false;
 	TITLE_EVENT *Event;
 
 	if ( Menu && ( Menu != CurrentMenu ) )
@@ -12086,7 +12086,7 @@ void DisplayTextItem (TEXTINFO *TextInfo)
 	float totalheight = 0.0;
 	TEXTINFO TempTextInfo;
   	TEXT *t = NULL;
-	_Bool DoForceFit;
+	bool DoForceFit;
 
 	if (MenuState == MENUSTATE_Text2)
 		t = (TEXT *)(TextItem->Variable);
@@ -12218,7 +12218,7 @@ void PrintTextItem (TEXTINFO *TextInfo)
 	int length;
 	u_int8_t *str = NULL;
 	int i;
-	_Bool newline;
+	bool newline;
 
 	if(TextInfo && TextInfo->text)
 		str = TextInfo->text;
@@ -12901,8 +12901,8 @@ void LoadLevelPic(MENUITEM *Item)
 
 u_int16_t SavedGamePicPoly;
 u_int16_t TVFramePoly;
-_Bool SavedGamePicDisplayed = false;
-_Bool TVFrameDisplayed = false;
+bool SavedGamePicDisplayed = false;
+bool TVFrameDisplayed = false;
 
 void LoadSavedGamePic( char *file )
 {
@@ -12973,7 +12973,7 @@ void GetTVCoords( POLY *poly, float zoffset )
 	}
 }
 
-_Bool DisplayPicOnTV( FRAME_INFO **header, int *frame, u_int16_t *poly, _Bool *displayed, float zoffset )
+bool DisplayPicOnTV( FRAME_INFO **header, int *frame, u_int16_t *poly, bool *displayed, float zoffset )
 {
 	if (*displayed)
 	{	KillUsedPoly ( *poly );
@@ -13024,7 +13024,7 @@ _Bool DisplayPicOnTV( FRAME_INFO **header, int *frame, u_int16_t *poly, _Bool *d
 
 }
 
-_Bool LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, u_int16_t *scrpoly, _Bool *displayed)
+bool LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO **header, int *frame, u_int16_t *scrpoly, bool *displayed)
 {
 	if (*displayed)
 	{	KillUsedScrPoly ( *scrpoly );
@@ -14048,7 +14048,7 @@ void SelectConfigureAxisMenu ( MENUITEM *Item )
 void InitJoystickList ( MENU *Menu )
 {
 	int i, j;
-	_Bool jsfound = false;
+	bool jsfound = false;
 
 	// if no joysticks connected, display error message & return to last menu...
 	for (i = 0; i < Num_Joysticks; i++)
@@ -14720,7 +14720,7 @@ void SelectGoldBarModel( MENU *Menu )
 	ShowHoloModel( TITLE_MODEL_GoldBar );
 }
 
-_Bool InitScene(void);
+bool InitScene(void);
 void AfterSpecialMessage( MENUITEM *Item )
 {
 	switch( GameCompleted )
@@ -14817,7 +14817,7 @@ char *CTF_Type( SLIDER *s )
 }
 
 
-_Bool ListDelete( LIST *l, int item )
+bool ListDelete( LIST *l, int item )
 {
 	if ( item >= 0 && item < l->items )
 	{
@@ -14837,7 +14837,7 @@ _Bool ListDelete( LIST *l, int item )
 }
 
 
-_Bool DeleteDemo( LIST *l, int item )
+bool DeleteDemo( LIST *l, int item )
 {
 	return delete_file( DemoFileName( l->item[ item ] ) ) ? ListDelete( l, item ) : false;
 }
@@ -14877,7 +14877,7 @@ void DebugLastError( void )
 }
 
 
-_Bool DeleteSavedGame( LIST *l, int item )
+bool DeleteSavedGame( LIST *l, int item )
 {
 	if ( delete_file( SaveGameFileName( item ) )
 		&& delete_file( SaveGamePicFileName( item ) ) )
@@ -14899,7 +14899,7 @@ void SaveMacros( MENUITEM *Item )
 	write_config( player_config, biker_config );
 }
 
-_Bool SetGamma( SLIDER *slider )
+bool SetGamma( SLIDER *slider )
 {
 	double tempgamma;
 
@@ -14931,7 +14931,7 @@ _Bool SetGamma( SLIDER *slider )
 	return true;
 }
 
-_Bool SetWaterDetail( SLIDER *slider )
+bool SetWaterDetail( SLIDER *slider )
 {
 	switch( slider->value )
 	{
@@ -14948,14 +14948,14 @@ _Bool SetWaterDetail( SLIDER *slider )
 	return true;
 }
 
-_Bool SetTextScale( SLIDER *slider )
+bool SetTextScale( SLIDER *slider )
 {
 	FontWidth = 8.0F + (4.0F*slider->value);
 	FontHeight = 8.0F + (4.0F*slider->value);
 	return true;
 }
 
-_Bool SetNumPrimaryPickups( SLIDER *slider )
+bool SetNumPrimaryPickups( SLIDER *slider )
 {
 	NumPrimaryPickups = slider->value;
 
@@ -14974,7 +14974,7 @@ char *AxisActionName( SLIDER *s )
 }
 
 
-_Bool SetAxisSlider( SLIDER *s )
+bool SetAxisSlider( SLIDER *s )
 {
 	if ( s->value >= 0 && s->value < JoystickAxisList.items )
 	{
@@ -14990,7 +14990,7 @@ _Bool SetAxisSlider( SLIDER *s )
 }
 
 
-_Bool SetAxisActionSlider( SLIDER *s )
+bool SetAxisActionSlider( SLIDER *s )
 {
 	if ( s->value >= 0 && s->value < AxisActionList.items )
 	{
@@ -15095,7 +15095,7 @@ void KillHoloModel( void )
 
 }			  
 
-_Bool FlyGirlActive = false;
+bool FlyGirlActive = false;
 
 void LoadHoloModel( u_int16_t model )
 {
@@ -15172,7 +15172,7 @@ void ScaleHoloModel( float scale )
 
 #define HOLO_SPEECH_DELAY 60.0F
 float HoloSpeechDelay;
-_Bool HoloSpeechDone = false;
+bool HoloSpeechDone = false;
 
 // specify (u_int16_t)-1 for no new model
 void ShowHoloModel( u_int16_t model )
@@ -15236,7 +15236,7 @@ void ProcessFlyGirl( float scale )
 void ProcessHoloModel( void )
 {
 	float oldtimer;
-	_Bool reload = false;
+	bool reload = false;
 
 	HoloRot.y -= 0.5F * framelag;
 	if (HoloRot.y < 0.0F)
@@ -15331,7 +15331,7 @@ void ProcessHoloModel( void )
 }
 
 
-_Bool DeletePilot( LIST *l, int item )
+bool DeletePilot( LIST *l, int item )
 {
 	static char fname[ 255 ];
 
@@ -15345,16 +15345,16 @@ _Bool DeletePilot( LIST *l, int item )
 		return false;
 }
 
-void UnToggleOption( _Bool *toggle )
+void UnToggleOption( bool *toggle )
 {
 	MENUITEM *Item;
-	_Bool toggled = false;
+	bool toggled = false;
 
 	for( Item = CurrentMenu->Item ; Item->x >= 0 ; Item++ )
 	{
 		if( Item->Variable )
 		{
-			if ( (_Bool *)Item->Variable == toggle )
+			if ( (bool *)Item->Variable == toggle )
 			{
 				if( !toggled )
 				{
@@ -15463,7 +15463,7 @@ void InitHostWaitingToStart( MENU *Menu )
 	GetInitialPlayers( Menu );
 }
 
-_Bool GeneralTimeout( float *timer )
+bool GeneralTimeout( float *timer )
 {
 	char buf[ 64 ];
 
@@ -15552,9 +15552,9 @@ void InitBattleMenu( MENU *menu )
 
 
 
-_Bool ProcessSelectKeydef( int Key )
+bool ProcessSelectKeydef( int Key )
 {
-	_Bool done;
+	bool done;
 
 	done = false;
 	if (StackStatus == DISC_NOTHING)
@@ -15724,9 +15724,9 @@ _Bool ProcessSelectKeydef( int Key )
 	return !done;
 }
 
-_Bool ProcessKeydef( int Key )
+bool ProcessKeydef( int Key )
 {
-	_Bool done;
+	bool done;
 	int KeyDefNo;
 	MENUITEM *Item, *nextitem;
 
@@ -15779,9 +15779,9 @@ _Bool ProcessKeydef( int Key )
 }
 
 
-_Bool ProcessSlider( int Key )
+bool ProcessSlider( int Key )
 {
-	_Bool done;
+	bool done;
 	SLIDER *slider;
 	MenuItemFunc set_fn;
 
@@ -15839,9 +15839,9 @@ _Bool ProcessSlider( int Key )
 }
 
 
-_Bool ProcessSlider2( int Key )
+bool ProcessSlider2( int Key )
 {
-	_Bool done, redraw, refresh;
+	bool done, redraw, refresh;
 	SLIDER *slider;
 	MenuItemFunc set_fn;
 
@@ -15941,9 +15941,9 @@ _Bool ProcessSlider2( int Key )
    but text lists ... 
    while in the pregame menu's */
 
-_Bool ProcessList( int Key )
+bool ProcessList( int Key )
 {
-	_Bool done;
+	bool done;
 	MenuItemFunc FuncSet;
 	int i;
 
@@ -16077,9 +16077,9 @@ _Bool ProcessList( int Key )
 }
 
 
-_Bool ProcessText( int Key )
+bool ProcessText( int Key )
 {
-	_Bool done;
+	bool done;
 	TEXT *t;
 
 	done = false;
@@ -16220,7 +16220,7 @@ void ProcessSelect( int Key )
 
 				if
 				(
-					  (CurrentMenuItem->Variable && *(_Bool *)(CurrentMenuItem->Variable)) &&
+					  (CurrentMenuItem->Variable && *(bool *)(CurrentMenuItem->Variable)) &&
 					  CurrentMenuItem->FuncSelect
 				)
 				{
@@ -16247,7 +16247,7 @@ void ProcessSelect( int Key )
 		{
 
 			if (  CurrentMenuItem->Variable &&
-				  !*(_Bool *)(CurrentMenuItem->Variable) &&
+				  !*(bool *)(CurrentMenuItem->Variable) &&
 				  CurrentMenuItem->FuncSelect )
 			{
 				CurrentMenuItem->FuncSelect( CurrentMenuItem );
@@ -16303,9 +16303,9 @@ void ProcessSelect( int Key )
 
 
 
-_Bool ProcessDifficultySet ( int Key )
+bool ProcessDifficultySet ( int Key )
 {
-	_Bool done = false;
+	bool done = false;
 
 	if ( StackStatus != DISC_NOTHING )
 		return !done;
@@ -16375,11 +16375,11 @@ _Bool ProcessDifficultySet ( int Key )
 /*===================================================================
 	Procedure	:		Processes biker list, auto selects highlighted item and redraws biker char and text
 	Input		:		key pressed
-	Output		:		_Bool - indicates when biker list is no longer being used
+	Output		:		bool - indicates when biker list is no longer being used
 ===================================================================*/
-_Bool ProcessBikerList ( int Key )
+bool ProcessBikerList ( int Key )
 {
-	_Bool done, redraw;
+	bool done, redraw;
 	int current;
 
 	done = false;
@@ -16442,9 +16442,9 @@ _Bool ProcessBikerList ( int Key )
 	return !done;
 }
 
-_Bool ProcessSavedGameList( int Key )
+bool ProcessSavedGameList( int Key )
 {
-	_Bool done, redraw;
+	bool done, redraw;
 	int current;
 
 	done = false;
@@ -16498,11 +16498,11 @@ _Bool ProcessSavedGameList( int Key )
 	Procedure	:		Processes the player list - auto selects highlighted item, 
 						and draws corresponding biker character.
 	Input		:		key pressed...
-	Output		:		_Bool - indicates when player list is no longer being used.
+	Output		:		bool - indicates when player list is no longer being used.
 ===================================================================*/
-_Bool ProcessPlayerList ( int Key )
+bool ProcessPlayerList ( int Key )
 {
-	_Bool done, redraw;
+	bool done, redraw;
 	char old_bike_name[16];
 
 	done = false;	 
@@ -16639,9 +16639,9 @@ _Bool ProcessPlayerList ( int Key )
 	return !done;
 }
 
-_Bool ProcessWeaponOrder ( int Key )
+bool ProcessWeaponOrder ( int Key )
 {
-	_Bool done, redraw;
+	bool done, redraw;
 	int highlighttype, temp, oldselectedweapon, i;
 
 	done = false;
@@ -16873,9 +16873,9 @@ _Bool ProcessWeaponOrder ( int Key )
 
 
 
-_Bool ProcessLevelList ( int Key )
+bool ProcessLevelList ( int Key )
 {
-	_Bool done, redraw;
+	bool done, redraw;
 	int current;
 
 	done = false;

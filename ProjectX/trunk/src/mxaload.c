@@ -113,7 +113,7 @@ FixUV_MXA( u_int16_t vertices, MXAVERT *MXA_Vert, LPLVERTEX Vert, LPLVERTEX Orig
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-_Bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, _Bool StoreTriangles  )
+bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangles  )
 {
 
 	char		*	Buffer;
@@ -760,7 +760,7 @@ _Bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, _Bool StoreTriang
 	Output		:		FLASE/true
 ===================================================================*/
 
-_Bool ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t in_group  )
+bool ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t in_group  )
 {
 	int i;
 	int group;
@@ -861,7 +861,7 @@ void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 ===================================================================*/
 extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
-_Bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, _Bool LevelSpecific )
+bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, bool LevelSpecific )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -964,7 +964,7 @@ _Bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_nu
 				:		int FrameFrom, int FrameTo , float Interp
 	Output		:		FLASE/true
 ===================================================================*/
-_Bool	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp )
+bool	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp )
 {
     LPLVERTEX	lpBufStart = NULL;
 	LPLVERTEX	lpLVERTEX;

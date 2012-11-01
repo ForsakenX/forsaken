@@ -25,9 +25,9 @@
 ===================================================================*/
 	extern	TLOADHEADER	Tloadheader;
 	extern	TRIGGERVAR	*	DecreaseTemperature;
-	extern	_Bool	CaptureTheFlag;
-	extern	_Bool	CTF;
-	extern	_Bool	BountyHunt;
+	extern	bool	CaptureTheFlag;
+	extern	bool	CTF;
+	extern	bool	BountyHunt;
 	extern	BYTE	ChangeLevel_MyGameStatus;
 	extern	float	UV_Fix;
 
@@ -188,11 +188,11 @@ typedef struct
 	Procedure	:	Load Texture Pages, Offsets and Sizes
 				:	for 2D Faceme polygons
 	Input		:	int8_t		*	Filename of offset file
-				:	_Bool			Scale
-				:	_Bool			LoadTPages
+				:	bool			Scale
+				:	bool			LoadTPages
 	Output		:	FRAME_INFO	*	Structure for offset file
 ===================================================================*/
-FRAME_INFO * Load_Off_File( int8_t * Filename, _Bool Scale, int LoadTPages, int16_t *last_tpage, int16_t xsize, int16_t ysize, _Bool placeholder )
+FRAME_INFO * Load_Off_File( int8_t * Filename, bool Scale, int LoadTPages, int16_t *last_tpage, int16_t xsize, int16_t ysize, bool placeholder )
 {
 	int16_t			Name_Index[ MAX_NAMES ];
 	int8_t		*	Off_Buffer;
@@ -351,9 +351,9 @@ FRAME_INFO * Load_Off_File( int8_t * Filename, _Bool Scale, int LoadTPages, int1
 /*===================================================================
 	Procedure	:	Load All Offset Files
 	Input		:	Nothing
-	Output		:	_Bool	True/False
+	Output		:	bool	True/False
 ===================================================================*/
-_Bool Load_All_Off_Files( OFF_FILES * FileInfo )
+bool Load_All_Off_Files( OFF_FILES * FileInfo )
 {
 	int8_t			TempFilename[ 256 ];
 	int16_t			last_tpage;

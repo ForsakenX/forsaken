@@ -42,7 +42,7 @@ REMOTECAMERA * RemoteCameras = NULL;
 	Input		:		char	*	Filename 
 	Output		:		Nothing
 ===================================================================*/
-_Bool Cameraload( char * Filename )
+bool Cameraload( char * Filename )
 {
 	char		*	Buffer;
 	char		*	OrgBuffer;

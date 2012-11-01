@@ -54,9 +54,9 @@
 	Externs
 ===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
-extern _Bool CaptureTheFlag;
-extern _Bool CTF;
-extern _Bool BountyHunt;
+extern bool CaptureTheFlag;
+extern bool CTF;
+extern bool BountyHunt;
 extern int8_t TeamFlagPickup[ MAX_TEAMS ];
 extern u_int32_t TeamFlagMask[ MAX_TEAMS ];
 extern char *TeamName[ MAX_TEAMS ];
@@ -83,7 +83,7 @@ extern	POLY			Polys[MAXPOLYS];
 extern	MODEL			Models[MAXNUMOFMODELS];
 extern	float			framelag;
 extern	BYTE			WhoIAm;
-extern	_Bool            bSoundEnabled;
+extern	bool            bSoundEnabled;
 extern	FRAME_INFO	*	Exp_Header;
 extern	FRAME_INFO	*	Exp2_Header;
 extern	FRAME_INFO	*	GravgonTrail_Header;
@@ -104,7 +104,7 @@ extern	FRAME_INFO	*	Tentacle_Header;
 extern	MATRIX			MATRIX_Identity;
 extern	int16_t			PrimaryWeaponsGot[ MAXPRIMARYWEAPONS ];
 extern	USERCONFIG	*	player_config;
-extern	_Bool            IsHost;
+extern	bool            IsHost;
 extern	float			NitroFuel;
 extern	float			NitroFuelUsed;
 extern	int16_t			NumStealths;
@@ -125,12 +125,12 @@ extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 
 extern	SCRPOLY			ScrPolys[ MAXNUMOFSCRPOLYS ];
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
-extern	_Bool			TeamGame;
+extern	bool			TeamGame;
 extern	BYTE			TeamNumber[MAX_PLAYERS];
-extern	_Bool			DebugInfo;
-extern	_Bool			GodMode;
+extern	bool			DebugInfo;
+extern	bool			GodMode;
 extern	u_int16_t			IsGroupVisible[MAXGROUPS];
-extern	_Bool			PickupInvulnerability;
+extern	bool			PickupInvulnerability;
 extern	int16_t			NumInvuls;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	ENEMY	*		FirstEnemyUsed;
@@ -140,10 +140,10 @@ extern	int				no_collision;		// disables player ship-to-background collisions
 extern	int				outside_map;
 extern	float			NmeDamageModifier;
 extern	int32_t			ColPerspective;
-extern	_Bool			CaptureTheFlag;
-extern	_Bool			BountyHunt;
+extern	bool			CaptureTheFlag;
+extern	bool			BountyHunt;
 extern	float			GlobalFramelagAddition;
-extern	_Bool			PlayDemo;
+extern	bool			PlayDemo;
 extern	int16_t	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
 extern	int16_t	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
 extern	float	Host_GeneralAmmo[ MAX_PLAYERS ];
@@ -180,8 +180,8 @@ extern int PickupMessageColour;
 extern SLIDER WatchPlayerSelect;
 // player selected in demo mode - used to display their missile camera (Title.c)
 extern SLIDER DemoEyesSelect;
-extern _Bool ShowPlayerHealthAboveBikes;
-extern _Bool ScaleFontPlayerHealthAboveBikes;
+extern bool ShowPlayerHealthAboveBikes;
+extern bool ScaleFontPlayerHealthAboveBikes;
 // (networking.c)
 extern SHIPHEALTHMSG PlayerHealths[ MAX_PLAYERS+1 ];
 extern u_int8_t ShipHealthColour[ MAX_PLAYERS+1 ];
@@ -221,7 +221,7 @@ char *SecondaryDescription[MAXSECONDARYWEAPONS] = {
 };
 
 // is weapon valid as far as order processing & keydefs concerned?
-_Bool SecondaryValid[ MAXSECONDARYWEAPONS ] =
+bool SecondaryValid[ MAXSECONDARYWEAPONS ] =
 {
 
 	true,	// mug
@@ -252,17 +252,17 @@ int16_t		SecondaryWeaponsGot[ MAXSECONDARYWEAPONS ];
 int8_t		SecWeaponsGot[ MAXPICKUPS ];
 int16_t		SecAmmoUsed[ MAXSECONDARYWEAPONS ];
 int16_t		SecondaryAmmo[ MAXSECONDARYWEAPONS ];
-_Bool		TargetComputerOn = false;
+bool		TargetComputerOn = false;
 
 int16_t		NumSecBullsPerGroup[ MAXGROUPS ];
 SECONDARYWEAPONBULLET *	SecBullGroups[ MAXGROUPS ];
 
-_Bool		ImTargeted = false;
+bool		ImTargeted = false;
 float		TargetedDelay = 0.0F;
 float		MissileDistance = 0.0F;
 u_int16_t		MissileNum;
 
-_Bool		ShowNamesAnyway = false;
+bool		ShowNamesAnyway = false;
 
 u_int16_t		GlobalSecBullsID = 0;
 
@@ -319,7 +319,7 @@ int8_t SecondaryToFireLookup[ MAXSECONDARYWEAPONS ] = {
 	SPIDERMINE,
 };
 
-_Bool	SecondaryWeaponCheat = false;
+bool	SecondaryWeaponCheat = false;
 
 #ifdef SINT_PEACEFROG_CHEAT
 int16_t	TargetingWeaponCheat = -1;
@@ -348,7 +348,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -374,7 +374,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -401,7 +401,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		255.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		0.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -435,7 +435,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		true,			// _Bool		Lensflare			// Lensflare
+		true,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -461,7 +461,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		255.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -487,7 +487,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		32.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -525,7 +525,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		256.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -551,7 +551,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		1.0F,			// float	Shield				// Shield
 		0.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
@@ -577,7 +577,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		400.0F,			// float	Shield				// Shield
 		0.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
@@ -602,7 +602,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		255.0F,			// float	b;					// what color does it emit....
 		40.0F,			// float	Shield				// Shield
 		0.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
@@ -628,7 +628,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		255.0F,			// float	b;					// what color does it emit....
 		40.0F,			// float	Shield				// Shield
 		0.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
@@ -653,7 +653,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		20.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -690,7 +690,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		20.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		SHIP_RADIUS,	// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -716,7 +716,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		1.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot,						 		// Initial Flags
 	},
@@ -741,7 +741,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot, // u_int16_t Flags				// Initial Flags
 	},
@@ -766,7 +766,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		255.0F,			// float	b;					// what color does it emit....
 		128.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot, // u_int16_t Flags				// Initial Flags
 	},
@@ -791,7 +791,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		85.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // u_int16_t Flags				// Initial Flags
 	},
@@ -816,7 +816,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_NoIncoming, // u_int16_t Flags				// Initial Flags
 	},
@@ -841,7 +841,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		64.0F,			// float	b;					// what color does it emit....
 		0.0F,			// float	Shield				// Shield
 		64.0F,			// float	Damage				// Damage
-		false,			// _Bool		Lensflare			// Lensflare
+		false,			// bool		Lensflare			// Lensflare
 		( SHIP_RADIUS * 0.5F ),	// float	ColRadius	// Collision Radius
 		SECFLAGS_NoIncoming, // u_int16_t Flags			// Initial Flags
 	},
@@ -1493,12 +1493,12 @@ void CleanUpSecBull( u_int16_t i )
 				:	VECTOR	*	Dir
 				:	VECTOR	*	DropDir
 				:	int8_t		Weapon
-				:	_Bool		NetFlag ( Send to everyone? )
+				:	bool		NetFlag ( Send to everyone? )
 	Output		:	u_int16_t		SecBull Index ( -1 nothing )
 ===================================================================*/
 u_int16_t	InitOneSecBull( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * UpVector,
-						VECTOR * DropDir, int8_t Weapon, _Bool NetFlag )
+						VECTOR * DropDir, int8_t Weapon, bool NetFlag )
 {
 	u_int16_t	i;
 	u_int16_t	light;
@@ -2016,9 +2016,9 @@ u_int16_t	InitOneSecBull( u_int16_t OwnerType, u_int16_t Owner, u_int16_t Bullet
 	Input		:	VERT	*	Target Position
 				:	float		Target Radius
 				:	VERT	*	Point
-	Output		:	_Bool		true/false
+	Output		:	bool		true/false
 ===================================================================*/
-_Bool PointToSphere(	VERT * TargPos, float TargRadius, VERT * BulPos )
+bool PointToSphere(	VERT * TargPos, float TargRadius, VERT * BulPos )
 {
 	float	d;
 	float	xd, yd, zd;
@@ -2160,9 +2160,9 @@ void ProcessSecondaryBullets( void )
 /*===================================================================
 	Procedure	:	Process All Mines
 	Input		:	u_int16_t		Secondary Weapon Bullet Index
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool ProcessMines( u_int16_t i )
+bool ProcessMines( u_int16_t i )
 {
 	float		Cos;
 	float		Angle;
@@ -2513,10 +2513,10 @@ _Bool ProcessMines( u_int16_t i )
 /*===================================================================
 	Procedure	:	Process All Missiles
 	Input		:	u_int16_t		Secondary Weapon Bullet Index
-	Output		:	_Bool		NotDestroyed/Destroyed?  ( true/false )
+	Output		:	bool		NotDestroyed/Destroyed?  ( true/false )
 ===================================================================*/
 extern  BYTE          MyGameStatus;
-_Bool ProcessMissiles( u_int16_t i, u_int16_t * NextMissile )
+bool ProcessMissiles( u_int16_t i, u_int16_t * NextMissile )
 {
 	QUATLERP		qlerp;
 	VECTOR			NewPos;
@@ -6173,7 +6173,7 @@ void TargetingComputer( u_int16_t ClosestShip, u_int16_t ClosestEnemy )
 void HeatseakerTarget( u_int16_t ClosestShip, u_int16_t ClosestEnemy )
 {
 	int16_t	Count;
-	_Bool	TempFlag;
+	bool	TempFlag;
 	VECTOR	Trans;
 	VECTOR	Trans2;
 	VECTOR	Pos1, Pos2, Pos3, Pos4;
@@ -6806,9 +6806,9 @@ u_int16_t TargetClosestShip( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int1
 				:	u_int16_t		Target Type
 				:	u_int16_t		Target Ship Index
 				:	float		View Cone Cosine
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool StillGotTarget( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t TargetType, u_int16_t Target, float ViewConeCos )
+bool StillGotTarget( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t TargetType, u_int16_t Target, float ViewConeCos )
 {
 	float	Cos;
 	VECTOR	TempVector;
@@ -7846,9 +7846,9 @@ void KillOwnerIDSecBulls( u_int16_t OwnerType, u_int16_t Owner, u_int16_t ID )
 /*===================================================================
 	Procedure	:	Check if within range of mine
 	Input		:	VECTOR	*	Pos
-	Output		:	_Bool		True/False ( True if collision )
+	Output		:	bool		True/False ( True if collision )
 ===================================================================*/
-_Bool CheckForMines( VECTOR * Pos )
+bool CheckForMines( VECTOR * Pos )
 {
 	u_int16_t		i;
 	u_int16_t		Next;
@@ -8543,9 +8543,9 @@ u_int16_t TargetClosestSecondary( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u
 				:	float		Radius
 				:	u_int16_t		My Type
 				:	u_int16_t		My Index ( -1 Even Me )
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool CheckProximityToShips( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner )
+bool CheckProximityToShips( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner )
 { 
 	u_int16_t	Count;
 	VECTOR	TempVector;
@@ -8592,9 +8592,9 @@ _Bool CheckProximityToShips( VECTOR * Pos, u_int16_t Group, float Radius, u_int1
 				:	float		Radius
 				:	u_int16_t		My Type
 				:	u_int16_t		My Index ( -1 Even Me )
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool CheckProximityToEnemies( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner )
+bool CheckProximityToEnemies( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner )
 { 
 	VECTOR		TempVector;
 	VECTOR		IntPoint;
@@ -8957,7 +8957,7 @@ FILE * SaveSecBulls( FILE * fp )
 
 		while( i != (u_int16_t) -1 )
 		{
-			fwrite( &SecBulls[ i ].Used, sizeof( _Bool ), 1, fp );
+			fwrite( &SecBulls[ i ].Used, sizeof( bool ), 1, fp );
 			fwrite( &SecBulls[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			fwrite( &SecBulls[ i ].Prev, sizeof( u_int16_t ), 1, fp );
 			if( SecBulls[i].NextInGroup ) fwrite( &SecBulls[ i ].NextInGroup->Index, sizeof( u_int16_t ), 1, fp );
@@ -8974,7 +8974,7 @@ FILE * SaveSecBulls( FILE * fp )
 			fwrite( &SecBulls[ i ].Owner, sizeof( u_int16_t ), 1, fp );
 			fwrite( &SecBulls[ i ].ID, sizeof( u_int16_t ), 1, fp );
 			fwrite( &SecBulls[ i ].Weapon, sizeof( int8_t ), 1, fp );
-			fwrite( &SecBulls[ i ].Lensflare, sizeof( _Bool ), 1, fp );
+			fwrite( &SecBulls[ i ].Lensflare, sizeof( bool ), 1, fp );
 			fwrite( &SecBulls[ i ].LifeCount, sizeof( float ), 1, fp );
 			fwrite( &SecBulls[ i ].LifeSpan, sizeof( float ), 1, fp );
 			fwrite( &SecBulls[ i ].SpeedInc, sizeof( float ), 1, fp );
@@ -9086,7 +9086,7 @@ FILE * LoadSecBulls( FILE * fp )
 
 		while( i != (u_int16_t) -1 )
 		{
-			fread( &SecBulls[ i ].Used, sizeof( _Bool ), 1, fp );
+			fread( &SecBulls[ i ].Used, sizeof( bool ), 1, fp );
 			fread( &SecBulls[ i ].Next, sizeof( u_int16_t ), 1, fp );
 			fread( &SecBulls[ i ].Prev, sizeof( u_int16_t ), 1, fp );
 
@@ -9107,7 +9107,7 @@ FILE * LoadSecBulls( FILE * fp )
 			fread( &SecBulls[ i ].Owner, sizeof( u_int16_t ), 1, fp );
 			fread( &SecBulls[ i ].ID, sizeof( u_int16_t ), 1, fp );
 			fread( &SecBulls[ i ].Weapon, sizeof( int8_t ), 1, fp );
-			fread( &SecBulls[ i ].Lensflare, sizeof( _Bool ), 1, fp );
+			fread( &SecBulls[ i ].Lensflare, sizeof( bool ), 1, fp );
 			fread( &SecBulls[ i ].LifeCount, sizeof( float ), 1, fp );
 			fread( &SecBulls[ i ].LifeSpan, sizeof( float ), 1, fp );
 			fread( &SecBulls[ i ].SpeedInc, sizeof( float ), 1, fp );

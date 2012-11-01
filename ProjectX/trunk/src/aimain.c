@@ -257,9 +257,9 @@ void AI_FLESHMORPH( register ENEMY * Enemy )
 /*===================================================================
 	Procedure	:	Enemy to Enemy Check Friendly Fire...
 	Input		:	ENEMY * SEnemy
-	Output		:	_Bool true/false...Yes you will hit an enemy if you fire..
+	Output		:	bool true/false...Yes you will hit an enemy if you fire..
 ===================================================================*/
-_Bool Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
+bool Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 {
 	ENEMY * TEnemy;
 	VECTOR	Move_Dir;
@@ -297,11 +297,11 @@ _Bool Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
 ===================================================================*/
-void AI_THINK( register ENEMY * Enemy , _Bool OverideThinkTime , _Bool JustCheckPlayerRange )
+void AI_THINK( register ENEMY * Enemy , bool OverideThinkTime , bool JustCheckPlayerRange )
 {
 	OBJECT * TObject;
-	_Bool	InViewCone;
-	_Bool	InHisViewCone;
+	bool	InViewCone;
+	bool	InHisViewCone;
 	ENEMY * EnemyLink;
 	int i;
 
@@ -490,7 +490,7 @@ void AI_AVOIDCHECK( register ENEMY * Enemy )
 {
 	OBJECT * TObject;
 	float	Cone;
-	_Bool	InCone;
+	bool	InCone;
 	GLOBALSHIP * TShip;
 	float DistanceToMissile;
 	float Range;

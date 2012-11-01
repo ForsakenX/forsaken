@@ -35,15 +35,15 @@ extern void SetViewportError( char *where, render_viewport_t *vp );
 
 extern float hfov;
 extern int outside_map;
-extern	_Bool	DoClipping;
+extern	bool	DoClipping;
 extern	CAMERA	CurrentCamera;
 
 /*===================================================================
 		Externals...	
 ===================================================================*/
 
-extern	_Bool			CTF;
-extern	_Bool			CaptureTheFlag;
+extern	bool			CTF;
+extern	bool			CaptureTheFlag;
 
 extern	MATRIX			ProjMatrix;
 extern	TLOADHEADER		Tloadheader;
@@ -88,7 +88,7 @@ static GROUPRELATION ConnectedGroup;
 static GROUPRELATION VisibleGroup;
 static GROUPRELATION IndirectVisibleGroup;
 
-static _Bool InitConnections = false;
+static bool InitConnections = false;
 
 
 u_int16_t Num_IndirectVisible = 0;
@@ -211,7 +211,7 @@ void InitVisiStats( MLOADHEADER *m )
 }
 
 
-_Bool OutputVisiStats( MLOADHEADER *m, char *lname )
+bool OutputVisiStats( MLOADHEADER *m, char *lname )
 {
 	FILE *f;
 	char fname[ 256 ];
@@ -285,7 +285,7 @@ static void RelateGroups( GROUPRELATION *rel, u_int16_t g1, u_int16_t g2 )
 }
 
 
-static _Bool AreGroupsRelated( GROUPRELATION *rel, u_int16_t g1, u_int16_t g2 )
+static bool AreGroupsRelated( GROUPRELATION *rel, u_int16_t g1, u_int16_t g2 )
 {
 	u_int32_t *t, mask;
 
@@ -310,19 +310,19 @@ static void FindGroupsVisible( GROUPRELATION *vis, u_int16_t from_group, VISTREE
 }
 
 
-_Bool GroupsAreConnected( u_int16_t g1, u_int16_t g2 )
+bool GroupsAreConnected( u_int16_t g1, u_int16_t g2 )
 {
 	return AreGroupsRelated( &ConnectedGroup, g1, g2 );
 }
 
 
-_Bool GroupsAreVisible( u_int16_t g1, u_int16_t g2 )
+bool GroupsAreVisible( u_int16_t g1, u_int16_t g2 )
 {
 	return AreGroupsRelated( &VisibleGroup, g1, g2 );
 }
 
 
-_Bool GroupsAreIndirectVisible( u_int16_t g1, u_int16_t g2 )
+bool GroupsAreIndirectVisible( u_int16_t g1, u_int16_t g2 )
 {
 	if ( IndirectVisibleGroup.table )
 		return AreGroupsRelated( &IndirectVisibleGroup, g1, g2 );
@@ -337,7 +337,7 @@ _Bool GroupsAreIndirectVisible( u_int16_t g1, u_int16_t g2 )
 }
 
 
-_Bool ReadGroupConnections( MLOADHEADER *m, char **pbuf )
+bool ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 {
 	u_int32_t tabsize;
 	u_int16_t g;
@@ -466,7 +466,7 @@ _Bool ReadGroupConnections( MLOADHEADER *m, char **pbuf )
 
 
 
-_Bool FindGroupConnections( MLOADHEADER *m )
+bool FindGroupConnections( MLOADHEADER *m )
 {
 	u_int32_t tabsize;
 	u_int16_t g, p, g2;
@@ -1185,7 +1185,7 @@ extern	float	GroupWaterLevel[MAXGROUPS];
 extern	float	GroupWaterIntensity_Red[MAXGROUPS];
 extern	float	GroupWaterIntensity_Green[MAXGROUPS];
 extern	float	GroupWaterIntensity_Blue[MAXGROUPS];
-_Bool
+bool
 DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam ) 
 {
 	RENDERMATRIX	Tempproj;
@@ -1374,7 +1374,7 @@ u_int16_t FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min
 				:	u_int16_t			Group
 	Output		:	false/true
 ===================================================================*/
-_Bool PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, u_int16_t group )
+bool PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, u_int16_t group )
 {
 	VECTOR	Temp;
 

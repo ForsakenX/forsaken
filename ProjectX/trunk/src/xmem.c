@@ -7,7 +7,7 @@ size_t	MemUsed = 0;
 
 #define	MAXBLOCKS 16384
 
-_Bool	BlockUsed[MAXBLOCKS];
+bool	BlockUsed[MAXBLOCKS];
 void *	BlockPnts[MAXBLOCKS];
 size_t	BlockSize[MAXBLOCKS];
 char *	BlockInFile[MAXBLOCKS];

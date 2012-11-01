@@ -68,7 +68,7 @@ NODE *	NodeInGroup[MAXGROUPS];
 	Input		:		char	*	Filename 
 	Output		:		Nothing
 ===================================================================*/
-_Bool Nodeload( char * Filename )
+bool Nodeload( char * Filename )
 {
 	char		*	Buffer;
 	char		*	OrgBuffer;
@@ -86,7 +86,7 @@ _Bool Nodeload( char * Filename )
 	NORMAL		TempNormal;
 	VECTOR		TempPos_New;
 	VECTOR		Move_Off = { 0.0F , -MaxColDistance , 0.0F };
-	_Bool		LegalGroup;
+	bool		LegalGroup;
 
 
 	for( i = 0 ; i < MAXGROUPS ; i ++ )
@@ -344,7 +344,7 @@ ENEMY * PutEnemiesAtNodes(void)
 	VECTOR Up = { 0.0F , 1.0F , 0.0F };
 	u_int32_t NetMask = 1;
 	u_int16_t	line;
-	_Bool	Mutual;
+	bool	Mutual;
 	int	NumOfEnemies = 0;
 	ENEMY * Enemy;
 
@@ -443,8 +443,8 @@ void ShowNodeNetwork( u_int32_t NetMask )
 	NODE * NodePnt;
 	NODE * NodeLink;
 	u_int16_t	line;
-	_Bool	Mutual;
-	_Bool	CanSee;
+	bool	Mutual;
+	bool	CanSee;
 
 	InitLines(); // kill all lines (hack hack hack)
 

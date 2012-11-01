@@ -31,12 +31,12 @@
 extern	int	Depth;
 extern MLOADHEADER Mloadheader;
 
-extern _Bool AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, u_int16_t EndGroup );
+extern bool AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, u_int16_t EndGroup );
 
 /*===================================================================
 		Globals ...
 ===================================================================*/
-_Bool FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr );
+bool FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr );
 
 BSP_HEADER Bsp_Header[ 2 ];
 float ColRad;
@@ -45,7 +45,7 @@ BSP_NODE *	BSP_Nodes[256];
 BSP_PORTAL_HEADER Bsp_Portal_Header = { false, 0, {} };
 
 
-_Bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )
+bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )
 {
 	int j;
 	BSP_TREE *srctree, *duptree;
@@ -66,7 +66,7 @@ _Bool Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )
 }
 
 
-_Bool Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 )
+bool Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 )
 {
 	int j;
 	BSP_TREE *b1tree, *b2tree;
@@ -88,7 +88,7 @@ _Bool Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 )
 }
 
 
-static _Bool BSP_Loadtree( BSP_TREE *t, char **Buffer )
+static bool BSP_Loadtree( BSP_TREE *t, char **Buffer )
 {
 	BSP_RAWNODE * Raw;
 	BSP_NODE * New;
@@ -140,7 +140,7 @@ static _Bool BSP_Loadtree( BSP_TREE *t, char **Buffer )
 }
 
 
-static _Bool BSP_LoadPortal( BSP_PORTAL *p, char **Buffer )
+static bool BSP_LoadPortal( BSP_PORTAL *p, char **Buffer )
 {
 	int16_t	*	int16_tpnt;
 	float	*	floatpnt;
@@ -158,7 +158,7 @@ static _Bool BSP_LoadPortal( BSP_PORTAL *p, char **Buffer )
 }
 
 
-static _Bool BSP_LoadPortalGroup( BSP_PORTAL_GROUP *pg, char **Buffer )
+static bool BSP_LoadPortalGroup( BSP_PORTAL_GROUP *pg, char **Buffer )
 {
 	int16_t		*	int16_tpnt;
 	int				i;
@@ -180,7 +180,7 @@ static _Bool BSP_LoadPortalGroup( BSP_PORTAL_GROUP *pg, char **Buffer )
 }
 
 
-static _Bool BSP_LoadPortals( char *fname )
+static bool BSP_LoadPortals( char *fname )
 {
 	char	Filename[ 256 ];
 	long			File_Size;
@@ -245,9 +245,9 @@ static _Bool BSP_LoadPortals( char *fname )
 /*===================================================================
 	Procedure	:		Load .Bsp File
 	Input		:		char	*	Filename
-	Output		:		_Bool	true/false
+	Output		:		bool	true/false
 ===================================================================*/
-_Bool Bspload( char * Filename, BSP_HEADER *Bsp_Header )
+bool Bspload( char * Filename, BSP_HEADER *Bsp_Header )
 {
 #ifdef BSP
 	long			File_Size;
@@ -317,7 +317,7 @@ _Bool Bspload( char * Filename, BSP_HEADER *Bsp_Header )
 /*===================================================================
 	Procedure	:		Free up the memory calloced by bspload..
 	Input		:		Nothing
-	Output		:		_Bool	true/false
+	Output		:		bool	true/false
 ===================================================================*/
 void Bspfree( void )
 {
@@ -375,7 +375,7 @@ static VECTOR RayPos;
 static VECTOR RayDir;
 static float RayLength;
 float	Trick;
-_Bool Collided;
+bool Collided;
 float CollideDist;
 VECTOR CollidePoint;
 BSP_NODE *CollideNode;
@@ -383,9 +383,9 @@ BSP_NODE *OldCollideNode;
 VECTOR OldCollidePoint;
 float CollisionRadius = 0.0F;
 
-_Bool RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *ImpactPoint, VECTOR *ImpactNormal, float *ImpactOffset , u_int16_t group)
+bool RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *ImpactPoint, VECTOR *ImpactNormal, float *ImpactOffset , u_int16_t group)
 {
-	_Bool collided;
+	bool collided;
 	VECTOR EndPos;
 
  	RayLength = VectorLength( Dir );
@@ -431,9 +431,9 @@ _Bool RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR 
 	Input		:		BSP_NODE * Start node
 						VECTOR * Start Position
 						VECTOR * end Position
-	Output		:		_Bool
+	Output		:		bool
 ===================================================================*/
-_Bool FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr )
+bool FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr )
 {
 	float		d1, d2;
 	VECTOR		intersection_point;
@@ -441,7 +441,7 @@ _Bool FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end
 	BSP_NODE	* far_node_ptr;
 	float div;
 	float distance2plane;
-	_Bool	side;
+	bool	side;
 
 	Depth++;
 
@@ -615,10 +615,10 @@ start:
 /*===================================================================
 	Procedure	:		Define if a point is inside or outside
 	Input		:		VECTOR * Pos , Node *node
-	Output		:		_Bool
+	Output		:		bool
 ===================================================================*/
 
-_Bool PISDistRecursive( VECTOR *Pos, BSP_NODE *node)
+bool PISDistRecursive( VECTOR *Pos, BSP_NODE *node)
 {
 	float d;
 
@@ -655,7 +655,7 @@ start:
 
 
 
-_Bool PointInsideSkin( VECTOR *Pos, u_int16_t Group )
+bool PointInsideSkin( VECTOR *Pos, u_int16_t Group )
 {
 	if( Bsp_Header[ 0 ].State )
 	{

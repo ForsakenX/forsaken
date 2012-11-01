@@ -37,13 +37,13 @@
 		Externals ...
 ===================================================================*/
 extern	float framelag;
-extern	_Bool	Entry;
-extern	_Bool	Exit;
-extern	_Bool	In;
-extern	_Bool	ShowEFZones;
-extern	_Bool	DebugInfo;
-extern	_Bool	GodMode;
-_Bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
+extern	bool	Entry;
+extern	bool	Exit;
+extern	bool	In;
+extern	bool	ShowEFZones;
+extern	bool	DebugInfo;
+extern	bool	GodMode;
+bool RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , u_int16_t StartNumSides );
 
 /*===================================================================
 		Globals ...
@@ -57,9 +57,9 @@ EXTERNALFORCE * ExternalForces = NULL;
 /*===================================================================
 	Procedure	:	External Forces load...
 	Input		:	char * filename....
-	Output		:	_Bool
+	Output		:	bool
 ===================================================================*/
-_Bool ExternalForcesLoad( char * Filename )
+bool ExternalForcesLoad( char * Filename )
 {
 	long			File_Size;
 	long			Read_Size;
@@ -245,13 +245,13 @@ void ReleaseExternalForces( void )
 	Input		:	void
 	Output		:	true/false
 ===================================================================*/
-_Bool ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group , VECTOR * ExtForce , float * Shield )
+bool ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group , VECTOR * ExtForce , float * Shield )
 {
 	EXTERNALFORCE * EFpnt;
 	float	Distance;
 	float	Power;
 	float	Force;
-	_Bool	OnehasEffectedMe = false;
+	bool	OnehasEffectedMe = false;
 
 	EFpnt = ExternalForcesGroupLink[Group];
 	
@@ -358,8 +358,8 @@ void DisplayExternalForcesInGroup( u_int16_t Group )
 void ExternalForcesZoneCheck( VECTOR * OldPos , VECTOR * NewPos , EXTERNALFORCE * EFpnt )
 {
 
-	_Bool	OldIn;
-	_Bool	NewIn;
+	bool	OldIn;
+	bool	NewIn;
 	Entry = false;
 	Exit = false;
 	In = false;

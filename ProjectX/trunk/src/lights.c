@@ -27,7 +27,7 @@
 /*===================================================================
 		Externals...	
 ===================================================================*/
-extern	_Bool	ShowPlaneRGB;
+extern	bool	ShowPlaneRGB;
 extern	float	WhiteOut;
 extern	u_int16_t	NumGroupsVisible;
 extern	u_int16_t	GroupsVisible[MAXGROUPS];
@@ -43,7 +43,7 @@ extern	float	GroupWaterLevel[MAXGROUPS];
 extern	float	GroupWaterIntensity_Red[MAXGROUPS];
 extern	float	GroupWaterIntensity_Green[MAXGROUPS];
 extern	float	GroupWaterIntensity_Blue[MAXGROUPS];
-extern _Bool	BrightShips;
+extern bool	BrightShips;
 
 extern	CAMERA	CurrentCamera;
 void PrintInitViewStatus( BYTE Status );
@@ -179,7 +179,7 @@ void	KillUsedXLight( u_int16_t light )
 	Input		:	nothing
 	Output		:	nothing
 ===================================================================*/
-_Bool	ProcessXLights( MLOADHEADER * Mloadheader )
+bool	ProcessXLights( MLOADHEADER * Mloadheader )
 {
 	u_int16_t	light;
 	u_int16_t	oldlight;
@@ -233,7 +233,7 @@ void SetLightDie ( u_int16_t light )
 float	cral = 0.0F;
 
 
-_Bool	XLight1Group( MLOADHEADER * Mloadheader, u_int16_t group )
+bool	XLight1Group( MLOADHEADER * Mloadheader, u_int16_t group )
 {
 	XLIGHT * XLightPnt;
 	float	blf;
@@ -917,7 +917,7 @@ __asm
 	Input		:	nothing
 	Output		:	nothing
 ===================================================================*/
-_Bool	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
+bool	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
 	VECTOR	Temp;
@@ -1149,7 +1149,7 @@ PLOP:
 	Input		:	nothing
 	Output		:	nothing
 ===================================================================*/
-_Bool	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
+bool	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
 	VECTOR	Temp;
@@ -1504,7 +1504,7 @@ FILE * SaveXLights( FILE * fp )
 		for( i = 0; i < MAXXLIGHTS; i++ )
 		{
 			fwrite( &XLights[ i ].Type, sizeof( int ), 1, fp );
-			fwrite( &XLights[ i ].Visible, sizeof( _Bool ), 1, fp );
+			fwrite( &XLights[ i ].Visible, sizeof( bool ), 1, fp );
 			fwrite( &XLights[ i ].r, sizeof( float ), 1, fp );
 			fwrite( &XLights[ i ].g, sizeof( float ), 1, fp );
 			fwrite( &XLights[ i ].b, sizeof( float ), 1, fp );
@@ -1545,7 +1545,7 @@ FILE * LoadXLights( FILE * fp )
 		for( i = 0; i < MAXXLIGHTS; i++ )
 		{
 			fread( &XLights[ i ].Type, sizeof( int ), 1, fp );
-			fread( &XLights[ i ].Visible, sizeof( _Bool ), 1, fp );
+			fread( &XLights[ i ].Visible, sizeof( bool ), 1, fp );
 			fread( &XLights[ i ].r, sizeof( float ), 1, fp );
 			fread( &XLights[ i ].g, sizeof( float ), 1, fp );
 			fread( &XLights[ i ].b, sizeof( float ), 1, fp );

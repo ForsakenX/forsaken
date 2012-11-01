@@ -5,12 +5,12 @@
 SHIPCONTROL bot;
 VECTOR FollowTargetPos;
 VECTOR MissileOrigDirVector;
-_Bool AllSensorsClear;
-_Bool DEBUG_AVOIDANCE = true;
-_Bool FriendlyFire = false;
-_Bool MissileAvoidanceSet = false;
-_Bool ReverseNetwork = true;
-_Bool initialised = false;
+bool AllSensorsClear;
+bool DEBUG_AVOIDANCE = true;
+bool FriendlyFire = false;
+bool MissileAvoidanceSet = false;
+bool ReverseNetwork = true;
+bool initialised = false;
 float DistWall[NUM_SENSORS];
 float IFiredTitan = -1.0F;
 float PrevHull = MAX_HULL+1.0F;
@@ -31,25 +31,25 @@ int TargetNode = -1;
 int TargetShipHealth = -1;
 int TargetShipID = -1;
 
-_Bool BOTAI_AimAtTarget( MATRIX * InvMat, VECTOR * SPos, VECTOR * TPos );
-_Bool BOTAI_CanICollectPickup( u_int16_t i );
-_Bool BOTAI_CheckForGravgons( VECTOR * Pos );
-_Bool BOTAI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos );
-_Bool BOTAI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos, float radius );
-_Bool BOTAI_CollectNearestPickup(_Bool SlideOnly);
-_Bool BOTAI_FireTitan();
-_Bool BOTAI_FriendlyFireCheck();
-_Bool BOTAI_InViewCone( VECTOR * Pos, MATRIX * Mat, VECTOR * TPos, float ViewConeCos );
-_Bool BOTAI_MaintainDistanceToTargetShip();
-_Bool BOTAI_MoveToTarget(VECTOR * TPos);
-_Bool BOTAI_SafeToMove();
-_Bool BOTAI_SetAction( float * action, float value, char * str );
-_Bool BOTAI_ShootEnemyMines();
-_Bool BOTAI_SlideToTarget(VECTOR * TPos);
-_Bool BOTAI_WillHomingMissileHit(VECTOR * MyPos);
-float BOTAI_DistanceToWall( _Bool u, _Bool d, _Bool l, _Bool r, _Bool f, _Bool b );
+bool BOTAI_AimAtTarget( MATRIX * InvMat, VECTOR * SPos, VECTOR * TPos );
+bool BOTAI_CanICollectPickup( u_int16_t i );
+bool BOTAI_CheckForGravgons( VECTOR * Pos );
+bool BOTAI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos );
+bool BOTAI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos, float radius );
+bool BOTAI_CollectNearestPickup(bool SlideOnly);
+bool BOTAI_FireTitan();
+bool BOTAI_FriendlyFireCheck();
+bool BOTAI_InViewCone( VECTOR * Pos, MATRIX * Mat, VECTOR * TPos, float ViewConeCos );
+bool BOTAI_MaintainDistanceToTargetShip();
+bool BOTAI_MoveToTarget(VECTOR * TPos);
+bool BOTAI_SafeToMove();
+bool BOTAI_SetAction( float * action, float value, char * str );
+bool BOTAI_ShootEnemyMines();
+bool BOTAI_SlideToTarget(VECTOR * TPos);
+bool BOTAI_WillHomingMissileHit(VECTOR * MyPos);
+float BOTAI_DistanceToWall( bool u, bool d, bool l, bool r, bool f, bool b );
 float BOTAI_WhenWillBulletHitMe(VECTOR * MyPos);
-float BOTAI_WhenWillBulletHitSlide( _Bool u, _Bool d, _Bool l, _Bool r, _Bool f, _Bool b );
+float BOTAI_WhenWillBulletHitSlide( bool u, bool d, bool l, bool r, bool f, bool b );
 int BOTAI_CenterCheck( int move );
 void BOTAI_AimAtTargetShip();
 void BOTAI_AvoidBullets();
@@ -60,7 +60,7 @@ void BOTAI_GetNearestPickup();
 void BOTAI_GetSHIPTarget();
 void BOTAI_LookAhead( float Accuracy, VECTOR * SPos, BYTE TargetID, VECTOR * NewPos, float SpeedOfBullet );
 void BOTAI_LookAheadPos( float Time, VECTOR * NewPos, VECTOR SlideDirection );
-void BOTAI_SelectWeapon( _Bool MineTarget );
+void BOTAI_SelectWeapon( bool MineTarget );
 void BOTAI_ShootAtTargetShip();
 void BOTAI_UpdateSensors();
 void ProcessBot1();
@@ -234,7 +234,7 @@ void BOTAI_ClearActions()
 	bot.fire_secondary = 0.0F;
 }
 
-_Bool BOTAI_SetAction( float * action, float value, char * str )
+bool BOTAI_SetAction( float * action, float value, char * str )
 {
 	// enforce bounds
 	if( value < -1.0F )
@@ -356,7 +356,7 @@ float BOTAI_WhenWillBulletHitMe(VECTOR * MyPos)
 		return -1.0F; // nothing will hit
 }
 
-float BOTAI_WhenWillBulletHitSlide( _Bool u, _Bool d, _Bool l, _Bool r, _Bool f, _Bool b )
+float BOTAI_WhenWillBulletHitSlide( bool u, bool d, bool l, bool r, bool f, bool b )
 {
 	VECTOR NewPos = Ships[WhoIAm].Object.Pos;
 	float BulletHitTime;
@@ -379,7 +379,7 @@ float BOTAI_WhenWillBulletHitSlide( _Bool u, _Bool d, _Bool l, _Bool r, _Bool f,
 	return BulletHitTime;
 }
 
-_Bool BOTAI_FireTitan()
+bool BOTAI_FireTitan()
 {
 	int i;
 	int wall;
@@ -548,7 +548,7 @@ void BOTAI_FireMissiles()
 
 #define TOL 50.0F
 /* triple-chords to target pos in a straight line; returns true if reached target */
-_Bool BOTAI_MoveToTargetNew(VECTOR * TPos)
+bool BOTAI_MoveToTargetNew(VECTOR * TPos)
 {
 	VECTOR Slide;
 	VECTOR TriChordVector;
@@ -637,7 +637,7 @@ _Bool BOTAI_MoveToTargetNew(VECTOR * TPos)
 }
 
 /* (buggy) always triple chords up/right/forward to target */
-_Bool BOTAI_MoveToTarget(VECTOR * TPos)
+bool BOTAI_MoveToTarget(VECTOR * TPos)
 {
 	VECTOR NormVector;
 	VECTOR DirVector;
@@ -727,7 +727,7 @@ _Bool BOTAI_MoveToTarget(VECTOR * TPos)
 }
 
 /* Slides to target pos without aiming at it; returns true if reached target */
-_Bool BOTAI_SlideToTarget(VECTOR * TPos)
+bool BOTAI_SlideToTarget(VECTOR * TPos)
 {
 	VECTOR NormVector;
 	VECTOR DirVector;
@@ -801,7 +801,7 @@ _Bool BOTAI_SlideToTarget(VECTOR * TPos)
 		return false;
 }
 
-_Bool BOTAI_ShootEnemyMines()
+bool BOTAI_ShootEnemyMines()
 {
 	int i;
 	float dist = 0.0F;
@@ -938,7 +938,7 @@ void BOTAI_GetNearestPickup()
 	}
 }
 
-_Bool BOTAI_CollectNearestPickup(_Bool SlideOnly)
+bool BOTAI_CollectNearestPickup(bool SlideOnly)
 {
 	// Pickup identified
 	if(GettingPickup > -1)
@@ -975,7 +975,7 @@ _Bool BOTAI_CollectNearestPickup(_Bool SlideOnly)
 		return false;
 }
 
-float BOTAI_DistanceToWall( _Bool u, _Bool d, _Bool l, _Bool r, _Bool f, _Bool b )
+float BOTAI_DistanceToWall( bool u, bool d, bool l, bool r, bool f, bool b )
 {
 	float dist;
 	VECTOR temp;
@@ -1045,7 +1045,7 @@ void BOTAI_LookAhead( float Accuracy, VECTOR * SPos, BYTE TargetID, VECTOR * New
 	NewPos->z = Ships[TargetID].Object.Pos.z + ( Ships[TargetID].Move_Off.z * Time * Accuracy );
 }
 
-_Bool BOTAI_AimAtTarget( MATRIX * InvMat , VECTOR * SPos, VECTOR * TPos )
+bool BOTAI_AimAtTarget( MATRIX * InvMat , VECTOR * SPos, VECTOR * TPos )
 {
 	VECTOR WantedDir;
 	VECTOR TempDir;
@@ -1103,7 +1103,7 @@ _Bool BOTAI_AimAtTarget( MATRIX * InvMat , VECTOR * SPos, VECTOR * TPos )
 	return OnTarget;
 }
 
-_Bool BOTAI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos )
+bool BOTAI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos )
 {
 	VECTOR Dir;
 	VECTOR Int_Point;
@@ -1118,7 +1118,7 @@ _Bool BOTAI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos )
 	return !BackgroundCollide( &MCloadheadert0, &Mloadheader, SPos, Group, &Dir, &Int_Point, &Int_Group, &Int_Normal, &TempVector, true, NULL );
 }
 
-_Bool BOTAI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
+bool BOTAI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 {
 	VECTOR Dir;
 	BGOBJECT * BGObject;
@@ -1167,7 +1167,7 @@ void BOTAI_GetSHIPTarget()
 	}
 }
 
-_Bool BOTAI_InViewCone( VECTOR * Pos, MATRIX * Mat, VECTOR * TPos, float ViewConeCos )
+bool BOTAI_InViewCone( VECTOR * Pos, MATRIX * Mat, VECTOR * TPos, float ViewConeCos )
 {
 	float Cos;
 	VECTOR NormVector;
@@ -1190,7 +1190,7 @@ _Bool BOTAI_InViewCone( VECTOR * Pos, MATRIX * Mat, VECTOR * TPos, float ViewCon
 	return false;
 }
 
-_Bool BOTAI_FriendlyFireCheck()
+bool BOTAI_FriendlyFireCheck()
 {
 	int i;
 	VECTOR Move_Dir;
@@ -1223,7 +1223,7 @@ _Bool BOTAI_FriendlyFireCheck()
 	return false;
 }
 
-_Bool BOTAI_CanICollectPickup( u_int16_t i )
+bool BOTAI_CanICollectPickup( u_int16_t i )
 {
 	int16_t	PickupEnable = false;
 
@@ -1376,7 +1376,7 @@ _Bool BOTAI_CanICollectPickup( u_int16_t i )
 		return false;
 }
 
-_Bool BOTAI_WillHomingMissileHit(VECTOR * MyPos)
+bool BOTAI_WillHomingMissileHit(VECTOR * MyPos)
 {
 	float Cos;
 	float Angle;
@@ -1862,7 +1862,7 @@ int BOTAI_CenterCheck( int move )
 	return move;
 }
 
-void BOTAI_SelectWeapon( _Bool MineTarget )
+void BOTAI_SelectWeapon( bool MineTarget )
 {
 	if( MineTarget )
 	{
@@ -1942,7 +1942,7 @@ void BOTAI_ShootAtTargetShip()
 	}
 }
 
-_Bool BOTAI_SafeToMove()
+bool BOTAI_SafeToMove()
 {
 	if(AllSensorsClear && AvoidMove < 0 && HomingMissile < 0 && IFiredTitan < 0.0F)
 		return true;
@@ -1955,7 +1955,7 @@ _Bool BOTAI_SafeToMove()
 	}
 }
 
-_Bool BOTAI_MaintainDistanceToTargetShip()
+bool BOTAI_MaintainDistanceToTargetShip()
 {
 	float DesiredDistance;
 
@@ -2001,7 +2001,7 @@ _Bool BOTAI_MaintainDistanceToTargetShip()
 		return false;
 }
 
-_Bool BOTAI_CheckForGravgons( VECTOR * Pos )
+bool BOTAI_CheckForGravgons( VECTOR * Pos )
 {
 	u_int16_t i;
 	float DistToGravgon;

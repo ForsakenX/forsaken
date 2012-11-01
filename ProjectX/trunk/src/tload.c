@@ -28,7 +28,7 @@
 		Externals...	
 ===================================================================*/
 
-extern	_Bool	TexturesEnabled;
+extern	bool	TexturesEnabled;
 
 /*===================================================================
 		Globals...	
@@ -42,9 +42,9 @@ double	Gamma = 1.0;
 /*===================================================================
 	Procedure	:		Init a Tloadheader
 	Input		:		TLOADHEADER *
-	Output		:		_Bool false/true
+	Output		:		bool false/true
 ===================================================================*/
-_Bool InitTload( TLOADHEADER * Tloadheader  )
+bool InitTload( TLOADHEADER * Tloadheader  )
 {
 	int i;
 	memset( Tloadheader, 0, sizeof(TLOADHEADER) );
@@ -71,10 +71,10 @@ _Bool InitTload( TLOADHEADER * Tloadheader  )
 /*===================================================================
 	Procedure	:		Load All textures associated with a level
 	Input		:		TLOADHEADER *
-	Output		:		_Bool false/true
+	Output		:		bool false/true
 ===================================================================*/
 void build_gamma_table( double gamma );
-_Bool Tload( TLOADHEADER * Tloadheader  )
+bool Tload( TLOADHEADER * Tloadheader  )
 {
 	int	i,e;
 	int LeastScaledThatCanbe;
@@ -139,7 +139,7 @@ _Bool Tload( TLOADHEADER * Tloadheader  )
 // this will create and set a brand new texture pointer
 //
 
-_Bool TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
+bool TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 {
 	LPTEXTURE lpSrcTexture = NULL;
 	release_texture(Tloadheader->lpTexture[n]);
@@ -172,7 +172,7 @@ _Bool TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 // or reload a new surface while keeping the pointer the same
 //
 
-_Bool TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16_t n )
+bool TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16_t n )
 {
 	// create only one mipmap level (original texture only)
 	int numMips = 1;
@@ -235,7 +235,7 @@ ReleaseTloadheader( TLOADHEADER * Tloadheader )
     InitTload( Tloadheader );
 }
 
-_Bool TloadAllTextures(TLOADHEADER * Tloadheader)
+bool TloadAllTextures(TLOADHEADER * Tloadheader)
 {
     int i;
 
@@ -300,7 +300,7 @@ int16_t	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 	Output		:		-1 if too many tpages
 ===================================================================*/
 
-int16_t	AddTexture( TLOADHEADER * Tloadheader , char * Name , u_int16_t ColourKey  , _Bool Scale , _Bool MipMap, int16_t xsize, int16_t ysize )
+int16_t	AddTexture( TLOADHEADER * Tloadheader , char * Name , u_int16_t ColourKey  , bool Scale , bool MipMap, int16_t xsize, int16_t ysize )
 {
 	int16_t i;
 	char * NamePnt;

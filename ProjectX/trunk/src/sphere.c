@@ -193,10 +193,10 @@ float RaytoSphere(VECTOR * sphere_pos, float radius , VECTOR * ray_org, VECTOR *
  *		VECTOR *	inter	-	Intersection Back
  *
  * Output:
- *		_Bool		hit		-	Collision True/False
+ *		bool		hit		-	Collision True/False
  *
  *-------------------------------------------------------------------------------------------------------------------------*/
-_Bool RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 )
+bool RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 )
 {
 	float		v;
 	float		disc;
@@ -295,9 +295,9 @@ int16_t RaytoSphere3( VECTOR * SphereCenter, float Radius, VECTOR * RayStart,
 				:	VECTOR *	RayStart
 				:	VECTOR *	RayDirection
 				:	float		RayLength
-	Output		:	_Bool		True/False
+	Output		:	bool		True/False
 ===================================================================*/
-_Bool RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, float rlength )
+bool RaytoSphereShort( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, float rlength )
 {
 	float		v;
 	float		disc;
