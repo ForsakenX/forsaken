@@ -4009,6 +4009,12 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		lpLongStatus->Status.Triggers		= Ships[WhoIAm].Triggers;	 
 		lpLongStatus->Status.TrigVars		= Ships[WhoIAm].TrigVars;
 		strncpy( &lpLongStatus->LevelName[0], &ShortLevelNames[NewLevelNum][0], 32 );
+		{ // send update if level change
+			static int16_t MyNewLevelNum = 0;
+			if(MyNewLevelNum != NewLevelNum)
+				reset_tracker();
+			MyNewLevelNum = NewLevelNum;
+		}
 		lpLongStatus->RandomStartPosModify = RandomStartPosModify;
 		nBytes = sizeof( LONGSTATUSMSG );
 		flags |= NETWORK_RELIABLE;
