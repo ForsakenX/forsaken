@@ -110,6 +110,8 @@ static void send_tracker_message( char* host, int port, char* message )
 	send_buffer.data = message;
 	send_buffer.dataLength = size;
 
+	DebugPrintf("tracker message: %s\n",message);
+
 	if(enet_host)
 		sent = enet_socket_send( enet_host->socket, &address, &send_buffer, 1 );
 
