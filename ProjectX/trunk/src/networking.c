@@ -970,6 +970,24 @@ void	SetTime( float Time )
 	SendGameMessage( MSG_SETTIME, 0, 0, 0, 0 );
 }
 
+extern float real_framelag;
+static float tracker_timer = 0;
+void reset_tracker()
+{
+	tracker_timer = 0;
+}
+void update_tracker()
+{
+	if(!IsHost || !tracker_enabled)
+		return;
+	if( tracker_timer <= 0 )
+	{
+		send_tracker_update( tracker_server, tracker_port );
+		tracker_timer = 20; // 3 times a minute, timeout is 1 minute
+	}
+	tracker_timer -= real_framelag; // minus elapsed time
+}
+
 // (stats.c)
 extern void InitScoreSortTab(int Player); 
 
@@ -1088,6 +1106,8 @@ void SetupNetworkGame()
         PlayerHealths[i].Hull = 0;
         PlayerHealths[i].Shield = 0;
 	}
+
+	reset_tracker();
 }
 
 void InitShipStructure( int i , bool ResetScore )
@@ -1300,6 +1320,7 @@ void network_event_player_left( network_player_t * player )
 	else
 	{
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
+		{
 			if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
 			{	
 				if( MyGameStatus == STATUS_Normal )
@@ -1328,6 +1349,8 @@ void network_event_player_left( network_player_t * player )
 
 				//memset(Names[i],0,sizeof(Names[i]));
 			}
+		}
+		reset_tracker();
 	}
 }
 
@@ -1363,6 +1386,8 @@ void network_event_new_host( network_player_t * player )
 				GameStatus[i] = STATUS_Left;
 			}
 		}
+
+		reset_tracker();
 	}
 
 	// someone else has become the host
@@ -1455,18 +1480,6 @@ void network_event( network_event_type_t type, void* data )
         }
 }
 
-extern float real_framelag;
-void handle_tracker( void )
-{
-	static float timer = 0;
-	if( timer <= 0 )
-	{
-		timer = 20; // 3 times a minute, timeout is 1 minute
-		send_tracker_update( tracker_server, tracker_port );
-	}
-	timer -= real_framelag; // minus elapsed time
-}
-
 void ReceiveGameMessages( void )
 {
 	int i;
@@ -1510,8 +1523,7 @@ void ReceiveGameMessages( void )
 		BytesPerSecTimer = 71.0F;
 	}
 
-	if(IsHost && tracker_enabled)
-		handle_tracker();
+	update_tracker();
 
 	network_pump();
 
@@ -2017,6 +2029,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				StopTaunt();
 			}
 /* ------------------- */
+
 			DemoShipInit[ lpVeryShortFUpdate->WhoIAm ] = true;
 			return;
 		}
@@ -2939,6 +2952,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
     case MSG_STATUS:
    		lpStatus = (LPSTATUSMSG)MsgPnt;
 
+		if ( !STATUS_VALID_PLAYER(GameStatus[lpStatus->WhoIAm]) && STATUS_VALID_PLAYER(lpStatus->Status) )
+			reset_tracker();
+
 		if( ( GameStatus[lpStatus->WhoIAm] != STATUS_Normal) && (lpStatus->Status == STATUS_Normal ) ) 
 			CreateReGen( lpStatus->WhoIAm );
 
@@ -3060,8 +3076,12 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
    		lpLongStatus = (LPLONGSTATUSMSG)MsgPnt;
 
+		if ( !STATUS_VALID_PLAYER(GameStatus[lpLongStatus->WhoIAm]) && STATUS_VALID_PLAYER(lpLongStatus->Status.Status) )
+			reset_tracker();
+
 		if( ( GameStatus[lpLongStatus->WhoIAm] != STATUS_Normal) && (lpLongStatus->Status.Status == STATUS_Normal ) ) 
 			CreateReGen( lpLongStatus->WhoIAm );
+
 		GameStatus[lpLongStatus->WhoIAm]			= lpLongStatus->Status.Status;
 		DebugPrintf("%s LongStatus = %d\n", Names[lpLongStatus->WhoIAm], GameStatus[lpLongStatus->WhoIAm] );
 		Ships[lpLongStatus->WhoIAm].Pickups		= lpLongStatus->Status.Pickups;
