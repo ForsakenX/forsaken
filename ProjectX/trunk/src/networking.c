@@ -1647,6 +1647,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		// make sure player id is a valid player
 
 		if ( 
+			*MsgPnt != MSG_HEREIAM && // player id not valid yet
 			*MsgPnt != MSG_INIT && *MsgPnt != MSG_STATUS && *MsgPnt != MSG_LONGSTATUS && // will add to following structures
 			(GameStatus[id] == STATUS_Left || GameStatus[id] == STATUS_LeftCrashed || GameStatus[id] == STATUS_Null) 
 		){
