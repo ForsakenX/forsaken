@@ -19,6 +19,7 @@
 #include "transexe.h"
 #include "water.h"
 #include "util.h"
+#include "oct2.h"
 
 /*===================================================================
 		Externs...	
@@ -78,7 +79,6 @@ float WaterFade = 1.0F;
 	Input		:	char * filename....
 	Output		:	bool
 ===================================================================*/
-extern char ShortLevelNames[MAXLEVELS][32];
 extern int16_t LevelNum;
 bool PreWaterLoad( char * Filename )
 {

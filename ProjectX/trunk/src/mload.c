@@ -104,8 +104,8 @@ num_start_points : u_int16_t
 #include "mload.h"
 #include "lights.h"
 #include "triggers.h"
-
 #include "util.h"
+#include "oct2.h"
 
 /*===================================================================
 		Externals...	
@@ -1403,7 +1403,6 @@ static void Unscramble( char *buf, long size, char *fname )
 	Input		:		char	*	Filename , MLOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
 bool PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 {

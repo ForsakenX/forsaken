@@ -24,6 +24,7 @@
 #include "primary.h"
 #include "controls.h"
 #include "util.h"
+#include "oct2.h"
 
 
 extern bool IsHost;   // is the user hosting/joining a game
@@ -36,7 +37,6 @@ extern	int16_t	SelectedBike;
 extern	char	biker_name[256];
 extern	bool	CountDownOn;
 extern	bool	TeamGame;
-extern  int16_t   NewLevelNum;
 extern  BYTE          MyGameStatus;
 extern SLIDER WatchPlayerSelect;
 

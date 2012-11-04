@@ -31,6 +31,7 @@
 #include "controls.h"
 #include "local.h"
 #include "util.h"
+#include "oct2.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -777,7 +778,6 @@ void OnceOnlyInitModel( void )
 				:	MODELNAME	*		Current Model Name
 	Output		:	bool				true/false
 ===================================================================*/
-extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
 bool PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 {

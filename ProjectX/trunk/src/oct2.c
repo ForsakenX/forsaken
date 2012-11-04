@@ -57,6 +57,7 @@
 #include "singleplayer.h"
 #include "render.h"
 #include "input.h"
+#include "oct2.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
@@ -551,7 +552,7 @@ extern int16_t NumOfActivePlayers;
 int16_t   LevelNum = 0 ;
 int16_t   NewLevelNum = 0 ;
 int16_t   NumLevels = 0;
-char  ShortLevelNames[MAXLEVELS][32];
+char  ShortLevelNames[MAXLEVELS][MAX_SHORT_LEVEL_NAME];
 char  LevelNames[MAXLEVELS][128];
 char  CollisionNames[MAXLEVELS][128];
 char  CollisionZNames[MAXLEVELS][128];

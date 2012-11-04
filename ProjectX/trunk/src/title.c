@@ -55,6 +55,7 @@
 #include "timer.h"
 #include "render.h"
 #include "file.h"
+#include "oct2.h"
 
 
 #define MAX_SAVEGAME_SLOTS		16
@@ -212,7 +213,6 @@ extern	CAMERA	CurrentCamera;
 void Build_View();
 extern	RENDEROBJECT RenderBufs[4];
 extern	int16_t		NumLevels;
-extern	char		ShortLevelNames[MAXLEVELS][32];
 
 #define REGISTRY_EXPIRE_TIME	"ServiceID"
 #define DEFAULT_CONFIG_FILE		DEFAULT_PLAYER_NAME".txt"
@@ -246,9 +246,7 @@ extern	bool					HostDuties;
 extern	int16_t	BikeModels[ MAXBIKETYPES ];
 extern	MLOADHEADER Mloadheader;
 extern int16_t		LevelNum;
-extern int16_t		NewLevelNum;
 extern int16_t		NumLevels;
-extern char	ShortLevelNames[MAXLEVELS][32];
 extern	bool                    IsHost;
 extern	RENDERMATRIX view;
 extern	bool ClearBuffers( void );

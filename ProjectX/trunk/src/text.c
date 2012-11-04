@@ -53,7 +53,6 @@ extern	int16_t			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16_t					Lives;
 extern	int16_t					MaxKills;
 extern	bool                    IsHost;
-extern	int16_t			NewLevelNum;
 extern	int16_t			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
 

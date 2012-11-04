@@ -35,6 +35,7 @@
 #include "version.h"
 #include "net_tracker.h"
 #include "timer.h"
+#include "oct2.h"
 
 
 BYTE WhoIAm = UNASSIGNED_SHIP;
@@ -180,7 +181,6 @@ extern	LIST	DemoList;
 extern	LONGLONG	GameCurrentTime;		// How long the game has been going...
 #endif
 
-extern	char	ShortLevelNames[MAXLEVELS][32];
 extern bool	bSoundEnabled;
 
 extern float framelag;
@@ -338,7 +338,6 @@ extern	VECTOR			SlideRight;
 extern	VECTOR			NullVector;
 extern	MLOADHEADER Mloadheader;
 extern	int16_t LevelNum;
-extern	int16_t NewLevelNum;
 extern	float PowerLevel;
 extern	SECONDARYWEAPONATTRIB SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ];
 extern	SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];

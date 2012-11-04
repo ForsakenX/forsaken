@@ -23,6 +23,7 @@
 #include "local.h"
 #include "util.h"
 #include "timer.h"
+#include "oct2.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -67,7 +68,6 @@ extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	u_int16_t		FirstSecBullUsed;
-extern	int16_t			NewLevelNum;
 extern	int16_t			NumLevels;
 extern	MODEL		Models[ MAXNUMOFMODELS ];
 extern	int				FontWidth;

@@ -31,6 +31,7 @@
 #include "node.h"
 #include "controls.h"
 #include "util.h"
+#include "oct2.h"
 
 /*===================================================================
 	External Variables
@@ -1003,7 +1004,6 @@ void ChangeBGState( BGOBJECT * Object, u_int16_t OwnerType, u_int16_t Owner, int
 	Input		:	int8_t	*	Filename
 	Output		:	bool		true/false
 ===================================================================*/
-extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
 bool PreLoadBGOFiles( void )
 {

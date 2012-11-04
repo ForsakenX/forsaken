@@ -34,6 +34,7 @@
 #include "sfx.h"
 #include "title.h"
 #include "util.h"
+#include "oct2.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -4217,7 +4218,6 @@ void ReleaseAllEnemies( void )
 	Input		:	Nothing
 	Output		:	bool	True/False
 ===================================================================*/
-extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
 bool PreLoadEnemies( void )
 {

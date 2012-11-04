@@ -43,6 +43,7 @@
 #include "file.h"
 #include "util.h"
 #include "timer.h"
+#include "oct2.h"
 
 /*			Stuff that needs to be saved/loaded.....
 
@@ -92,8 +93,6 @@ extern	float framelag;
 extern	int CrystalsFound;
 extern	int16_t Lives;
 extern	int16_t		LevelNum;
-extern	int16_t		NewLevelNum;
-extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	char		MissionTextNames[MAXLEVELS][128];
 extern	float		LevelTimeTaken;
 extern	int16_t		NumInitEnemies;

@@ -62,6 +62,7 @@ num_frames : u_int16_t // number of animation frames
 #include "sfx.h"
 #include "spotfx.h"
 #include "util.h"
+#include "oct2.h"
 
 /*===================================================================
 		Defines
@@ -88,8 +89,6 @@ extern	RENDERMATRIX view;
 extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
 extern	RENDERMATRIX  TempWorld;
-
-int16_t		NewLevelNum;
 
 /*===================================================================
 		Globals...	
@@ -859,7 +858,6 @@ void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
 bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, bool LevelSpecific )
 {

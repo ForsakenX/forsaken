@@ -532,7 +532,6 @@ extern USERCONFIG *player_config;
 
 extern float framelag;	
 extern LEVEL_LOOKUP LevelLookup[];
-extern char	ShortLevelNames[MAXLEVELS][32];
 extern LIST	BikeList;
 extern LIST BikeComputerList;
 

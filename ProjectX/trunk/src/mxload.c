@@ -49,6 +49,7 @@ mxtype : u_int16_t // always 0 for mx format
 #include "sfx.h"
 #include "spotfx.h"
 #include "util.h"
+#include "oct2.h"
 
 /*===================================================================
 		Defines
@@ -1095,7 +1096,6 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
-extern char  ShortLevelNames[MAXLEVELS][32];
 extern	int16_t		LevelNum;
 bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool LevelSpecific )
 {

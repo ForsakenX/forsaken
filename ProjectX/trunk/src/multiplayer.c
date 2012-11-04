@@ -32,6 +32,7 @@
 #include "string.h"
 #include "util.h"
 #include "net_tracker.h"
+#include "oct2.h"
 
 /*
  * Externals
@@ -115,7 +116,6 @@ extern	FILE	*	DemoFpClean;
 bool ChangeLevel( void );
 bool InitLevels( char *levels_list );
 extern	int16_t		LevelNum;
-extern	int16_t		NewLevelNum;
 
 #ifdef DEMO_SUPPORT
 extern	bool	PlayDemo;
