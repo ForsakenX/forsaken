@@ -4804,6 +4804,128 @@ void ProcessHoloModel( void );
 
 u_int8_t QuickStart = QUICKSTART_None; 
 
+bool RenderCurrentMenu(void)
+{
+	u_int16_t	group;
+
+	Build_View();
+	CurrentCamera.View = view;
+
+	if (!FSSetView(&view))
+	{
+		Msg( "DisplayTitle() : SetMatrix failed\n" );
+		return false;
+	}
+
+	if(!FSSetViewPort(&CurrentCamera.Viewport))
+	{
+#ifdef DEBUG_VIEWPORT
+		SetViewportError( "DisplayTitle", &CurrentCamera.Viewport );
+#else
+		Msg( "DisplayTitle() : SetViewport failed\n" );
+#endif
+		return false;
+	}
+
+	FSClearBlack();
+	if (ClearBuffers() != true )
+	{
+		Msg( "DisplayTitle() : ClearBuffers failed\n" );
+		return false;
+	}
+
+	// reset all the normal execute status flags...
+	set_normal_states();
+
+	if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
+	{
+		return false;
+	}
+
+/*
+	Display 0 solid Clipped Non Faceme Transluecent Polys
+*/
+
+		if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
+				return false;
+#if 0
+/*
+Display 0 solid Clipped Faceme Transluecent Polys
+*/
+		if( !DisplaySolidGroupClippedFmPolys( &RenderBufs[ 1 ], 0, lpDev, lpView ) )
+				return false;
+#endif
+
+	// set all the Translucent execute status flags...
+	set_alpha_states();
+
+	// display clipped translucencies
+/*===================================================================
+	Display 0 Clipped Non Faceme Transluecent Polys
+===================================================================*/
+
+		if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
+				return false;
+
+/*===================================================================
+Display 0 Clipped Faceme Transluecent Polys
+===================================================================*/
+		
+		if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
+				return false;
+
+		ExecuteTransExe( 0 );
+		ExecuteTransExeUnclipped( 0 );
+
+/*===================================================================
+	Display Non 0 Clipped Faceme Transluecent Polys
+===================================================================*/
+
+	if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
+			return false;
+
+/*===================================================================
+Display Non 0 Clipped Non Faceme Transluecent Polys
+===================================================================*/
+	if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
+			return false;
+
+/*===================================================================
+	Display Transluecent Screen Polys
+===================================================================*/
+
+		if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
+			return false;
+
+//
+// turn off transparency mode
+//
+
+	set_normal_states();
+
+/*===================================================================
+	Display Solid Screen Polys
+===================================================================*/
+
+	if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
+		return false;
+
+/*===================================================================
+Display Opaque Lines
+===================================================================*/
+		group = (u_int16_t)-1;
+
+		ExecuteLines( group, &RenderBufs[ 0 ] );
+
+/*===================================================================
+Display Solid Lines
+===================================================================*/
+		group = (u_int16_t)-1;
+
+		ExecuteLines( group, &RenderBufs[ 0 ] );
+
+}
+
 /*===================================================================
 	Procedure	:		Title Display...
 
@@ -4937,6 +5059,12 @@ bool DisplayTitle(void)
 	for( i = 0 ; i < MAX_SFX ; i++ )
 		LastDistance[i] = 100000.0F;
 
+	if (!FSBeginScene())
+	{
+		Msg( "DisplayTitle() : BeginScene failed\n" );
+		return false;
+	}
+
 	//Set up camera
 	MakeViewMatrix(&View, &Look, &Up, &CurrentCamera.Mat);
 	MatrixTranspose( &CurrentCamera.Mat, &CurrentCamera.InvMat );
@@ -4956,128 +5084,9 @@ bool DisplayTitle(void)
 	CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwHeight),
 									   RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
-	
-	Build_View();
-	CurrentCamera.View = view;
 
-	if (!FSBeginScene())
-	{
-		Msg( "DisplayTitle() : BeginScene failed\n" );
+	if(!RenderCurrentMenu())
 		return false;
-	}
-
-	if (!FSSetView(&view))
-	{
-		Msg( "DisplayTitle() : SetMatrix failed\n" );
-		return false;
-	}
-
-	if(!FSSetViewPort(&CurrentCamera.Viewport))
-	{
-#ifdef DEBUG_VIEWPORT
-		SetViewportError( "DisplayTitle", &CurrentCamera.Viewport );
-#else
-		Msg( "DisplayTitle() : SetViewport failed\n" );
-#endif
-		return false;
-	}
-
-	FSClearBlack();
-	if (ClearBuffers() != true )
-	{
-		Msg( "DisplayTitle() : ClearBuffers failed\n" );
-		return false;
-	}
-
-	// reset all the normal execute status flags...
-	set_normal_states();
-
-	if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
-	{
-		return false;
-	}
-
-/*
-	Display 0 solid Clipped Non Faceme Transluecent Polys
-*/
-
-		if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-				return false;
-#if 0
-/*
-Display 0 solid Clipped Faceme Transluecent Polys
-*/
-		if( !DisplaySolidGroupClippedFmPolys( &RenderBufs[ 1 ], 0, lpDev, lpView ) )
-				return false;
-#endif
-
-	// set all the Translucent execute status flags...
-	set_alpha_states();
-
-	// display clipped translucencies
-/*===================================================================
-	Display 0 Clipped Non Faceme Transluecent Polys
-===================================================================*/
-
-		if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-				return false;
-
-/*===================================================================
-Display 0 Clipped Faceme Transluecent Polys
-===================================================================*/
-		
-		if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-				return false;
-
-		ExecuteTransExe( 0 );
-		ExecuteTransExeUnclipped( 0 );
-
-/*===================================================================
-	Display Non 0 Clipped Faceme Transluecent Polys
-===================================================================*/
-
-	if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
-			return false;
-
-/*===================================================================
-Display Non 0 Clipped Non Faceme Transluecent Polys
-===================================================================*/
-	if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
-			return false;
-
-/*===================================================================
-	Display Transluecent Screen Polys
-===================================================================*/
-
-		if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
-			return false;
-
-//
-// turn off transparency mode
-//
-
-	set_normal_states();
-
-/*===================================================================
-	Display Solid Screen Polys
-===================================================================*/
-
-	if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
-		return false;
-
-/*===================================================================
-Display Opaque Lines
-===================================================================*/
-		group = (u_int16_t)-1;
-
-		ExecuteLines( group, &RenderBufs[ 0 ] );
-
-/*===================================================================
-Display Solid Lines
-===================================================================*/
-		group = (u_int16_t)-1;
-
-		ExecuteLines( group, &RenderBufs[ 0 ] );
 
 	if (!FSEndScene())
 	{
