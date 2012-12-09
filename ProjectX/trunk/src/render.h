@@ -68,6 +68,10 @@ typedef struct {
 	float                 stereo_focal_dist;
 } render_info_t;
 
+typedef bool (*RenderCurrentCameraPt) (void);
+bool RenderCurrentCameraInStereo( RenderCurrentCameraPt );
+
+
 #undef RELEASE
 #ifndef __cplusplus
 #define RELEASE(x) {if (x != NULL) {x->lpVtbl->Release(x); x = NULL;}}

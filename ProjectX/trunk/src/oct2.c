@@ -4024,7 +4024,7 @@ void CheckLevelEnd ( void )
 }
 
 
-bool RenderCurrentCameraInStereo( void )
+bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 {
 	VECTOR cam_offset;
 
@@ -4054,7 +4054,7 @@ bool RenderCurrentCameraInStereo( void )
         CurrentCamera.Pos.z -= cam_offset.z;
 	if(render_info.stereo_mode == STEREO_MODE_COLOR)
         	render_set_filter( 1, 0, 0 );
-        if( !RenderCurrentCamera() )
+        if( !render_camera() )
           return false;
 	//
 	// render right eye
@@ -4088,7 +4088,7 @@ bool RenderCurrentCameraInStereo( void )
 	{
 	        CurrentCamera.Viewport.X = viewport.X + (viewport.Width / 2);
 	}
-        if( !RenderCurrentCamera() )
+        if( !render_camera() )
           return false;
 	//
 	// reset back to normal center camera
@@ -4194,7 +4194,7 @@ bool MainGame( void ) // bjd
 
       if( render_info.stereo_enabled )
       {
-	if(!RenderCurrentCameraInStereo())
+	if(!RenderCurrentCameraInStereo(RenderCurrentCamera))
 		return false;
       }
       else // non stereo - normal rendering
