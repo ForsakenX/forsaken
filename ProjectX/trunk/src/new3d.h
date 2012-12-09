@@ -206,19 +206,6 @@ typedef struct PLANE {
 } PLANE;
 
 /*===================================================================
-	Stereo (anaglyph rendering) modes and colors
-===================================================================*/
-typedef enum
-{
-	ST_CENTER, ST_LEFT, ST_RIGHT
-} stereo_mode_t;
-
-typedef enum
-{
-	ST_GREEN, ST_BLUE, ST_CYAN
-} stereo_right_color_t;
-
-/*===================================================================
 	Prototypes
 ===================================================================*/
 float DotProduct( VECTOR * a , VECTOR * b );

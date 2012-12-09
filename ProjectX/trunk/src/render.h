@@ -35,6 +35,11 @@ typedef struct
     long cy;
 } CLIENTSIZE;
 
+// stereo related enums
+typedef enum { STEREO_MODE_COLOR, STEREO_MODE_HALF_HEIGHT, STEREO_MODE_HALF_WIDTH } stereo_mode_t;
+typedef enum { ST_CENTER, ST_LEFT, ST_RIGHT } stereo_position_t;
+typedef enum { ST_GREEN, ST_BLUE, ST_CYAN } stereo_right_color_t;
+
 typedef struct {
     int                     NumModes;				/* number of available display modes */
     int                     CurrMode;				/* number of current display mode (only when fullscreen) */
@@ -53,6 +58,14 @@ typedef struct {
 	_Bool					force_accel;			/* force 3d acelleration on gl */
 	_Bool					wireframe;
 	SDL_Surface*	        screen;
+
+	// stereo related options
+	bool                  stereo_enabled;
+	stereo_mode_t         stereo_mode;
+	stereo_right_color_t  stereo_right_color;
+	stereo_position_t     stereo_position;
+	float                 stereo_eye_sep;
+	float                 stereo_focal_dist;
 } render_info_t;
 
 #undef RELEASE

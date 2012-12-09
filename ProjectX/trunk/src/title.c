@@ -828,10 +828,6 @@ bool BountyBonus;
 bool BikeEnginesOn;
 bool ToggleTest;
 
-bool StereoEnabled;
-float StereoEyeSep, StereoFocalDist;
-stereo_right_color_t StereoRightColor;
-
 bool	CanSelectBike[ MAXBIKETYPES ] =
 {
 	true,	// Borg,
@@ -1664,7 +1660,39 @@ bool SetStereoColor( SLIDER *slider )
 	case ST_GREEN:
 	case ST_BLUE:
 	case ST_CYAN:
-		StereoRightColor = (stereo_mode_t) slider->value;
+		render_info.stereo_right_color = (stereo_right_color_t) slider->value;
+		return true;
+	default:
+		DebugPrintf( "Unknown stereo slider value: %d\n", slider->value );
+		return false;
+	}
+}
+
+char *StereoModeSliderFunc( SLIDER *slider )
+{
+	switch( slider->value )
+	{
+	case STEREO_MODE_COLOR:
+		return "RED/BLUE"; 
+	case STEREO_MODE_HALF_HEIGHT:
+		return "HALF_HEIGHT"; 
+	case STEREO_MODE_HALF_WIDTH:
+		return "HALF_WIDTH";
+	default:
+		DebugPrintf( "Unknown stereo slider value: %d\n", slider->value );
+		return NULL;
+	}
+}
+
+bool SetStereoMode( SLIDER *slider )
+{
+	DebugPrintf( "Setting stereo color to %d\n", slider->value );
+	switch( slider->value )
+	{
+	case STEREO_MODE_COLOR:
+	case STEREO_MODE_HALF_HEIGHT:
+	case STEREO_MODE_HALF_WIDTH:
+		render_info.stereo_mode = (stereo_right_color_t) slider->value;
 		return true;
 	default:
 		DebugPrintf( "Unknown stereo slider value: %d\n", slider->value );
@@ -1673,13 +1701,15 @@ bool SetStereoColor( SLIDER *slider )
 }
 
 SLIDER StereoColorSlider = {0, 2, 1, 2, 2, 0.0F, 0.0F, 0, true, StereoColorSliderFunc, SetStereoColor, NULL };
+SLIDER StereoModeSlider = {0, 2, 1, 2, 2, 0.0F, 0.0F, 0, true, StereoModeSliderFunc, SetStereoMode, NULL };
 
 MENU	MENU_NEW_VisualsStereo = {
 	"Stereo", NULL, NULL, NULL, 0,
 	{
 		{  0,   0, 200,  20, 0,					"stereo",											FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,			NULL,						NULL,					DrawFlatMenuItem,	NULL, 0 },
-		{ 20,  40, 150,  50, 0,					"enable stereo mode",								FONT_Small, TEXTFLAG_CentreY,				&StereoEnabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,	NULL, 0 },		 
-		{ 20,  60, 150,  70, SLIDER_User,		"right eye color",									FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&StereoColorSlider,	NULL,					SelectSlider,			DrawFlatMenuSlider,			NULL, 0 },		 
+		{ 20,  40, 150,  50, 0,					"enable stereo",								FONT_Small, TEXTFLAG_CentreY,				&render_info.stereo_enabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,	NULL, 0 },		 
+		{ 20,  50, 150,  70, SLIDER_User,		"stereo mode",								FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,				&StereoModeSlider,			NULL,						SelectSlider,	DrawFlatMenuSlider,	NULL, 0 },		 
+		{ 20,  70, 150,  70, SLIDER_User,		"right eye color",									FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&StereoColorSlider,	NULL,					SelectSlider,			DrawFlatMenuSlider,			NULL, 0 },		 
 		{ 20, 140, 100, 150, 0,					"back",												FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -9357,11 +9387,15 @@ void GetGamePrefs( void )
 	CLAMP( GameType, MAX_GAMETYPE );
 
 	// Stereo options
-	StereoEnabled = config_get_bool( "StereoEnabled", false );
-	StereoEyeSep = config_get_float( "StereoEyeSep", 20 );
-	StereoFocalDist = config_get_float( "StereoFocalDist", 750 );
-	StereoRightColor = config_get_float( "StereoRightColor", ST_CYAN );
-	StereoColorSlider.value = StereoRightColor;
+	render_info.stereo_enabled = config_get_bool( "StereoEnabled", false );
+	render_info.stereo_mode = config_get_float( "StereoMode", STEREO_MODE_COLOR );
+	render_info.stereo_eye_sep = config_get_float( "StereoEyeSep", 20 );
+	render_info.stereo_focal_dist = config_get_float( "StereoFocalDist", 750 );
+	render_info.stereo_right_color = config_get_float( "StereoRightColor", ST_CYAN );
+
+	// initialize sliders to above values
+	StereoColorSlider.value = render_info.stereo_right_color;
+	StereoModeSlider.value = render_info.stereo_mode;
 }
 
 /*===================================================================
@@ -9469,10 +9503,11 @@ void SetGamePrefs( void )
 	config_set_float( "MaxMessageTime",	MaxMessageTime );
 
 	// Stereo options
-	config_set_bool( "StereoEnabled",		StereoEnabled );
-	config_set_float( "StereoEyeSep",		StereoEyeSep );
-	config_set_float( "StereoFocalDist",		StereoFocalDist );
-	config_set_float( "StereoRightColor",		StereoRightColor );
+	config_set_bool( "StereoEnabled",		render_info.stereo_enabled );
+	config_set_float( "StereoMode",		render_info.stereo_mode );
+	config_set_float( "StereoEyeSep",		render_info.stereo_eye_sep );
+	config_set_float( "StereoFocalDist",		render_info.stereo_focal_dist );
+	config_set_float( "StereoRightColor",		render_info.stereo_right_color );
 
 	config_save();
 }

@@ -26,6 +26,9 @@
 #include "restart.h"
 #include "util.h"
 #include "water.h"
+#include "render.h"
+
+extern render_info_t render_info;
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -967,11 +970,6 @@ ProcessVisiblePortal( CAMERA *cam, VISLIST *v, VISTREE *t, EXTENT *e )
 	}
 }
 
-extern stereo_mode_t StereoMode;
-extern float StereoEyeSep;
-extern float StereoFocalDist;
-extern render_info_t render_info;
-
 void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 {
 	VISLIST *v;
@@ -1104,13 +1102,13 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 		g->projection._22 = ( cam->Proj._22 * v->viewport->Height ) / vp->Height;
 		lr = 2.0F * ( ( v->viewport->X + v->viewport->Width * 0.5F ) - ( vp->X + vp->Width * 0.5F ) );
 
-		switch( StereoMode )
+		switch( render_info.stereo_position )
 		{
 		case ST_LEFT:
-			lr -= 0.5f * StereoFocalDist / StereoEyeSep;
+			lr -= 0.5f * render_info.stereo_focal_dist / render_info.stereo_eye_sep;
 			break;
 		case ST_RIGHT:
-			lr += 0.5f * StereoFocalDist / StereoEyeSep;
+			lr += 0.5f * render_info.stereo_focal_dist / render_info.stereo_eye_sep;
 		}
 
 		g->projection._31 = lr / vp->Width;

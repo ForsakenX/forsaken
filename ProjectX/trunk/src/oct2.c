@@ -750,25 +750,19 @@ RENDERMATRIX world = {
     RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0)
 };
 
-extern bool StereoEnabled;
-stereo_mode_t StereoMode;
-extern float StereoEyeSep;
-extern float StereoFocalDist;
-extern stereo_right_color_t StereoRightColor;
-
 void stereo_adjust( RENDERMATRIX *m )
 {
 	float left, right, offset;
 
-	if( StereoMode != ST_CENTER )
-		offset = 0.5f * StereoEyeSep / StereoFocalDist;
+	if( render_info.stereo_position != ST_CENTER )
+		offset = 0.5f * render_info.stereo_eye_sep / render_info.stereo_focal_dist;
 	else
 		return;
 
 	right = pixel_aspect_ratio * tanf( hfov * (float)M_PI_2/180.0f );
 	left = -right;
 
-	switch( StereoMode )
+	switch( render_info.stereo_position )
 	{
 	case ST_LEFT:
 		left -= offset;
@@ -4119,49 +4113,81 @@ bool MainGame( void ) // bjd
 
       CurrentCamera.UseLowestLOD = false;
 
-      if( StereoEnabled )
+      if( render_info.stereo_enabled )
       {
-        cam_offset.x = StereoEyeSep / 2.0f;
+        cam_offset.x = render_info.stereo_eye_sep / 2.0f;
         cam_offset.y = 0.0f;
         cam_offset.z = 0.0f;
         ApplyMatrix( &CurrentCamera.Mat, &cam_offset, &cam_offset );
 
-        StereoMode = ST_LEFT;
+	if(render_info.stereo_mode == STEREO_MODE_HALF_HEIGHT)
+	{
+	        CurrentCamera.Viewport.Height = viewport.Height / 2;
+        	CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
+	}
+	else if (render_info.stereo_mode == STEREO_MODE_HALF_WIDTH)
+	{
+	        CurrentCamera.Viewport.Width = viewport.Width / 2;
+        	CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+	}
+	//
+	// render left eye
+	//
+        render_info.stereo_position = ST_LEFT;
         SetFOV( hfov );
         FSSetProjection( &proj );
         CurrentCamera.Pos.x -= cam_offset.x;
         CurrentCamera.Pos.y -= cam_offset.y;
         CurrentCamera.Pos.z -= cam_offset.z;
-        render_set_filter( 1, 0, 0 );
+	if(render_info.stereo_mode == STEREO_MODE_COLOR)
+        	render_set_filter( 1, 0, 0 );
         if( !RenderCurrentCamera() )
           return false;
-        StereoMode = ST_RIGHT;
+	//
+	// render right eye
+	//
+        render_info.stereo_position = ST_RIGHT;
         SetFOV( hfov );
         FSSetProjection( &proj );
         CurrentCamera.Pos.x += 2.0f * cam_offset.x;
         CurrentCamera.Pos.y += 2.0f * cam_offset.y;
         CurrentCamera.Pos.z += 2.0f * cam_offset.z;
-        switch( StereoRightColor )
-        {
-        case ST_GREEN:
-          render_set_filter( 0, 1, 0 );
-          break;
-        case ST_BLUE:
-          render_set_filter( 0, 0, 1 );
-          break;
-        default:
-          render_set_filter( 0, 1, 1 );
-          break;
-        }
+	if(render_info.stereo_mode == STEREO_MODE_COLOR)
+	{
+	        switch( render_info.stereo_right_color )
+	        {
+	        case ST_GREEN:
+	          render_set_filter( 0, 1, 0 );
+	          break;
+	        case ST_BLUE:
+	          render_set_filter( 0, 0, 1 );
+	          break;
+	        default:
+	          render_set_filter( 0, 1, 1 );
+	          break;
+	        }
+	}
+	else if ( render_info.stereo_mode == STEREO_MODE_HALF_HEIGHT )
+	{
+	        CurrentCamera.Viewport.Y = viewport.Y + (viewport.Height / 2);
+	}
+	else if ( render_info.stereo_mode == STEREO_MODE_HALF_WIDTH )
+	{
+	        CurrentCamera.Viewport.X = viewport.X + (viewport.Width / 2);
+	}
         if( !RenderCurrentCamera() )
           return false;
-        StereoMode = ST_CENTER;
+	//
+	// reset back to normal center camera
+	//
+        render_info.stereo_position = ST_CENTER;
         SetFOV( hfov );
         FSSetProjection( &proj );
         CurrentCamera.Pos.x -= cam_offset.x;
         CurrentCamera.Pos.y -= cam_offset.y;
         CurrentCamera.Pos.z -= cam_offset.z;
-        render_set_filter( 1, 1, 1 );
+	if(render_info.stereo_mode == STEREO_MODE_COLOR)
+        	render_set_filter( 1, 1, 1 );
       }
 
 	  	// non stereo - normal rendering
