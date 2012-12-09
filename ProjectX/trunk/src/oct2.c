@@ -4117,11 +4117,12 @@ void MainGameMenu(void)
     {
       MenuDraw( CurrentMenu );
       MenuItemDrawCursor( CurrentMenuItem );
-			DrawSimplePanel();
-			// Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
-      JustExitedMenu = true;
-			// menu keys are processed here
-      MenuProcess();
+      DrawSimplePanel();
+      if( render_info.stereo_position & (ST_LEFT | ST_CENTER))
+      {
+      	JustExitedMenu = true; // so another press of escape doesnt take you back into the menu you wanted to exit!!
+        MenuProcess(); // menu keys are processed here
+      }
     }
     else
     {
