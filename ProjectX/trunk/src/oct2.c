@@ -4027,6 +4027,7 @@ void CheckLevelEnd ( void )
 bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 {
 	VECTOR cam_offset;
+	render_viewport_t old_viewport = viewport;
 
         cam_offset.x = render_info.stereo_eye_sep / 2.0f;
         cam_offset.y = 0.0f;
@@ -4035,13 +4036,17 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 
 	if(render_info.stereo_mode == STEREO_MODE_HALF_HEIGHT)
 	{
-	        CurrentCamera.Viewport.Height = viewport.Height / 2;
-        	CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
+		viewport.Height /= 2;
+		viewport.ScaleX /= 2;
+	        CurrentCamera.Viewport.Height = viewport.Height;
+        	CurrentCamera.Viewport.ScaleY = viewport.ScaleX;
 	}
 	else if (render_info.stereo_mode == STEREO_MODE_HALF_WIDTH)
 	{
-	        CurrentCamera.Viewport.Width = viewport.Width / 2;
-        	CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+		viewport.Width /= 2;
+		viewport.ScaleY /= 2;
+	        CurrentCamera.Viewport.Width = viewport.Width;
+        	CurrentCamera.Viewport.ScaleX = viewport.ScaleY;
 	}
 	//
 	// render left eye
@@ -4078,11 +4083,13 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	}
 	else if ( render_info.stereo_mode == STEREO_MODE_HALF_HEIGHT )
 	{
-	        CurrentCamera.Viewport.Y = viewport.Y + (viewport.Height / 2);
+		viewport.Y += viewport.Height; // already split in 2 above
+	        CurrentCamera.Viewport.Y = viewport.Y;
 	}
 	else if ( render_info.stereo_mode == STEREO_MODE_HALF_WIDTH )
 	{
-	        CurrentCamera.Viewport.X = viewport.X + (viewport.Width / 2);
+	        viewport.X += viewport.Width; // already split in 2 above
+	        CurrentCamera.Viewport.X = viewport.X;
 	}
         if( !render_camera() )
           return false;
@@ -4090,6 +4097,7 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	// reset back to normal center camera
 	//
         render_info.stereo_position = ST_CENTER;
+	viewport = old_viewport;
         CurrentCamera.Pos.x -= cam_offset.x;
         CurrentCamera.Pos.y -= cam_offset.y;
         CurrentCamera.Pos.z -= cam_offset.z;
@@ -4103,6 +4111,29 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
         	render_set_filter( 1, 1, 1 );
 }
 
+void MainGameMenu(void)
+{
+    if( CurrentMenu && CurrentMenuItem )
+    {
+      MenuDraw( CurrentMenu );
+      MenuItemDrawCursor( CurrentMenuItem );
+			DrawSimplePanel();
+			// Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
+      JustExitedMenu = true;
+			// menu keys are processed here
+      MenuProcess();
+    }
+    else
+    {
+          DrawSimplePanel();
+    }
+}
+
+bool RenderCurrentCameraWithMainGameMenu(void)
+{
+	if(!RenderCurrentCamera()) return false;
+	MainGameMenu();
+}
 
 
 /*===================================================================
@@ -4194,12 +4225,12 @@ bool MainGame( void ) // bjd
 
       if( render_info.stereo_enabled )
       {
-	if(!RenderCurrentCameraInStereo(RenderCurrentCamera))
-		return false;
+				if(!RenderCurrentCameraInStereo(RenderCurrentCameraWithMainGameMenu))
+					return false;
       }
       else // non stereo - normal rendering
 	  	{
-				if( RenderCurrentCamera() != true ) // bjd
+				if( RenderCurrentCameraWithMainGameMenu() != true ) // bjd
 					return false;
 	  	}
   
@@ -4421,21 +4452,6 @@ bool MainGame( void ) // bjd
     fov_inc *= (float) pow( 0.95, framelag );
   }
   SetFOV( chosen_fov + fov_inc );
-
-    if( CurrentMenu && CurrentMenuItem )
-    {
-      MenuDraw( CurrentMenu );
-      MenuItemDrawCursor( CurrentMenuItem );
-	  DrawSimplePanel();
-	  // Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
-      JustExitedMenu = true;
-	  // menu keys are processed here
-      MenuProcess();
-    }
-    else
-    {
-          DrawSimplePanel();
-    }
 
   // here is where we process F keys
   ProcessGameKeys();
