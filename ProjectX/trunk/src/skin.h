@@ -27,8 +27,8 @@
 /*===================================================================
 	Prototypes
 ===================================================================*/
-_Bool CreateSkinExecList( MCLOADHEADER * MCloadheader, int16_t NumVisible );
-_Bool MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t	NumVerts, int16_t NumTris );
+bool CreateSkinExecList( MCLOADHEADER * MCloadheader, int16_t NumVisible );
+bool MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t	NumVerts, int16_t NumTris );
 void ReleaseSkinExecs( void );
 void DisplayBSPNode( BSP_NODE * Node );
 void DisplayNewBSPNode( BSP_NODE * Node );
@@ -39,8 +39,8 @@ void DisplayNodeVolume( BSP_NODE * Node );
 void KillNodeCubeLines( void );
 void KillBoxLines( void );
 void InitSkinExecs( void );
-_Bool MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t NumVerts, int16_t NumTris );
-_Bool CreatePortalExecList( MLOADHEADER * Mloadheader, int16_t NumVisible );
+bool MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16_t NumVerts, int16_t NumTris );
+bool CreatePortalExecList( MLOADHEADER * Mloadheader, int16_t NumVisible );
 void ReleasePortalExecs( void );
 void InitPortalExecs( void );
 int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr, int NumSides, int side, VECTOR * out_ptr );

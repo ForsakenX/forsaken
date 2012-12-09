@@ -110,18 +110,18 @@ typedef struct MXLOADHEADER{
 /*
  * fn prototypes
  */
-_Bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool LevelSpecific );
-_Bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , _Bool Panel, _Bool StoreTriangles );
-_Bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model );
+bool PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool LevelSpecific );
+bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool StoreTriangles );
+bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model );
 
 void ReleaseMxloadheader( MXLOADHEADER * Mxloadheader );
 
-_Bool ExecuteSingleGroupMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t group  );
-_Bool ReleaseMxModels();
-_Bool ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model );
+bool ExecuteSingleGroupMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t group  );
+bool ReleaseMxModels();
+bool ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model );
 
 void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  );
-_Bool RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 );
+bool RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 );
 #endif
 
 

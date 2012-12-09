@@ -74,7 +74,7 @@ typedef struct COMP_OBJ {
 	MATRIX		OldDisplayMatrix;
 	MATRIX		OldInvDisplayMatrix;
 
-	_Bool		UserControl;
+	bool		UserControl;
 
 	VECTOR		UserAxis;
 	VECTOR		UserAxisPoint;
@@ -181,7 +181,7 @@ typedef struct ANI_ZONE_POLYGONAL {
 /*===================================================================
 	Prototypes
 ===================================================================*/
-_Bool PreLoadCompObj( int8_t * Filename, u_int16_t * BaseModel, _Bool LevelSpecific );
+bool PreLoadCompObj( int8_t * Filename, u_int16_t * BaseModel, bool LevelSpecific );
 COMP_OBJ * LoadCompObj( int8_t * Filename, VECTOR * Pos, VECTOR * Dir, u_int16_t Group,
 					    float * OverallTime, float * MidTime, u_int16_t * BaseModel,
 						u_int16_t OwnerType, u_int16_t OwnerID );
@@ -191,12 +191,12 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16_t NumComp,
 void FreeCompObjChildren( COMP_OBJ * Children, int16_t NumChildren );
 void UpdateCompObjChildren( COMP_OBJ * Children, int16_t NumChildren, MATRIX * ParentMatrix, VECTOR * ParentPos, float Time, u_int16_t Group, VECTOR * Pos );
 COMP_OBJ * GetCompObjAddress( int16_t ID, int16_t NumChildren, COMP_OBJ * Children );
-void SetCompObjModelsState( COMP_OBJ * Children, int16_t NumChildren, _Bool Visible );
+void SetCompObjModelsState( COMP_OBJ * Children, int16_t NumChildren, bool Visible );
 void UndoCompObjAnim( COMP_OBJ * Children, int16_t NumChildren );
 void ShowCompObjColZones( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Group );
-_Bool RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16_t StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius );
-_Bool PointInside( VECTOR * Pos, ZONESIDE * Sides, int16_t NumSides, float Radius, int16_t Side );
-_Bool GetCompObjAxis( COMP_OBJ * Comp );
+bool RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16_t StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius );
+bool PointInside( VECTOR * Pos, ZONESIDE * Sides, int16_t NumSides, float Radius, int16_t Side );
+bool GetCompObjAxis( COMP_OBJ * Comp );
 void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 						   COMP_OBJ * Children, int16_t NumChildren, float OverallTime, VECTOR * TopLeft,
 						   VECTOR * BottomRight );
@@ -207,7 +207,7 @@ void UpdateCompObjClipGroup( COMP_OBJ * Children, int16_t NumChildren, u_int16_t
 void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight );
 void SetCompObjRealLighting( COMP_OBJ * Children, int16_t NumChildren, float Radius );
 void ClearCompObjRealLighting( COMP_OBJ * Children, int16_t NumChildren );
-_Bool AmIInvulnerable( COMP_OBJ * Children, int16_t NumChildren, float Time );
+bool AmIInvulnerable( COMP_OBJ * Children, int16_t NumChildren, float Time );
 void UpdateCompObjFlags( COMP_OBJ * Children, int16_t NumChildren, u_int16_t Flags );
 FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren );
 FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16_t NumChildren );

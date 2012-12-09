@@ -16,7 +16,7 @@ typedef int net_bool_t; // backwards compatibility need bool's in pkt structures
 // game tracker
 char tracker_server[256];
 int tracker_port;
-_Bool tracker_enabled;
+bool tracker_enabled;
 
 // my ship number
 #define	UNASSIGNED_SHIP 0xff // WhoIAm before host gives me number
@@ -67,7 +67,7 @@ char host_address[256];
 #define MAX_TEAMS								4
 #define NUMTITANBITS							10 
 
-_Bool PlayerReady[MAX_PLAYERS];
+bool PlayerReady[MAX_PLAYERS];
 extern BYTE GameStatus[];
 
 /*
@@ -724,13 +724,13 @@ typedef struct _HEREIAMMSG
 // later we should probably shove these all into a bit stream
 // all the code is hidden away in the repo in the session description functions (search: dwUser)
 // for now this is much simplar and this message is only sent once to new players
-// converting all the _Bool's to BYTE's (even with all the new added fields) saved 72 bits...
+// converting all the bool's to BYTE's (even with all the new added fields) saved 72 bits...
 
 typedef struct _INITMSG
 {
     BYTE	MsgCode;
 
-	// _BoolEANS
+	// boolEANS
 
 	BYTE	PlayerReady[MAX_PLAYERS];
 	BYTE	RandomPickups;
@@ -1018,10 +1018,10 @@ void SecBullPosDirSend( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID
 void TitanBitsSend( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * UpVector,
 						VECTOR * DropDir, int8_t Weapon, VECTOR * Directions );
-void	DropPickupSend( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t IDCount, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod);
+void	DropPickupSend( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type, u_int16_t IDCount, int16_t RegenSlot, bool Sparkle, float LifeCount, u_int16_t TriggerMod);
 void	KillPickupSend( u_int16_t Owner, u_int16_t IDCount, int16_t Style );
 void	CreateShockwaveSend( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, u_int16_t Group, float ShockwaveSize, BYTE Weapon );
-void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, _Bool FramelagRecoil );
+void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, bool FramelagRecoil );
 void	ShipDiedSend( BYTE WeaponType, BYTE Weapon );
 void	UpdateBGObjectSend( u_int16_t BGObject, int16_t State, float Time );
 void	smallinitShip( u_int16_t i );
@@ -1032,8 +1032,8 @@ void	RequestTime( void  );
 void	SetTime( float Time );
 void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream );
 void StopDemoRecording( void );
-_Bool UpdateAmmoAndValidateMessage( void * Message );
-_Bool AutoJoinSession( void );
+bool UpdateAmmoAndValidateMessage( void * Message );
+bool AutoJoinSession( void );
 void AllocatePseudoHost( void );
 
 void set_my_player_name( void );

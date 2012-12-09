@@ -32,9 +32,9 @@ typedef struct FIREPOS {
 #define ENEMY_TAUNT_PAUSE 600.0F;
 
 typedef struct ENEMY {
-	_Bool	Used;
-	_Bool	Alive;			// Am I Alive or dead
-	_Bool	CompCollision;
+	bool	Used;
+	bool	Alive;			// Am I Alive or dead
+	bool	CompCollision;
 	OBJECT	Object;
 	u_int16_t	Type;
 	u_int32_t	AIMoveFlags;
@@ -88,8 +88,8 @@ typedef struct ENEMY {
 
 	float	PrimaryFireTimer;
 	float	SecondaryFireTimer;
-	_Bool	ImInNodeTransition;
-	_Bool	PickNewNodeNow;
+	bool	ImInNodeTransition;
+	bool	PickNewNodeNow;
 	float	DistanceToPointOnSlope;
 
 struct ENEMY * FormationLink;
@@ -146,9 +146,9 @@ typedef struct AI_BEHAVIOUR{
 typedef struct ENEMY_TYPES {
 
 	char *	ModelFilename;		// Model Filename or Component Filename ( .MX/.MXA or .COB )
-	_Bool	StealthMode;		// Can use Stealth
-	_Bool	LevelSpecific;		// Level Specific
-	_Bool	CompCollision;		// Component collision
+	bool	StealthMode;		// Can use Stealth
+	bool	LevelSpecific;		// Level Specific
+	bool	CompCollision;		// Component collision
 	int16_t	ModelNumber;		// -1 None ( Not used so far )
 	ANIM_SEQ * AnimSeqs;		// Animation Sequences ( NULL if none )
 	FIREPOS * FirePoints;
@@ -180,7 +180,7 @@ typedef struct ENEMY_TYPES {
 	BYTE	PrimaryWeaponType;			// which Primaryt weapon do I Fire...
 	BYTE	SecondaryWeaponType;		// which Primaryt weapon do I Fire...
 
-//	_Bool	DoIBank;					// When Turning Left and Right Do I Bank???
+//	bool	DoIBank;					// When Turning Left and Right Do I Bank???
 
 struct	AI_BEHAVIOUR Behave;
 } ENEMY_TYPES;
@@ -364,8 +364,8 @@ void KillUsedEnemy( ENEMY * Object );
 
 
 
-_Bool PreLoadEnemies( void );
-_Bool LoadEnemies( void );
+bool PreLoadEnemies( void );
+bool LoadEnemies( void );
 ENEMY * InitOneEnemy( u_int16_t GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u_int16_t Group, u_int16_t ModelNum, u_int16_t TriggerMod , u_int16_t EnemyType , u_int32_t Network , int32_t PickupHeld , u_int16_t FormationLink , float GenerationDelay);
 void ProcessEnemies( void );
 void EnableEnemy( u_int16_t EnemyIndex );
@@ -373,30 +373,30 @@ void DisableEnemy( ENEMY * Enemy );
 ENEMY * CheckHitEnemy( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point,
 						VECTOR * Int_Point2, float * Dist, float WeaponRadius, u_int16_t ColType );
 void SetCurAnimSeq( int16_t Seq, OBJECT * Object );
-_Bool GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16_t BaseIndex );
+bool GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16_t BaseIndex );
 void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16_t BaseIndex );
-_Bool Ship2EnemyCollide( u_int16_t i , VECTOR * Move_Off );
+bool Ship2EnemyCollide( u_int16_t i , VECTOR * Move_Off );
 void SetupEnemyGroups( void );
 void AddEnemyToGroup( ENEMY * Enemy, u_int16_t Group );
 void RemoveEnemyFromGroup( ENEMY * Enemy, u_int16_t Group );
 void MoveEnemyToGroup( ENEMY * Enemy, u_int16_t OldGroup, u_int16_t NewGroup );
-_Bool ReadEnemyTxtFile( char *Filename );
+bool ReadEnemyTxtFile( char *Filename );
 void ObjectForceExternalOneOff( OBJECT * Object, VECTOR *force );
 BYTE BodgePrimaryWeapon( BYTE Weapon, u_int16_t Pickup );
 u_int16_t FindDuplicateModel( int8_t * Filename, int16_t NumModels );
-_Bool DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed ,u_int16_t Owner , u_int16_t OwnerType);
+bool DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed ,u_int16_t Owner , u_int16_t OwnerType);
 void ObjectRotateExternal( OBJECT * Object, VECTOR *Pos, VECTOR *point, VECTOR *dir, float force , float Radius );
 void ReleaseAllEnemies( void );
 void DoNmeDamagedEffects( ENEMY * Enemy );
 void DispUntriggeredNMEs( void );
 void AccellDecell(  float *  value ,  float  Decell );
 
-_Bool Enemy_Load( FILE * fp );
-_Bool Enemy_Save( FILE * fp );
-_Bool Object_Save( FILE * fp , OBJECT * Obj );
-_Bool Object_Load( FILE * fp , OBJECT * Obj );
-_Bool Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
-_Bool Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
+bool Enemy_Load( FILE * fp );
+bool Enemy_Save( FILE * fp );
+bool Object_Save( FILE * fp , OBJECT * Obj );
+bool Object_Load( FILE * fp , OBJECT * Obj );
+bool Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
+bool Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp );
 
 #endif
 

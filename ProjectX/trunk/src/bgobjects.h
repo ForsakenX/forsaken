@@ -204,13 +204,13 @@ typedef struct DOORTYPESFX {
 void InitBGObjects( void );
 BGOBJECT * FindFreeBGObject( void );
 void KillUsedBGObject( BGOBJECT * Object );
-void ProcessBGObjects( _Bool Collide );
+void ProcessBGObjects( bool Collide );
 BGOBJECT * CreateBGObject( VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector,
 						  u_int16_t Group, u_int16_t Model, float Frame, u_int16_t Func, u_int16_t Type );
 void KillAllBGObjects( void );
 void ChangeBGState( BGOBJECT * Object, u_int16_t OwnerType, u_int16_t Owner, int16_t How, float Damage );
-_Bool PreLoadBGOFiles( void );
-_Bool LoadBGOFiles( void );
+bool PreLoadBGOFiles( void );
+bool LoadBGOFiles( void );
 BGOBJECT * LoadBGObjectData( int8_t * Filename, int16_t Type, VECTOR * Pos, VECTOR * DirVector,
 							 VECTOR * UpVector, u_int16_t Group, int16_t OpenTrigMod, int16_t CloseTrigMod,
 							 int16_t ShotTrigMod, int16_t BumpTrigMod, int16_t EndTrigMod, int16_t OpenedBy,
@@ -227,21 +227,21 @@ void StopBGOAnim( u_int16_t Index );
 void ShowAllColZones( u_int16_t Group );
 void CreateBoundingBox( VECTOR * x1, VECTOR * x2, u_int16_t Group );
 float CalcObjectRadius( VECTOR * Pos, VECTOR * TopLeft, VECTOR * BottomRight );
-_Bool CheckBGObjectToEnemies( BGOBJECT * Object );
-_Bool CheckBGObjectToPickups( BGOBJECT * Object );
-_Bool CheckBGObjectToMines( BGOBJECT * Object );
+bool CheckBGObjectToEnemies( BGOBJECT * Object );
+bool CheckBGObjectToPickups( BGOBJECT * Object );
+bool CheckBGObjectToMines( BGOBJECT * Object );
 void ExplodeChildren( COMP_OBJ * Children, int16_t NumChildren );
 FILE * SaveBGObjects( FILE * fp );
 FILE * LoadBGObjects( FILE * fp );
-_Bool PreLoadShips( void );
-_Bool AllocateCompShip( u_int16_t Ship );
+bool PreLoadShips( void );
+bool AllocateCompShip( u_int16_t Ship );
 void ReloadNakedGirlsTextures( void );
 void RequestDoorTypeSFX( int16_t Type );
 void StartOrChangeDoorSoundFX( BGOBJECT * Object );
 
-_Bool PreLoadFlyGirl( void );
-_Bool AllocateCompFlyGirl( void );
-void UpdateFlyGirl( VECTOR * Pos, MATRIX * Matrix, _Bool Visible );
+bool PreLoadFlyGirl( void );
+bool AllocateCompFlyGirl( void );
+void UpdateFlyGirl( VECTOR * Pos, MATRIX * Matrix, bool Visible );
 void ReleaseFlyGirl( void );
 
 #endif

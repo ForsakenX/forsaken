@@ -238,10 +238,10 @@ extern	PRIMARYWEAPONKNOWLEDGE PrimaryKnowledge[];
 // AILIB.C
 
 void AI_GetDistToNearestTarget( register ENEMY * Enemy );
-_Bool AI_InViewCone( VECTOR * Pos, MATRIX * Mat ,VECTOR * TPos, float ViewConeCos );
-_Bool AI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos );
-_Bool AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius );
-_Bool AI_ClearLOSNonZeroNonObject( VECTOR * SPos, u_int16_t Group , VECTOR * Pos , float radius );
+bool AI_InViewCone( VECTOR * Pos, MATRIX * Mat ,VECTOR * TPos, float ViewConeCos );
+bool AI_ClearLOS( VECTOR * SPos, u_int16_t Group , VECTOR * Pos );
+bool AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius );
+bool AI_ClearLOSNonZeroNonObject( VECTOR * SPos, u_int16_t Group , VECTOR * Pos , float radius );
 void AI_SetIDLE( register ENEMY * Enemy );
 void AI_SetSCAN( register ENEMY * Enemy );
 void AI_SetMOVETOTARGET( ENEMY * Enemy );
@@ -261,13 +261,13 @@ void AI_SetFORMATION( ENEMY * Enemy );
 void AI_AIR( ENEMY * Enemy );
 void AI_TURRET( ENEMY * Enemy );
 void AI_CRAWL( ENEMY * Enemy );
-void AI_THINK( register ENEMY * Enemy , _Bool OverideThinkTime , _Bool JustCheckPlayerRange );
+void AI_THINK( register ENEMY * Enemy , bool OverideThinkTime , bool JustCheckPlayerRange );
 void AI_AVOIDCHECK( register ENEMY * Enemy );
 void AI_SPLINE( ENEMY * Enemy );
 void AI_EXOGENON( ENEMY * Enemy );
 void AI_LITTLEGEEK( ENEMY * Enemy );
 void AI_FLESHMORPH( ENEMY * Enemy );
-_Bool Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy );
+bool Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy );
 
 // AIIDLE.C
 void AI_AIR_IDLE( ENEMY * Enemy );

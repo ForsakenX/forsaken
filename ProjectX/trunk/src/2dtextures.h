@@ -63,8 +63,8 @@ typedef struct OFF_FILES {
 
 	int8_t		*	Filename;
 	FRAME_INFO	**	InfoPtrAddr;
-	_Bool			LoadEnable;
-	_Bool			Scale;
+	bool			LoadEnable;
+	bool			Scale;
 	int				LoadTPages;
 	int16_t			xsize;
 	int16_t			ysize;
@@ -73,8 +73,8 @@ typedef struct OFF_FILES {
 /*===================================================================
 	Prototypes
 ===================================================================*/
-FRAME_INFO * Load_Off_File( int8_t * Filename, _Bool Scale, int LoadTPages, int16_t *last_tpage, int16_t xsize, int16_t ysize, _Bool placeholder );
-_Bool Load_All_Off_Files( OFF_FILES * FileInfo );
+FRAME_INFO * Load_Off_File( int8_t * Filename, bool Scale, int LoadTPages, int16_t *last_tpage, int16_t xsize, int16_t ysize, bool placeholder );
+bool Load_All_Off_Files( OFF_FILES * FileInfo );
 void Free_All_Off_Files( OFF_FILES * FileInfo );
 int16_t GetTPage( FRAME_INFO * FrameInfo, int16_t Frame );
 int16_t Get_Frm_Info_Index( FRAME_INFO ** Frame_Info );

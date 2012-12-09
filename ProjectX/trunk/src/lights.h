@@ -37,7 +37,7 @@
 
  typedef struct XLIGHT{
 	int		Type;
-	_Bool	Visible;
+	bool	Visible;
 	u_int16_t	Index;
 	float	r;
 	float	g;
@@ -58,16 +58,16 @@ struct XLIGHT * NextVisible;
  * fn prototypes
  */
 
-_Bool	ProcessXLights( MLOADHEADER * Mloadheader );
+bool	ProcessXLights( MLOADHEADER * Mloadheader );
 void	InitXLights();
 u_int16_t	FindFreeXLight();
 void	KillUsedXLight(u_int16_t);
 
 void	SetLightDie ( u_int16_t light );
-_Bool	XLight1Group( MLOADHEADER * Mloadheader, u_int16_t group );
+bool	XLight1Group( MLOADHEADER * Mloadheader, u_int16_t group );
 
-_Bool	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
-_Bool	XLightMxaloadHeader( MXALOADHEADER * MXAloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
+bool	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
+bool	XLightMxaloadHeader( MXALOADHEADER * MXAloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix );
 
 
 void	CreateCellColours( MLOADHEADER * Mloadheader );

@@ -97,15 +97,15 @@ void InitAfterBurners( void );
 void InitPolyTPages( void );
 void AddPolyToTPage( u_int16_t i, int16_t TPage );
 void RemovePolyFromTPage( u_int16_t i, int16_t TPage );
-_Bool DisplayGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group );
-_Bool DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject );
-_Bool PolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
-_Bool PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
+bool DisplayGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group );
+bool DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject );
+bool PolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
+bool PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
 
-_Bool DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group );
-_Bool DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject );
-_Bool SolidPolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
-_Bool SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
+bool DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, u_int16_t Group );
+bool DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject );
+bool SolidPolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
+bool SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextPoly );
 
 FILE * SavePolys( FILE * fp );
 FILE * LoadPolys( FILE * fp );

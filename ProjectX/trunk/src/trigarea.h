@@ -61,12 +61,12 @@ struct	TRIGGER_AREA * NextSameGroup_enemy_shoots;
  * fn prototypes
  */
 
-_Bool TriggerAreaload( char * Filename );
+bool TriggerAreaload( char * Filename );
 void ReleaseTriggerArea( void );
-_Bool TriggerAreaPlayerCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group );
-_Bool TriggerAreaPlayerShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon );
-_Bool TriggerAreaEnemyCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group );
-_Bool TriggerAreaEnemyShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon );
+bool TriggerAreaPlayerCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group );
+bool TriggerAreaPlayerShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon );
+bool TriggerAreaEnemyCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group );
+bool TriggerAreaEnemyShootsCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group, u_int8_t WeaponType, u_int8_t Weapon );
 void DispGroupTriggerAreas( u_int16_t Group );
 void EnableTriggerArea( u_int16_t * Data );
 void DisableTriggerArea( u_int16_t * Data );

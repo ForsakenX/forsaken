@@ -6,7 +6,7 @@ VECTOR BOTAI_NodeNetworkShip(int node);
 
 int BOTAI_GetNearestNode(OBJECT * TObj);
 int BOTAI_GetNodeGroup(int node);
-void BOTAI_FollowNodeNetwork( _Bool SlideOnly, _Bool FollowingTarget );
+void BOTAI_FollowNodeNetwork( bool SlideOnly, bool FollowingTarget );
 void BOTAI_GetNextNode();
 void BOTAI_GetNextNodeAlpha();
 void BOTAI_GetNextNodeFourball();

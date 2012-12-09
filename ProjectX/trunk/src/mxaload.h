@@ -112,15 +112,15 @@ typedef struct MXALOADHEADER{
 /*===================================================================
 	Prototypes
 ===================================================================*/
-_Bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, _Bool LevelSpecific );
-_Bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, _Bool StoreTriangles  );
-_Bool ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t group );
+bool PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, bool LevelSpecific );
+bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangles  );
+bool ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t group );
 void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader );
-_Bool ExecuteSingleGroupMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t group  );
-_Bool PreInitMxaModels( char * NamePnt);
-_Bool InitMxaModels( char * NamePnt);
-_Bool ReleaseMxaModels();
-_Bool InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp );
+bool ExecuteSingleGroupMxaloadHeader( MXALOADHEADER * Mxaloadheader, u_int16_t group  );
+bool PreInitMxaModels( char * NamePnt);
+bool InitMxaModels( char * NamePnt);
+bool ReleaseMxaModels();
+bool InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp );
 
 #endif
 

@@ -65,17 +65,17 @@ typedef struct WATEROBJECT{
 // Prototypes
 //--------------------------------------------------------------------------
 void GroupWaterProcessDisplay( u_int16_t group );
-_Bool PreWaterLoad( char * Filename );
-_Bool WaterLoad( void );
-_Bool PreWaterLoad( char * Filename );
+bool PreWaterLoad( char * Filename );
+bool WaterLoad( void );
+bool PreWaterLoad( char * Filename );
 void WaterRelease( void );
 void AddWaterLink(WATEROBJECT * WO);
 void WaterProcess( void );
 void TriggerWaterDrain( u_int16_t * Data );
 void TriggerWaterFill( u_int16_t * Data );
-_Bool SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage);
-_Bool InWater( u_int16_t group , VECTOR *OrgPos , float * Damage);
-_Bool WaterObjectCollide( u_int16_t group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage );
+bool SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage);
+bool InWater( u_int16_t group , VECTOR *OrgPos , float * Damage);
+bool WaterObjectCollide( u_int16_t group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage );
 void GetWaterColour( u_int16_t Group, u_int8_t * Red, u_int8_t * Green, u_int8_t * Blue );
 
 #endif // WATER_H

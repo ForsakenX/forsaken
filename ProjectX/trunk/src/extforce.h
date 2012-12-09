@@ -40,9 +40,9 @@ struct	EXTERNALFORCE * NextInGroup;
  * fn prototypes
  */
 void ReleaseExternalForces( void );
-_Bool ExternalForcesLoad( char * Filename );
+bool ExternalForcesLoad( char * Filename );
 void ExternalForcesZoneCheck( VECTOR * OldPos , VECTOR * NewPos , EXTERNALFORCE * EFpnt );
-_Bool ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group , VECTOR * ExtForce , float * Shield);
+bool ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , u_int16_t Group , VECTOR * ExtForce , float * Shield);
 void StartExternalForce( u_int16_t * Data );
 void StopExternalForce( u_int16_t * Data );
 void DisplayExternalForcesInGroup( u_int16_t Group );

@@ -115,7 +115,7 @@ typedef struct TRIGGERMODQUE{
 /*
  * fn prototypes
  */
-_Bool Triggerload( char * Filename );
+bool Triggerload( char * Filename );
 void ReleaseTriggers( void );
 void ApplyTriggerMod( TRIGGERMOD * TrigMod );
 void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val );
@@ -130,9 +130,9 @@ void GenTrigVarList( u_int16_t Ship, SHORTTRIGVAR * TrigVarSlots, BYTE * NumTrig
 void RegenTrigVarList( SHORTTRIGVAR * Slots, BYTE Num );
 void CopyTrigVars( u_int16_t Player );
 void HowManySecrets( int * NumOfSecrets , int * SecretsFound );
-_Bool HasLevelEnded( void );
-_Bool IsAvatarActive( void );
-_Bool CheckDecreaseTemperature( void );
+bool HasLevelEnded( void );
+bool IsAvatarActive( void );
+bool CheckDecreaseTemperature( void );
 
 // Event Prototypes...
 void EVENT_PickupGenerate( u_int8_t * Data );

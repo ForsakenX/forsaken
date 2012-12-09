@@ -179,7 +179,7 @@ typedef struct PRIMARYWEAPONATTRIB {
 } PRIMARYWEAPONATTRIB;
 
 typedef struct PRIMARYWEAPONBULLET {
-	_Bool		Used;
+	bool		Used;
 	u_int16_t		Next;							// link list.....	
 	u_int16_t		Prev;							// link list.....
 	u_int16_t		Type;							// which type of bullet am I
@@ -235,10 +235,10 @@ u_int16_t	FindFreePrimBull(void);
 void	KillUsedPrimBull( u_int16_t i );
 void	FirePrimary(void);
 void	ProcessPrimaryBullets( void );
-void	CleanUpPrimBull( u_int16_t i, _Bool LightFlag  );
+void	CleanUpPrimBull( u_int16_t i, bool LightFlag  );
 u_int16_t InitOnePrimBull( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
 						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16_t PowerLevel, float PLevel, _Bool NetFlag );
+						int16_t PowerLevel, float PLevel, bool NetFlag );
 void	CreateTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t FmPoly, int16_t Type, u_int16_t Group );
 void	CreateNmeTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t FmPoly, int16_t Type, u_int16_t Group );
 void	CreatePulsarExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
@@ -273,7 +273,7 @@ void	DropPrimary( void );
 void	GetDeathString( BYTE WeaponType, BYTE Weapon, char * DstString );
 void	DropShield( void );
 void	DropAmmo( void );
-_Bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTOR * Dir );
+bool ChangeTranspulseDir( u_int16_t i, VECTOR * Pos, VECTOR * MoveOffset, VECTOR * Dir );
 void	ChangePulsarDir( u_int16_t i, VECTOR * Dir );
 void	ChangeTrojaxDir( u_int16_t i, VECTOR * Dir );
 void	ChangeSussgunDir( u_int16_t i, VECTOR * Dir );
@@ -288,11 +288,11 @@ void	CreateNewExplosion( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
 void	CreateSteam( VECTOR * Pos, VECTOR * Dir, u_int16_t Group );
 u_int16_t	EnemyFirePrimary( u_int16_t OwnerType, u_int16_t OwnerID, u_int16_t BulletID, int8_t Weapon,
 						u_int16_t Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
-						int16_t PowerLevel, float PLevel, _Bool NetFlag, void * Gun );
+						int16_t PowerLevel, float PLevel, bool NetFlag, void * Gun );
 void CreatePowerLaserSparks( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int8_t Red, u_int8_t Green, u_int8_t Blue );
 void GetLaserLocalVector( u_int16_t i, VECTOR * LocalVector );
 void CreateScaleExplosion( VECTOR * Pos, u_int16_t Group, float GlobalScale );
-_Bool ValidGroupCollision( VECTOR * StartPos, u_int16_t StartGroup, VECTOR * IntPoint, VECTOR * ObjPos, u_int16_t ObjGroup );
+bool ValidGroupCollision( VECTOR * StartPos, u_int16_t StartGroup, VECTOR * IntPoint, VECTOR * ObjPos, u_int16_t ObjGroup );
 int16_t GetAmmoPickupToGen( void );
 FILE * SavePrimBulls( FILE * fp );
 FILE * LoadPrimBulls( FILE * fp );

@@ -14,7 +14,7 @@
 
 typedef struct NODE
 {
-	_Bool	LegalGroup;
+	bool	LegalGroup;
 	u_int16_t	Flags;
 	int16_t	Group;
 	VECTOR	Pos;
@@ -29,14 +29,14 @@ struct	NODE *	NextNodeInGroup;
 
 typedef struct _NODENETWORKHEADER
 {
-	_Bool	State;
+	bool	State;
 	int32_t	NumOfNodes;
 	NODE *	FirstNode;
 } NODENETWORKHEADER,*LPNODENETWORKHEADER;
 
 
 void NodeRelease(void);
-_Bool Nodeload( char * Filename );
+bool Nodeload( char * Filename );
 
 void FindNearestNode( OBJECT * Object );
 void UpdateNearestNode( OBJECT * Object );

@@ -20,12 +20,12 @@
  * fn prototypes
  */
 void InGameLoad( MENUITEM * MenuItem );
-_Bool InGameSave( MENUITEM * MenuItem );
-_Bool PreInGameLoad( MENUITEM * MenuItem );
+bool InGameSave( MENUITEM * MenuItem );
+bool PreInGameLoad( MENUITEM * MenuItem );
 char *SaveGameFileName( int slot );
 char *SaveGamePicFileName( int slot );
 char *SavedGameInfo( int slot );
 char *GetMissionName( char *levelname );
-_Bool SaveGameSlotUsed( int slot );
+bool SaveGameSlotUsed( int slot );
 #endif	// LOADSAVE_INCLUDED
 

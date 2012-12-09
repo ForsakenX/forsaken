@@ -23,7 +23,7 @@
 #include "models.h"
 #include "mxload.h"
 
-extern _Bool SwitchedToWatchMode;
+extern bool SwitchedToWatchMode;
 
 #define DEG2RAD(D)				((D) * PI / 180.0F)
 
@@ -71,11 +71,11 @@ typedef struct _BIKEMOD
  * fn prototypes
  */
 
-_Bool SetUpShips();
-_Bool ProcessShips();
+bool SetUpShips();
+bool ProcessShips();
 void	InitShipsChangeLevel( MLOADHEADER * Mloadheader );
-_Bool	ENV( MXLOADHEADER * Mloadheader , MATRIX * Mat ,VECTOR * Pos);
-int16_t DoDamage( _Bool OverrideInvul );
+bool	ENV( MXLOADHEADER * Mloadheader , MATRIX * Mat ,VECTOR * Pos);
+int16_t DoDamage( bool OverrideInvul );
 
 void SetBikeMods( u_int16_t Bike );
 
@@ -98,7 +98,7 @@ void RotateInternal( u_int16_t ship, float xrot, float yrot, float zrot );
 
 void InitShipRandomPos( int16_t i );
 void InitShipStartPos( int16_t ship, int16_t pos );
-_Bool GotoRoom( int16_t i, char *roomname );
+bool GotoRoom( int16_t i, char *roomname );
 
 void Process_Remote_Camera( void );
 //	Mode Functions...

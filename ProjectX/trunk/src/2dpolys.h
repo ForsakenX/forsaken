@@ -166,10 +166,10 @@ void FmPolyProcess( void );
 void InitFmPolyTPages( void );
 void AddFmPolyToTPage( u_int16_t i, int16_t TPage );
 void RemoveFmPolyFromTPage( u_int16_t i, int16_t TPage );
-_Bool DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, u_int16_t Group );
-_Bool DisplayGroupUnclippedFmPolys( RENDEROBJECT *renderObject );
-_Bool FmPolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly );
-_Bool FmPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly );
+bool DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, u_int16_t Group );
+bool DisplayGroupUnclippedFmPolys( RENDEROBJECT *renderObject );
+bool FmPolyDispGroupClipped( u_int16_t Group, RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly );
+bool FmPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t * NextFmPoly );
 FILE * SaveFmPolys( FILE * fp );
 FILE * LoadFmPolys( FILE * fp );
 

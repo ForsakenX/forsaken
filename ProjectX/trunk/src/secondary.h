@@ -124,14 +124,14 @@ typedef struct SECONDARYWEAPONATTRIB {
 	float	b;					// what color does it emit....
 	float	Shield;				// How much shield do I have....
 	float	Damage;				// How much Damage do I do.....
-	_Bool	Lensflare;			// Lensflare......
+	bool	Lensflare;			// Lensflare......
 	float	ColRadius;			// how big is my collide sphere
 	u_int16_t	Flags;				// Various Flags;
 
 } SECONDARYWEAPONATTRIB;
 
 typedef struct SECONDARYWEAPONBULLET {
-	_Bool	Used;
+	bool	Used;
 
 	u_int16_t	Next;				// link list.....	
 	u_int16_t	Prev;				// link list.....
@@ -147,7 +147,7 @@ typedef struct SECONDARYWEAPONBULLET {
 	u_int16_t	Owner;				// who fired me...
 	u_int16_t	ID;					// Id from that ship..
 	int8_t	Weapon;				// Weapon that fired me..
-	_Bool	Lensflare;			// Do Lensflare
+	bool	Lensflare;			// Do Lensflare
 	float	LifeCount;			// how long have i lived.....
 	float	LifeSpan;			// how long can i live
 	float	SpeedInc;			// how fast do I accelerate...
@@ -221,8 +221,8 @@ void	ProcessSecondaryBullets( void );
 void	CleanUpSecBull( u_int16_t i );
 u_int16_t	InitOneSecBull( u_int16_t OwnerType, u_int16_t Owner, u_int16_t BulletID, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * UpVector,
-						VECTOR * DropDir, int8_t Weapon, _Bool NetFlag );
-_Bool	PointToSphere(	VERT * TargPos, float TargRadius, VERT * BulPos );
+						VECTOR * DropDir, int8_t Weapon, bool NetFlag );
+bool	PointToSphere(	VERT * TargPos, float TargRadius, VERT * BulPos );
 void	CreateExplosion( VECTOR * Pos, u_int16_t Group );
 void	CreateSmallExplosion( VECTOR * Pos, u_int16_t Group );
 void	CreateSingleExplosion( VECTOR * Pos, u_int16_t Group );
@@ -240,8 +240,8 @@ void	DispSecAmmoLevels( void );
 void	CreateGravgonField( u_int16_t i );
 void	CreateShockwave( u_int16_t OwnerType, u_int16_t Owner, VECTOR * Pos, u_int16_t Group, float ShockwaveSize, BYTE Weapon );
 void	ExplodeSecondary( VECTOR * Pos, u_int16_t Group, u_int16_t OwnerType, u_int16_t Owner, u_int16_t ID, float ShockwaveSize );
-_Bool	ProcessMines( u_int16_t i );
-_Bool	ProcessMissiles( u_int16_t i, u_int16_t * NextMissile );
+bool	ProcessMines( u_int16_t i );
+bool	ProcessMissiles( u_int16_t i, u_int16_t * NextMissile );
 void	KillOwnersSecBulls( u_int16_t Owner );
 void	ScatterWeapons( VECTOR * Dir, int16_t MaxPickupsAllowed );
 int16_t	GenerateSecondaryPickups( int16_t NumAllowed );
@@ -250,7 +250,7 @@ void	SecondarySelectControl( void );
 u_int16_t	GetBestMine( void );
 void	DropMine( void );
 u_int16_t	TargetClosestShip( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t MeType, u_int16_t Me, float ViewConeCos, float * ClosestCos );
-_Bool	StillGotTarget( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t TargetType, u_int16_t Target, float ViewConeCos );
+bool	StillGotTarget( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t TargetType, u_int16_t Target, float ViewConeCos );
 void	CreateScatterTrail( u_int16_t i );
 void	CreateBigFlash( VECTOR * Pos, u_int16_t Group, float Size );
 void	CreateMuzzleFlash( VECTOR * Pos, u_int16_t Group, float Size );
@@ -261,7 +261,7 @@ void	RegenMineList( SHORTMINE * Slots, BYTE Num );
 void	CopyMines( u_int16_t Player );
 void	RegenerateQuedMines( void );
 void	KillOwnerIDSecBulls( u_int16_t OwnerType, u_int16_t Owner, u_int16_t ID );
-_Bool	CheckForMines( VECTOR * Pos );
+bool	CheckForMines( VECTOR * Pos );
 void	SyncMines( void );
 void	DoDamagedEffects( u_int16_t i );
 
@@ -275,8 +275,8 @@ void	CreateTitanStarShrapnel( u_int16_t i, VECTOR * Pos, VECTOR * Dir, u_int16_t
 void	CreateSmokeRing( VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector, u_int16_t Group );
 u_int16_t	TargetClosestEnemy( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t MeType, u_int16_t Me, float ViewConeCos, float * ClosestCos );
 u_int16_t	TargetClosestSecondary( VECTOR * Pos, VECTOR * Dir, u_int16_t Group, u_int16_t MeType, u_int16_t Me, float ViewConeCos, float * ClosestCos );
-_Bool	CheckProximityToShips( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner );
-_Bool	CheckProximityToEnemies( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner );
+bool	CheckProximityToShips( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner );
+bool	CheckProximityToEnemies( VECTOR * Pos, u_int16_t Group, float Radius, u_int16_t OwnerType, u_int16_t Owner );
 u_int16_t	GetClosestEnemy( VECTOR * Pos, u_int16_t Group, float * Radius, u_int16_t OwnerType, u_int16_t Owner );
 void	CreateBigExplosion( VECTOR * Pos, u_int16_t Group );
 void	CreateSplash( VECTOR * Pos, VECTOR * DirVector, u_int16_t Group );

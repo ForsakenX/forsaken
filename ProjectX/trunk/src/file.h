@@ -15,16 +15,16 @@ struct filetime
 };
 
 void touch_file( char* path );
-_Bool is_folder( char* path );
+bool is_folder( char* path );
 int folder_exists( char *pathspec, ... );
 long Get_File_Size( char * Filename );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
 long Write_File( char * Filename, char * File_Buffer, long Write_Size );
 long Get_File_Size( char * Filename );
-_Bool file_time( const char * path, struct filetime *t );
+bool file_time( const char * path, struct filetime *t );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
-_Bool File_Exists( char * Filename );
-_Bool delete_file( char * path );
+bool File_Exists( char * Filename );
+bool delete_file( char * path );
 
 char* find_file( char * path );
 char* find_next_file( void );

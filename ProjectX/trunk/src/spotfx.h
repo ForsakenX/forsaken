@@ -113,7 +113,7 @@ typedef struct SPOTFX {
 	Prototypes
 ===================================================================*/
 void SetupSpotFX( void );
-_Bool LoadSpotFX( void );
+bool LoadSpotFX( void );
 SPOTFX * InitOneSpotFX( u_int16_t GenType, float GenDelay, u_int16_t Type, u_int16_t Group,
 					    VECTOR * Pos, VECTOR * Dir, VECTOR * Up, float ActiveDelay, float InactiveDelay,
 						int32_t Colour, int16_t Primary, int16_t Secondary, int16_t SoundFX, float Volume, float Speed, int16_t SFXType );

@@ -44,7 +44,7 @@ typedef struct BSP_TREE
 
 typedef struct BSP_HEADER
 {
-	_Bool	State;
+	bool	State;
     int NumGroups;
     BSP_TREE Bsp_Tree[MAXGROUPS];
 }BSP_HEADER;
@@ -67,7 +67,7 @@ typedef struct _BSP_PORTAL_GROUP
 
 typedef struct _BSP_PORTAL_HEADER
 {
-	_Bool		state;
+	bool		state;
 	int			groups;
 	BSP_PORTAL_GROUP	group[ MAXGROUPS ];
 } BSP_PORTAL_HEADER;
@@ -84,13 +84,13 @@ extern	BSP_PORTAL_HEADER Bsp_Portal_Header;
  * fn prototypes
  */
 void Bspfree( void );
-_Bool Bspload( char * Filename,  BSP_HEADER *Bsp_Header );
-_Bool InBSPGroup( u_int16_t group, VECTOR *pos );
-_Bool RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *ImpactPoint, VECTOR *ImpactNormal, float *ImpactOffset ,u_int16_t group );
+bool Bspload( char * Filename,  BSP_HEADER *Bsp_Header );
+bool InBSPGroup( u_int16_t group, VECTOR *pos );
+bool RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *ImpactPoint, VECTOR *ImpactNormal, float *ImpactOffset ,u_int16_t group );
 
-_Bool PointInSpaceRecursive( VECTOR *Pos );
+bool PointInSpaceRecursive( VECTOR *Pos );
 
-_Bool PointInsideSkin( VECTOR *Pos, u_int16_t Group );
+bool PointInsideSkin( VECTOR *Pos, u_int16_t Group );
 #endif	// BSP_INCLUDED
 
 

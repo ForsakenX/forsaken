@@ -26,8 +26,8 @@
  */
 typedef struct
 {
-	_Bool valid;
-	_Bool valid_this_time;
+	bool valid;
+	bool valid_this_time;
 	u_int16_t num_variations;
 	u_int16_t current_variation;
 	char text[MAX_STATS_MESSAGE_VARIATIONS][MAX_STATS_MESSAGE_LENGTH];
@@ -35,7 +35,7 @@ typedef struct
 } STATSMESSAGE;
 typedef struct
 {
-	_Bool	Activated;
+	bool	Activated;
 	int16_t	ActivatedOrder;
 	int16_t	Type;
 } TEXTMSGINFO;
@@ -61,11 +61,11 @@ void InitTextMessages( void );
 
 void InitFont( void );
 
-_Bool ReadTxtFile( char *Filename );
+bool ReadTxtFile( char *Filename );
 void FreeTxtFile( void );
 void TriggerTextMessage( u_int16_t * Data );
 void InitStatsMessages( void );
-_Bool ReadMsgFile( char *Filename );
+bool ReadMsgFile( char *Filename );
 void FreeMsgFile( void );
 
 void NextTextMessage( void );

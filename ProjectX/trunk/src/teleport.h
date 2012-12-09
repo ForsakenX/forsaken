@@ -40,9 +40,9 @@ struct	TELEPORT * NextInGroup;
  * fn prototypes
  */
 void ReleaseTeleports( void );
-_Bool TeleportsLoad( char * Filename );
+bool TeleportsLoad( char * Filename );
 void TeleportsZoneCheck( VECTOR * OldPos , VECTOR * NewPos , TELEPORT * Tport );
-_Bool TeleportsAreaCheck( VECTOR * OldPos , VECTOR * NewPos ,u_int16_t Group, OBJECT *obj );
+bool TeleportsAreaCheck( VECTOR * OldPos , VECTOR * NewPos ,u_int16_t Group, OBJECT *obj );
 void StartTeleport( u_int16_t * Data );
 void StopTeleport( u_int16_t * Data );
 void DisplayTeleportsInGroup( u_int16_t Group );

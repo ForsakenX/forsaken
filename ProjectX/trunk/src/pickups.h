@@ -182,7 +182,7 @@ typedef struct PICKUP {
 	u_int16_t	ColGroup;			// Collision Group
 	VERT	ColPoint;			// where am I going to collide
 	NORMAL	ColPointNormal;		// if I reflect use this when I do
-	_Bool	CouldNotPickup;		// Could not pickup last time collided
+	bool	CouldNotPickup;		// Could not pickup last time collided
 
 	float	PickupTime;			// Life count so far for pickup
 
@@ -250,18 +250,18 @@ void	KillUsedPickup( u_int16_t i );
 void	ProcessPickups( void );
 void	CleanUpPickup( u_int16_t i );
 u_int16_t	InitOnePickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type,
-					   u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod );
+					   u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, bool Sparkle, float LifeCount, u_int16_t TriggerMod );
 u_int16_t	InitJoinPickup( VECTOR * Pos, u_int16_t Group, VECTOR * Dir, float Speed, int16_t Type,
-					   u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, _Bool Sparkle, float LifeCount, u_int16_t TriggerMod );
+					   u_int16_t Owner, u_int16_t ID, int16_t RegenSlot, bool Sparkle, float LifeCount, u_int16_t TriggerMod );
 void	DropPickup( int16_t Type );
 void	KillPickup( u_int16_t Owner, u_int16_t ID, int16_t Style );
-_Bool	CollectPickup( u_int16_t i );
+bool	CollectPickup( u_int16_t i );
 void	CheckPickup( void );
 void	SavePickupsPositions( void );
-_Bool	LoadPickupsPositions( void );
+bool	LoadPickupsPositions( void );
 void	RegeneratePickups( void );
 void	RegenerateQuedPickups( void );
-_Bool	RegeneratePickup( u_int16_t Type );
+bool	RegeneratePickup( u_int16_t Type );
 void	GenPickupList( u_int16_t Ship, SHORTPICKUP * PickupSlots, BYTE * NumPickups, BYTE Section );
 void	RegenPickupList( SHORTPICKUP * Slots, BYTE Num );
 void	GenRegenSlotList( u_int16_t Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegenSlots, BYTE Section );
@@ -280,7 +280,7 @@ void	AddPickupToGroup( u_int16_t i, u_int16_t Group );
 void	RemovePickupFromGroup( u_int16_t i, u_int16_t Group );
 void	MovePickupToGroup( u_int16_t i, u_int16_t OldGroup, u_int16_t NewGroup );
 void	ClearPickupsGot( void );
-_Bool	FilterPickup( u_int16_t PickupType );
+bool	FilterPickup( u_int16_t PickupType );
 void	PackPickupInfo( u_int32_t *packed );
 void	UnpackPickupInfo( u_int32_t *packed );
 FILE * SaveAllPickups( FILE * fp );
@@ -288,23 +288,23 @@ FILE * LoadAllPickups( FILE * fp );
 void KillAllPickupsOfType( u_int16_t Type, int16_t Style );
 
 void InitQuedPickups( void );
-_Bool AddPickupToRegenQue( int16_t Type );
+bool AddPickupToRegenQue( int16_t Type );
 void FreeQuedPickup( QUEDPICKUP * QuedPickup );
 void ProcessQuedPickups( void );
 void GetFreeSlots( int16_t Type, int16_t * NumRandomSlots, FREESLOTINFO * RandomSlots,
 				   int16_t * NumConstantSlots, FREESLOTINFO * ConstantSlots );
-_Bool AddPrimaryToRegenQue( int8_t Weapon );
-_Bool AddSecondaryToRegenQue( int8_t Weapon );
+bool AddPrimaryToRegenQue( int8_t Weapon );
+bool AddSecondaryToRegenQue( int8_t Weapon );
 void PickupModelValid( void );
 void CheckPickupAllPlayers( void );
-_Bool ActuallyCollectPickup( u_int16_t i );
-_Bool PretendCollectPickup( u_int16_t i );
+bool ActuallyCollectPickup( u_int16_t i );
+bool PretendCollectPickup( u_int16_t i );
 void CorrectForExtraOrMissingPickups( void );
 void CountMinesInLevel( void );
 void KillAllPickupsOfTypeAndSend( u_int16_t Type, int16_t Style );
 
 void InitFailedKillSlots( void );
-_Bool AddFailedKillToQue( u_int16_t Owner, u_int16_t ID, int16_t Style, u_int16_t NewOwner);
+bool AddFailedKillToQue( u_int16_t Owner, u_int16_t ID, int16_t Style, u_int16_t NewOwner);
 int16_t FindFreeFailedKillSlot( void );
 void ReleaseFailedKillSlot( int16_t i );
 void ProcessFailedKills( void );

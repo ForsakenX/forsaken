@@ -209,7 +209,7 @@ typedef struct
 {
 	u_int8_t	*text;						// text string
 	u_int8_t	oldtext[MAX_TEXT_LENGTH];	// used for checking if text has changed
-	_Bool	highlight;					// item highlighted?
+	bool	highlight;					// item highlighted?
 	int		highlighttype;				// highlight type?
 	int		xmin;						// 
 	int		ymin;						// bounding box for text
@@ -225,7 +225,7 @@ typedef struct
 
 	int		currentchar[MAXNUMLINES];	// used for teletype mode
 	float 	currentx[MAXNUMLINES];		// used for teletype mode
-	_Bool	boxdone;					// used for teletype mode
+	bool	boxdone;					// used for teletype mode
 	int		num_pointers_to_free;		
 	void	*pointer[MAXPOINTERS];		
 
@@ -233,8 +233,8 @@ typedef struct
 	float	char1x;
 	float	text_y_min;
 	float	text_y_max;
-	_Bool	force_fit;
-	_Bool	finished[MAXNUMLINES];
+	bool	force_fit;
+	bool	finished[MAXNUMLINES];
 }TEXTINFO;
 
 typedef struct _MENU MENU;
@@ -254,8 +254,8 @@ typedef void (* EventFunc)(TITLE_EVENT *);
 typedef void (* TimerFunc)(TITLE_EVENT_TIMER *);
 typedef char (* TextTypeFunc)( TEXT *, char );
 typedef char *(* SliderUserFunc)( SLIDER * );
-typedef _Bool (* SliderSetFunc)( SLIDER * );
-typedef _Bool (* ListDeleteFunc) ( LIST *, int );
+typedef bool (* SliderSetFunc)( SLIDER * );
+typedef bool (* ListDeleteFunc) ( LIST *, int );
 typedef void (* ListInfoFunc) ( LIST * );
 
 // NOTE!!! CTF type is propagated to clients in 4 bits - cannot have more than 15 types!!
@@ -350,7 +350,7 @@ typedef struct _LEVEL_LOOKUP
 	char		*name;
 	int			frame_no;
 	FRAME_INFO	**tpage;
-	_Bool		rotated;
+	bool		rotated;
 }LEVEL_LOOKUP;
 
 #define MAXTEXTPERMENUITEM 32
@@ -403,7 +403,7 @@ struct _SLIDER
 	float dt;
 	float timer;
 	u_int16_t poly;
-	_Bool redraw_req;
+	bool redraw_req;
 	SliderUserFunc FuncUser;
 	SliderSetFunc FuncSet;
 	SliderSetFunc FuncRefresh;
@@ -422,7 +422,7 @@ struct _LIST
 	ListDeleteFunc FuncDelete;
 	ListInfoFunc FuncInfo;	// used to get info from a particular item
 	u_int8_t old_item[MAXLISTITEMS][64];
-	_Bool Static;	// list is 'frozen' & awaiting event before allowing processing
+	bool Static;	// list is 'frozen' & awaiting event before allowing processing
 };
 
 
@@ -472,17 +472,17 @@ extern MENU MENU_NEW_GeneralLoading;
 
 extern MENU	MENU_STATS_Start;
 
-extern _Bool quitting;
+extern bool quitting;
 
 MENU *LastMenu;
 
 //	Function Prototypes
 
-_Bool InitTitle();
+bool InitTitle();
 void ReleaseTitle(void);
-_Bool DisplayTitle(void);
+bool DisplayTitle(void);
 
-void MenuBackSpecific( MENU *Menu, _Bool UseExitFuncs );
+void MenuBackSpecific( MENU *Menu, bool UseExitFuncs );
 void	MenuRestart( MENU * Menu );
 void	MenuExit( void );
 void	MenuAbort( void );
@@ -533,17 +533,17 @@ void	TextHome( TEXT *t );
 void	TextEnd( TEXT *t );
 void	TextEnter( MENUITEM *item );
 void	TextCancel( TEXT *t );
-_Bool	ProcessKeydef( int Key );
-_Bool	ProcessText( int Key );
-_Bool	ProcessBikerList ( int Key );
-_Bool	ProcessList( int Key );
-_Bool	ProcessSlider( int Key );
+bool	ProcessKeydef( int Key );
+bool	ProcessText( int Key );
+bool	ProcessBikerList ( int Key );
+bool	ProcessList( int Key );
+bool	ProcessSlider( int Key );
 void	ProcessSelect( int Key );
 
 void MenuGoFullScreen( MENUITEM *Item );
 void MenuSelectMode( MENU *Menu );
 void MakeModeList( MENU *Menu );
-_Bool LoadTitleModels(void);
+bool LoadTitleModels(void);
 void VduClear ( void );
 void UpdateSessions ( int *dummy );
 void SelectQuit( MENUITEM *Item );
@@ -551,13 +551,13 @@ void PrintErrorMessage (char *ErrorStr, int BackBy, MENU *NewMenu, int type);
 void MenuItemBackFromError ( MENUITEM *Item );
 void MenuChangeEx( MENU *Menu );
 void LoadLevelText( MENU *Menu );
-_Bool SetGamma( SLIDER *slider );
+bool SetGamma( SLIDER *slider );
 void InitInGameMenu( MENU *Menu );
 void InitTitleMessaging( void );
 void DrawReadyButton( MENUITEM *Item );
 void PlayerConfirm( MENUITEM *Item );
 void SelectTeamList( MENUITEM *Item );
-_Bool GeneralTimeout( float *timer );
+bool GeneralTimeout( float *timer );
 void TitleReset( MENUITEM *item );
 void SetTitleNotify( char *str );
 

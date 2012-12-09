@@ -53,7 +53,7 @@ typedef struct LINE {
 	Protptypes
 ===================================================================*/
 void InitLines( void );
-_Bool ExecuteLines( u_int16_t group, RENDEROBJECT *renderObject );
+bool ExecuteLines( u_int16_t group, RENDEROBJECT *renderObject );
 void KillUsedLine( u_int16_t i );
 u_int16_t FindFreeLine( void );
 

@@ -38,7 +38,7 @@
 #include "timer.h"
 #include "ai.h"
 
-extern _Bool TeamGame;
+extern bool TeamGame;
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BYTE WhoIAm;
 extern MCLOADHEADER	MCloadheader;
@@ -91,8 +91,8 @@ extern int16_t SecondaryWeaponsGot [ MAXSECONDARYWEAPONS ];
 extern u_int16_t FirstModelUsed;
 extern char ShortLevelNames[MAXLEVELS][32];
 
-extern _Bool CanPlayerCollectPickup( u_int16_t i, u_int16_t Player );
-extern _Bool RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 ); 
+extern bool CanPlayerCollectPickup( u_int16_t i, u_int16_t Player );
+extern bool RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rdir, VECTOR * inter, VECTOR * inter2 ); 
 extern void DebugPrintf( const char * format, ... );
 extern int GetTotalKills(int Killer);
 extern int GetTotalDeaths(int Victim);

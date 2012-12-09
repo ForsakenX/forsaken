@@ -250,12 +250,12 @@ typedef struct VISPOLVERTEX {
 /*
  * fn prototypes
  */
-_Bool PreMload( char * Filename, MLOADHEADER * Mloadheader  );
-_Bool Mload( char * Filename, MLOADHEADER * Mloadheader );
-_Bool ExecuteMloadHeader( MLOADHEADER * Mloadheader  );
+bool PreMload( char * Filename, MLOADHEADER * Mloadheader  );
+bool Mload( char * Filename, MLOADHEADER * Mloadheader );
+bool ExecuteMloadHeader( MLOADHEADER * Mloadheader  );
 void ReleaseMloadheader( MLOADHEADER * Mloadheader );
 
-_Bool ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, u_int16_t group  );
+bool ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, u_int16_t group  );
 void BackGroundTextureAnimation( MLOADHEADER * Mloadheader , u_int16_t group );
 u_int16_t * HandleAnimCommands( POLYANIM * PolyAnim , u_int16_t * AnimData , u_int16_t * OrgAnimAdr);
 

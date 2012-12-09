@@ -67,7 +67,7 @@ typedef struct OBJECT
 	VECTOR				BottomRight;	// Bounding Box BR
 	ANIM_SEQ	*		AnimSeqs;
 	int16_t				CurAnimSeq;		// Animation Sequence
-	_Bool				Animating;
+	bool				Animating;
 	COMP_OBJ	*		Components;
 	COMP_OBJ	*		UserContComps[ MAX_USER_CONT_COMPS ];
 
@@ -114,9 +114,9 @@ typedef struct GUNTYPE
 	float				YRotMax;			
 	float				Range;			
 	int16_t				PowerLevel;			// Power Level of weapon....
-	_Bool				PrimarySecondary;	// False for Primary True for Secondary...
+	bool				PrimarySecondary;	// False for Primary True for Secondary...
 	BYTE				WeaponType;			// which weapon do I Fire...
-	_Bool				PreciseRotation;	// How Precies should I rotate...
+	bool				PreciseRotation;	// How Precies should I rotate...
 } GUNTYPE,*LPGUNTYPE;
 
 #endif	// OBJECT_INCLUDED

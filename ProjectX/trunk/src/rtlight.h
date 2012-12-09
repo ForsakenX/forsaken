@@ -89,7 +89,7 @@ typedef struct _RTLIGHT
 		RT_SPOT_LIGHT spot;
 	};
 	u_int16_t xlight;
-	_Bool enabled;
+	bool enabled;
 	LIGHTSTATE state;
 	float now_time;
 	float delay;
@@ -97,9 +97,9 @@ typedef struct _RTLIGHT
 } RT_LIGHT;
 
 
-extern _Bool LoadRTLights( void );
+extern bool LoadRTLights( void );
 
-extern _Bool ReleaseRTLights( void );
+extern bool ReleaseRTLights( void );
 
 extern void ProcessRTLights( void );
 

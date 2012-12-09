@@ -52,9 +52,9 @@ void InitRestartPoints( void );
 RESTART * FindFreeRestartPoint( void );
 void KillUsedRestartPoint( RESTART * Object );
 void ReleaseAllRestartPoints( void );
-_Bool LoadStartPoints( void );
-_Bool PreLoadRestartPoints( void );
-_Bool LoadRestartPoints( void );
+bool LoadStartPoints( void );
+bool PreLoadRestartPoints( void );
+bool LoadRestartPoints( void );
 RESTART * InitOneFaceMeRestartPoint( u_int16_t Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector );
 RESTART * InitOneRestartPoint( u_int16_t Group, VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector,
 							  COMP_OBJ * CompObj, float OverallTime );
