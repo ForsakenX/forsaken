@@ -4093,6 +4093,12 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
         CurrentCamera.Pos.x -= cam_offset.x;
         CurrentCamera.Pos.y -= cam_offset.y;
         CurrentCamera.Pos.z -= cam_offset.z;
+	CurrentCamera.Viewport.Height = viewport.Height;
+	CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
+	CurrentCamera.Viewport.Width = viewport.Width;
+	CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+	CurrentCamera.Viewport.Y = viewport.Y;
+	CurrentCamera.Viewport.X = viewport.X;
 	if(render_info.stereo_mode == STEREO_MODE_COLOR)
         	render_set_filter( 1, 1, 1 );
 }
