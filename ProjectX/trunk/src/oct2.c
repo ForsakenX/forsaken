@@ -4047,8 +4047,6 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	// render left eye
 	//
         render_info.stereo_position = ST_LEFT;
-        SetFOV( hfov );
-        FSSetProjection( &proj );
         CurrentCamera.Pos.x -= cam_offset.x;
         CurrentCamera.Pos.y -= cam_offset.y;
         CurrentCamera.Pos.z -= cam_offset.z;
@@ -4060,8 +4058,6 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	// render right eye
 	//
         render_info.stereo_position = ST_RIGHT;
-        SetFOV( hfov );
-        FSSetProjection( &proj );
         CurrentCamera.Pos.x += 2.0f * cam_offset.x;
         CurrentCamera.Pos.y += 2.0f * cam_offset.y;
         CurrentCamera.Pos.z += 2.0f * cam_offset.z;
@@ -4094,8 +4090,6 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	// reset back to normal center camera
 	//
         render_info.stereo_position = ST_CENTER;
-        SetFOV( hfov );
-        FSSetProjection( &proj );
         CurrentCamera.Pos.x -= cam_offset.x;
         CurrentCamera.Pos.y -= cam_offset.y;
         CurrentCamera.Pos.z -= cam_offset.z;
