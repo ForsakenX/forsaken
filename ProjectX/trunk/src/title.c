@@ -4827,7 +4827,6 @@ bool RenderCurrentMenu(void)
 		return false;
 	}
 
-	FSClearBlack();
 	if (ClearBuffers() != true )
 	{
 		Msg( "DisplayTitle() : ClearBuffers failed\n" );
@@ -5085,7 +5084,7 @@ bool DisplayTitle(void)
 									   RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
 
-	if(!RenderCurrentMenu())
+	if(!RenderCurrentCameraInStereo(RenderCurrentMenu))
 		return false;
 
 	if (!FSEndScene())
