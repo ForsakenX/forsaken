@@ -4804,7 +4804,7 @@ void ProcessHoloModel( void );
 
 u_int8_t QuickStart = QUICKSTART_None; 
 
-bool RenderCurrentMenu(void)
+bool RenderCurrentMenu(void) // this renders broken main menu
 {
 	u_int16_t	group;
 
