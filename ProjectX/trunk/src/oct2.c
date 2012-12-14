@@ -4144,6 +4144,7 @@ bool RenderCurrentCameraWithMainGameMenu(void)
 
 void SetFOVBasedOnShipSpeed(void)
 {
+  static float fov_inc = 0.0F;
   if( (Ships[WhoIAm].Object.Speed.z) > (MaxMoveSpeed) )
   {
     float diff;
@@ -4176,7 +4177,6 @@ void SetFOVBasedOnShipSpeed(void)
 bool MainGame( void ) // bjd
 {
   int i;
-  static float fov_inc = 0.0F;
 	int CamerasSet=0;
 
 #ifdef DEMO_SUPPORT
