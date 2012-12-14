@@ -3863,6 +3863,26 @@ bool RenderScene( void )
   return true;
 }
 
+void MainGameDemoRoutines(){
+#ifdef DEMO_SUPPORT
+  QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
+  if( PlayDemo )
+  {
+    if( PauseDemo )
+    {
+      TempGameElapsedTime = GameCurrentTime;
+    }else{
+      GameElapsedTime += (LONGLONG) ( ( GameCurrentTime - TempGameElapsedTime ) * Demoframelag );
+      TempGameElapsedTime = GameCurrentTime;
+      GameCurrentTime = GameCurrentTime - GameStartedTime;
+      GameCurrentTime = (LONGLONG) ( GameCurrentTime * Demoframelag );
+    }
+  }else{
+    NetworkGameUpdate();
+  }
+#endif
+}
+
 
 float Hdiv[MAX_PLAYERS] = { 1.0F ,
                 1.0F ,
@@ -4400,21 +4420,7 @@ bool MainGame( void ) // bjd
 {
   int i;
 
-#ifdef DEMO_SUPPORT
-  QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
-  if( PlayDemo )
-  {
-    if( PauseDemo )
-    {
-      TempGameElapsedTime = GameCurrentTime;
-    }else{
-      GameElapsedTime += (LONGLONG) ( ( GameCurrentTime - TempGameElapsedTime ) * Demoframelag );
-      TempGameElapsedTime = GameCurrentTime;
-      GameCurrentTime = GameCurrentTime - GameStartedTime;
-      GameCurrentTime = (LONGLONG) ( GameCurrentTime * Demoframelag );
-    }
-  }
-#endif
+  MainGameDemoRoutines();
 
 #ifdef DEBUG_ON
   if ( framelag > 10.0F ) // check framelag out of reasonable range -> probably debugging
@@ -4458,9 +4464,6 @@ bool MainGame( void ) // bjd
 #endif
 
 /* Secondary routines called after rendering */
-    
-  if( !PlayDemo )
-    NetworkGameUpdate();
 
   SetFOVBasedOnShipSpeed();
 
