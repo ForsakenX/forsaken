@@ -4142,6 +4142,31 @@ bool RenderCurrentCameraWithMainGameMenu(void)
 	RenderMainCamera2dPolys(); // screen polys like menu and lense flair
 }
 
+void SetFOVBasedOnShipSpeed(void)
+{
+  if( (Ships[WhoIAm].Object.Speed.z) > (MaxMoveSpeed) )
+  {
+    float diff;
+    diff = ( Ships[WhoIAm].Object.Speed.z - MaxMoveSpeed ) / (  MaxTurboSpeed - MaxMoveSpeed );
+
+    if( diff > 0.0F )
+    {
+      fov_inc += diff * diff * framelag;
+      if ( fov_inc > 30.0F )
+        fov_inc = 30.0F;
+    }
+    else
+    {
+      fov_inc *= (float) pow( 0.95, framelag );
+    }
+  }
+  else
+  {
+    fov_inc *= (float) pow( 0.95, framelag );
+  }
+  SetFOV( chosen_fov + fov_inc );
+}
+
 
 /*===================================================================
   Procedure :   Main Render Loop...
@@ -4436,27 +4461,7 @@ bool MainGame( void ) // bjd
   if( !PlayDemo )
     NetworkGameUpdate();
 
-  if( (Ships[WhoIAm].Object.Speed.z) > (MaxMoveSpeed) )
-  {
-    float diff;
-    diff = ( Ships[WhoIAm].Object.Speed.z - MaxMoveSpeed ) / (  MaxTurboSpeed - MaxMoveSpeed );
-
-    if( diff > 0.0F )
-    {
-      fov_inc += diff * diff * framelag;
-      if ( fov_inc > 30.0F )
-        fov_inc = 30.0F;
-    }
-    else
-    {
-      fov_inc *= (float) pow( 0.95, framelag );
-    }
-  }
-  else
-  {
-    fov_inc *= (float) pow( 0.95, framelag );
-  }
-  SetFOV( chosen_fov + fov_inc );
+  SetFOVBasedOnShipSpeed();
 
   CheckLevelEnd();
 
