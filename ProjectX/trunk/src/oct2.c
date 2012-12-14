@@ -4109,6 +4109,15 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	CurrentCamera.Viewport.X = viewport.X;
 	if(render_info.stereo_mode == STEREO_MODE_COLOR)
         	render_set_filter( 1, 1, 1 );
+	if (!FSSetViewPort(&viewport)) 
+	{
+	#ifdef DEBUG_VIEWPORT
+	    SetViewportError( "RenderCurrentCamera2", &viewport );
+	#else
+	    Msg("SetViewport failed.\n%s", render_error_description(0));
+	#endif
+	    return false;
+	}
 }
 
 void MainGameMenu(void)
