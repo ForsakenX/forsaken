@@ -4168,65 +4168,8 @@ void SetFOVBasedOnShipSpeed(void)
   SetFOV( chosen_fov + fov_inc );
 }
 
-
-/*===================================================================
-  Procedure :   Main Render Loop...
-  Input   :   nothing...
-  Output    :   nothing
-===================================================================*/
-bool MainGame( void ) // bjd
+bool MainGameRender(void)
 {
-  int i;
-	int CamerasSet=0;
-
-#ifdef DEMO_SUPPORT
-  QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
-  if( PlayDemo )
-  {
-    if( PauseDemo )
-    {
-      TempGameElapsedTime = GameCurrentTime;
-    }else{
-      GameElapsedTime += (LONGLONG) ( ( GameCurrentTime - TempGameElapsedTime ) * Demoframelag );
-      TempGameElapsedTime = GameCurrentTime;
-      GameCurrentTime = GameCurrentTime - GameStartedTime;
-      GameCurrentTime = (LONGLONG) ( GameCurrentTime * Demoframelag );
-    }
-  }
-#endif
-
-#ifdef DEBUG_ON
-  if ( framelag > 10.0F ) // check framelag out of reasonable range -> probably debugging
-  {
-    framelag = 10.0F; // clamp framelag to something reasonable
-  }
-#endif
-
-
-/*===================================================================
-  Procedure :  Main Routines to be called before Rendering....  
-===================================================================*/
-
-  InitIndirectVisible( Ships[Current_Camera_View].Object.Group );
-
-  if( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) )
-    AddIndirectVisible( (u_int16_t) ( ( ActiveRemoteCamera ) ? ActiveRemoteCamera->Group : SecBulls[ CameraMissile ].GroupImIn ) );
-
-  MainRoutines();
-
-  if( MyGameStatus == STATUS_QuitCurrentGame )
-    return true;
-
-  memset( (void*) &IsGroupVisible[0] , 0 , MAXGROUPS * sizeof(u_int16_t) );
-  cral += (framelag*2.0F);
-
-  for( i = 0 ; i < MAX_SFX ; i++ )
-    LastDistance[i] = 100000.0F;
-
-/*===================================================================
-  Procedure :  Now the Rendering can begin...
-===================================================================*/
-
 	if (!FSBeginScene())
 		return false;
 
@@ -4381,6 +4324,8 @@ bool MainGame( void ) // bjd
         Current_Camera_View=TempMissileCam;
         SetFOV( main_fov );
 
+	int CamerasSet=0;
+  int i;
 				// pick first four active ship camaras
 				for(i=0; i<MAX_PLAYERS && CamerasSet < 4; i++)
 				{
@@ -4443,8 +4388,64 @@ bool MainGame( void ) // bjd
 
   if (!FSEndScene())
         return false;
+}
 
- /* done with rendering camera stuff */
+
+/*===================================================================
+  Procedure :   Main Render Loop...
+  Input   :   nothing...
+  Output    :   nothing
+===================================================================*/
+bool MainGame( void ) // bjd
+{
+  int i;
+
+#ifdef DEMO_SUPPORT
+  QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
+  if( PlayDemo )
+  {
+    if( PauseDemo )
+    {
+      TempGameElapsedTime = GameCurrentTime;
+    }else{
+      GameElapsedTime += (LONGLONG) ( ( GameCurrentTime - TempGameElapsedTime ) * Demoframelag );
+      TempGameElapsedTime = GameCurrentTime;
+      GameCurrentTime = GameCurrentTime - GameStartedTime;
+      GameCurrentTime = (LONGLONG) ( GameCurrentTime * Demoframelag );
+    }
+  }
+#endif
+
+#ifdef DEBUG_ON
+  if ( framelag > 10.0F ) // check framelag out of reasonable range -> probably debugging
+  {
+    framelag = 10.0F; // clamp framelag to something reasonable
+  }
+#endif
+
+
+/*===================================================================
+  Procedure :  Main Routines to be called before Rendering....  
+===================================================================*/
+
+  InitIndirectVisible( Ships[Current_Camera_View].Object.Group );
+
+  if( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) )
+    AddIndirectVisible( (u_int16_t) ( ( ActiveRemoteCamera ) ? ActiveRemoteCamera->Group : SecBulls[ CameraMissile ].GroupImIn ) );
+
+  MainRoutines();
+
+  if( MyGameStatus == STATUS_QuitCurrentGame )
+    return true;
+
+  memset( (void*) &IsGroupVisible[0] , 0 , MAXGROUPS * sizeof(u_int16_t) );
+  cral += (framelag*2.0F);
+
+  for( i = 0 ; i < MAX_SFX ; i++ )
+    LastDistance[i] = 100000.0F;
+
+  if(!MainGameRender())
+    return false;
 
   //JustExitedMenu = true;
   MenuProcess(); // menu keys are processed here
