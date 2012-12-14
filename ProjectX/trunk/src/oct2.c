@@ -4130,10 +4130,12 @@ void MainGameMenu(void)
     }
 }
 
+bool RenderMainCamera2dPolys(void);
 bool RenderCurrentCameraWithMainGameMenu(void)
 {
 	if(!RenderCurrentCamera()) return false;
 	MainGameMenu();
+	RenderMainCamera2dPolys(); // screen polys like menu and lense flair
 }
 
 
@@ -4142,7 +4144,6 @@ bool RenderCurrentCameraWithMainGameMenu(void)
   Input   :   nothing...
   Output    :   nothing
 ===================================================================*/
-bool RenderMainCamera2dPolys(void);
 bool MainGame( void ) // bjd
 {
   int i;
@@ -4954,24 +4955,8 @@ void ReleaseRenderBufs( void )
 }
 
 
-bool RenderMainCamera2dPolys( void)
+bool RenderMainCamera2dPolys( void) // renders in game menu and other 2d elements
 {
-	Build_View();
-	CurrentCamera.View = view;
-
-	if (!FSSetView(&view))
-		return false;
-
-  if (!FSSetViewPort(&CurrentCamera.Viewport)) 
-	{
-#ifdef DEBUG_VIEWPORT
-    SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport );
-#else
-    Msg("SetViewport failed.\n%s", render_error_description(0));
-#endif
-    return false;
-  }
-
   set_alpha_states();
   
   DoLensflareEffect();
@@ -4984,16 +4969,6 @@ bool RenderMainCamera2dPolys( void)
 
   if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
     return false;
-
-  if (!FSSetViewPort(&viewport)) 
-	{
-#ifdef DEBUG_VIEWPORT
-    SetViewportError( "RenderCurrentCamera2", &viewport );
-#else
-    Msg("SetViewport failed.\n%s", render_error_description(0));
-#endif
-    return false;
-  }
 
   return true;
 }
