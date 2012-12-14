@@ -4403,12 +4403,6 @@ bool MainGame( void ) // bjd
           return false;
     }
 	
- /* done with rendering camera stuff */
-
-  //JustExitedMenu = true;
-  MenuProcess(); // menu keys are processed here
-  ProcessGameKeys(); // here is where we process F keys
-  
   /* do the target c omputer trick */
   if( TargetComputerOn )
   {
@@ -4416,19 +4410,27 @@ bool MainGame( void ) // bjd
 		DispTracker(); // bjd
   }
 
+  DispHUDNames();
+  DispUntriggeredNMEs();
+
+  if( Our_CalculateFrameRate() != true)
+      return false;
+
   if (!FSEndScene())
         return false;
 
+ /* done with rendering camera stuff */
+
+  //JustExitedMenu = true;
+  MenuProcess(); // menu keys are processed here
+  ProcessGameKeys(); // here is where we process F keys
+  ProcessGameKeys(); // here is where we process F keys
+ 
   ScreenPolyProcess();
-  DispHUDNames();
-  DispUntriggeredNMEs();
 
 #ifdef INSIDE_BSP
   Inside = PointInsideSkin( &Ships[WhoIAm].Object.Pos, Ships[WhoIAm].Object.Group );
 #endif
-
-  if( Our_CalculateFrameRate() != true)
-      return false;
 
 /* Secondary routines called after rendering */
     
@@ -4456,9 +4458,6 @@ bool MainGame( void ) // bjd
     fov_inc *= (float) pow( 0.95, framelag );
   }
   SetFOV( chosen_fov + fov_inc );
-
-  // here is where we process F keys
-  ProcessGameKeys();
 
   CheckLevelEnd();
 
