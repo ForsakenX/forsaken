@@ -4407,13 +4407,7 @@ bool MainGame( void ) // bjd
       if( RenderCurrentCamera() != true ) // bjd
           return false;
     }
-
-		// screen polys like text and lense flair
-    CameraRendering = CAMRENDERING_Main;
-    CurrentCamera = MainCamera;
-    CurrentCamera.UseLowestLOD = false;
-		RenderMainCamera2dPolys();
-
+	
  /* done with rendering camera stuff */
   
   /* do the target c omputer trick */
