@@ -4120,18 +4120,13 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	}
 }
 
-void MainGameMenu(void)
+void DrawMainGameMenu(void)
 {
     if( CurrentMenu && CurrentMenuItem )
     {
       MenuDraw( CurrentMenu );
       MenuItemDrawCursor( CurrentMenuItem );
       DrawSimplePanel();
-      if( render_info.stereo_position & (ST_LEFT | ST_CENTER))
-      {
-      	JustExitedMenu = true; // so another press of escape doesnt take you back into the menu you wanted to exit!!
-        MenuProcess(); // menu keys are processed here
-      }
     }
     else
     {
@@ -4143,7 +4138,7 @@ bool RenderMainCamera2dPolys(void);
 bool RenderCurrentCameraWithMainGameMenu(void)
 {
 	if(!RenderCurrentCamera()) return false;
-	MainGameMenu();
+	DrawMainGameMenu();
 	RenderMainCamera2dPolys(); // screen polys like menu and lense flair
 }
 
@@ -4409,6 +4404,10 @@ bool MainGame( void ) // bjd
     }
 	
  /* done with rendering camera stuff */
+
+  //JustExitedMenu = true;
+  MenuProcess(); // menu keys are processed here
+  ProcessGameKeys(); // here is where we process F keys
   
   /* do the target c omputer trick */
   if( TargetComputerOn )
