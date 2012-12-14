@@ -5084,8 +5084,16 @@ bool DisplayTitle(void)
 									   RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
 
-	if(!RenderCurrentCameraInStereo(RenderCurrentMenu))
-		return false;
+	if( render_info.stereo_enabled )
+	{
+		if(!RenderCurrentCameraInStereo(RenderCurrentMenu))
+			return false;
+	}
+	else
+	{
+		if(!RenderCurrentMenu())
+			return false;
+	}
 
 	if (!FSEndScene())
 	{
