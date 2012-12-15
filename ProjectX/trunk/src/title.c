@@ -17036,6 +17036,9 @@ void MenuProcess()
 	int i;
 	int Key;
 
+	if( CurrentMenu && CurrentMenuItem )
+		JustExitedMenu = true;
+
 	// used for flashing text
 	Pulse += framelag/60.0F;
 	if (Pulse > 1.0F)

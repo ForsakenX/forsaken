@@ -4453,7 +4453,6 @@ bool MainGame( void ) // bjd
   if(!MainGameRender())
     return false;
 
-  //JustExitedMenu = true;
   MenuProcess(); // menu keys are processed here
   ProcessGameKeys(); // here is where we process F keys
  
