@@ -4408,6 +4408,8 @@ bool MainGameRender(void)
 
   if (!FSEndScene())
         return false;
+
+  return true;
 }
 
 
