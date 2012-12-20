@@ -4138,6 +4138,7 @@ bool RenderCurrentCameraInStereo( RenderCurrentCameraPt render_camera )
 	#endif
 	    return false;
 	}
+	return true;
 }
 
 void DrawMainGameMenu(void)
