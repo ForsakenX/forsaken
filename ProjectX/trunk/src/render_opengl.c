@@ -317,11 +317,7 @@ void render_set_filter( bool red, bool green, bool blue )
 
 bool render_flip( render_info_t * info )
 {
-#if SDL_VERSION_ATLEAST(2,0,0)
-	SDL_RenderPresent(info->renderer);
-#else
-	SDL_GL_SwapBuffers();
-#endif
+	sdl_render_present(info);
 	CHECK_GL_ERRORS;
 	return true;
 }

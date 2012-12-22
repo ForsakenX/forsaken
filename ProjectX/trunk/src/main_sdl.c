@@ -344,3 +344,11 @@ bool sdl_init_video( void )
 	return true;
 }
 
+void sdl_render_present( render_info_t * info )
+{
+#if SDL_VERSION_ATLEAST(2,0,0)
+	SDL_RenderPresent(info->renderer);
+#else
+	SDL_GL_SwapBuffers();
+#endif
+}

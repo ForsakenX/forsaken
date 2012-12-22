@@ -483,7 +483,7 @@ void render_set_filter( bool red, bool green, bool blue )
 
 bool render_flip( render_info_t * info )
 {
-	SDL_GL_SwapBuffers();
+	sdl_render_present(info);
 	render_error_description(0);
 	return true;
 }
