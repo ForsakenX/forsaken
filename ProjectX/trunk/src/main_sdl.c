@@ -1,8 +1,7 @@
 #include "main.h"
 #include "util.h"
-#include "render.h"
 #include "version.h"
-#include <SDL.h>
+#include "main_sdl.h"
 #ifdef OPENGL
 #include "SDL_opengl.h"
 #endif

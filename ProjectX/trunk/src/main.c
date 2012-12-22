@@ -1,4 +1,5 @@
 #include "main.h"
+#include "main_sdl.h"
 #include <stdio.h>
 #include <string.h>
 #include <search.h>
@@ -402,8 +403,6 @@ extern void SetSoundLevels( int *dummy );
 extern void GetDefaultPilot(void);
 extern bool InitScene(void);
 extern BYTE MyGameStatus;
-extern bool sdl_init_video( void );
-extern bool sdl_init( void );
 
 #include "mload.h"
 extern RENDEROBJECT Portal_Execs[ MAXGROUPS ];

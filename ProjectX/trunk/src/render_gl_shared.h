@@ -7,9 +7,9 @@
 #include "render.h"
 #include "texture.h"
 #include "file.h"
-#include <SDL.h>
-#include "SDL_opengl.h"
 #include <stdio.h>
+#include "main_sdl.h"
+#include "SDL_opengl.h"
 
 extern GLenum render_last_gl_error;
 
