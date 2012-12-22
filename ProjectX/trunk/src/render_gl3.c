@@ -347,6 +347,12 @@ static bool update_shader_program( char **log )
 	}
 
 	current_program = glCreateProgram();
+	if(!current_program)
+	{
+		Msg("Failed to create shader program\n");
+		return false;
+	}
+
 	glAttachShader( current_program, vertex_shader );
 	glAttachShader( current_program, fragment_shader );
 	glLinkProgram( current_program );
@@ -372,7 +378,7 @@ static bool update_shader_program( char **log )
 	return true;
 }
 
-static void set_default_shaders( void )
+static bool set_default_shaders( void )
 {
 	char *info_log;
 
@@ -394,25 +400,25 @@ static void set_default_shaders( void )
 	if ( ! vertex_shader )
 	{
 		DebugPrintf( "Failed to compile vertex shader! Info log:\n-----\n%s\n-----\n", info_log );
-		return;
+		return false;
 	}
 	fragment_shader = new_shader( GL_FRAGMENT_SHADER, default_fragment_shader, &info_log );
 	if ( ! fragment_shader )
 	{
 		DebugPrintf( "Failed to compile fragment shader! Info log:\n-----\n%s\n-----\n", info_log );
-		return;
+		return false;
 	}
 	if ( update_shader_program( &info_log ) == false )
 	{
 		DebugPrintf( "Failed to build shader program! Info log:\n-----\n%s\n-----\n", info_log );
-		return;
+		return false;
 	}
 }
 
 static set_defaults( void )
 {
 	build_gamma_table(1.0f); // 1.0f means no gamma change
-	set_default_shaders();
+	if(!set_default_shaders()) return false;
 	reset_cull();
 	reset_trans();
 	set_normal_states(); // default preset render mode
@@ -435,7 +441,7 @@ bool render_init( render_info_t * info )
 {
 	print_info();
 	detect_caps();
-	set_defaults();
+	if(!set_defaults()) return false;
 	resize_viewport(info->ThisMode.w, info->ThisMode.h);
 	if(info->wireframe)
 		render_mode_wireframe();
