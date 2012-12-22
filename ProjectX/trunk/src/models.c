@@ -1415,12 +1415,16 @@ bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt
 								if( ExecuteMxaloadHeader( &MxaModelHeaders[ModelNum], ClipGroup ) != true)
 								{
 									Msg( "ModelDisp() ExecuteMxaloadHeader for %s Failed\n", &ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
+#ifdef NEW_LIGHTING
 									render_reset_lighting_variables();
+#endif
 									return false;
 								}
 							}
 
+#ifdef NEW_LIGHTING
 							render_reset_lighting_variables();
+#endif
 						}
 						else
 						{
@@ -1474,12 +1478,16 @@ bool ModelDisp( u_int16_t group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt
 								{
 									Msg( "ModelDisp() ExecuteMxloadHeader for %s Failed\n",
 										&ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
+#ifdef NEW_LIGHTING
 									render_reset_lighting_variables();
+#endif
 									return false;
 								}
 							}
 
+#ifdef NEW_LIGHTING
 							render_reset_lighting_variables();
+#endif
 						}
 					}
 				}

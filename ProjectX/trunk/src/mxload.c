@@ -990,10 +990,14 @@ bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model  )
 					{
 						if (!draw_object(&Mxloadheader->Group[group].renderObject[i]))
 						{
+#ifdef NEW_LIGHTING
 							render_reset_lighting_variables();
+#endif
 							return false;
 						}
+#ifdef NEW_LIGHTING
 						render_reset_lighting_variables();
+#endif
 					}
 				}
 			}

@@ -49,6 +49,7 @@ void AddTransExe( /*LPD3DMATRIX Matrix*/RENDERMATRIX *Matrix , /*LPDIRECT3DEXECU
 		TransExe[NumOfTransExe].NumVerts = NumVerts;
 		TransExe[NumOfTransExe].group = group;
 
+#ifdef NEW_LIGHTING
 		TransExe[NumOfTransExe].render_lighting_use_only_light_color_and_blend = render_lighting_use_only_light_color_and_blend;
 		TransExe[NumOfTransExe].render_lighting_use_only_light_color = render_lighting_use_only_light_color;
 		TransExe[NumOfTransExe].render_lighting_point_lights_only = render_lighting_point_lights_only;
@@ -58,6 +59,7 @@ void AddTransExe( /*LPD3DMATRIX Matrix*/RENDERMATRIX *Matrix , /*LPDIRECT3DEXECU
 		TransExe[NumOfTransExe].render_color_blend_red = render_color_blend_red;
 		TransExe[NumOfTransExe].render_color_blend_green = render_color_blend_green;
 		TransExe[NumOfTransExe].render_color_blend_blue = render_color_blend_blue;
+#endif
 
 		NumOfTransExe++;
 	}
@@ -79,6 +81,7 @@ void ExecuteTransExe( u_int16_t group )
 		{
 			Display = true;
 
+#ifdef NEW_LIGHTING
 	    render_lighting_enabled = TransExe[i].render_lighting_enabled;
 	    render_lighting_use_only_light_color_and_blend = TransExe[i].render_lighting_use_only_light_color_and_blend;
  		  render_lighting_use_only_light_color = TransExe[i].render_lighting_use_only_light_color;
@@ -88,6 +91,7 @@ void ExecuteTransExe( u_int16_t group )
 	    render_color_blend_red = TransExe[i].render_color_blend_red;
  		  render_color_blend_green = TransExe[i].render_color_blend_green;
    		render_color_blend_blue = TransExe[i].render_color_blend_blue;
+#endif
 
 			if( TransExe[i].Model != (u_int16_t) -1 )
 			{
@@ -147,10 +151,14 @@ void ExecuteTransExe( u_int16_t group )
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
 
+#ifdef NEW_LIGHTING
 			render_reset_lighting_variables();
+#endif
 		}
 	}
+#ifdef NEW_LIGHTING
 	render_reset_lighting_variables();
+#endif
 	FSSetWorld(&identity);
 }
 
@@ -167,6 +175,7 @@ void ExecuteTransExeUnclipped( u_int16_t group )
 		{
 			Display = true;
 
+#ifdef NEW_LIGHTING
 	    render_lighting_enabled = TransExe[i].render_lighting_enabled;
 	    render_lighting_use_only_light_color_and_blend = TransExe[i].render_lighting_use_only_light_color_and_blend;
  		  render_lighting_use_only_light_color = TransExe[i].render_lighting_use_only_light_color;
@@ -176,6 +185,7 @@ void ExecuteTransExeUnclipped( u_int16_t group )
 	    render_color_blend_red = TransExe[i].render_color_blend_red;
  		  render_color_blend_green = TransExe[i].render_color_blend_green;
    		render_color_blend_blue = TransExe[i].render_color_blend_blue;
+#endif
 
 			if( TransExe[i].Model != (u_int16_t) -1 )
 			{
@@ -237,9 +247,13 @@ void ExecuteTransExeUnclipped( u_int16_t group )
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
 
+#ifdef NEW_LIGHTING
 			render_reset_lighting_variables();
+#endif
 		}
 	}
+#ifdef NEW_LIGHTING
 	render_reset_lighting_variables();
+#endif
 	FSSetWorld(&identity);
 }
