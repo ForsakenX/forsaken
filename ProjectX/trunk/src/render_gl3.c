@@ -1007,7 +1007,7 @@ static bool draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 		loc = glGetAttribLocation( current_program, "vnormal" );
 		if (loc >= 0)
 		{
-			glVertexAttribPointer( loc, 3, GL_FLOAT, GL_FALSE, 0, sizeof(NORMAL), 0 );
+			glVertexAttribPointer( loc, 3, GL_FLOAT, GL_FALSE, sizeof(NORMAL), 0 );
 			glEnableVertexAttribArray( loc );
 		}
 	}
