@@ -441,9 +441,11 @@ static bool set_default_shaders( void )
 		DebugPrintf( "Failed to build shader program! Info log:\n-----\n%s\n-----\n", info_log );
 		return false;
 	}
+
+	return true;
 }
 
-static set_defaults( void )
+static bool set_defaults( void )
 {
 	build_gamma_table(1.0f); // 1.0f means no gamma change
 	if(!set_default_shaders()) return false;
@@ -451,6 +453,7 @@ static set_defaults( void )
 	reset_trans();
 	set_normal_states(); // default preset render mode
 	CHECK_GL_ERRORS;
+	return true;
 }
 
 static resize_viewport( int width, int height )
