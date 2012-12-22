@@ -484,7 +484,10 @@ static bool AppInit( char * lpCmdLine )
 	// create and show the window
 	//
 	if(!sdl_init_video())
+	{
+		Msg("sdl_init_video() returned false");
 		return false;
+	}
 
 	// appears dinput has to be after init window
 

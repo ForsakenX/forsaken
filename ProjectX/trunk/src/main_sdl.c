@@ -338,7 +338,10 @@ bool sdl_init_video( void )
 	set_window_title();
 
 	if (!render_init( &render_info ))
+	{
+		Msg("render_init() returned false");
 		return false;
+	}
 
 	return true;
 }
