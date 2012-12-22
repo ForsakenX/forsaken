@@ -96,10 +96,25 @@ static struct
 
 static void detect_caps( void )
 {
+	int i, max;
+
 	//check whether anisotropic filtering extension is supported
 	caps.anisotropic = 0.0f;
-	if(strstr((char*)glGetString(GL_EXTENSIONS), "GL_EXT_texture_filter_anisotropic"))
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &caps.anisotropic );
+
+// TODO - Bug in mac drivers.. hopefully everyone also gets a value of 16f
+#ifdef MACOSX
+	// OSX 10.8.2, AMD Radeon HD 6750M, GL 2.1 ATI-1.0.29, shader 1.20
+	caps.anisotropic = 16.0f;
+#else
+	glGetIntegerv(GL_NUM_EXTENSIONS,&max);
+	for(i = 0; i < max; i++ )
+	{
+		const GLubyte* extension = glGetStringi(GL_EXTENSIONS,i);
+		if(extension && strstr(extension, "GL_EXT_texture_filter_anisotropic"))
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &caps.anisotropic );
+	}
+#endif
+
 	DebugPrintf("render: anisotropic filtering support = %s\n",caps.anisotropic?"true":"false");
 }
 
@@ -290,7 +305,20 @@ static print_info( void )
 		glGetString(GL_SHADING_LANGUAGE_VERSION),
 		(b)?"true":"false");
 
-	DebugPrintf( "extensions='%s'\n", glGetString(GL_EXTENSIONS));
+// TODO - Bug in mac drivers
+#ifndef MACOSX
+	int i, max;
+	glGetIntegerv(GL_NUM_EXTENSIONS,&max);
+	DebugPrintf("render: number of extensions = %d\n",max);
+	for(i = 0; i < max; i++ )
+	{
+		const GLubyte* extension = glGetStringi(GL_EXTENSIONS,i);
+		if(!extension)
+			DebugPrintf("render: glGetString(GL_EXTENSIONS) returned null for extension %d\n",i);
+		else
+			DebugPrintf("render: Extension %d = %s\n",i,extension);
+	}
+#endif
 }
 
 GLuint vertex_shader = 0;
