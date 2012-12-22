@@ -1,4 +1,4 @@
-#ifdef OPENGL3
+#if GL == 3
 #include "render_gl_shared.h"
 
 struct texture
@@ -1098,4 +1098,4 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	}
 }
 
-#endif // OPENGL3
+#endif // GL == 3

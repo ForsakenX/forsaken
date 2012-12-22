@@ -1,4 +1,4 @@
-#if defined(OPENGL1) || defined(OPENGL3)
+#ifdef GL
 #include "render_gl_shared.h"
 
 // CHECK_GL_ERRORS will set this when called

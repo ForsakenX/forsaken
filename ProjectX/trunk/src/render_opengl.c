@@ -1,4 +1,4 @@
-#ifdef OPENGL1
+#if GL == 1
 #include "render_gl_shared.h"
 #include "new3d.h"
 #include "lights.h"
@@ -1012,4 +1012,4 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	renderObject->numTextureGroups = 0;
 }
 
-#endif // OPENGL
+#endif // GL == 1

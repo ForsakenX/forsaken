@@ -70,6 +70,9 @@ MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 # which version of sdl do you want to ask pkgconfig for ?
 SDL=sdl
 
+# which version of GL do you want to use ?
+GL=1
+
 # library headers
 CFLAGS+= `pkg-config --cflags $(SDL) $(LUA) $(LUA)-socket libenet libpng zlib openal`
 ifeq ($(MACOSX),1)
@@ -119,12 +122,7 @@ endif
 ifeq ($(RENDER_DISABLED),1)
   CFLAGS+= -DRENDER_DISABLED
 else
-  ifeq ($(GL),3)
-    CFLAGS+= -DOPENGL3
-  else
-    CFLAGS+= -DOPENGL1
-  endif
-  CFLAGS+= -DOPENGL
+  CFLAGS+= -DGL=$(GL)
 endif
 CFLAGS+= -DNET_ENET_2 -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DSOUND_OPENAL
 ifeq ($(DEBUG),1)

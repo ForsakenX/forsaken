@@ -2,7 +2,7 @@
 #include "util.h"
 #include "version.h"
 #include "main_sdl.h"
-#ifdef OPENGL
+#ifdef GL
 #include "SDL_opengl.h"
 #endif
 
@@ -132,7 +132,7 @@ static void set_window_icon( void )
 
 static void set_opengl_settings( void )
 {
-#ifdef OPENGL
+#ifdef GL
 	// BPP should be left alone to match whatever the desktop is at.
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,	  1);
@@ -199,7 +199,7 @@ static u_int32_t create_video_flags( void )
 {
 	u_int32_t flags = SDL_ANYFORMAT;
 
-#ifdef OPENGL
+#ifdef GL
 	flags |= SDL_OPENGL;
 #endif
 
@@ -230,7 +230,7 @@ static u_int32_t create_window_flags( void )
 	if(render_info.fullscreen)
 		window_flags |= SDL_WINDOW_FULLSCREEN;
 
-#ifdef OPENGL
+#ifdef GL
 	window_flags |= SDL_WINDOW_OPENGL;
 #endif
 

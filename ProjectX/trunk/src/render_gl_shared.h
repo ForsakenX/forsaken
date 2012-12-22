@@ -1,4 +1,4 @@
-#if defined(OPENGL1) || defined(OPENGL3)
+#ifdef GL
 #ifndef RENDER_GL_SHARED_INCLUDED
 #define RENDER_GL_SHARED_INCLUDED
 
