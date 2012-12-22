@@ -7871,8 +7871,13 @@ void CancelListSelection( LIST *l )
 void MenuEnterTextInputState(int state)
 {
 	MenuState = state;
+// TODO is this right ?
+#if SDL_VERSION_ATLEAST(2,0,0)
+	SDL_StartTextInput();
+#else
 	if(!SDL_EnableUNICODE(-1))
 		SDL_EnableUNICODE(1);
+#endif
 }
 
 void SelectText( MENUITEM *Item )
@@ -16191,8 +16196,14 @@ bool ProcessText( int Key )
 		GetVduTextFormattingInfo ( t );
 	}
 
+// TODO is this right ?
+//      will probably need to support SDL_TextInputEvent
 	if(done)
+#if SDL_VERSION_ATLEAST(2,0,0)
+		SDL_StopTextInput();
+#else
 		SDL_EnableUNICODE(0);
+#endif
 
 	return !done;
 }

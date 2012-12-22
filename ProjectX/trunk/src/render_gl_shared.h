@@ -13,6 +13,21 @@
 
 extern GLenum render_last_gl_error;
 
+// TODO invalid pointer
+#if defined(MACOSX) && SDL_VERSION_ATLEAST(2,0,0)
+#define gluErrorString(e)\
+	(e == 0x0500 ? "invalid enumerant" : \
+	(e == 0x0501 ? "invalid value" : \
+	(e == 0x0502 ? "invalid operation" : \
+	(e == 0x0503 ? "stack overflow" : \
+	(e == 0x0504 ? "stack underflow" : \
+	(e == 0x0505 ? "out of memory" : \
+	(e == 0x0506 ? "invalid framebuffer operation" : \
+	(e == 0x8031 ? "table too large" : \
+	 "unknown" \
+	))))))))
+#endif
+
 #define CHECK_GL_ERRORS \
 	do \
 	{ \

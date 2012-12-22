@@ -67,8 +67,11 @@ endif
 LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
 MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
+# which version of sdl do you want to ask pkgconfig for ?
+SDL=sdl
+
 # library headers
-CFLAGS+= `pkg-config --cflags sdl $(LUA) $(LUA)-socket libenet libpng zlib openal`
+CFLAGS+= `pkg-config --cflags $(SDL) $(LUA) $(LUA)-socket libenet libpng zlib openal`
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -87,7 +90,7 @@ ifeq ($(STATIC),1)
 endif
 
 # dynamic only libraries
-LIB+= `pkg-config --libs sdl`
+LIB+= `pkg-config --libs $(SDL)`
 ifeq ($(MINGW),1)
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
@@ -171,6 +174,7 @@ check:
 	@echo "GL = $(GL)"
 	@echo "RENDER_DISABLED = $(RENDER_DISABLED)"
 	@echo "LUA = $(LUA)"
+	@echo "SDL = $(SDL)"
 	@echo
 	@echo "CC = $(CC)"
 	@echo "BIN = $(BIN)"

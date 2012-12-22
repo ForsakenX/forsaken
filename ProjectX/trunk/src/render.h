@@ -57,7 +57,13 @@ typedef struct {
 	float					aspect_ratio;			/* screen aspect ratio */
 	bool					force_accel;			/* force 3d acelleration on gl */
 	bool					wireframe;
+
+#if SDL_VERSION_ATLEAST(2,0,0)
+	SDL_Window*             window;
+	SDL_Renderer*           renderer;
+#else
 	SDL_Surface*	        screen;
+#endif
 
 	// stereo related options
 	bool                  stereo_enabled;

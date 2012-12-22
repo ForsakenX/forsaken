@@ -7,7 +7,35 @@
 #endif
 
 #include "main.h"
+
 #include <SDL.h>
+#if SDL_VERSION_ATLEAST(2,0,0)
+    // TODO
+    //        previously this was the last possible keyboard value that sdl supported (323)
+    //        now supposedly all possible 32 bit values are mostly in use so they removed it
+    //        although forsaken still expects a single number which maps to keyboard, mouse, joystick
+    //        for this to work in sdl 1.2 we simply defined mouse_input_enum below and injected
+    //        mouse values above SDLK_LAST
+    //
+    //        We could try using a larger 64bit type to map mouse/joystick higher up
+    //        But will this cause a ton of vkey_map to be generated that we don't need ?
+    //        Also allot of forsaken code will try to enumerate all of them ?
+    //
+    //        Options:
+    //             Try new values
+    //             Split it up into 3 values for each device
+    // 
+    //        sdl 1.2 = 323
+    //        sdl 2.0 = 2**32
+    //        sdl 2.0 SDL_GetKeyboardState retuns 512 values
+    //
+    //        sdl 2.0 = SDLK_SLEEP (0x8000011A) seems to be the largest number
+    //                  but this easily exhausts all available memory blocks based on xmem.c setting.
+    //                  and causes vkey_map to generate 0x8000011A+ entries...
+    //
+    #define SDLK_LAST 512
+#endif
+
 #include "controls.h"
 
 /////////////

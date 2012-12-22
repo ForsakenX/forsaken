@@ -555,7 +555,14 @@ static void ReadKeyboard( void )
 		return;
 	}
 
+#if SDL_VERSION_ATLEAST(2,0,0)
+	keys = SDL_GetKeyboardState( &nkeys );
+#else
 	keys = SDL_GetKeyState( &nkeys );
+#endif
+
+	//printf("number of keys = %d\n",nkeys);
+
 	memset( &key_state[ new_input ], 0, SDLK_LAST );
 
 	for( i = 0; i < SDLK_LAST; i++ )

@@ -33,7 +33,11 @@ void input_grab( bool grab )
 	if( render_info.fullscreen )
 	{
 		input_grabbed = true;
+#if SDL_VERSION_ATLEAST(2,0,0)
+		SDL_SetWindowGrab( render_info.window, SDL_TRUE );
+#else
 		SDL_WM_GrabInput( SDL_GRAB_ON );
+#endif
 		SDL_ShowCursor( SDL_DISABLE );
 		return;
 	}
@@ -44,7 +48,11 @@ void input_grab( bool grab )
 	SDL_WM_GrabInput( SDL_GRAB_OFF );
 	SDL_ShowCursor( SDL_ENABLE );
 #else
+	#if SDL_VERSION_ATLEAST(2,0,0)
+	SDL_SetWindowGrab( render_info.window, grab ? SDL_TRUE : SDL_FALSE );
+	#else
 	SDL_WM_GrabInput( grab ? SDL_GRAB_ON : SDL_GRAB_OFF );
+	#endif
 	SDL_ShowCursor( grab ? SDL_DISABLE : SDL_ENABLE );
 #endif
 
@@ -80,54 +88,15 @@ int input_buffer_find( int code )
 // Window and Activate Events
 //////////////////////////////////////////////
 
-void app_active( SDL_ActiveEvent active )
-{
-//	DebugPrintf("window active state set to: %s\n",(active.gain?"true":"false"));
-
-	// lost focus so release inputs
-	if( ! active.gain )
-		input_grab( false );
-
-	// gained focus
-	else
-	{
-		// fullscreen always has exclusive inputs
-		if( render_info.fullscreen )
-			input_grab(true);
-
-		// window mode
-		else
-		{
-			// only grab inputs if we are playing and not in menu
-			if( !CurrentMenu && MyGameStatus == STATUS_Normal )
-				input_grab(true);
-			else
-				input_grab(false);
-		}
-	}
-
-	if(active.gain)
-		RenderModeReset();
-
-	switch( active.state )
-	{
-	case SDL_APPMOUSEFOCUS: // mouse
-		//DebugPrintf("Mouse event\n");
-		break;
-	case SDL_APPINPUTFOCUS: // keyboard
-		//DebugPrintf("keyboard event\n");
-		break;
-	case SDL_APPACTIVE: // minimize/iconified
-		//DebugPrintf("Iconify event\n");
-		break;
-	}
-}
-
 // TODO
 //	when this is ready then pass SDL_RESIZABLE to SDL_SetVideoMode
 //  need to resize video with SDL_SetVideoMode
 bool bIgnoreWM_SIZE = false; // ignores resize events
-void app_resize( SDL_ResizeEvent resize )
+#if SDL_VERSION_ATLEAST(2,0,0)
+void app_resize( SDL_WindowEvent * window )
+#else
+void app_resize( SDL_ResizeEvent * resize )
+#endif
 {
 	DebugPrintf("Window size changed.\n");
 
@@ -159,6 +128,75 @@ void app_resize( SDL_ResizeEvent resize )
 	SetGamePrefs();
 }
 
+#if SDL_VERSION_ATLEAST(2,0,0)
+void app_active( SDL_WindowEvent * window )
+#else
+void app_active( SDL_ActiveEvent * active )
+#endif
+{
+//	DebugPrintf("window active state set to: %s\n",(active->gain?"true":"false"));
+
+// since sdl 2 can support more than one type of event we want to explicitly check both gained/lost state
+#if SDL_VERSION_ATLEAST(2,0,0)
+	bool gained  = window -> event == SDL_WINDOWEVENT_FOCUS_GAINED;
+	bool lost    = window -> event == SDL_WINDOWEVENT_FOCUS_LOST;
+	bool resized = window -> event == SDL_WINDOWEVENT_RESIZED;
+	bool exposed = window -> event == SDL_WINDOWEVENT_EXPOSED;
+#else
+	bool gained = active -> gain;
+	bool lost   = ! gained;
+#endif
+
+	if( lost )
+		input_grab( false );
+
+	if( gained )
+	{
+		// fullscreen always has exclusive inputs
+		if( render_info.fullscreen )
+		{
+			input_grab(true);
+		}
+
+		// window mode
+		else
+		{
+			// only grab inputs if we are playing and not in menu
+			if( !CurrentMenu && MyGameStatus == STATUS_Normal )
+				input_grab(true);
+			else
+				input_grab(false);
+		}
+
+		RenderModeReset();
+	}
+
+#if SDL_VERSION_ATLEAST(2,0,0)
+
+	if( resized )
+		app_resize( window );
+
+	if( exposed )
+		render_flip(&render_info);
+
+#endif
+
+#if !SDL_VERSION_ATLEAST(2,0,0)
+	switch( active->state )
+	{
+	case SDL_APPMOUSEFOCUS: // mouse
+		//DebugPrintf("Mouse event\n");
+		break;
+	case SDL_APPINPUTFOCUS: // keyboard
+		//DebugPrintf("keyboard event\n");
+		break;
+	case SDL_APPACTIVE: // minimize/iconified
+		//DebugPrintf("Iconify event\n");
+		break;
+	}
+#endif
+}
+
 void app_quit( void )
 {
 	// in case the window isn't in the foreground
@@ -187,27 +225,32 @@ void app_quit( void )
 // Keyboard Events
 //////////////////////////////////////////////
 
-void app_keyboard( SDL_KeyboardEvent key )
+void app_keyboard( SDL_KeyboardEvent * key )
 {
-	if( key.type == SDL_KEYUP )
+	if( key->type == SDL_KEYUP )
 	{
-		if( key.keysym.sym == SDLK_F12 && key.keysym.mod & KMOD_SHIFT )
+		if( key->keysym.sym == SDLK_F12 && key->keysym.mod & KMOD_SHIFT )
 		{
 				MenuGoFullScreen( NULL );
 		}
-		else if( key.keysym.sym == SDLK_RSHIFT || key.keysym.sym == SDLK_LSHIFT )
+		else if( key->keysym.sym == SDLK_RSHIFT || key->keysym.sym == SDLK_LSHIFT )
 		{
+#if SDL_VERSION_ATLEAST(2,0,0)
+				u_int8_t *keystate = SDL_GetKeyboardState(NULL);
+				if ( keystate[SDL_SCANCODE_F12] )
+#else
 				u_int8_t *keystate = SDL_GetKeyState(NULL);
 				if ( keystate[SDLK_F12] )
+#endif
 					MenuGoFullScreen( NULL );
 		}
 	}
-	if( key.type == SDL_KEYDOWN )
+	if( key->type == SDL_KEYDOWN )
 	{
 		input_buffer_send(
-			key.keysym.unicode ? 
-				key.keysym.unicode :
-				key.keysym.sym
+			key->keysym.unicode ? 
+				key->keysym.unicode :
+				key->keysym.sym
 		);
 	}
 }
@@ -239,45 +282,58 @@ void reset_mouse_wheel( void )
 	mouse_state.wheel = 0;
 }
 
-void app_mouse_button( SDL_MouseButtonEvent _event )
+#if SDL_VERSION_ATLEAST(2,0,0)
+void app_mouse_wheel( SDL_MouseWheelEvent * _event )
+{
+	//printf("mouse wheel = { x = %d, y = %d }\n", _event->x, _event->y);
+	if(_event->y > 0) { mouse_wheel_up();   input_buffer_send( UP_MOUSE   ); }
+	if(_event->y < 0) { mouse_wheel_down(); input_buffer_send( DOWN_MOUSE ); }
+}
+#endif
+
+void app_mouse_button( SDL_MouseButtonEvent * _event )
 {
 	// we index mouse starting at 0
-	int button = _event.button - 1;
+	int button = _event->button - 1;
 
 	// pass down mouse events for menu processing
-	if(  _event.type == SDL_MOUSEBUTTONDOWN )
+	// note: wheel events are sent above in app_mouse_wheel for sdl2
+	if(  _event->type == SDL_MOUSEBUTTONDOWN )
 		input_buffer_send( button + LEFT_MOUSE );
 
-	switch( _event.button )
+	switch( _event->button )
 	{
+#if !SDL_VERSION_ATLEAST(2,0,0)
 	// mouse wheel button down/up are sent at same time
 	// so if we react to the up event then we undo the down event !
 	// so we must ignore up events and reset it further bellow manually
 	// since a wheel event can never be held down this is ok...
 	case SDL_BUTTON_WHEELUP:
-		if( _event.type == SDL_MOUSEBUTTONDOWN )
+		if( _event->type == SDL_MOUSEBUTTONDOWN )
 			mouse_wheel_up();
 		break;
 	case SDL_BUTTON_WHEELDOWN:
-		if( _event.type == SDL_MOUSEBUTTONDOWN )
+		if( _event->type == SDL_MOUSEBUTTONDOWN )
 			mouse_wheel_down();
 		break;
+#endif
+
 	//
 	// Every other mouse button works like normal
 	//
 	default: 
 		// save the button state
-		mouse_state.buttons[ button ] = ( _event.type == SDL_MOUSEBUTTONDOWN );
-		//DebugPrintf("sdl mouse button %d %s\n",_event.button,
+		mouse_state.buttons[ button ] = ( _event->type == SDL_MOUSEBUTTONDOWN );
+		//DebugPrintf("sdl mouse button %d %s\n",_event->button,
 		//	(mouse_state.buttons[ button ]?"pressed":"released"));
 		break;
 	}
 }
 
-void app_mouse_motion( SDL_MouseMotionEvent motion )
+void app_mouse_motion( SDL_MouseMotionEvent * motion )
 {
-	mouse_state.xrel += motion.xrel;
-	mouse_state.yrel += motion.yrel;
+	mouse_state.xrel += motion->xrel;
+	mouse_state.yrel += motion->yrel;
 }
 
 #ifndef DXMOUSE
@@ -320,140 +376,140 @@ static int get_deadzone( int joy, int axis )
 	return JoystickInfo[ joy ].Axis[ axis ].deadzone;
 }
 
-void app_joy_axis( SDL_JoyAxisEvent axis )
+void app_joy_axis( SDL_JoyAxisEvent * axis )
 {
 	long value;
 	int deadzone;
 
-	if(axis.axis > MAX_JOYSTICK_AXIS)
+	if(axis->axis > MAX_JOYSTICK_AXIS)
 	{
 		DebugPrintf(
 			"sdl_input: ignoring joy %d axis %d > max axises\n",
-			axis.which, axis.axis);
+			axis->which, axis->axis);
 		return;
 	}
 
 	// sdl axis value (range: -32768 to 32767)
 	// forsaken expects (range: -100 to 100)
-	value = (long) (((float)axis.value) / 327.67f);
+	value = (long) (((float)axis->value) / 327.67f);
 
 	// get the joystick deadzone
-	deadzone = get_deadzone(axis.which,axis.axis);
+	deadzone = get_deadzone(axis->which,axis->axis);
 
 	// if movement greater then deadzone then apply
 	// other wise no movement at all is registered
-	joy_axis_state[ axis.which ][ axis.axis ] = 
+	joy_axis_state[ axis->which ][ axis->axis ] = 
 		( abs(value) > deadzone ) ? value : 0 ;
 }
 
-void app_joy_ball( SDL_JoyBallEvent ball )
+void app_joy_ball( SDL_JoyBallEvent * ball )
 {
 }
 
-void app_joy_button( SDL_JoyButtonEvent button )
+void app_joy_button( SDL_JoyButtonEvent * button )
 {
-	if(button.button > MAX_JOYSTICK_BUTTONS)
+	if(button->button > MAX_JOYSTICK_BUTTONS)
 	{
 		DebugPrintf(
 			"sdl_input: ignoring joy %d button %d > max buttons\n",
-			button.which, button.button);
+			button->which, button->button);
 		return;
 	}
 
-	joy_button_state[ button.which ][ button.button ] =
-		(button.type == SDL_JOYBUTTONDOWN);
+	joy_button_state[ button->which ][ button->button ] =
+		(button->type == SDL_JOYBUTTONDOWN);
 
 	// pass down mouse events for menu processing
-	if(  button.type == SDL_JOYBUTTONDOWN )
+	if(  button->type == SDL_JOYBUTTONDOWN )
 	{
 		input_buffer_send(
-			button.button + DIK_JOYSTICK
+			button->button + DIK_JOYSTICK
 		);
 	}
 }
 
-void app_joy_hat( SDL_JoyHatEvent hat )
+void app_joy_hat( SDL_JoyHatEvent * hat )
 {
-	if(hat.hat > MAX_JOYSTICK_POVS)
+	if(hat->hat > MAX_JOYSTICK_POVS)
 	{
 		DebugPrintf(
 			"sdl_input: ignoring joy %d hat %d > max hats\n",
-			hat.which, hat.hat);
+			hat->which, hat->hat);
 		return;
 	}
 
-	if(hat.value == SDL_HAT_CENTERED)
+	if(hat->value == SDL_HAT_CENTERED)
 	{
 		int d;
 		for( d = 0; d < MAX_POV_DIRECTIONS; d++ )
 		{
-			joy_hat_state[ hat.which ][ hat.hat ][ d ] = 0;
+			joy_hat_state[ hat->which ][ hat->hat ][ d ] = 0;
 		}
 		return;
 	}
 
-	if(hat.value & SDL_HAT_UP)
+	if(hat->value & SDL_HAT_UP)
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_UP ] = 1;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_UP ] = 1;
 		input_buffer_send(
 			JOYSTICK_POVDIR_KEYCODE(
-				hat.which,
-				hat.hat,
+				hat->which,
+				hat->hat,
 				JOY_HAT_UP
 			)
 		);
 	}
 	else
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_UP ] = 0;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_UP ] = 0;
 	}
 
-	if(hat.value & SDL_HAT_RIGHT)
+	if(hat->value & SDL_HAT_RIGHT)
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_RIGHT ] = 1;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_RIGHT ] = 1;
 		input_buffer_send(
 			JOYSTICK_POVDIR_KEYCODE(
-				hat.which,
-				hat.hat,
+				hat->which,
+				hat->hat,
 				JOY_HAT_RIGHT
 			)
 		);
 	}
 	else
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_RIGHT ] = 0;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_RIGHT ] = 0;
 	}
 
-	if(hat.value & SDL_HAT_DOWN)
+	if(hat->value & SDL_HAT_DOWN)
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_DOWN ] = 1;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_DOWN ] = 1;
 		input_buffer_send(
 			JOYSTICK_POVDIR_KEYCODE(
-				hat.which,
-				hat.hat,
+				hat->which,
+				hat->hat,
 				JOY_HAT_DOWN
 			)
 		);
 	}
 	else
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_DOWN ] = 0;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_DOWN ] = 0;
 	}
 
-	if(hat.value & SDL_HAT_LEFT)
+	if(hat->value & SDL_HAT_LEFT)
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_LEFT ] = 1;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_LEFT ] = 1;
 		input_buffer_send(
 			JOYSTICK_POVDIR_KEYCODE(
-				hat.which,
-				hat.hat,
+				hat->which,
+				hat->hat,
 				JOY_HAT_LEFT
 			)
 		);
 	}
 	else
 	{
-		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_LEFT ] = 0;
+		joy_hat_state[ hat->which ][ hat->hat ][ JOY_HAT_LEFT ] = 0;
 	}
 }
 
@@ -593,7 +649,12 @@ bool joysticks_cleanup( void )
 
 		if(JoystickInfo[i].sdl_joy)
 		{
+// seems to not be included anymore
+// but since sdl_joy is not null then
+// seems like we would always have a joystick opened here
+#if !SDL_VERSION_ATLEAST(2,0,0)
 			if(SDL_JoystickOpened(i))
+#endif
 			{
 				SDL_JoystickClose(
 					JoystickInfo[i].sdl_joy
@@ -671,48 +732,108 @@ bool handle_events( void )
 	{
 		switch( _event.type )
 		{
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
-			app_keyboard( _event.key );
-			break;
 
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
-			app_mouse_button( _event.button );
-			break;
 
-		case SDL_MOUSEMOTION:
-			app_mouse_motion( _event.motion );
+// previously mouse wheel was a button code
+// now it's an x/y axis since it supports mouse wheel balls
+#if SDL_VERSION_ATLEAST(2,0,0)
+		case SDL_MOUSEWHEEL:
+			app_mouse_wheel( &_event );
 			break;
+#endif
 
-		case SDL_JOYAXISMOTION:
-			app_joy_axis( _event.jaxis );
+
+// this event name has changed
+#if SDL_VERSION_ATLEAST(2,0,0)
+// TODO - we should call something like app_window
+//        which then delegates to app_active in correct case
+		case SDL_WINDOWEVENT:
+			app_active( &_event );
 			break;
-
-		case SDL_JOYBALLMOTION:
-			app_joy_ball( _event.jball );
-			break;
-
-		case SDL_JOYBUTTONDOWN:
-		case SDL_JOYBUTTONUP:
-			app_joy_button( _event.jbutton );
-			break;
-
-		case SDL_JOYHATMOTION:
-			app_joy_hat( _event.jhat );
-			break;
-
+#else
 		case SDL_ACTIVEEVENT:
-			app_active( _event.active );
+			app_active( &_event.active );
 			break;
+#endif
 
+
+// these have been moved into the window event above
+#if !SDL_VERSION_ATLEAST(2,0,0)
 		case SDL_VIDEORESIZE:
-			app_resize( _event.resize );
+			app_resize( &_event.resize );
 			break;
 
 		case SDL_VIDEOEXPOSE: // need redraw
 			render_flip(&render_info);
 			break;
+#endif
+
+// the newer sdl now uses a union instead of sub structures
+#if SDL_VERSION_ATLEAST(2,0,0)
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			app_keyboard( &_event );
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			app_mouse_button( &_event );
+			break;
+
+		case SDL_MOUSEMOTION:
+			app_mouse_motion( &_event );
+			break;
+
+		case SDL_JOYAXISMOTION:
+			app_joy_axis( &_event );
+			break;
+
+		case SDL_JOYBALLMOTION:
+			app_joy_ball( &_event );
+			break;
+
+		case SDL_JOYBUTTONDOWN:
+		case SDL_JOYBUTTONUP:
+			app_joy_button( &_event );
+			break;
+
+		case SDL_JOYHATMOTION:
+			app_joy_hat( &_event );
+			break;
+
+#else
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			app_keyboard( &_event.key );
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			app_mouse_button( &_event.button );
+			break;
+
+		case SDL_MOUSEMOTION:
+			app_mouse_motion( &_event.motion );
+			break;
+
+		case SDL_JOYAXISMOTION:
+			app_joy_axis( &_event.jaxis );
+			break;
+
+		case SDL_JOYBALLMOTION:
+			app_joy_ball( &_event.jball );
+			break;
+
+		case SDL_JOYBUTTONDOWN:
+		case SDL_JOYBUTTONUP:
+			app_joy_button( &_event.jbutton );
+			break;
+
+		case SDL_JOYHATMOTION:
+			app_joy_hat( &_event.jhat );
+			break;
+
+#endif
 
 		case SDL_QUIT:
 			app_quit();
@@ -733,6 +854,10 @@ bool handle_events( void )
 			}
 			break;
 
+// TODO
+		default:
+			printf("Unknown event type: %d\n",_event.type);
+			break;
 		}
 	}
 
