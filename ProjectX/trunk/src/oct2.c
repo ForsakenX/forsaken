@@ -4216,6 +4216,8 @@ bool MainGameRender(void)
       CurrentCamera = MainCamera;
 
       HUDNames();
+      DispHUDNames();
+      DispUntriggeredNMEs();
 
       CurrentCamera.UseLowestLOD = false;
 
@@ -4401,9 +4403,6 @@ bool MainGameRender(void)
 		set_alpha_states();
 		DispTracker(); // bjd
   }
-
-  DispHUDNames();
-  DispUntriggeredNMEs();
 
   if( Our_CalculateFrameRate() != true)
       return false;
