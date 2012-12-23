@@ -4161,6 +4161,7 @@ bool RenderCurrentCameraWithMainGameMenu(void)
 	if(!RenderCurrentCamera()) return false;
 	DrawMainGameMenu();
 	RenderMainCamera2dPolys(); // screen polys like menu and lense flair
+	return true;
 }
 
 void SetFOVBasedOnShipSpeed(void)
