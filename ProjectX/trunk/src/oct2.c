@@ -4396,16 +4396,17 @@ bool MainGameRender(void)
       if( RenderCurrentCamera() != true ) // bjd
           return false;
     }
-	
+
+  if( Our_CalculateFrameRate() != true)
+      return false;
+
   /* do the target c omputer trick */
   if( TargetComputerOn )
   {
 		set_alpha_states();
 		DispTracker(); // bjd
+		set_normal_states();
   }
-
-  if( Our_CalculateFrameRate() != true)
-      return false;
 
   if (!FSEndScene())
         return false;
@@ -5562,6 +5563,7 @@ bool DispTracker( void ) // bjd
 	VECTOR      ShipDir, TargetDir;
 	float       Cos;
 
+/*
 	if ( render_info.fullscreen )
 	{
 		screen_width = (float) render_info.ThisMode.w;
@@ -5580,12 +5582,12 @@ bool DispTracker( void ) // bjd
     newviewport.ScaleX = newviewport.Width / (float)2.0;
     newviewport.ScaleY = newviewport.Height / (float)2.0;
 
-/* bjd
+#if 0 //bjd
     newviewport.dvMaxX = (float)D3DDivide(RENDERVAL(newviewport.dwWidth),
                                        RENDERVAL(2 * newviewport.dvScaleX));
     newviewport.dvMaxY = (float)D3DDivide(RENDERVAL(newviewport.dwHeight),
                                        RENDERVAL(2 * newviewport.dvScaleY));
-*/
+#endif
 
 	if (!FSSetViewPort(&newviewport))
 		return false;
@@ -5606,6 +5608,7 @@ bool DispTracker( void ) // bjd
 
 	if (FSClearDepth(&dummy))
 		return false;
+*/
 
 	MatrixTranspose( &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );
 	ShadeModel( MODEL_Tracker, &TempMatrix, ( 40.0F * GLOBAL_SCALE ), ( 220.0F * GLOBAL_SCALE ) );
@@ -5709,6 +5712,7 @@ bool DispTracker( void ) // bjd
       return false;
   }
 
+/*
 	if (!FSSetViewPort(&viewport))
 		return false;
 
@@ -5716,6 +5720,7 @@ bool DispTracker( void ) // bjd
 	{
 		return false;
 	}
+*/
 
   return true;
 }
