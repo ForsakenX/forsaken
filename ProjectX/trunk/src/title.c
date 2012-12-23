@@ -4923,6 +4923,7 @@ Display Solid Lines
 
 		ExecuteLines( group, &RenderBufs[ 0 ] );
 
+	return true;
 }
 
 /*===================================================================
