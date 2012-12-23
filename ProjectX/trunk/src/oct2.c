@@ -4472,6 +4472,9 @@ bool MainGame( void ) // bjd
 
   CheckLevelEnd();
 
+  if(!PlayDemo)
+    NetworkGameUpdate();
+
   return true;
 }
 
