@@ -2852,7 +2852,17 @@ bool RenderScene( void )
 	DisplayNonSolidScrPolys(&ro);
 	DisplaySolidScrPolys(&ro);
 	FSReleaseRenderObject(&ro);
-	render_flip(&render_info);
+	// lock rendering to lower fps to stop tearing on loading screen
+	{
+		#define LOADING_SCREEN_FPS 1.0f/10.0f
+		static float counter = LOADING_SCREEN_FPS;
+		counter += real_framelag;
+		if(counter > LOADING_SCREEN_FPS)
+		{
+			render_flip(&render_info);
+			counter = 0;
+		}
+	}
 	ScreenPolyProcess();
 }
 
