@@ -3,34 +3,40 @@
 
 bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
-	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_STATIC_DRAW );
+	renderObject->lpVertexBuffer = create_buffer(
+		numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_STATIC_DRAW );
 	return true;
 }
 bool FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
-	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
+	renderObject->lpVertexBuffer = create_buffer( 
+		numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
 	return true;
 }
 
 bool FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 {
-	renderObject->lpNormalBuffer = create_buffer( numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW );
+	renderObject->lpNormalBuffer = create_buffer( 
+		numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW );
 	return true;
 }
 bool FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
 {
-	renderObject->lpNormalBuffer = create_buffer( numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
+	renderObject->lpNormalBuffer = create_buffer( 
+		numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
 	return true;
 }
 
 bool FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
-	renderObject->lpIndexBuffer = create_buffer( numIndices * 3 * sizeof(WORD), GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW );
+	renderObject->lpIndexBuffer = create_buffer( 
+		numIndices * 3 * sizeof(WORD), GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW );
 	return true;
 }
 bool FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
-	renderObject->lpIndexBuffer = create_buffer( numIndices * 3 * sizeof(WORD), GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
+	renderObject->lpIndexBuffer = create_buffer( 
+		numIndices * 3 * sizeof(WORD), GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
 	return true;
 }
 
@@ -132,7 +138,8 @@ bool FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
 
 bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
-	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(TLVERTEX), GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
+	renderObject->lpVertexBuffer = create_buffer( 
+		numVertices * sizeof(TLVERTEX), GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
 	return true;
 }
 
@@ -258,7 +265,13 @@ bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool or
 				glBindTexture( GL_TEXTURE_2D, texdata->id );
 			}
 		}
-		glDrawElementsBaseVertex( primitive_type, group->numTriangles * 3, GL_UNSIGNED_SHORT, group->startIndex * sizeof(WORD), group->startVert );
+		glDrawElementsBaseVertex(
+			primitive_type,
+			group->numTriangles * 3,
+			GL_UNSIGNED_SHORT,
+			group->startIndex * sizeof(WORD),
+			group->startVert
+		);
 	}
 
 	CHECK_GL_ERRORS;
