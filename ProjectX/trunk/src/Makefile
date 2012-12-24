@@ -68,13 +68,21 @@ LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
 MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
 # which version of sdl do you want to ask pkgconfig for ?
-SDL=sdl
+SDL=1
+ifeq ($(SDL),1)
+  SDL_=sdl
+else
+  SDL_=sdl$(SDL)
+endif
 
 # which version of GL do you want to use ?
 GL=1
 
+$(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
+     $(error "GL >= 3 only supported with SDL >= 2"))
+
 # library headers
-CFLAGS+= `pkg-config --cflags $(SDL) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -93,7 +101,7 @@ ifeq ($(STATIC),1)
 endif
 
 # dynamic only libraries
-LIB+= `pkg-config --libs $(SDL)`
+LIB+= `pkg-config --libs $(SDL_)`
 ifeq ($(MINGW),1)
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
@@ -102,7 +110,7 @@ else ifeq ($(MACOSX),1)
   # TODO - Support targeting X11 (need to compile sdl properly)
   #LIB += -L/usr/X11/lib/ -lGL -lGLU
   LIB += -framework OpenGL # OpenGL bundle on OSX.
-  LIB += -framework Cocoa  # Used to target Quartz by SDL.
+  LIB += -framework Cocoa  # Used to target Quartz by SDL_.
 else	
   LIB += -lGL -lGLU
 endif
@@ -173,6 +181,7 @@ check:
 	@echo "RENDER_DISABLED = $(RENDER_DISABLED)"
 	@echo "LUA = $(LUA)"
 	@echo "SDL = $(SDL)"
+	@echo "SDL_ = $(SDL_)"
 	@echo
 	@echo "CC = $(CC)"
 	@echo "BIN = $(BIN)"
