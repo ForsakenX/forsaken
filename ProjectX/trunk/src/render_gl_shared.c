@@ -255,31 +255,44 @@ static void print_info( void )
 //   - different vertex layout (LVERTEX vs TLVERTEX)
 // - vertex colors are in BGRA format, not RGBA
 
-static const char *default_vertex_shader =
-#if GL == 2
-	"#version 120\n"
-#else
-	"#version 150\n"
+#if   GL == 2
+	#define GLSL_VERSION   "120"
+	#define GLSL_VERT_IN   "attribute"
+	#define GLSL_VERT_OUT  "varying"
+	#define GLSL_FRAG_IN   "varying"
+	#define GLSL_FRAG_OUT  ""
+#elif GL >= 3
+	#define GLSL_VERSION   "150"
+	#define GLSL_VERT_IN   "in"
+	#define GLSL_FRAG_IN   "in"
+	#define GLSL_FRAG_OUT  "out"
+	#define GLSL_VERT_OUT  "out"
 #endif
+
+static const char *default_vertex_shader =
+	"#version " GLSL_VERSION "\n"
 	"\n"
 	"uniform bool orthographic;\n"
 	"\n"
 	"uniform mat4 mvp;\n"
 	"uniform mat4 ortho_proj;\n"
 	"\n"
-	"in vec3 pos;\n"
-	"in vec4 tlpos;\n"
-	"in vec4 vcolor;\n"
-	"in vec2 vtexc;\n"
+	GLSL_VERT_IN " vec3 pos;\n"
+	GLSL_VERT_IN " vec4 tlpos;\n"
+	GLSL_VERT_IN " vec4 vcolor;\n"
+	GLSL_VERT_IN " vec2 vtexc;\n"
 	"\n"
-	"out vec4 color;\n"
-	"out vec2 texc;\n"
+	GLSL_VERT_OUT " vec4 color;\n"
+	GLSL_VERT_OUT " vec2 texc;\n"
 	"\n"
 	"void main(void)\n"
 	"{\n"
 	"    if (orthographic)\n"
 	"    {\n"
+// TODO - broken in GL 2
+#if 0
 	"        gl_Position = ortho_proj * tlpos;\n"
+#endif
 	"    }\n"
 	"    else\n"
 	"    {\n"
@@ -297,38 +310,43 @@ static const char *default_vertex_shader =
 //   - "texturing_enabled" uniform var
 
 static const char *default_fragment_shader =
-#if GL == 2
-	"#version 120\n"
-#else
-	"#version 150\n"
-#endif
+	"#version " GLSL_VERSION "\n"
 	"\n"
 	"uniform bool colorkeying_enabled;\n"
 	"uniform bool texturing_enabled;\n"
 	"uniform sampler2D tex;\n"
 	"\n"
-	"in vec4 color;\n"
-	"in vec2 texc;\n"
+	GLSL_FRAG_IN " vec4 color;\n"
+	GLSL_FRAG_IN " vec2 texc;\n"
 	"\n"
-	"out vec4 fcolor;\n"
+	GLSL_FRAG_OUT " vec4 fcolor;\n"
 	"\n"
 	"void main(void)\n"
 	"{\n"
 	"    vec2 dx;\n"
 	"    vec2 dy;\n"
 	"\n"
+#if GL >= 3
 	"    // This *may* be needed - see:\n"
 	"    // http://www.opengl.org/wiki/GLSL_Sampler\n"
 	"    // but I'm not sure because it's not really clear\n"
 	"    // on just how 'uniform' the control flow has to be\n"
 	"    dx = dFdx(texc);\n"
 	"    dy = dFdy(texc);\n"
+#endif
 	"    if ( texturing_enabled )\n"
+#if GL >= 3
 	"        fcolor = textureGrad(tex, texc, dx, dy) * color;\n"
+#else
+	"        fcolor = texture2D(tex, vec2(texc.s,texc.t)) * color;\n"
+#endif
 	"    else\n"
 	"        fcolor = color;\n"
 	"    if ( colorkeying_enabled && fcolor.a <= (100.0/255.0) )\n"
 	"        discard;\n"
+#if GL < 3
+        "    gl_FragColor = fcolor;\n"
+#endif
 	"}\n"
 ;
 
@@ -721,7 +739,7 @@ bool FSGetViewPort(render_viewport_t *view)
 // dimensions. We don't update it right away but mark it `dirty'
 // and have the drawing routine update it when it's needed.
 
-static bool ortho_matrix_needs_update;
+static bool ortho_matrix_needs_update = true;
 
 bool FSSetViewPort(render_viewport_t *view)
 {
