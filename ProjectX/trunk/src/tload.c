@@ -73,7 +73,6 @@ bool InitTload( TLOADHEADER * Tloadheader  )
 	Input		:		TLOADHEADER *
 	Output		:		bool false/true
 ===================================================================*/
-void build_gamma_table( double gamma );
 bool Tload( TLOADHEADER * Tloadheader  )
 {
 	int	i,e;

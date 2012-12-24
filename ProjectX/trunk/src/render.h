@@ -11,7 +11,7 @@ extern "C" {
 #include "new3d.h"
 #include <SDL.h>
 
-bool  bSquareOnly;
+extern bool  bSquareOnly;
 
 typedef struct {
     DWORD       X;
@@ -189,10 +189,18 @@ extern float render_lighting_env_water_red;
 extern float render_lighting_env_water_green;
 extern float render_lighting_env_water_blue;
 extern int render_lighting_env_whiteout;
-
+bool render_mode_select( render_info_t * info );
+void render_mode_wireframe(void);
+void render_mode_points(void);
+void render_mode_fill(void);
+void build_gamma_table( double gamma );
+bool render_init( render_info_t * info );
+void render_cleanup( render_info_t * info );
+bool render_reset( render_info_t * info );
 void render_set_filter( bool red, bool green, bool blue );
-
 bool render_flip( render_info_t * info );
+void reset_trans( void );
+void disable_zbuff_write( void );
 
 bool FSGetViewPort(render_viewport_t *returnViewPort);
 bool FSBeginScene(void);
@@ -222,6 +230,7 @@ bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width,
 bool update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, u_int16_t *width, u_int16_t *height, int numMips, bool * colourkey);
 void release_texture( LPTEXTURE texture );
 
+bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool orthographic );
 bool draw_line_object(RENDEROBJECT *renderObject);
 bool draw_object(RENDEROBJECT *renderObject);
 bool draw_2d_object(RENDEROBJECT *renderObject);

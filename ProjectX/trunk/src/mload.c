@@ -106,6 +106,7 @@ num_start_points : u_int16_t
 #include "triggers.h"
 #include "util.h"
 #include "oct2.h"
+#include "render.h"
 
 /*===================================================================
 		Externals...	
@@ -197,7 +198,6 @@ static bool read_visible( MLOADHEADER * Mloadheader, VISTREE *v, u_int16_t group
 	return ok;
 }
 
-extern bool bSquareOnly;
 void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, u_int16_t Tpage, LPLVERTEX Orig_Vert )
 {
 	static LPLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
