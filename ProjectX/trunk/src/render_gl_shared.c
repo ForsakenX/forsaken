@@ -246,6 +246,8 @@ static void print_info( void )
 #endif
 }
 
+#if GL > 1
+
 // Fallback shaders that emulate original Forsaken rendering.
 
 // Things a vertex shader must take into account:
@@ -473,6 +475,8 @@ static bool set_default_shaders( void )
 
 	return true;
 }
+
+#endif // GL > 1
 
 static bool set_defaults( void )
 {
