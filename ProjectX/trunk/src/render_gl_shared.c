@@ -455,12 +455,14 @@ static bool set_default_shaders( void )
 		fragment_shader = 0;
 	}
 
+	DebugPrintf("Using default vertex shader:\n\n%s\n",default_vertex_shader);
 	vertex_shader = new_shader( GL_VERTEX_SHADER, default_vertex_shader, &info_log );
 	if ( ! vertex_shader )
 	{
 		DebugPrintf( "Failed to compile vertex shader! Info log:\n-----\n%s\n-----\n", info_log );
 		return false;
 	}
+	DebugPrintf("Using default fragment shader:\n\n%s\n",default_fragment_shader);
 	fragment_shader = new_shader( GL_FRAGMENT_SHADER, default_fragment_shader, &info_log );
 	if ( ! fragment_shader )
 	{
