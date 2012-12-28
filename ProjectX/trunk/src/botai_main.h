@@ -97,6 +97,8 @@ extern void DebugPrintf( const char * format, ... );
 extern int GetTotalKills(int Killer);
 extern int GetTotalDeaths(int Victim);
 
+SHIPCONTROL bot;
+
 #define BOT_FILE "bot1.lua"
 #define MIN_WALLDIST 100.0F
 #define NUM_SENSORS 26
