@@ -349,6 +349,7 @@ int16_t	AddTexture( TLOADHEADER * Tloadheader , char * Name , u_int16_t ColourKe
 // or fall back to default.png
 // also pkupsa?.bmp is hard coded to map to titana.png as the old game did
 // size of destination should always be 256, path should end up at least 256-1
+bool use_original_textures = false;
 void GetLevelTexturePath( char * destination, char * file, char * level )
 {
 	char path[256];
@@ -367,6 +368,14 @@ void GetLevelTexturePath( char * destination, char * file, char * level )
 	// check for level folder override
 	sprintf(path,"data\\levels\\%s\\textures\\%s",level,new_file);
 	if( File_Exists( path ) )
+	{
+		strncpy(destination,path,256);
+		return;
+	}
+
+	// use old textures if requested and available
+	sprintf(path,"data\\textures\\original\\%s",new_file);
+	if( use_original_textures && File_Exists( path ) )
 	{
 		strncpy(destination,path,256);
 		return;

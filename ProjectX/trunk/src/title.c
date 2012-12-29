@@ -56,6 +56,7 @@
 #include "render.h"
 #include "file.h"
 #include "oct2.h"
+#include "tload.h"
 
 
 #define MAX_SAVEGAME_SLOTS		16
@@ -9418,6 +9419,9 @@ void GetGamePrefs( void )
 	// initialize sliders to above values
 	StereoColorSlider.value = render_info.stereo_right_color;
 	StereoModeSlider.value = render_info.stereo_mode;
+
+	// use original textures if requested and textures/original folder exists
+	use_original_textures = config_get_bool( "UseOriginalTextures", false );
 }
 
 /*===================================================================

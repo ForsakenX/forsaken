@@ -65,6 +65,8 @@ int16_t	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 
 bool TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16_t n );
 
+extern bool use_original_textures;
+
 #endif	//TLOAD_INCLUDED
 
 #endif
