@@ -116,52 +116,6 @@ void loop()
 	if( ++i >= MSGS ) i = 0;
 }
 
-////
-// Pending
-// sent MSG_INIT probably in response to a HEREIAM should make sure I'm host
-// test LongStatus = 1  // what's this ?
-// when new player joins anyone could quickly send them a MSG_INIT and since
-// 	they never received one yet they will believe that person is the host
-// 	would be nice to simply leverage fact that net.h knows who host is.
-// short level name uses 32 everywhere why not just use MAXSHORTLEVELNAME ?
-// 	32 is fine because max name in battle.dat is 12 bytes
-// is tempstr to long to send to rendering ?
-// MSG_BIKENUM and others let anyone set any packet they want we should instead
-// 	maintain our own connection -> player id mapping and save space in packets
-// 	this will also save a byte on every single packet received...
-// 	they could also send HEREIAM messages until they exhaust all player numbers
-// 		effectively allowing the game to be closed ...
-// Could probably check that host is sending messages during proper times
-// 	Like SetTeamGoals should only invoke if your in a team game..
-// 	Other wise it will crash the game..
-// MSG_UPDATE MSG_VERYSHORTUPDATE MSG_STATUS MSG_LONGSTATUS trust the SHIP_IsHost flag without checking
-// MSG_TEXT should validate it's actually a team game other wise we crash
-// 	and it could be variable lengtha
-// should only send packets to players that need them...
-// net_bool_t = int but could just be char or bitflags..
-//  many of the text message types are abused as pkt types that don't send text
-// 		but that's shit cause its' 515 bytes every time..
-//		also most don't need to send text it can be computed on other side
-////
-
-////
-// Shrink Packet Ideas
-// net.h already tracks host so we don't need fields like messaage->isHost 
-// net.h already maps it's own player id's to enet peer's
-//          so why not just leverage that instead of WhoIAm on every packet
-// plenty of messages like MSG_REQTIME are sent to everyone not just host
-////
-
-////
-// Fixed
-// 1. valid message id
-// 2. valid message size
-// 3. valid player id
-// 4. text messages end in \0 and fit in receiving bucket
-// 5. player has a valid GameStatus[] before doing anything else
-// 6. only host is allowed to send you host related messages
-////
-
 ////////////////////////////////////////////////////////
 // Settings
 ////////////////////////////////////////////////////////
