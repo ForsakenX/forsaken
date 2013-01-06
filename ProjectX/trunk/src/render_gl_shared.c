@@ -930,22 +930,28 @@ bool draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObj
 bool draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,true);}
 bool draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,false);}
 
+#if GL == 1
+	#define delete_buffer(b) free( b )
+#else
+	#define delete_buffer(b) glDeleteBuffers( 1, b )
+#endif
+
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
 	int i;
 	if (renderObject->lpVertexBuffer)
 	{
-		glDeleteBuffers( 1, &renderObject->lpVertexBuffer );
+		delete_buffer( &renderObject->lpVertexBuffer );
 		renderObject->lpVertexBuffer = NULL;
 	}
 	if (renderObject->lpNormalBuffer)
 	{
-		glDeleteBuffers( 1, &renderObject->lpNormalBuffer );
+		delete_buffer( &renderObject->lpNormalBuffer );
 		renderObject->lpNormalBuffer = NULL;
 	}
 	if (renderObject->lpIndexBuffer)
 	{
-		glDeleteBuffers( 1, &renderObject->lpIndexBuffer );
+		delete_buffer( &renderObject->lpIndexBuffer );
 		renderObject->lpIndexBuffer = NULL;
 	}
 	for (i = 0; i < renderObject->numTextureGroups; i++)
@@ -960,6 +966,7 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 			renderObject->textureGroups[i].texture = NULL;
 		}
 	}
+	renderObject->numTextureGroups = 0;
 }
 
 #endif // GL
