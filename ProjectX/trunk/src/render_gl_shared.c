@@ -776,6 +776,7 @@ bool FSSetViewPort(render_viewport_t *view)
 	return true;
 }
 
+#if GL > 1
 void ortho_update ( GLuint current_program )
 {
 	MATRIX m;
@@ -805,6 +806,7 @@ void ortho_update ( GLuint current_program )
 		ortho_matrix_needs_update = false;
 	}
 }
+#endif
 
 MATRIX proj_matrix;
 MATRIX view_matrix;
@@ -824,6 +826,7 @@ bool mvp_needs_update;
 //
 // See also: http://en.wikipedia.org/wiki/Transpose#Properties
 
+#if GL > 1
 void mvp_update( GLuint current_program )
 {
 	MATRIX mvp;
@@ -838,6 +841,7 @@ void mvp_update( GLuint current_program )
 		mvp_needs_update = false;
 	}
 }
+#endif
 
 static void reset_modelview( void )
 {
@@ -893,6 +897,7 @@ bool FSSetProjection( RENDERMATRIX *matrix )
 // These functions map nicely to OpenGL's Vertex Buffer Objects (VBOs).
 //
 
+#if GL > 1
 LPVERTEXBUFFER _create_buffer( int size, GLenum type, GLenum gettype, GLenum usage )
 {
 	// Need to bind the new buffer in order to specify its parameters,
@@ -911,6 +916,7 @@ LPVERTEXBUFFER _create_buffer( int size, GLenum type, GLenum gettype, GLenum usa
 
 	return (LPVERTEXBUFFER) vbo;
 }
+#endif
 
 bool draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,false);}
 bool draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,true);}
