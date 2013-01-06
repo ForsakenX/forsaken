@@ -188,8 +188,16 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 	if(caps.anisotropic)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, caps.anisotropic);
 
-	// generate mipmaps
+#if GL > 1
 	glGenerateMipmap( GL_TEXTURE_2D );
+#else
+	// generates full range of mipmaps and scales to nearest power of 2
+	if(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image.w, image.h, GL_RGBA, GL_UNSIGNED_BYTE, image.data) != 0)
+	{
+		CHECK_GL_ERRORS;
+		return false;
+	}
+#endif
 
 	if ( render_error_description(0) )
 		return false;
