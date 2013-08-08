@@ -114,6 +114,11 @@ else ifeq ($(MACOSX),1)
 else	
   LIB += -lGL -lGLU
 endif
+ifneq ($(MINGW),1)
+  # apparently on some systems -ldl is explicitly required
+  # perhaps this is part of the default libs on others...?
+  LIB+= -ldl
+endif
 
 ifeq ($(BOT),1)
   CFLAGS+= -DLUA_BOT
