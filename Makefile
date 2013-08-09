@@ -45,7 +45,7 @@ ifeq ($(SSP),1)
 endif
 
 ifeq ($(DEBUG),1)
-  FLAGS+= -g 
+  FLAGS+= -g
 else
   CFLAGS+=-O3 -Winit-self
   LDFLAGS+=-s
@@ -105,13 +105,13 @@ LIB+= `pkg-config --libs $(SDL_)`
 ifeq ($(MINGW),1)
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
-  LIB += -lsocket -lws2_32 -lwsock32 -lwinmm -lOpenAL32 
+  LIB += -lsocket -lws2_32 -lwsock32 -lwinmm -lOpenAL32
 else ifeq ($(MACOSX),1)
   # TODO - Support targeting X11 (need to compile sdl properly)
   #LIB += -L/usr/X11/lib/ -lGL -lGLU
   LIB += -framework OpenGL # OpenGL bundle on OSX.
   LIB += -framework Cocoa  # Used to target Quartz by SDL_.
-else	
+else
   LIB += -lGL -lGLU
 endif
 ifneq ($(MINGW),1)
@@ -139,7 +139,7 @@ else
 endif
 CFLAGS+= -DNET_ENET_2 -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DSOUND_OPENAL
 ifeq ($(DEBUG),1)
-  CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT 
+  CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT
 endif
 
 INC=$(wildcard *.h)
