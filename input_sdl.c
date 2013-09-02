@@ -244,9 +244,35 @@ void app_keyboard( SDL_KeyboardEvent * key )
 #endif
 					MenuGoFullScreen( NULL );
 		}
+#ifdef PANDORA
+	// redirect shoulder buttons to left/right click
+		if (key->keysym.sym==SDLK_RSHIFT) {
+			int button = 0;
+			mouse_state.buttons[ button ] = 0;
+			return;
+		} else if (key->keysym.sym==SDLK_RCTRL) {
+			int button = 2;
+			mouse_state.buttons[ button ] = 0;
+			return;
+		}
+#endif
 	}
 	if( key->type == SDL_KEYDOWN )
 	{
+#ifdef PANDORA
+	// redirect shoulder buttons to left/right click
+		if (key->keysym.sym==SDLK_RSHIFT) {
+			int button = 0;
+			input_buffer_send( button + LEFT_MOUSE );
+			mouse_state.buttons[ button ] = 1;
+			return;
+		} else if (key->keysym.sym==SDLK_RCTRL) {
+			int button = 2;
+			input_buffer_send( button + LEFT_MOUSE );
+			mouse_state.buttons[ button ] = 1;
+			return;
+		}
+#endif
 		input_buffer_send(
 			key->keysym.unicode ? 
 				key->keysym.unicode :
@@ -526,6 +552,7 @@ bool joysticks_init(void)
 	Num_Joysticks = SDL_NumJoysticks();
 
 	DebugPrintf( "joysticks_init: %d joysticks connected\n", Num_Joysticks );
+printf( "joysticks_init: %d joysticks connected\n", Num_Joysticks );
 
 	if (Num_Joysticks > MAX_JOYSTICKS)
 		Num_Joysticks = MAX_JOYSTICKS;
@@ -558,6 +585,11 @@ bool joysticks_init(void)
 		JoystickInfo[i].Name = strdup( SDL_JoystickName(i) );
 
 		DebugPrintf( 
+			"joysticks_init: joystick (%d), name='%s', axises=%d, buttons=%d, hats=%d\n", 
+			i, JoystickInfo[i].Name, JoystickInfo[i].NumAxis, JoystickInfo[i].NumButtons,
+			JoystickInfo[i].NumPOVs
+		);
+printf( 
 			"joysticks_init: joystick (%d), name='%s', axises=%d, buttons=%d, hats=%d\n", 
 			i, JoystickInfo[i].Name, JoystickInfo[i].NumAxis, JoystickInfo[i].NumButtons,
 			JoystickInfo[i].NumPOVs

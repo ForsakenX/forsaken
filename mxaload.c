@@ -184,7 +184,6 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 	Uint16Pnt = (u_int16_t *) Buffer;
 	Mxaloadheader->num_groups = *Uint16Pnt++;
 	Buffer = (char *) Uint16Pnt;		
-
 	if ( Mxaloadheader->num_groups > MAXGROUPS )
 	{
 		Msg( "Mxaload() num_groups > MAXGROUPS\n", Filename );
@@ -198,7 +197,7 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 		Uint16Pnt = (u_int16_t *) Buffer;
 		Mxaloadheader->Group[group].num_execbufs = *Uint16Pnt++;
 		Buffer = (char *) Uint16Pnt;		
-	
+
 		if ( Mxaloadheader->Group[group].num_execbufs > MAXEXECBUFSPERGROUP )
 		{
 			Msg( "Mxaload() num_execbufs > MAXEXECBUFSPERGROUP\n", Filename );
@@ -217,7 +216,7 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 			/*	get the number of verts in execution buffer	*/
 			num_vertices =	*Uint16Pnt++;     
 			Buffer = (char *) Uint16Pnt;		
-	
+
 			/*	record how what type of exec buffer	*/
 			Mxaloadheader->Group[group].exec_type[execbuf] = exec_type;
 
@@ -267,7 +266,6 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 //				lpLVERTEX->dwReserved = 0;
 				lpLVERTEX2++;
 			}
-
 			/* bjd - allows us to retrieve copies of the original vertices in the new format! */
 			Mxaloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(LVERTEX) * num_vertices);
 			memmove(Mxaloadheader->Group[group].originalVerts[execbuf], &lpLVERTEX[0], sizeof(LVERTEX) * num_vertices);//memcpy
@@ -317,7 +315,6 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 				tempBuffer = (char *) MFacePnt; 
 				triangleCount += numTriangles;
 			}
-
 			/*	create an index buffer	*/
 			if (!FSCreateIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], triangleCount * 3))
 			{
@@ -474,7 +471,6 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 		}
 	}
 				
-
 	Uint16Pnt = (u_int16_t *) Buffer;
 	// is there any vispoly info.....
 	if ( *Uint16Pnt++ == 2)				// 2 means .mxa format
@@ -623,6 +619,14 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 			{
 				FirePointPtr->ID = *Uint16Pnt++;				// ID ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
+#ifdef ARM
+				memcpy(&FirePointPtr->Pos, FloatPnt, 4*3);				// Pos ( 3 floats )
+				FloatPnt+=3;
+				memcpy(&FirePointPtr->Dir, FloatPnt, 3*4);				// Dir ( 3 floats )
+				FloatPnt+=3;
+				memcpy(&FirePointPtr->Up, FloatPnt, 3*4);				// Up ( 3 floats )
+				FloatPnt+=3;
+#else
 				FirePointPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				FirePointPtr->Pos.y = *FloatPnt++;
 				FirePointPtr->Pos.z = *FloatPnt++;
@@ -632,6 +636,7 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 				FirePointPtr->Up.x = *FloatPnt++;				// Up ( 3 floats )
 				FirePointPtr->Up.y = *FloatPnt++;
 				FirePointPtr->Up.z = *FloatPnt++;
+#endif
 				Uint16Pnt = (u_int16_t *) FloatPnt;
 				FirePointPtr++;
 			}
@@ -661,6 +666,17 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 			{
 				SpotFXPtr->Type = *Uint16Pnt++;				// Type ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
+#ifdef ARM
+				memcpy(&SpotFXPtr->Pos, FloatPnt, 4*3);
+				FloatPnt+=3;
+				memcpy(&SpotFXPtr->DirVector.x, FloatPnt, 4*3);
+				FloatPnt+=3;
+				memcpy(&SpotFXPtr->UpVector, FloatPnt, 4*3);
+				FloatPnt+=3;
+				memcpy(&SpotFXPtr->StartDelay, FloatPnt++, 4); SpotFXPtr->StartDelay*= ANIM_SECOND;	// Start Delay
+				memcpy(&SpotFXPtr->ActiveDelay, FloatPnt++,4); SpotFXPtr->ActiveDelay*= ANIM_SECOND;	// Active Delay
+				memcpy(&SpotFXPtr->InactiveDelay, FloatPnt++, 4); SpotFXPtr->InactiveDelay*= ANIM_SECOND;	// Inactive Delay
+#else
 				SpotFXPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				SpotFXPtr->Pos.y = *FloatPnt++;
 				SpotFXPtr->Pos.z = *FloatPnt++;
@@ -673,12 +689,12 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 				SpotFXPtr->StartDelay = ( *FloatPnt++ * ANIM_SECOND );	// Start Delay
 				SpotFXPtr->ActiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Active Delay
 				SpotFXPtr->InactiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Inactive Delay
+#endif
 				Int16Pnt = (int16_t *) FloatPnt;
 				SpotFXPtr->Primary = (int8_t) *Int16Pnt++;	// Primary ( int16_t )
 				SpotFXPtr->Secondary = (int8_t) *Int16Pnt++;	// Secondary ( int16_t )
 				Uint32Pnt = (u_int32_t *) Int16Pnt;
 				Colour = *Uint32Pnt++;
-
 #if	MXA_VERSION_NUMBER == 2
 //				Int16Pnt = (int16_t *) Uint32Pnt;
 //				SpotFXPtr->SoundFX = *Int16Pnt++;
@@ -712,8 +728,13 @@ bool Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, bool StoreTriangle
 				}
 
 				FloatPnt = (float *) Int8Pnt;
+#ifdef ARM
+				memcpy(&SpotFXPtr->SoundFXVolume, FloatPnt++, 4);
+				memcpy(&SpotFXPtr->SoundFXSpeed, FloatPnt++, 4);
+#else
 				SpotFXPtr->SoundFXVolume = *FloatPnt++;
 				SpotFXPtr->SoundFXSpeed = *FloatPnt++;
+#endif
 				Uint16Pnt = (u_int16_t *) FloatPnt;
 #else
 				Uint16Pnt = (u_int16_t *) Uint32Pnt;
@@ -1001,11 +1022,22 @@ bool	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 
 				for( num_anim_vertices = 0 ; num_anim_vertices <  Mxaloadheader->num_anim_vertices[FromFrame][group][execbuf][texgroup] ; num_anim_vertices++ )
 				{
+#ifdef ARM
+					MXAVERT fromVert, toVert;
+					memcpy(&fromVert, FromVert, sizeof(MXAVERT));
+					memcpy(&toVert, ToVert, sizeof(MXAVERT));		// To have them correctly alligned for ARM...
+#endif
 					if ( FromVert->flags & MXA_ANIM_POS )
 					{
+#ifdef ARM
+						lpLVERTEX->x = fromVert.x + ( toVert.x - fromVert.x ) * Interp;
+						lpLVERTEX->y = fromVert.y + ( toVert.y - fromVert.y ) * Interp;
+						lpLVERTEX->z = fromVert.z + ( toVert.z - fromVert.z ) * Interp;
+#else
 						lpLVERTEX->x = FromVert->x + ( ToVert->x - FromVert->x ) * Interp;
 						lpLVERTEX->y = FromVert->y + ( ToVert->y - FromVert->y ) * Interp;
 						lpLVERTEX->z = FromVert->z + ( ToVert->z - FromVert->z ) * Interp;
+#endif
 					}
 					if ( FromVert->flags & MXA_ANIM_RGB )
 					{
@@ -1023,8 +1055,13 @@ bool	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 					}
 					if ( FromVert->flags & MXA_ANIM_UV )
 					{
-						lpLVERTEX->tu = FromVert->tu + ( ToVert->tu - FromVert->tu ) * Interp;
-						lpLVERTEX->tv = FromVert->tv + ( ToVert->tv - FromVert->tv ) * Interp;
+#ifdef ARM
+						lpLVERTEX->tu = fromVert.tu + ( toVert.tu - fromVert.tu ) * Interp;
+						lpLVERTEX->tv = fromVert.tv + ( toVert.tv - fromVert.tv ) * Interp;
+#else
+						lpLVERTEX->tu = fromVert->tu + ( toVert->tu - fromVert->tu ) * Interp;
+						lpLVERTEX->tv = fromVert->tv + ( toVert->tv - fromVert->tv ) * Interp;
+#endif
 					}
 
 					lpLVERTEX++;
