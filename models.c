@@ -2282,7 +2282,7 @@ void ProcessModels( void )
 						{
 							Models[i].SpotFXTimeInterval[ Count ] = (float) 1;
 
-							if ( ! CAMERA_VIEW_IS_VALID ) return false;
+							if ( ! CAMERA_VIEW_IS_VALID ) return;
 							VisNum = VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Models[i].Group, &VisGroups[ 0 ] );
 
 							switch( Models[i].SpotFXState[ Count ] )

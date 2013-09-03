@@ -4530,7 +4530,7 @@ void SetCam(int ship, int Cam)
 				}
 
         if( RenderCurrentCamera() != true )
-            return false;
+            return;
 }
 
 
