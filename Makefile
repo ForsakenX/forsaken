@@ -6,9 +6,15 @@
 # make CC=i686-mingw32-gcc
 CC=gcc
 
+PANDORA=1
+
 # general compiler settings
 ifeq ($(M32),1)
   FLAGS= -m32
+endif
+ifeq ($(PANDORA),1)
+  FLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -mno-unaligned-access -DHAVE_GLES -DPANDORA -DARM
+  HAVE_GLES=1
 endif
 FLAGS+= -std=gnu99 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
@@ -19,7 +25,7 @@ LDFLAGS=$(FLAGS)
 DEBUG=1
 
 # might as well leave gprof support on by default as well
-PROFILE=1
+PROFILE=0
 
 # use this if you want to build everything statically
 STATIC=0
@@ -45,7 +51,7 @@ ifeq ($(SSP),1)
 endif
 
 ifeq ($(DEBUG),1)
-  FLAGS+= -g
+  FLAGS+= -g -gdwarf-2
 else
   CFLAGS+=-O3 -Winit-self
   LDFLAGS+=-s
@@ -64,13 +70,14 @@ endif
 #
 
 # some systems use lua5.1
-LUA=$(shell pkg-config lua && echo lua || echo lua5.1)
+LUA=$(shell libs/pkgconfig.sh lua && echo lua || echo lua5.1)
 MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
 # which version of sdl do you want to ask pkgconfig for ?
 SDL=1
 ifeq ($(SDL),1)
   SDL_=sdl
+  CFLAGS+=`sdl-config --cflags`
 else
   SDL_=sdl$(SDL)
 endif
@@ -82,7 +89,8 @@ $(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
      $(error "GL >= 3 only supported with SDL >= 2"))
 
 # library headers
-CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+CFLAGS+= `libs/pkgconfig.sh --cflags $(LUA) $(LUA)-socket libenet`
+CFLAGS+= `pkg-config --cflags $(SDL_) libpng zlib openal`
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -95,13 +103,16 @@ ifeq ($(STATIC),1)
   LIB+= -Wl,-dn
   PKG_CFG_OPTS= --static
 endif
-LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
+LIB+= `libs/pkgconfig.sh $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet`
+LIB+=  `pkg-config $(PKG_CFG_OPTS) --libs libpng zlib openal`
+LIB+= -lm
 ifeq ($(STATIC),1)
   LIB+= -Wl,-dy
 endif
 
 # dynamic only libraries
-LIB+= `pkg-config --libs $(SDL_)`
+#LIB+= `pkg-config --libs $(SDL_)`
+LIB+= `sdl-config --libs`
 ifeq ($(MINGW),1)
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
@@ -112,7 +123,12 @@ else ifeq ($(MACOSX),1)
   LIB += -framework OpenGL # OpenGL bundle on OSX.
   LIB += -framework Cocoa  # Used to target Quartz by SDL_.
 else
+ifeq ($(HAVE_GLES),1)
+  LIB += -lGLES_CM -lEGL
+  CFLAGS += -DHAVE_GLES -DPANDORA
+else
   LIB += -lGL -lGLU
+endif
 endif
 ifneq ($(MINGW),1)
   # apparently on some systems -ldl is explicitly required

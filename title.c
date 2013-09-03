@@ -8123,7 +8123,7 @@ void GetDefaultPilot(void)
 	else
 	{
 		char * name;
-		if( (name = find_file( "Pilots\\*.txt" )))
+		if( (name = find_file( "pilots\\*.txt" )))
 		{
 			strncpy( &pilot_name[0], name, sizeof(pilot_name) );
 
@@ -9336,7 +9336,11 @@ void GetGamePrefs( void )
 	CLAMP( WaterDetailSlider.value, WaterDetailSlider.max );
 	SetWaterDetail( &WaterDetailSlider );
 
+#ifdef PANDORA
+		TextScaleSlider.value = config_get_int("TextScale", 1.0F);	// need bigger font on the Pandora
+#else
 		TextScaleSlider.value = config_get_int("TextScale", 0.0F);
+#endif
 		CLAMP(TextScaleSlider.value, TextScaleSlider.max);
 		SetTextScale( &TextScaleSlider );
 

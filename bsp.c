@@ -148,10 +148,18 @@ static bool BSP_LoadPortal( BSP_PORTAL *p, char **Buffer )
 	int16_tpnt = (int16_t *) *Buffer;
 	p->group = *int16_tpnt++;
 	floatpnt = (float *) int16_tpnt;
+#ifdef ARM
+	memcpy(&p->normal, floatpnt, 4*3);
+	floatpnt+=3;
+	memcpy(&p->offset, floatpnt, 4);
+	floatpnt++;
+#else
 	p->normal.x = *floatpnt++;
 	p->normal.y = *floatpnt++;
 	p->normal.z = *floatpnt++;
 	p->offset = *floatpnt++;
+
+#endif
 	*Buffer = (char *) floatpnt;
 
 	return BSP_Loadtree( &p->bsp, Buffer );
