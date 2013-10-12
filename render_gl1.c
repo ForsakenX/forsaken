@@ -427,7 +427,6 @@ bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool or
 		if( renderObject->textureGroups[group].texture )
 		{
 			GLuint texture = *(GLuint*)renderObject->textureGroups[group].texture;
-//printf("group=%i, texture=%i\n", group, texture);
 			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, texture);
 #ifdef HAVE_GLES

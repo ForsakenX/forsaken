@@ -257,7 +257,6 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.w, image.h, GL_RGBA, GL_UNSIGNED_BYTE, image.data);
 		CHECK_GL_ERRORS;
 	}
-//printf("load image  \"%s\", size=%ix%i, colorkey=%i, numMips=%i, glTexture=%i\n", image.path, *width, *height, *colorkey, numMips, texdata->id);
 
 	// when texture area is small, bilinear filter the closest mipmap
 #ifdef HAVE_GLES

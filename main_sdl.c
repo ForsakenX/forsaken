@@ -304,7 +304,6 @@ window_flags=SDL_FULLSCREEN;
 		0, // BPP should be left alone to match whatever the desktop is at.
 		window_flags // on older sdl only 1 set of flags was used
 	);
-printf("video_mode is %ix%i flags=%x\n", render_info.ThisMode.w,render_info.ThisMode.h,window_flags);
 
 	if(!render_info.screen)
 	{
@@ -385,7 +384,6 @@ void sdl_render_present( render_info_t * info )
 	SDL_RenderPresent(info->renderer);
 #else
 #ifdef HAVE_GLES
-//printf("swap buffers\n");
 	EGL_SwapBuffers();
 #else
 	SDL_GL_SwapBuffers();

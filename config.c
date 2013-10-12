@@ -1453,7 +1453,6 @@ read_config( USERCONFIG *u, char *cfg_name )
 
 		// tell debuggers
 		DebugPrintf( "read_config: couldn't open '%s'\n", cfg_name );
-printf( "read_config: couldn't open '%s'\n", cfg_name );
 
 	// reset all joystick settings before exiting...
 	ReInitJoysticks();
