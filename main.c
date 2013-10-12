@@ -14,6 +14,9 @@
 #include <SDL.h>
 #include "input.h"
 #include "sound.h"
+#ifdef HAVE_GLES
+extern void    EGL_Close                   ( void );
+#endif
 
 #ifndef WIN32
 #include <unistd.h>
@@ -382,6 +385,9 @@ void CleanUpAndPostQuit(void)
 
 #endif
 
+#ifdef HAVE_GLES
+	EGL_Close();
+#endif
 	// should come last
 	SDL_Quit();
 }
@@ -454,7 +460,6 @@ static bool AppInit( char * lpCmdLine )
 	//
 	if(!sdl_init())
 		return false;
-
 	// parse chdir from command line first
 	if(!parse_chdir(lpCmdLine))
 		return false;
