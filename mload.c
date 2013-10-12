@@ -721,7 +721,12 @@ bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					VertPnt = ( VERT* )	Buffer;
 					for( verts = 0 ; verts < length ; verts++ )
 					{
+#ifdef ARM
+						VERT vert;
+						memcpy(&vert, VertPnt++, sizeof(vert));
+#else
 						VERT vert = *VertPnt++;
+#endif
 						sum.x += vert.x;
 						sum.y += vert.y;
 						sum.z += vert.z;
