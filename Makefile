@@ -25,7 +25,11 @@ LDFLAGS=$(FLAGS)
 DEBUG=1
 
 # might as well leave gprof support on by default as well
-PROFILE=0
+ifeq ($(PANDORA),1)
+   PROFILE=0
+else
+   PROFILE=1
+endif
 
 # use this if you want to build everything statically
 STATIC=0
@@ -51,7 +55,11 @@ ifeq ($(SSP),1)
 endif
 
 ifeq ($(DEBUG),1)
-  FLAGS+= -g -gdwarf-2
+  ifeq ($(PANDORA),1)
+    FLAGS+= -g -gdwarf-2
+  else
+    FLAGS+= -g
+  endif
 else
   CFLAGS+=-O3 -Winit-self
   LDFLAGS+=-s
@@ -70,7 +78,11 @@ endif
 #
 
 # some systems use lua5.1
-LUA=$(shell libs/pkgconfig.sh lua && echo lua || echo lua5.1)
+ifeq ($(PANDORA),1)
+  LUA=$(shell libs/pkgconfig.sh lua && echo lua || echo lua5.1)
+else
+  LUA=$(shell pkg-config lua && echo lua || echo lua5.1)
+endif
 MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
 # which version of sdl do you want to ask pkgconfig for ?
@@ -89,8 +101,12 @@ $(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
      $(error "GL >= 3 only supported with SDL >= 2"))
 
 # library headers
-CFLAGS+= `libs/pkgconfig.sh --cflags $(LUA) $(LUA)-socket libenet`
-CFLAGS+= `pkg-config --cflags $(SDL_) libpng zlib openal`
+ifeq ($(PANDORA),1)
+  CFLAGS+= `libs/pkgconfig.sh --cflags $(LUA) $(LUA)-socket libenet`
+  CFLAGS+= `pkg-config --cflags $(SDL_) libpng zlib openal`
+else
+  CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+endif
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -103,16 +119,23 @@ ifeq ($(STATIC),1)
   LIB+= -Wl,-dn
   PKG_CFG_OPTS= --static
 endif
-LIB+= `libs/pkgconfig.sh $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet`
-LIB+=  `pkg-config $(PKG_CFG_OPTS) --libs libpng zlib openal`
+ifeq ($(PANDORA),1)
+  LIB+= `libs/pkgconfig.sh $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet`
+  LIB+=  `pkg-config $(PKG_CFG_OPTS) --libs libpng zlib openal`
+else
+  LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
+endif
 LIB+= -lm
 ifeq ($(STATIC),1)
   LIB+= -Wl,-dy
 endif
 
 # dynamic only libraries
-#LIB+= `pkg-config --libs $(SDL_)`
-LIB+= `sdl-config --libs`
+ifeq ($(PANDORA),1)
+  LIB+= `sdl-config --libs`
+else
+  LIB+= `pkg-config --libs $(SDL_)`
+endif
 ifeq ($(MINGW),1)
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
@@ -194,11 +217,13 @@ check:
 	@echo "PROFILE = $(PROFILE)"
 	@echo "MUDFLAP = $(MUDFLAP)"
 	@echo "STATIC = $(STATIC)"
+	@echo "PANDORA = $(PANDORA)"
 	@echo "PKG_CFG_OPTS = $(PKG_CFG_OPTS)"
 	@echo "MINGW = $(MINGW)"
 	@echo "CROSS = $(CROSS)"
 	@echo "BOT = $(BOT)"
 	@echo "GL = $(GL)"
+	@echo "HAVE_GLES = $(HAVE_GLES)"
 	@echo "RENDER_DISABLED = $(RENDER_DISABLED)"
 	@echo "LUA = $(LUA)"
 	@echo "SDL = $(SDL)"
