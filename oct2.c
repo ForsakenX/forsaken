@@ -3851,7 +3851,9 @@ bool RenderScene( void )
 
     smallinitShip( WhoIAm );
     InGameLoad( NULL );
-    
+
+		input_grab( true );
+
 #ifdef DEMO_SUPPORT
     QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
 #endif
