@@ -159,7 +159,18 @@ bool TeleportsLoad( char * Filename )
 		
 		Buffer = (char *) Uint16Pnt;
 		floatpnt = (float *) Buffer;
-
+#ifdef ARM
+		memcpy(&TPpnt->Pos, floatpnt, 4*3);
+		floatpnt+=3;
+#if TELEPORTS_VERSION_NUMBER >= 2
+		memcpy(&TPpnt->Dir, floatpnt, 4*3);
+		floatpnt+=3;
+		memcpy(&TPpnt->Up, floatpnt, 4*3);
+		floatpnt+=3;
+#endif
+		memcpy(&TPpnt->half_size, floatpnt, 4*3);
+		floatpnt+=3;
+#else
 		TPpnt->Pos.x = *floatpnt++;
 		TPpnt->Pos.y = *floatpnt++;
 		TPpnt->Pos.z = *floatpnt++;
@@ -177,6 +188,7 @@ bool TeleportsLoad( char * Filename )
 		TPpnt->half_size.x = *floatpnt++;
 		TPpnt->half_size.y = *floatpnt++;
 		TPpnt->half_size.z = *floatpnt++;
+#endif
 		Buffer = (char *) floatpnt;
   
 		Uint16Pnt = (u_int16_t *) Buffer;
@@ -201,10 +213,16 @@ bool TeleportsLoad( char * Filename )
 			floatpnt = (float * ) Buffer;
 			for( j = 0 ; j < TPpnt->num_sides ; j++ )
 			{
+#ifdef ARM
+				memcpy(&ZonePnt->normal, floatpnt, 4*3);
+				floatpnt+=3;
+				memcpy(&ZonePnt->offset, floatpnt++, 4);
+#else
 				ZonePnt->normal.x = *floatpnt++;
 				ZonePnt->normal.y = *floatpnt++;
 				ZonePnt->normal.z = *floatpnt++;
 				ZonePnt->offset   = *floatpnt++;
+#endif
 				ZonePnt++;
 			}
 			Buffer = (char*) floatpnt;

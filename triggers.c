@@ -988,7 +988,12 @@ bool Triggerload( char * Filename )
 		m->Val = *intpnt++;
 
 		floatptr = (float*) intpnt;
+#ifdef ARM
+		memcpy(&m->Time, floatptr++, 4);
+		m->Time *= 60.0f;
+#else
 		m->Time = *floatptr++ * 60.0F;
+#endif
 		intpnt = (int*) floatptr;
 				
 		j = *intpnt++;
