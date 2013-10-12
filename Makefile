@@ -13,7 +13,10 @@ ifeq ($(M32),1)
   FLAGS= -m32
 endif
 ifeq ($(PANDORA),1)
-  FLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -mno-unaligned-access -DHAVE_GLES -DPANDORA -DARM
+  FLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -march=armv7-a -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DPANDORA 
+  FLAGS+= -DARM
+  LDFLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp
   HAVE_GLES=1
 endif
 FLAGS+= -std=gnu99 -pipe
@@ -148,7 +151,7 @@ else ifeq ($(MACOSX),1)
 else
 ifeq ($(HAVE_GLES),1)
   LIB += -lGLES_CM -lEGL
-  CFLAGS += -DHAVE_GLES -DPANDORA
+  CFLAGS += -DHAVE_GLES
 else
   LIB += -lGL -lGLU
 endif
