@@ -3625,7 +3625,11 @@ bool RenderModeSelect( int mode, bool fullscreen, bool vsync )
 		return true;
 	render_info.default_mode.h    = render_info.Mode[mode].h;
 	render_info.default_mode.w    = render_info.Mode[mode].w;
+#ifdef PANDORA
+	render_info.fullscreen        = true;
+#else
 	render_info.fullscreen        = fullscreen;
+#endif
 	render_info.vsync             = vsync;
 DebugPrintf("2 vsync = %d\n",render_info.vsync);
 	if(!render_mode_select( &render_info ))
