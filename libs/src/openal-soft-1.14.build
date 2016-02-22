@@ -1,0 +1,14 @@
+#!/bin/bash -x
+: ${AR:=ar}
+: ${RANLIB:=ranlib}
+tar -xvjf openal-soft-1.14.tar.bz2
+(
+	cd openal-soft-1.14/build
+	cmake -DEXAMPLES=OFF -DCMAKE_INSTALL_PREFIX= ../ || exit 1
+	make install DESTDIR=$PWD/../../.. || exit 1
+	$AR cru ../../../lib/libopenal.a $(find -name '*.o')
+	$RANLIB ../../../lib/libopenal.a
+) || exit 1
+mkdir -p "../lib/pkgconfig" 2>/dev/null
+cp pkgconfig/openal.pc ../lib/pkgconfig/
+echo "Built: openal"

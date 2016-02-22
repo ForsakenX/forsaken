@@ -1,0 +1,12 @@
+#!/bin/bash -x
+cd "$(dirname -- "$0")"
+v=SDL2-2.0.3
+tar -xvzf $v.tar.gz
+(
+	cd $v
+	./configure $options --prefix= || exit 1
+	make install DESTDIR=$PWD/../.. \
+		LDFLAGS=' -L/usr/lib/i386-linux-gnu/mesa' # this is benign if not on linux
+) || exit 1
+cp pkgconfig/sdl2.pc ../lib/pkgconfig/
+echo "Built: sdl"
