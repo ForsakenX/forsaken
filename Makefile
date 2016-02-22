@@ -105,8 +105,8 @@ $(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
 
 # library headers
 ifeq ($(PANDORA),1)
-  CFLAGS+= `libs/pkgconfig.sh --cflags $(LUA) $(LUA)-socket libenet`
-  CFLAGS+= `pkg-config --cflags $(SDL_) libpng zlib openal`
+  CFLAGS+= `libs/pkgconfig.sh --cflags $(LUA) $(LUA)-socket libenet libpng`
+  CFLAGS+= `pkg-config --cflags $(SDL_) zlib openal`
 else
   CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
 endif
@@ -123,8 +123,8 @@ ifeq ($(STATIC),1)
   PKG_CFG_OPTS= --static
 endif
 ifeq ($(PANDORA),1)
-  LIB+= `libs/pkgconfig.sh $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet`
-  LIB+=  `pkg-config $(PKG_CFG_OPTS) --libs libpng zlib openal`
+  LIB+= `libs/pkgconfig.sh $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng`
+  LIB+=  `pkg-config $(PKG_CFG_OPTS) --libs zlib openal` -lm -lX11
 else
   LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
 endif
