@@ -7,17 +7,39 @@
 CC=gcc
 
 PANDORA=1
+RPI?=0
+ODROID?=0
 
 # general compiler settings
 ifeq ($(M32),1)
   FLAGS= -m32
 endif
 ifeq ($(PANDORA),1)
+ifeq ($(RPI),1)
+  FLAGS= -mfpu=vfpv3 -mfloat-abi=hardfp -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DRPI 
+  FLAGS+= -DARM
+  LDFLAGS= -mfpu=vfpv3 -mfloat-abi=hardfp
+  HAVE_GLES=1
+else ifeq ($(RPI),2)
+  FLAGS= -mfpu=neon -mfloat-abi=hardfp -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DRPI 
+  FLAGS+= -DARM
+  LDFLAGS= -mfpu=neon -mfloat-abi=hardfp
+  HAVE_GLES=1
+else ifeq ($(ODROID),1)
+  FLAGS= -mfpu=neon -mfloat-abi=hardfp -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DODROID
+  FLAGS+= -DARM
+  LDFLAGS= -mfpu=neon -mfloat-abi=hardfp
+  HAVE_GLES=1
+else
   FLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -march=armv7-a -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
   FLAGS+= -DPANDORA 
   FLAGS+= -DARM
   LDFLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp
   HAVE_GLES=1
+endif
 endif
 FLAGS+= -std=gnu99 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
@@ -59,7 +81,7 @@ endif
 
 ifeq ($(DEBUG),1)
   ifeq ($(PANDORA),1)
-    FLAGS+= -g -gdwarf-2
+    FLAGS+= -g
   else
     FLAGS+= -g
   endif

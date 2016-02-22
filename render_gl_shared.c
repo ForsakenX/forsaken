@@ -171,7 +171,7 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 
 	Change_Ext( path, image.path, ".PNG" );
 /*	Need to change \ to / and remove all capital letters ! */
-#ifdef PANDORA
+#if defined(PANDORA) || defined(ODROID) || defined(RPI)
 	int idx= 0;
 	while(image.path[idx]!='\0') {
 		if (image.path[idx]=='\\') image.path[idx]='/';
@@ -196,7 +196,7 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 	*height = (u_int16_t) image.h;
 	(*colorkey) = (bool) image.colorkey;
 	
-#ifdef PANDORA
+#if defined(PANDORA) || defined(ODROID) || defined(RPI)
 	// resize bigger texture, they are way too big for Pandora memory, and Pandora screen
 	if (!(image.colorkey) && ((image.w>=128) || (image.h>=128))) {
 		DownSizeTexture(image.data, image.w, image.h);
