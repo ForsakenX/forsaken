@@ -27,7 +27,7 @@
 #define EGLPORT_H
 
 #include <stdint.h>
-#include "EGL/egl.h"
+#include <EGL/egl.h>
 
 #ifdef __cplusplus
 extern "C" {
