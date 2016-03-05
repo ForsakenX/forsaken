@@ -16,22 +16,22 @@ ifeq ($(M32),1)
 endif
 ifeq ($(PANDORA),1)
 ifeq ($(RPI),1)
-  FLAGS= -mfpu=vfpv3 -mfloat-abi=hardfp -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS= -mfpu=vfpv3 -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
   FLAGS+= -DRPI 
   FLAGS+= -DARM
-  LDFLAGS= -mfpu=vfpv3 -mfloat-abi=hardfp
+  LDFLAGS= -mfpu=vfpv3 -mfloat-abi=hard
   HAVE_GLES=1
 else ifeq ($(RPI),2)
-  FLAGS= -mfpu=neon -mfloat-abi=hardfp -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS= -mfpu=neon -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
   FLAGS+= -DRPI 
   FLAGS+= -DARM
-  LDFLAGS= -mfpu=neon -mfloat-abi=hardfp
+  LDFLAGS= -mfpu=neon -mfloat-abi=hard
   HAVE_GLES=1
 else ifeq ($(ODROID),1)
-  FLAGS= -mfpu=neon -mfloat-abi=hardfp -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS= -mfpu=neon -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
   FLAGS+= -DODROID
   FLAGS+= -DARM
-  LDFLAGS= -mfpu=neon -mfloat-abi=hardfp
+  LDFLAGS= -mfpu=neon -mfloat-abi=hard
   HAVE_GLES=1
 else
   FLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -march=armv7-a -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
