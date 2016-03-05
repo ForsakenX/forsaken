@@ -19,12 +19,14 @@ ifeq ($(RPI),1)
   FLAGS= -mfpu=vfpv3 -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
   FLAGS+= -DRPI 
   FLAGS+= -DARM
+  FLAGS += -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux
   LDFLAGS= -mfpu=vfpv3 -mfloat-abi=hard
   HAVE_GLES=1
 else ifeq ($(RPI),2)
   FLAGS= -mfpu=neon -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
   FLAGS+= -DRPI 
   FLAGS+= -DARM
+  FLAGS += -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux
   LDFLAGS= -mfpu=neon -mfloat-abi=hard
   HAVE_GLES=1
 else ifeq ($(ODROID),1)
