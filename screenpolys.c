@@ -2761,11 +2761,12 @@ bool ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t
    
 	      					if( ( ScrPolys[ i ].Flags & SCRFLAG_UseCoords ) )
 	      					{
-   	   							u1 = Box_Ptr->u1;
-   	   							v1 = Box_Ptr->v1;
-   	   							u2 = Box_Ptr->u2;
-   	   							v2 = Box_Ptr->v2;
    	   							#ifdef __arm__
+   	   							memcpy(&u1, &Box_Ptr->u1, sizeof(float));
+   	   							memcpy(&v1, &Box_Ptr->v1, sizeof(float));
+   	   							memcpy(&u2, &Box_Ptr->u2, sizeof(float));
+   	   							memcpy(&v2, &Box_Ptr->v2, sizeof(float));
+   	   							/*
       							memcpy(&x1, &ScrPolys[ i ].x1, sizeof(float));
       							memcpy(&y1, &ScrPolys[ i ].y1, sizeof(float));
       							memcpy(&x2, &ScrPolys[ i ].x2, sizeof(float));
@@ -2774,7 +2775,13 @@ bool ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t
       							memcpy(&y3, &ScrPolys[ i ].y3, sizeof(float));
       							memcpy(&x4, &ScrPolys[ i ].x4, sizeof(float));
       							memcpy(&y4, &ScrPolys[ i ].y4, sizeof(float));
+      							*/
    	   							#else
+   	   							u1 = Box_Ptr->u1;
+   	   							v1 = Box_Ptr->v1;
+   	   							u2 = Box_Ptr->u2;
+   	   							v2 = Box_Ptr->v2;
+      							#endif
       							x1 = ScrPolys[ i ].x1;
       							y1 = ScrPolys[ i ].y1;
       							x2 = ScrPolys[ i ].x2;
@@ -2783,7 +2790,6 @@ bool ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16_t * TPage, u_int16_t
       							y3 = ScrPolys[ i ].y3;
       							x4 = ScrPolys[ i ].x4;
       							y4 = ScrPolys[ i ].y4;
-      							#endif
       						}
 	      					else
 		  					{
