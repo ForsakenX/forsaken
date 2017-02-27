@@ -168,12 +168,16 @@ bool Nodeload( char * Filename )
 		FloatPnt = (float*) int16Pnt;
 		
 		NodePnt->NodeNum = e;
-		
+#ifdef ARM
+		memcpy(&NodePnt->Pos, FloatPnt, 4*3);
+		FloatPnt+=3;
+		memcpy(&NodePnt->Radius, FloatPnt++, 4);
+#else
 		NodePnt->Pos.x = *FloatPnt++;
 		NodePnt->Pos.y = *FloatPnt++;
 		NodePnt->Pos.z = *FloatPnt++;
 		NodePnt->Radius = *FloatPnt++;
-		
+#endif	
 		u_int32Pnt = (u_int32_t*) FloatPnt;
 		NodePnt->NetMask = *u_int32Pnt++;				// which networks this node is in...
 

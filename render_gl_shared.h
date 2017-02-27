@@ -13,7 +13,11 @@
 #include "file.h"
 #include <stdio.h>
 #include "main_sdl.h"
+#ifdef HAVE_GLES
+#include "SDL_opengles.h"
+#else
 #include "SDL_opengl.h"
+#endif
 
 extern render_info_t render_info;
 
@@ -36,6 +40,19 @@ extern GLenum render_last_gl_error;
 
 const char * render_error_description( int e );
 
+#ifdef HAVE_GLES
+#define CHECK_GL_ERRORS \
+	do \
+	{ \
+		GLenum e; \
+		while( ( e = glGetError() ) != GL_NO_ERROR ) \
+		{ \
+			render_last_gl_error = e; \
+			DebugPrintf( "GL error: %i (%s:%d)\n", \
+				e,  __FILE__, __LINE__ ); \
+		} \
+	} while (0)
+#else
 #define CHECK_GL_ERRORS \
 	do \
 	{ \
@@ -47,7 +64,7 @@ const char * render_error_description( int e );
 				gluErrorString(e),  __FILE__, __LINE__ ); \
 		} \
 	} while (0)
-
+#endif
 
 typedef struct { float anisotropic; } gl_caps_t;
 extern gl_caps_t caps;

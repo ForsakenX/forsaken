@@ -13,6 +13,11 @@
 // so we can render the static objects as display lists
 //
 
+#ifdef HAVE_GLES
+#define glColor4ubv(a)	glColor4ub((a)[0], (a)[1], (a)[2], (a)[3])
+#define gluOrtho2D(a, b, c, d)	glOrthof(a, b, c, d, -1, 1)
+#endif
+
 bool FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(LVERTEX) );
@@ -55,6 +60,7 @@ bool FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 bool FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {*verts = (void*)renderObject->lpVertexBuffer; return true;}
 
+#ifndef HAVE_GLES
 static void set_color( COLOR c )
 {
 	// COLOR is the value loaded from the files
@@ -63,6 +69,7 @@ static void set_color( COLOR c )
 	c = (c & 0xff00ff00) | ((c & 0x00ff0000) >> 16) | ((c & 0x000000ff) << 16);
 	glColor4ubv((GLubyte*)&c);
 }
+#endif
 
 int render_color_blend_red   = 0;
 int render_color_blend_green = 0;
@@ -309,6 +316,21 @@ void light_vert( LVERTEX * vert, u_int8_t * color )
 		MIX_COLOR_BLEND_LIGHT( color[2], render_color_blend_red,   r );
 	}
 }
+#ifdef HAVE_GLES
+#define MAX_VTX 10240
+static GLfloat vtx[MAX_VTX*3];
+static GLfloat tex[MAX_VTX*2];
+static COLOR col[MAX_VTX];
+static int idx;
+static void set_color( COLOR c )
+{
+	// COLOR is the value loaded from the files
+	// it's packed as uchar[4] (bgra) and glColor expects (rgba)
+	// so we flip the red/blue values with each other
+	c = (c & 0xff00ff00) | ((c & 0x00ff0000) >> 16) | ((c & 0x000000ff) << 16);
+	col[idx]=c;
+}
+#endif
 
 static void draw_vert( void * _vert, bool orthographic )
 {
@@ -317,8 +339,14 @@ static void draw_vert( void * _vert, bool orthographic )
 	if(orthographic)
 	{
 		set_color( tlvert->color );
+#ifdef HAVE_GLES
+		tex[idx*2+0]=tlvert->tu; tex[idx*2+1]=tlvert->tv;
+		vtx[idx*2+0]=tlvert->x; vtx[idx*2+1]=tlvert->y;
+		idx++;
+#else
 		glTexCoord2f( tlvert->tu, tlvert->tv );
 		glVertex2f( tlvert->x, tlvert->y );
+#endif
 	}
 	else
 	{
@@ -329,8 +357,14 @@ static void draw_vert( void * _vert, bool orthographic )
 #else
 		set_color( vert->color );
 #endif
+#ifdef HAVE_GLES
+		tex[idx*2+0]=vert->tu; tex[idx*2+1]= vert->tv;
+		vtx[idx*3+0]=vert->x; vtx[idx*3+1]=vert->y; vtx[idx*3+2]=vert->z;
+		idx++;
+#else
 		glTexCoord2f( vert->tu, vert->tv );
 		glVertex3f( vert->x, vert->y, vert->z );
+#endif
 	}
 }
 
@@ -360,6 +394,11 @@ bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool or
 	WORD * indices = (WORD*) renderObject->lpIndexBuffer;
 
 	//assert(renderObject->vbLocked == 0);
+#ifdef HAVE_GLES
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	idx=0;
+#endif
 	
 	if(orthographic)
 	{
@@ -390,9 +429,15 @@ bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool or
 			GLuint texture = *(GLuint*)renderObject->textureGroups[group].texture;
 			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, texture);
+#ifdef HAVE_GLES
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+#endif
 		}
-
+#ifdef HAVE_GLES
+		idx=0;
+#else
 		glBegin(primitive_type);
+#endif
 
 		// draw vertex list using index list
 		if(renderObject->lpIndexBuffer)
@@ -418,11 +463,22 @@ bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool or
 				else
 					draw_vert( &verts[i], orthographic );
 		}
-		
-		glEnd();
-
+#ifdef HAVE_GLES
 		if( renderObject->textureGroups[group].texture )
+			glTexCoordPointer(2, GL_FLOAT, 0, tex);
+		glColorPointer(4, GL_UNSIGNED_BYTE, 0, col);
+		glVertexPointer((orthographic)?2:3, GL_FLOAT, 0, vtx);
+		glDrawArrays(primitive_type, 0, idx);
+#else		
+		glEnd();
+#endif
+
+		if( renderObject->textureGroups[group].texture ) {
 			glDisable(GL_TEXTURE_2D);
+#ifdef HAVE_GLES
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+#endif
+		}
 
 		if(renderObject->textureGroups[group].colourkey)
 			unset_alpha_ignore();
@@ -433,7 +489,10 @@ bool draw_render_object( RENDEROBJECT *renderObject, int primitive_type, bool or
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 	}
-
+#ifdef HAVE_GLES
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+#endif
 	return true;
 }
 
