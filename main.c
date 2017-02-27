@@ -11,9 +11,12 @@
 #include "title.h"
 #include "lua_common.h"
 #include "sfx.h"
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "input.h"
 #include "sound.h"
+#ifdef HAVE_GLES
+extern void    EGL_Close                   ( void );
+#endif
 
 #ifndef WIN32
 #include <unistd.h>
@@ -28,7 +31,7 @@
 //
 
 bool Debug = true;
-bool ShowFrameRate = false;
+bool ShowFrameRate = true;
 bool ShowInfo = false;
 
 int cliSleep = 0;
@@ -220,7 +223,7 @@ static bool ParseCommandLine(char* lpCmdLine)
 		else if (!strcasecmp(option, "NoSFX"))
 		{
 			NoSFX = true;
-        }
+                }
 		
 		// jump to the host screen
 		else if ( !strcasecmp( option, "QuickHost" ) ) 
@@ -354,6 +357,8 @@ void CleanUpAndPostQuit(void)
 	// stop rendering and destroy objects
 	render_cleanup( &render_info );
 
+    music_cleanup();
+
 	// destroy the sound
 	DestroySound( DESTROYSOUND_All );
 
@@ -382,6 +387,9 @@ void CleanUpAndPostQuit(void)
 
 #endif
 
+#ifdef HAVE_GLES
+	EGL_Close();
+#endif
 	// should come last
 	SDL_Quit();
 }
@@ -454,7 +462,6 @@ static bool AppInit( char * lpCmdLine )
 	//
 	if(!sdl_init())
 		return false;
-
 	// parse chdir from command line first
 	if(!parse_chdir(lpCmdLine))
 		return false;
@@ -499,6 +506,7 @@ static bool AppInit( char * lpCmdLine )
 		Msg("Failed to initialized joysticks!");
 		return false;
 	}
+
 	
 	// this needs to come after joysticks_init
 	// because joysticks_init will wipe the joystick settings
@@ -523,7 +531,12 @@ static bool AppInit( char * lpCmdLine )
 	// exclusively grab input in fullscreen mode
 	input_grab( render_info.fullscreen );
 
-	//
+        //creates the inital global music_buffers struct for music
+    if(!InitMusic()){
+       Msg("InitMusic failed.\n");
+       return false;
+    }
+
 	SetSoundLevels( NULL );
 
 	// done
@@ -549,6 +562,7 @@ static bool RenderLoop()
         Msg("RenderScene failed.\n");
         return false;
     }
+
 
 	if ( quitting )
 	{
@@ -612,6 +626,11 @@ int main( int argc, char* argv[] )
 
 	while( !QuitRequested )
 	{
+
+        //Start Music Loop
+        if(!MusicLoop())
+             goto FAILURE;
+
 		// process system events
 		if(!handle_events())
 			goto FAILURE;
@@ -633,13 +652,12 @@ int main( int argc, char* argv[] )
 				CleanUpAndPostQuit();
 				break;
 			}
-
         }
 
 		// command line asks us to sleep and free up sys resources a bit...
 		if ( cliSleep )
 			SDL_Delay( cliSleep );
-	}
+      }
 
 	DebugPrintf("exit(0)\n");
 

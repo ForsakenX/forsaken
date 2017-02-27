@@ -5,7 +5,7 @@
 
 
 #include <math.h>
-#include <new3d.h>
+#include "new3d.h"
 
 /*===================================================================
 	Defines

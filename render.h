@@ -9,7 +9,7 @@ extern "C" {
 
 #include "main.h"
 #include "new3d.h"
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 extern bool  bSquareOnly;
 

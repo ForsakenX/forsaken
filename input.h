@@ -8,7 +8,7 @@
 
 #include "main.h"
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #if SDL_VERSION_ATLEAST(2,0,0)
     // TODO
     //        previously this was the last possible keyboard value that sdl supported (323)

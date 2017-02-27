@@ -153,7 +153,11 @@ bool TriggerAreaload( char * Filename )
 		AreaPnt->group = *u_int16_tpnt++;
 		AreaPnt->generation_type = *u_int16_tpnt++;
 		floatpnt = (float * ) u_int16_tpnt;
+#ifdef ARM
+		memcpy(&AreaPnt->generation_delay, floatpnt++, 4);
+#else
 		AreaPnt->generation_delay = *floatpnt++;
+#endif
 		u_int16_tpnt = (u_int16_t *) floatpnt;
 
 		if( AreaPnt->generation_type != TRIGGER_AREA_GENTYPE_Initialised )
@@ -166,14 +170,19 @@ bool TriggerAreaload( char * Filename )
 		AreaPnt->type = *u_int16_tpnt++;
 
 		floatpnt = (float * ) u_int16_tpnt;
-
+#ifdef ARM
+		memcpy(&AreaPnt->pos, floatpnt, 4*3);
+		floatpnt+=3;
+		memcpy(&AreaPnt->half_size, floatpnt, 4*3);
+		floatpnt+=3;
+#else
 		AreaPnt->pos.x = *floatpnt++;
 		AreaPnt->pos.y = *floatpnt++;
 		AreaPnt->pos.z = *floatpnt++;
 		AreaPnt->half_size.x = *floatpnt++;
 		AreaPnt->half_size.y = *floatpnt++;
 		AreaPnt->half_size.z = *floatpnt++;
-
+#endif
 		Buffer = (char*) floatpnt;
 		if( AreaPnt->type != ZONE_Sphere )
 		{
@@ -188,10 +197,16 @@ bool TriggerAreaload( char * Filename )
 			
 			for( j = 0 ; j < AreaPnt->num_sides ; j++ )
 			{
+#ifdef ARM
+				memcpy(&ZonePnt->normal, floatpnt, 4*3);
+				floatpnt+=3;
+				memcpy(&ZonePnt->offset, floatpnt++, 4);
+#else
 				ZonePnt->normal.x = *floatpnt++;
 				ZonePnt->normal.y = *floatpnt++;
 				ZonePnt->normal.z = *floatpnt++;
 				ZonePnt->offset   = *floatpnt++;
+#endif
 				ZonePnt++;
 			}
 			Buffer = (char*) floatpnt;

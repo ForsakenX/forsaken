@@ -867,7 +867,6 @@ bool InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt) // bjd
 
 					if( !Mxaload( &TempFilename[0] , &MxaModelHeaders[i], NamePnt->StoreTriangles ) ) return false;	// the model and visipoly data
 					ModelHeaders[i].LOD = NamePnt->LOD;
-
 					TopLeft = TempVector;
 					BottomRight = TempVector;
 					GetMXABoundingBox( &MxaModelHeaders[i], &MATRIX_Identity, &TempVector, &TopLeft, &BottomRight );
