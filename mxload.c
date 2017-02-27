@@ -648,8 +648,13 @@ bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool Sto
 						FloatPnt = (float*) Buffer;
 						for( o = 0 ; o < vertices*frames ; o++ )
 						{
+#ifdef ARM
+							memcpy(&TanimUV->u, FloatPnt++, 4);
+							memcpy(&TanimUV->v, FloatPnt++, 4);
+#else
 							TanimUV->u = *FloatPnt++;
 							TanimUV->v = *FloatPnt++;
+#endif
 							TanimUV++;
 						}
 						Buffer = ( char * ) FloatPnt;
@@ -704,6 +709,14 @@ bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool Sto
 			{
 				FirePointPtr->ID = *Uint16Pnt++;				// ID ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
+#ifdef ARM
+				memcpy(&FirePointPtr->Pos, FloatPnt, 4*3);				// Pos ( 3 floats )
+				FloatPnt+=3;
+				memcpy(&FirePointPtr->Dir, FloatPnt, 4*3);				// Dir ( 3 floats )
+				FloatPnt+=3;
+				memcpy(&FirePointPtr->Up, FloatPnt, 4*3);				// Up ( 3 floats )
+				FloatPnt+=3;
+#else
 				FirePointPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				FirePointPtr->Pos.y = *FloatPnt++;
 				FirePointPtr->Pos.z = *FloatPnt++;
@@ -713,6 +726,7 @@ bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool Sto
 				FirePointPtr->Up.x = *FloatPnt++;				// Up ( 3 floats )
 				FirePointPtr->Up.y = *FloatPnt++;
 				FirePointPtr->Up.z = *FloatPnt++;
+#endif
 				Uint16Pnt = (u_int16_t *) FloatPnt;
 				FirePointPtr++;
 			}
@@ -742,6 +756,17 @@ bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool Sto
 			{
 				SpotFXPtr->Type = *Uint16Pnt++;				// Type ( u_int16_t )
 				FloatPnt = (float *) Uint16Pnt;
+#ifdef ARM
+				memcpy(&SpotFXPtr->Pos, FloatPnt, 3*4);				// Pos ( 3 floats )
+				FloatPnt+=3;
+				memcpy(&SpotFXPtr->DirVector, FloatPnt, 3*4);		// Dir ( 3 floats )
+				FloatPnt+=3;
+				memcpy(&SpotFXPtr->UpVector, FloatPnt, 3*4);		// Up ( 3 floats )
+				FloatPnt+=3;
+				memcpy(&SpotFXPtr->StartDelay, FloatPnt++, 4); SpotFXPtr->StartDelay  *= ANIM_SECOND;	// Start Delay
+				memcpy(&SpotFXPtr->ActiveDelay, FloatPnt++, 4); SpotFXPtr->ActiveDelay *= ANIM_SECOND;	// Active Delay
+				memcpy(&SpotFXPtr->InactiveDelay, FloatPnt++, 4); SpotFXPtr->InactiveDelay  *= ANIM_SECOND;	// Inactive Delay
+#else
 				SpotFXPtr->Pos.x = *FloatPnt++;				// Pos ( 3 floats )
 				SpotFXPtr->Pos.y = *FloatPnt++;
 				SpotFXPtr->Pos.z = *FloatPnt++;
@@ -754,6 +779,7 @@ bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool Sto
 				SpotFXPtr->StartDelay = ( *FloatPnt++ * ANIM_SECOND );	// Start Delay
 				SpotFXPtr->ActiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Active Delay
 				SpotFXPtr->InactiveDelay = ( *FloatPnt++ * ANIM_SECOND );	// Inactive Delay
+#endif
 				Int16Pnt = (int16_t *) FloatPnt;
 				SpotFXPtr->Primary = (int8_t) *Int16Pnt++;	// Primary ( int16_t )
 				SpotFXPtr->Secondary = (int8_t) *Int16Pnt++;	// Secondary ( int16_t )
@@ -793,8 +819,13 @@ bool Mxload( char * Filename, MXLOADHEADER * Mxloadheader , bool Panel, bool Sto
 				}
 
 				FloatPnt = (float *) Int8Pnt;
+#ifdef ARM
+				memcpy(&SpotFXPtr->SoundFXVolume, FloatPnt++, 4);
+				memcpy(&SpotFXPtr->SoundFXSpeed, FloatPnt++, 4);
+#else
 				SpotFXPtr->SoundFXVolume = *FloatPnt++;
 				SpotFXPtr->SoundFXSpeed = *FloatPnt++;
+#endif
 				Uint16Pnt = (u_int16_t *) FloatPnt;
 #else
 				Uint16Pnt = (u_int16_t *) Uint32Pnt;
@@ -886,8 +917,13 @@ bool ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, u_int16_t Model  )
 								lpLVERTEX = lpPointer+ *u_int32Pnt++;
 								TanimUV = PolyAnim->UVs;
 								TanimUV += e + (PolyAnim->vertices * PolyAnim->newframe);
+#ifdef ARM
+								memcpy(&lpLVERTEX->tu, &TanimUV->u, 4);
+								memcpy(&lpLVERTEX->tv, &TanimUV->v, 4);
+#else
 								lpLVERTEX->tu = TanimUV->u;
 								lpLVERTEX->tv = TanimUV->v;
+#endif
 							}
 							PolyAnim->currentframe = PolyAnim->newframe;
 						}

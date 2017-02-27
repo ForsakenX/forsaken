@@ -4,9 +4,10 @@
 #include "util.h"
 #include "sound.h"
 #include "file.h"
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <AL/al.h>
 #include <AL/alc.h>
+
 //#include <efx.h>
 //#include <efx-creative.h>
 #include <math.h>
@@ -32,6 +33,7 @@ struct sound_source_t {
 	bool playing;
 	char path[MAX_PATH];
 };
+
 
 //
 // sound system load / unload
@@ -146,7 +148,7 @@ bool sound_init( void )
 		DebugPrintf("listener position: %f %f %f\n",pos[0],pos[1],pos[2]);
 	}
 
-	print_info();
+    print_info();
 
 	return true;
 }
@@ -275,9 +277,11 @@ bool sound_is_playing( sound_source_t * source )
 	return (state == AL_PLAYING);
 }
 
+
 //
 // load resources
 //
+
 
 sound_buffer_t * sound_load(char *path)
 {
@@ -331,7 +335,7 @@ sound_buffer_t * sound_load(char *path)
 			format = AL_FORMAT_MONO8;
 		else
 			format = AL_FORMAT_STEREO8;
-		DebugPrintf("sound_buffer: format = %s\n",
+            DebugPrintf("sound_buffer: format = %s\n",
 			format == AL_FORMAT_MONO8 ? "mono8" : "stereo8" );
 	}
 	else // 16 bit
