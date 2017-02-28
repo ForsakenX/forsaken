@@ -3,10 +3,17 @@
 
 #include "main.h"
 #include <SDL.h>
+#include <alut.h>
+#include <codec.h>
+#include <vorbisfile.h>
+
+#define MAX_PATH 500
 
 //
 // Globals
 //
+
+char pcmout[16*2048];
 
 // this will eventually be removed but is required right now
 bool Sound3D;
@@ -42,6 +49,10 @@ typedef IDirectSoundBuffer sound_source_t;
 #else
 typedef struct sound_source_t sound_source_t;
 typedef struct sound_buffer_t sound_buffer_t;
+
+typedef struct music_buffer_t music_buffer_t;
+music_buffer_t * music_buffer;
+
 #endif
 
 sound_buffer_t * sound_load(char* file);

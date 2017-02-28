@@ -423,8 +423,6 @@ u_int32_t CurrentBikeCompSpeech = 0;
 
 float	LastDistance[MAX_SFX];
 
-int CurrentLevel = 16;
-
 /////
 // sound buffer storage
 // reusable buffers for sources

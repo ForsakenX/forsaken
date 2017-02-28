@@ -19,8 +19,6 @@ struct {
 	int playing;
 } stats;
 
-#define MAX_PATH 500
-
 struct sound_buffer_t {
 	ALuint id;
 	char path[MAX_PATH];
