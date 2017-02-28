@@ -5,7 +5,7 @@
 #include "oct2.h"
 
 char MusicPath[MAX_PATH];
-int8_t CurrentLevel = -1;
+int16_t CurrentLevel = -1;
 
 struct music_buffer_t {
     ALuint id[16];
