@@ -2,14 +2,8 @@
 #include "util.h"
 #include "version.h"
 #include "main_sdl.h"
-#include <SDL/SDL_mixer.h>
-
 #ifdef GL
-#ifdef HAVE_GLES
-#include "SDL_opengles.h"
-#else
 #include "SDL_opengl.h"
-#endif
 #endif
 
 extern render_info_t render_info;
@@ -29,7 +23,7 @@ bool sdl_init( void )
 #endif
 	DebugPrintf("SDL runtime version: %u.%u.%u\n", ver.major, ver.minor, ver.patch);
 
-	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO) < 0
+	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0
 #if !SDL_VERSION_ATLEAST(2,0,0)
 		|| !SDL_GetVideoInfo()
 #endif
@@ -58,17 +52,9 @@ bool sdl_init( void )
 
 #define NUMBER_MODES 19
 render_display_mode_t video_modes[NUMBER_MODES] = {
-#ifdef HAVE_GLES
-{800,480},
-#else
 {0,0}, // current video mode of the desktop
-#endif
 {640,480},
-#ifdef HAVE_GLES
-{800,480}, // Pandora mode
-#else
 {800,600}, // default window mode
-#endif
 {1024,768},
 {1152,864},
 {1280,600},
@@ -148,9 +134,8 @@ static void set_opengl_settings( void )
 {
 #ifdef GL
 	// BPP should be left alone to match whatever the desktop is at.
-#ifndef HAVE_GLES
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,	  1);
-#endif
 
 #if SDL_VERSION_ATLEAST(2,0,0)
 #if GL == 3
@@ -164,20 +149,16 @@ static void set_opengl_settings( void )
 	// this causes issues on at least one card I've seen.
 	// best to leave this as an option.  if someone says they have
 	// low frame rate then suggest them to pass -forceaccel on cli
-#ifndef HAVE_GLES
 	if(render_info.force_accel)
 	{
 		DebugPrintf("main_sdl: enabling accelerated visual\n");
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
 	}
-#endif
 
 // this is now done during creation of the renderer
 #if !SDL_VERSION_ATLEAST(2,0,0)
-#ifndef HAVE_GLES
 	DebugPrintf("vsync set to %d\n",render_info.vsync);
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,	render_info.vsync );
-#endif
 #endif
 
 #endif
@@ -199,11 +180,9 @@ static void print_info( void )
 	);
 #endif
 
-#ifndef HAVE_GLES
 	// actual depth size set by sdl
 	SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &bpp);
 	DebugPrintf("main_sdl: depth buffer is %d bpp\n", bpp);
-#endif
 
 // TODO
 #if !SDL_VERSION_ATLEAST(2,0,0)
@@ -221,14 +200,10 @@ static u_int32_t create_video_flags( void )
 	u_int32_t flags = SDL_ANYFORMAT;
 
 #ifdef GL
-#ifndef HAVE_GLES
 	flags |= SDL_OPENGL;
 #endif
-#endif
 
-#ifndef HAVE_GLES
 	if(render_info.fullscreen)
-#endif
 		flags |= SDL_FULLSCREEN;
 
 	return flags;
@@ -282,7 +257,6 @@ static bool create_video_surface( u_int32_t window_flags, u_int32_t renderer_fla
 		Msg("main_sdl: failed to create window: %s\n",SDL_GetError());
 		return false;
 	}
-
 	render_info.renderer = SDL_CreateRenderer(
 		render_info.window,
 		-1,
@@ -295,11 +269,6 @@ static bool create_video_surface( u_int32_t window_flags, u_int32_t renderer_fla
 	}
 
   #else
-#ifdef HAVE_GLES
-render_info.ThisMode.w=800;
-render_info.ThisMode.h=480;
-window_flags=SDL_FULLSCREEN;
-#endif
 	render_info.screen = SDL_SetVideoMode(
 		render_info.ThisMode.w,
 		render_info.ThisMode.h,
@@ -312,9 +281,6 @@ window_flags=SDL_FULLSCREEN;
 		Msg("main_sdl: failed to create video surface: %s\n",SDL_GetError());
 		return false;
 	}
-#ifdef HAVE_GLES
-	EGL_Open(render_info.ThisMode.w,render_info.ThisMode.h);
-#endif
   #endif
 	
 	print_info();
@@ -385,10 +351,6 @@ void sdl_render_present( render_info_t * info )
 #if SDL_VERSION_ATLEAST(2,0,0)
 	SDL_RenderPresent(info->renderer);
 #else
-#ifdef HAVE_GLES
-	EGL_SwapBuffers();
-#else
 	SDL_GL_SwapBuffers();
-#endif
 #endif
 }

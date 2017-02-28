@@ -131,32 +131,7 @@ int luaopen_miniupnp(lua_State *L);
 static void assign_loaders( void )
 {
 	assign_loader( "socket.core", luaopen_socket_core );
-
-
-
-
-
-
-
-
-
-
-
-//cole  commented the following out, not compiling ->        undefined reference to `luaopen_mime_core'
-	//assign_loader( "mime.core", luaopen_mime_core );
-
-
-
-
-
-
-
-
-
-
-
-
-
+	assign_loader( "mime.core", luaopen_mime_core );
 #ifdef MINIUPNP
 	assign_loader( "miniupnp", luaopen_miniupnp );
 #endif

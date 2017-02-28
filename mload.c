@@ -721,12 +721,7 @@ bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					VertPnt = ( VERT* )	Buffer;
 					for( verts = 0 ; verts < length ; verts++ )
 					{
-#ifdef ARM
-						VERT vert;
-						memcpy(&vert, VertPnt++, sizeof(vert));
-#else
 						VERT vert = *VertPnt++;
-#endif
 						sum.x += vert.x;
 						sum.y += vert.y;
 						sum.z += vert.z;
@@ -844,12 +839,7 @@ bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			Buffer = (char *) Uint16Pnt;		
 
 			FloatPnt = ( float * ) Buffer;
-#ifdef ARM
-			memcpy(&Mloadheader->CellSize, FloatPnt++, 4);
-			Mloadheader->CellSize = 1.0f/Mloadheader->CellSize;
-#else
 			Mloadheader->CellSize = 1.0F / *FloatPnt++;
-#endif
 			Buffer = (char * ) FloatPnt;
 	
 			for( group=0 ; group<Mloadheader->num_groups; group++)
@@ -860,14 +850,9 @@ bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				for( execbuf=0 ; execbuf<Mloadheader->Group[group].num_execbufs; execbuf++)
 				{
 					FloatPnt = (float * ) Buffer;
-#ifdef ARM
-					memcpy(&Mloadheader->Group[group].cell_origin[execbuf], FloatPnt, 4*3);
-					FloatPnt+=3;
-#else
 					Mloadheader->Group[group].cell_origin[execbuf].x = *FloatPnt++;
 					Mloadheader->Group[group].cell_origin[execbuf].y = *FloatPnt++;
 					Mloadheader->Group[group].cell_origin[execbuf].z = *FloatPnt++;
-#endif
 					Buffer = (char * ) FloatPnt;
 					Uint16Pnt = (u_int16_t *) Buffer;
 					Mloadheader->Group[group].xcells[execbuf] = *Uint16Pnt++;
@@ -971,14 +956,9 @@ bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			up = (float *) Buffer;
 			for ( i = 0; i < Mloadheader->num_groups; i++ )
 			{
-#ifdef ARM
-				memcpy(&Mloadheader->Group[ i ].up, up, 4*3);
-				up+=3;
-#else
 				Mloadheader->Group[ i ].up.x = *up++;
 				Mloadheader->Group[ i ].up.y = *up++;
 				Mloadheader->Group[ i ].up.z = *up++;
-#endif
 			}
 			Buffer = (char *) up;
 		}
@@ -1106,13 +1086,8 @@ bool Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						FloatPnt = (float*) Buffer;
 						for( o = 0 ; o < vertices*frames ; o++ )
 						{
-#ifdef ARM
-							memcpy(&TanimUV->u, FloatPnt++, 4);
-							memcpy(&TanimUV->v, FloatPnt++, 4);
-#else
 							TanimUV->u = *FloatPnt++;
 							TanimUV->v = *FloatPnt++;
-#endif
 							TanimUV++;
 						}
 						Buffer = ( char * ) FloatPnt;
@@ -1840,11 +1815,7 @@ void ReadSoundInfo( MLOADHEADER *m, char **pbuf )
 	{
 		for ( k = 0; k < m->num_groups; k++ )
 		{
-#ifdef ARM
-			memcpy(&SoundInfo[ j ][ k ], buf++, 4);
-#else
 			SoundInfo[ j ][ k ] = *buf++;
-#endif
 		}
 	}
 

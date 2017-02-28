@@ -29,7 +29,7 @@
 */
 
 #include "main.h"
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 typedef struct timer {
   u_int32_t  last;
