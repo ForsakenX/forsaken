@@ -16,7 +16,6 @@
 #define SFX_TYPE_Panned 2
 #define SFX_TYPE_Looping 3
 #define SFX_TYPE_Taunt 4
-#define SFX_TYPE_Music 5  //cole -> music
 
 #define GLOBAL_MAX_SFX ( 0.9F ) 
 

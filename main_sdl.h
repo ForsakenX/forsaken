@@ -1,7 +1,7 @@
 #ifndef MAIN_SDL_INCLUDED
 #define MAIN_SDL_INCLUDED
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include "render.h"
 
 bool sdl_init_video( void );

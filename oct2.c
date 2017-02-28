@@ -26,7 +26,6 @@
 #include "visi.h"
 #include "tload.h"
 #include "sfx.h"
-#include "sound.h"
 #include "transexe.h"
 #include "text.h"
 #include "mxaload.h"
@@ -550,9 +549,8 @@ extern int FontSourceHeight;
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16_t NumOfActivePlayers;
 
-bool LoadLevel;
-int16_t   LevelNum = 0;
-int16_t   NewLevelNum = 0;
+int16_t   LevelNum = 0 ;
+int16_t   NewLevelNum = 0 ;
 int16_t   NumLevels = 0;
 char  ShortLevelNames[MAXLEVELS][MAX_SHORT_LEVEL_NAME];
 char  LevelNames[MAXLEVELS][128];
@@ -1404,8 +1402,9 @@ bool InitLevels( char * levels_list )
   while ( j < MAXLEVELS && fscanf( f, " %s", ShortLevelNames[ j ] ) == 1 )
   {
 
-    // get the path to the current mxv file
-    sprintf( LevelNames[ j ], "data\\levels\\%s\\%s.mxv", ShortLevelNames[ j ], ShortLevelNames[ j ] );
+
+	// get the path to the current mxv file
+	sprintf( LevelNames[ j ], "data\\levels\\%s\\%s.mxv", ShortLevelNames[ j ], ShortLevelNames[ j ] );
 
 	// check to see if the level mxv file exists
 	if ( !File_Exists( LevelNames[ j ] ) )
@@ -1863,7 +1862,8 @@ void ReleaseLevel(void)
 
 
 
-void ReleaseScene(void)
+void
+ReleaseScene(void)
 {
   int16_t Count;
 
@@ -2216,8 +2216,8 @@ bool ChangeLevel( void )
 {
 	//if( NewLevelNum != LevelNum )
 	//  return true;
+
 	LevelNum = NewLevelNum;
-    LoadLevel = true;
 
 	//NumGoldBars = 0;
 
@@ -3851,9 +3851,7 @@ bool RenderScene( void )
 
     smallinitShip( WhoIAm );
     InGameLoad( NULL );
-
-		input_grab( true );
-
+    
 #ifdef DEMO_SUPPORT
     QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
 #endif

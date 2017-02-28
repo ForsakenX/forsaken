@@ -10,8 +10,6 @@ bool  bSoundEnabled = false;
 char  CurrentTauntVariant;
 bool  NoSFX = true;
 
-//int CurrentLevel = 16;
-
 bool InitializeSound( int flags ){return 1;}
 
 void PlayEnemyBikerTaunt( ENEMY *Enemy ){}
@@ -424,6 +422,8 @@ u_int32_t CurrentBikerSpeech = 0;
 u_int32_t CurrentBikeCompSpeech = 0;
 
 float	LastDistance[MAX_SFX];
+
+int CurrentLevel = 16;
 
 /////
 // sound buffer storage
@@ -2177,25 +2177,7 @@ u_int32_t PlaySfx( int16_t Sfx, float Vol )
 		return 0;
 
 	index = FindFreeSfxHolder();
-
-
-
-
-    //cole -> sfx Feb 13
-    FILE *pFile;
-    pFile=fopen("/tmp/forsaken_sfx.log", "a");
-    fprintf(pFile, "SFX ID #%i\n", Sfx);
-    fprintf(pFile, "Vol #%i\n\n", Vol);
-    fclose(pFile);
-
-
-
-
-
-
-
-
-    if ( index < 0 )
+	if ( index < 0 )
 	{
 		DebugPrintf("Unable to play sfx %hd - no free sfx holders\n",Sfx);
 		return 0;
