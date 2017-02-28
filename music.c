@@ -108,7 +108,7 @@ bool InitMusic(){
 
 char *trackmap(const char *folderpath, const char *filename){
     const size_t length = strlen(folderpath) + strlen(filename) + 1;
-    const char *path = malloc(sizeof(char) * length);
+    char *path = malloc(sizeof(char) * length);
     snprintf(path, length, "%s%s", folderpath, filename);
     if(folder_exists(path) == 0){
       DebugPrintf("Path to %s missing, creating default\n",path);
