@@ -10,6 +10,7 @@ char MusicPath[MAX_PATH];
 struct music_buffer_t {
     ALuint id[16];
     ALuint source;
+    char path[MAX_PATH];
     int current_section;
     OggVorbis_File vf;
     vorbis_info *vi;
@@ -18,13 +19,14 @@ struct music_buffer_t {
     bool eof;
 };
 
-music_buffer_t *music_load(music_buffer_t *buffer, const *path)
+music_buffer_t *music_load(music_buffer_t *buffer, const char *path)
 {
     ALenum format;
     FILE *fp;
-    fp = file_open(path, "rb");
+    strncpy(buffer->path,path,MAX_PATH-1);
+    fp = file_open(buffer->path, "rb");
     if(!fp){
-       DebugPrintf(stderr, "could not open file %s", path);
+       DebugPrintf(stderr, "could not open file %s", buffer->path);
        return 0;
     }
     if(ov_open_callbacks(fp, &buffer->vf, NULL, 0, OV_CALLBACKS_DEFAULT)<0){
@@ -120,7 +122,7 @@ char *trackmap(const char *folderpath, const char *filename){
        DebugPrintf(stderr, "could not open file %s", path);
        return NULL;
     }
-    const int8_t buf=128;
+    const int16_t buf=128;
     int16_t ch = 0;
     int16_t tot = 0;
     while(!feof(f)){
@@ -154,13 +156,15 @@ bool MusicLoop(){
           return false;
       }
     }else{
-        if(CurrentLevel != LevelNum  && LoadLevel){
-            char *trackname = trackmap("data/sound/music/","music.dat");
+        if(CurrentLevel != LevelNum  && LoadLevel == true){
+            const char path[MAX_PATH];
+            const char *trackname = trackmap("data/sound/music/","music.dat");
             if(!trackname){
                 return false;
             }
+            strncpy(&path,trackname,MAX_PATH-1);
             //sprintf(MusicPath,"data\\sound\\music\\%s.ogg", path,MAX_PATH-1);  //couldnt get this to work!!!
-            sprintf(MusicPath,"data/sound/music/%s.ogg", trackname,MAX_PATH-1);
+            sprintf(&MusicPath,"data/sound/music/%s.ogg", path,MAX_PATH-1);
             LoadLevel = false;
             music_buffer->eof = true;
             CurrentLevel = LevelNum;
