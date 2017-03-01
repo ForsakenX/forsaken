@@ -120,7 +120,7 @@ char *trackmap(const char *folderpath, const char *filename){
        DebugPrintf(stderr, "could not open file %s", path);
        return NULL;
     }
-    const int16_t buf=128;
+    const int8_t buf=128;
     int16_t ch = 0;
     int16_t tot = 0;
     while(!feof(f)){
