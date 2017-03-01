@@ -35,7 +35,7 @@ music_buffer_t *music_load(music_buffer_t *buffer, const char *path)
     }
     buffer->vi = ov_info(&buffer->vf, -1);
     int i;
-    for(i = 0;i<16;++i){
+    for(i = 0;i<16;i++){
        long pos = 0;
        while(pos < sizeof(pcmout)){
           long ret = ov_read(&buffer->vf, pcmout+pos, sizeof(pcmout)-pos, 0, 2, 1, &buffer->current_section);
@@ -56,20 +56,19 @@ void music_play(){
     alGetSourcei(music_buffer->source, AL_BUFFERS_PROCESSED, &music_buffer->count);
     alSourceUnqueueBuffers(music_buffer->source, music_buffer->count, music_buffer->released);
     int i;
-    for(i = 0;i<music_buffer->count;++i){
+    for(i = 0;i<music_buffer->count;i++){
       long pos = 0;
       while(pos < sizeof(pcmout)){
         long ret = ov_read(&music_buffer->vf, pcmout+pos, sizeof(pcmout)-pos, 0, 2, 1, &music_buffer->current_section);
         pos+=ret;
         if(ret == 0){
           music_buffer->eof = true;
-          return;
+          break;
         }
      }
      alBufferData(music_buffer->released[i], AL_FORMAT_STEREO16, pcmout, pos, music_buffer->vi->rate);
     }
     alSourceQueueBuffers(music_buffer->source, music_buffer->count, music_buffer->released);
-    return;
 }
 
 void music_cleanup(){
@@ -82,7 +81,7 @@ void music_cleanup(){
         for (i = 0; i < 16; i++){
             alDeleteBuffers(16, &music_buffer->id[i]);
         }
-        alutExit ();
+        alutExit();
 }
 
 bool InitMusic(){
@@ -157,8 +156,8 @@ bool MusicLoop(){
       }
     }else{
         if(CurrentLevel != LevelNum  && LoadLevel == true){
-            const char path[MAX_PATH];
             const char *trackname = trackmap("data/sound/music/","music.dat");
+            char path[MAX_PATH];
             if(!trackname){
                 return false;
             }
