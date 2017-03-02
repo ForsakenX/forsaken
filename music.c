@@ -10,7 +10,6 @@ char MusicPath[MAX_PATH];
 struct music_buffer_t {
     ALuint id[16];
     ALuint source;
-    char path[MAX_PATH];
     int current_section;
     OggVorbis_File vf;
     vorbis_info *vi;
@@ -19,14 +18,12 @@ struct music_buffer_t {
     bool eof;
 };
 
-music_buffer_t *music_load(music_buffer_t *buffer, const char *path)
-{
+music_buffer_t *music_load(music_buffer_t *buffer, const char *path){
     ALenum format;
     FILE *fp;
-    strncpy(buffer->path,path,MAX_PATH-1);
-    fp = file_open(buffer->path, "rb");
+    fp = file_open(path, "rb");
     if(!fp){
-       DebugPrintf(stderr, "could not open file %s", buffer->path);
+       DebugPrintf(stderr, "could not open file %s", path);
        return 0;
     }
     if(ov_open_callbacks(fp, &buffer->vf, NULL, 0, OV_CALLBACKS_DEFAULT)<0){
