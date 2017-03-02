@@ -1,3 +1,5 @@
+#define MAX_PATH 500
+
 #ifndef SOUND_INCLUDED
 #define SOUND_INCLUDED
 
@@ -7,13 +9,12 @@
 #include <codec.h>
 #include <vorbisfile.h>
 
-#define MAX_PATH 500
 
 //
 // Globals
 //
 
-char pcmout[16*2048];
+char pcmout[16*4098];
 
 // this will eventually be removed but is required right now
 bool Sound3D;
