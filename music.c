@@ -84,10 +84,9 @@ bool InitMusic(){
     ALenum error;
     if(music_buffer){
         music_cleanup();
-        music_buffer = realloc(music_buffer,sizeof(music_buffer_t));
-    }else{
-        music_buffer = malloc(sizeof(music_buffer_t));
+        free(music_buffer);
     }
+    music_buffer = malloc(sizeof(music_buffer_t));
     if(!music_buffer){
         DebugPrintf("sound_load: failed to malloc buffer\n");
         return false;
