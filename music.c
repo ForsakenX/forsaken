@@ -4,7 +4,6 @@
 #include "sound.h"
 #include "oct2.h"
 
-int16_t CurrentLevel = -1;
 char MusicPath[MAX_PATH];
 
 struct music_buffer_t {
@@ -152,7 +151,7 @@ bool MusicLoop(){
           return false;
       }
     }else{
-        if(CurrentLevel != LevelNum  && LoadLevel == true){
+        if(LoadLevel){
             const char *trackname = trackmap("data/sound/music/","music.dat");
             char path[MAX_PATH];
             if(!trackname){
@@ -163,7 +162,6 @@ bool MusicLoop(){
             sprintf(&MusicPath,"data/sound/music/%s.ogg", path,MAX_PATH-1);
             LoadLevel = false;
             music_buffer->eof = true;
-            CurrentLevel = LevelNum;
         }else{
             music_play();
         }
