@@ -7120,36 +7120,29 @@ void InitLevelSelectVDU( MENUITEM *Item )
 ===================================================================*/
 void InitControls( MENU *Menu )
 {
-	float sensi;
-//	MENUITEM *item;
+    Autoleveling = Config.autolevel_rate != 0 ? true : false;
 
-	Autoleveling = ( Config.autolevel_rate != 0.0F ) ? true : false;
+    float s = Config.mouse_x_sensitivity;
+    SensitivityXSlider.value = s * fabs(SensitivityXSlider.max - SensitivityXSlider.min);
+    if (SensitivityXSlider.value < SensitivityXSlider.min) {
+        SensitivityXSlider.value = SensitivityXSlider.min;
+    } else if (SensitivityXSlider.value > SensitivityXSlider.max) {
+        SensitivityXSlider.value = SensitivityXSlider.max;
+    }
 
-	sensi = Config.mouse_x_sensitivity;
-	SensitivityXSlider.value = (int) (sensi / 0.12F);
-	
-	sensi = Config.mouse_y_sensitivity;
-	SensitivityYSlider.value = (int)(sensi / 0.12F);
-	
-	if ( SensitivityXSlider.value < SensitivityXSlider.min )
-		SensitivityXSlider.value = SensitivityXSlider.min;
-
-	if ( SensitivityYSlider.value < SensitivityYSlider.min )
-		SensitivityYSlider.value = SensitivityYSlider.min;
-
-	if ( SensitivityXSlider.value > SensitivityXSlider.max )
-		SensitivityXSlider.value = SensitivityXSlider.max;
-
-	if ( SensitivityYSlider.value > SensitivityYSlider.max )
-		SensitivityYSlider.value = SensitivityYSlider.max;
-
+    s = Config.mouse_y_sensitivity;
+    SensitivityYSlider.value = s * fabs(SensitivityYSlider.max - SensitivityYSlider.min);
+    if (SensitivityYSlider.value < SensitivityYSlider.min) {
+        SensitivityYSlider.value = SensitivityYSlider.min;
+    } else if (SensitivityYSlider.value > SensitivityYSlider.max) {
+        SensitivityYSlider.value = SensitivityYSlider.max;
+    }
 }
 
 void SetAutolevel( MENUITEM *item )
 {
 	Config.autolevel_rate = ( Autoleveling ) ? 0.05F : 0.0F;
 }
-
 
 /*===================================================================
 	Procedure	:		Save values from the controls menu items
@@ -7158,23 +7151,14 @@ void SetAutolevel( MENUITEM *item )
 ===================================================================*/
 void ExitControls( MENU *Menu )
 {
-	float sensiX, sensiY;
-	float halfrange;
-
-	halfrange = ( SensitivityXSlider.max - SensitivityXSlider.min + 1 ) * 0.5F;
-	sensiX = 1.0F + ( SensitivityXSlider.value - halfrange ) / halfrange;
-
-	halfrange = ( SensitivityYSlider.max - SensitivityYSlider.min + 1 ) * 0.5F;
-	sensiY = 1.0F + ( SensitivityYSlider.value - halfrange ) / halfrange;
-	
-	Config.mouse_x_sensitivity = sensiX;
-	Config.mouse_y_sensitivity = sensiY;
-
-	ExitBikerMenu( NULL );
+    float sX = SensitivityXSlider.value /
+        fabs(SensitivityXSlider.max - SensitivityXSlider.min);
+    float sY = SensitivityYSlider.value /
+        fabs(SensitivityYSlider.max - SensitivityYSlider.min);
+    Config.mouse_x_sensitivity = sX;
+    Config.mouse_y_sensitivity = sY;
+    ExitBikerMenu(NULL);
 }
-
-
-
 
 /*===================================================================
 	Procedure	:		compare string function for sorting pilot list
