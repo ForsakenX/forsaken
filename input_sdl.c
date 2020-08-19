@@ -244,9 +244,35 @@ void app_keyboard( SDL_KeyboardEvent * key )
 #endif
 					MenuGoFullScreen( NULL );
 		}
+#ifdef PANDORA
+	// redirect shoulder buttons to left/right click
+		if (key->keysym.sym==SDLK_RSHIFT) {
+			int button = 0;
+			mouse_state.buttons[ button ] = 0;
+			return;
+		} else if (key->keysym.sym==SDLK_RCTRL) {
+			int button = 2;
+			mouse_state.buttons[ button ] = 0;
+			return;
+		}
+#endif
 	}
 	if( key->type == SDL_KEYDOWN )
 	{
+#ifdef PANDORA
+	// redirect shoulder buttons to left/right click
+		if (key->keysym.sym==SDLK_RSHIFT) {
+			int button = 0;
+			input_buffer_send( button + LEFT_MOUSE );
+			mouse_state.buttons[ button ] = 1;
+			return;
+		} else if (key->keysym.sym==SDLK_RCTRL) {
+			int button = 2;
+			input_buffer_send( button + LEFT_MOUSE );
+			mouse_state.buttons[ button ] = 1;
+			return;
+		}
+#endif
 		input_buffer_send(
 			key->keysym.unicode ? 
 				key->keysym.unicode :

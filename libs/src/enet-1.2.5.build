@@ -1,0 +1,7 @@
+#!/bin/bash -x
+cd "$(dirname -- "$0")"
+v=enet-1.2.5
+tar -xvzf $v.tar.gz
+(cd $v; ./configure --prefix= && make install DESTDIR=$PWD/../..;) || exit 1
+cp pkgconfig/libenet.pc ../lib/pkgconfig/
+echo "Built: enet"

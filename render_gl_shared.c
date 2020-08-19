@@ -36,7 +36,11 @@ const char * render_error_description( int e )
 {
 	CHECK_GL_ERRORS;
 	if(render_last_gl_error != GL_NO_ERROR)
+	#ifdef HAVE_GLES
+		return (const char*) "Error";
+	#else
 		return (const char *) gluErrorString(render_last_gl_error);
+	#endif
 	else
 		return NULL;
 }
@@ -45,17 +49,23 @@ const char * render_error_description( int e )
 
 void render_mode_wireframe(void)
 {
+#ifndef HAVE_GLES
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
 }
 
 void render_mode_points(void)
 {
+#ifndef HAVE_GLES
 	glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+#endif
 }
 
 void render_mode_fill(void)
 {
+#ifndef HAVE_GLES
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
 }
 
 // unused in opengl
@@ -105,12 +115,70 @@ void release_texture( LPTEXTURE texture )
 	free(texture);
 }
 
+static void DownSizeTexture( unsigned *in, int inWidth, int inHeight ) {
+	int			i, j, k;
+	unsigned char	*outpix;
+	int			inWidthMask, inHeightMask;
+	int			total;
+	int			outWidth, outHeight;
+	unsigned	*temp;
+
+	outWidth = inWidth >> 1;
+	outHeight = inHeight >> 1;
+	temp = malloc( outWidth * outHeight * 4 );
+
+	inWidthMask = inWidth - 1;
+	inHeightMask = inHeight - 1;
+
+	for ( i = 0 ; i < outHeight ; i++ ) {
+		for ( j = 0 ; j < outWidth ; j++ ) {
+			outpix = (unsigned char *) ( temp + i * outWidth + j );
+			for ( k = 0 ; k < 4 ; k++ ) {
+				total = 
+					1 * ((unsigned char *)&in[ ((i*2-1)&inHeightMask)*inWidth + ((j*2-1)&inWidthMask) ])[k] +
+					2 * ((unsigned char *)&in[ ((i*2-1)&inHeightMask)*inWidth + ((j*2)&inWidthMask) ])[k] +
+					2 * ((unsigned char *)&in[ ((i*2-1)&inHeightMask)*inWidth + ((j*2+1)&inWidthMask) ])[k] +
+					1 * ((unsigned char *)&in[ ((i*2-1)&inHeightMask)*inWidth + ((j*2+2)&inWidthMask) ])[k] +
+
+					2 * ((unsigned char *)&in[ ((i*2)&inHeightMask)*inWidth + ((j*2-1)&inWidthMask) ])[k] +
+					4 * ((unsigned char *)&in[ ((i*2)&inHeightMask)*inWidth + ((j*2)&inWidthMask) ])[k] +
+					4 * ((unsigned char *)&in[ ((i*2)&inHeightMask)*inWidth + ((j*2+1)&inWidthMask) ])[k] +
+					2 * ((unsigned char *)&in[ ((i*2)&inHeightMask)*inWidth + ((j*2+2)&inWidthMask) ])[k] +
+
+					2 * ((unsigned char *)&in[ ((i*2+1)&inHeightMask)*inWidth + ((j*2-1)&inWidthMask) ])[k] +
+					4 * ((unsigned char *)&in[ ((i*2+1)&inHeightMask)*inWidth + ((j*2)&inWidthMask) ])[k] +
+					4 * ((unsigned char *)&in[ ((i*2+1)&inHeightMask)*inWidth + ((j*2+1)&inWidthMask) ])[k] +
+					2 * ((unsigned char *)&in[ ((i*2+1)&inHeightMask)*inWidth + ((j*2+2)&inWidthMask) ])[k] +
+
+					1 * ((unsigned char *)&in[ ((i*2+2)&inHeightMask)*inWidth + ((j*2-1)&inWidthMask) ])[k] +
+					2 * ((unsigned char *)&in[ ((i*2+2)&inHeightMask)*inWidth + ((j*2)&inWidthMask) ])[k] +
+					2 * ((unsigned char *)&in[ ((i*2+2)&inHeightMask)*inWidth + ((j*2+1)&inWidthMask) ])[k] +
+					1 * ((unsigned char *)&in[ ((i*2+2)&inHeightMask)*inWidth + ((j*2+2)&inWidthMask) ])[k];
+				outpix[k] = total / 36;
+			}
+		}
+	}
+
+	memcpy( in, temp, outWidth * outHeight * 4 );
+	free( temp );
+}
+
+
 static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_int16_t *height, int numMips, bool * colorkey)
 {
 	texture_t *texdata;
 	texture_image_t image;
 
 	Change_Ext( path, image.path, ".PNG" );
+/*	Need to change \ to / and remove all capital letters ! */
+#if defined(PANDORA) || defined(ODROID) || defined(RPI)
+	int idx= 0;
+	while(image.path[idx]!='\0') {
+		if (image.path[idx]=='\\') image.path[idx]='/';
+		if ((image.path[idx]>='A') && (image.path[idx]<='Z')) image.path[idx]+='a'-'A';
+		idx++;
+	}	
+#endif
 	if( ! File_Exists( (char*) image.path ) )
 	{
 		DebugPrintf("Could not find texture file: %s\n",path);
@@ -127,6 +195,15 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 	*width  = (u_int16_t) image.w;
 	*height = (u_int16_t) image.h;
 	(*colorkey) = (bool) image.colorkey;
+	
+#if defined(PANDORA) || defined(ODROID) || defined(RPI)
+	// resize bigger texture, they are way too big for Pandora memory, and Pandora screen
+	if (!(image.colorkey) && ((image.w>=128) || (image.h>=128))) {
+		DownSizeTexture(image.data, image.w, image.h);
+		image.w/=2;
+		image.h/=2;
+	}
+#endif
 
 	// employ colour key and gamma correction
 	{
@@ -142,21 +219,26 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 				// (x*size) is the length of each pixel data (column)
 				DWORD index = (y*pitch)+(x*size);
 
-				// image.data is packed in rgba
-				image.data[index]   = (char) gamma_table[ (u_int8_t) image.data[index]];	   // red
-				image.data[index+1] = (char) gamma_table[ (u_int8_t) image.data[index+1]];  // green
-				image.data[index+2] = (char) gamma_table[ (u_int8_t) image.data[index+2]];  // blue
-				image.data[index+3] = (char) gamma_table[ (u_int8_t) image.data[index+3]];  // alpha
-
 				// colour key
 				if( image.colorkey && (image.data[index] + image.data[index+1] + image.data[index+2]) == 0 )
 					image.data[index+3] = 0; // alpha - pixel will not be rendered do to alpha value tests
-
+				else 
+				{
+					// image.data is packed in rgba
+					image.data[index]   = (char) gamma_table[ (u_int8_t) image.data[index]];	   // red
+					image.data[index+1] = (char) gamma_table[ (u_int8_t) image.data[index+1]];  // green
+					image.data[index+2] = (char) gamma_table[ (u_int8_t) image.data[index+2]];  // blue
+					//image.data[index+3] = (char) gamma_table[ (u_int8_t) image.data[index+3]];  // alpha *SEB* no gamma on alpha
+				}
 			}
 		}
 	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#ifdef HAVE_GLES
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+#endif
 
 	// create a new opengl texture
 	if( ! *t )
@@ -177,17 +259,22 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 	}
 
 	// when texture area is small, bilinear filter the closest mipmap
+#ifdef HAVE_GLES
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+#else
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
+#endif
 	// when texture area is large, bilinear filter the original
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	// the texture wraps over at the edges (repeat)
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
+#ifndef HAVE_GLES
 	// anisotropic settings
 	if(caps.anisotropic)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, caps.anisotropic);
-
+#endif
+#ifndef HAVE_GLES
 #if GL > 1
 	glGenerateMipmap( GL_TEXTURE_2D );
 #else
@@ -198,7 +285,7 @@ static bool create_texture(LPTEXTURE *t, const char *path, u_int16_t *width, u_i
 		return false;
 	}
 #endif
-
+#endif
 	if ( render_error_description(0) )
 		return false;
 
@@ -225,15 +312,20 @@ bool FSCreateTexture(LPTEXTURE *texture, const char *fileName, u_int16_t *width,
 
 static void print_info( void )
 {
+#ifndef HAVE_GLES
 	GLboolean b;
 	glGetBooleanv(GL_STEREO,&b);
-
+#endif
 	DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', shader='%s', stereo='%s'\n",
 		glGetString(GL_VENDOR),
 		glGetString(GL_RENDERER),
 		glGetString(GL_VERSION),
+#ifdef HAVE_GLES
+		"none", "false");
+#else
 		glGetString(GL_SHADING_LANGUAGE_VERSION),
 		(b)?"true":"false");
+#endif
 
 #if GL < 3
 	DebugPrintf( "extensions='%s'\n", glGetString(GL_EXTENSIONS));
@@ -698,6 +790,10 @@ void set_whiteout_state( void )
 //        perhaps we can automate and remove need for rect arg ?
 
 // clears color/zbuff same time to opaque black
+#ifdef HAVE_GLES
+#define glClearDepth	glClearDepthf
+#define glDepthRange	glDepthRangef
+#endif
 bool FSClear(XYRECT * rect)
 {
 	int width = rect->x2 - rect->x1;

@@ -1,0 +1,14 @@
+#!/bin/bash -x
+cd "$(dirname -- "$0")"
+f=SDL-2.0.0-latest
+[[ -d $f ]] || hg clone http://hg.libsdl.org/SDL "$f"
+mkdir "$f/tmp"
+(
+	cd "$f/tmp" &&
+	../configure --prefix= &&
+	make install DESTDIR=$PWD/../../.. \
+		LDFLAGS=' -L/usr/lib/i386-linux-gnu/mesa' # this is benign if not on linux
+) || exit 1
+rm -rf "$f/tmp"
+cp pkgconfig/sdl2.pc ../lib/pkgconfig/
+echo "Built: sdl"

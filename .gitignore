@@ -1,7 +1,6 @@
 *.sh
 *.o
 projectx*
-libs*
 unix*
 mingw*
 data

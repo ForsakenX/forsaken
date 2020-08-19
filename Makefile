@@ -6,9 +6,42 @@
 # make CC=i686-mingw32-gcc
 CC=gcc
 
+PANDORA=1
+RPI?=0
+ODROID?=0
+
 # general compiler settings
 ifeq ($(M32),1)
   FLAGS= -m32
+endif
+ifeq ($(PANDORA),1)
+ifeq ($(RPI),1)
+  FLAGS= -mfpu=vfpv3 -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DRPI 
+  FLAGS+= -DARM
+  FLAGS += -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux
+  LDFLAGS= -mfpu=vfpv3 -mfloat-abi=hard
+  HAVE_GLES=1
+else ifeq ($(RPI),2)
+  FLAGS= -mfpu=neon -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DRPI 
+  FLAGS+= -DARM
+  FLAGS += -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux
+  LDFLAGS= -mfpu=neon -mfloat-abi=hard
+  HAVE_GLES=1
+else ifeq ($(ODROID),1)
+  FLAGS= -mfpu=neon -mfloat-abi=hard -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DODROID
+  FLAGS+= -DARM
+  LDFLAGS= -mfpu=neon -mfloat-abi=hard
+  HAVE_GLES=1
+else
+  FLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -march=armv7-a -fsingle-precision-constant -mno-unaligned-access -fdiagnostics-color=auto -O3 -fsigned-char
+  FLAGS+= -DPANDORA 
+  FLAGS+= -DARM
+  LDFLAGS= -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp
+  HAVE_GLES=1
+endif
 endif
 FLAGS+= -std=gnu99 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
@@ -19,7 +52,11 @@ LDFLAGS=$(FLAGS)
 DEBUG=1
 
 # might as well leave gprof support on by default as well
-PROFILE=1
+ifeq ($(PANDORA),1)
+   PROFILE=0
+else
+   PROFILE=1
+endif
 
 # use this if you want to build everything statically
 STATIC=0
@@ -45,7 +82,11 @@ ifeq ($(SSP),1)
 endif
 
 ifeq ($(DEBUG),1)
-  FLAGS+= -g
+  ifeq ($(PANDORA),1)
+    FLAGS+= -g
+  else
+    FLAGS+= -g
+  endif
 else
   CFLAGS+=-O3 -Winit-self
   LDFLAGS+=-s
@@ -64,13 +105,18 @@ endif
 #
 
 # some systems use lua5.1
-LUA=$(shell pkg-config lua && echo lua || echo lua5.1)
+ifeq ($(PANDORA),1)
+  LUA=$(shell libs/pkgconfig.sh lua && echo lua || echo lua5.1)
+else
+  LUA=$(shell pkg-config lua && echo lua || echo lua5.1)
+endif
 MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
 # which version of sdl do you want to ask pkgconfig for ?
 SDL=1
 ifeq ($(SDL),1)
   SDL_=sdl
+  CFLAGS+=`sdl-config --cflags`
 else
   SDL_=sdl$(SDL)
 endif
@@ -82,7 +128,12 @@ $(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
      $(error "GL >= 3 only supported with SDL >= 2"))
 
 # library headers
-CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+ifeq ($(PANDORA),1)
+  CFLAGS+= `libs/pkgconfig.sh --cflags $(LUA) $(LUA)-socket libenet libpng`
+  CFLAGS+= `pkg-config --cflags $(SDL_) zlib openal`
+else
+  CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+endif
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -95,13 +146,23 @@ ifeq ($(STATIC),1)
   LIB+= -Wl,-dn
   PKG_CFG_OPTS= --static
 endif
-LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
+ifeq ($(PANDORA),1)
+  LIB+= `libs/pkgconfig.sh $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng`
+  LIB+=  `pkg-config $(PKG_CFG_OPTS) --libs zlib openal` -lm -lX11
+else
+  LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
+endif
+LIB+= -lm
 ifeq ($(STATIC),1)
   LIB+= -Wl,-dy
 endif
 
 # dynamic only libraries
-LIB+= `pkg-config --libs $(SDL_)`
+ifeq ($(PANDORA),1)
+  LIB+= `sdl-config --libs`
+else
+  LIB+= `pkg-config --libs $(SDL_)`
+endif
 ifeq ($(MINGW),1)
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
@@ -112,7 +173,12 @@ else ifeq ($(MACOSX),1)
   LIB += -framework OpenGL # OpenGL bundle on OSX.
   LIB += -framework Cocoa  # Used to target Quartz by SDL_.
 else
+ifeq ($(HAVE_GLES),1)
+  LIB += -lGLES_CM -lEGL
+  CFLAGS += -DHAVE_GLES
+else
   LIB += -lGL -lGLU
+endif
 endif
 ifneq ($(MINGW),1)
   # apparently on some systems -ldl is explicitly required
@@ -178,11 +244,13 @@ check:
 	@echo "PROFILE = $(PROFILE)"
 	@echo "MUDFLAP = $(MUDFLAP)"
 	@echo "STATIC = $(STATIC)"
+	@echo "PANDORA = $(PANDORA)"
 	@echo "PKG_CFG_OPTS = $(PKG_CFG_OPTS)"
 	@echo "MINGW = $(MINGW)"
 	@echo "CROSS = $(CROSS)"
 	@echo "BOT = $(BOT)"
 	@echo "GL = $(GL)"
+	@echo "HAVE_GLES = $(HAVE_GLES)"
 	@echo "RENDER_DISABLED = $(RENDER_DISABLED)"
 	@echo "LUA = $(LUA)"
 	@echo "SDL = $(SDL)"

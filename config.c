@@ -38,12 +38,31 @@ USERCONFIG default_config = {
 	"Player",						// player name
 	0,								// bike (0=Lokasenna)
 	1,								// bike computer ( 1 = Brenda )
+#ifdef PANDORA
+	0.3F,							// mouse x sensitivity
+	0.2F,							// mouse y sensitivity
+#else
 	0.6F,							// mouse x sensitivity
 	0.6F,							// mouse y sensitivity
+#endif
 	0,								// pilot control (pitch forward = down, backward = up)
 	0,								// roll control...
 	0.05F,							// autolevel rate
 //	{ num_keys, { key list [ num_keys ] } },
+#ifdef PANDORA
+	{ 2,	{ SDLK_q	} },					// pitch forward
+	{ 2,	{ SDLK_e	} },					// pitch backward
+	{ 2,	{ SDLK_1	} },					// yaw left
+	{ 2,	{ SDLK_3	} },					// yaw right
+	{ 2,	{ SDLK_LEFT		} },				// roll left
+	{ 2,	{ SDLK_RIGHT	} },				// roll right
+	{ 1,	{ SDLK_q } },						// slide left
+	{ 1,	{ SDLK_e } },						// slide right
+	{ 1,	{ SDLK_UP } },						// slide up
+	{ 1,	{ SDLK_DOWN } },					// slide down
+	{ 1,	{ SDLK_2	} },					// forward
+	{ 1,	{ SDLK_4	} },					// backward
+#else
 	{ 2,	{ SDLK_DOWN	} },					// pitch forward
 	{ 2,	{ SDLK_UP	} },					// pitch backward
 	{ 2,	{ SDLK_LEFT	} },					// yaw left
@@ -56,6 +75,7 @@ USERCONFIG default_config = {
 	{ 1,	{ SDLK_KP_PLUS } },					// slide down
 	{ 1,	{ SDLK_a	} },					// forward
 	{ 1,	{ SDLK_z	} },					// backward
+#endif
 	{ 1,	{ SDLK_LALT	} },					// slide
 	{ 0, {}  },										// roll
 	{ 1,	{ SDLK_s	} },					// turbo
@@ -63,7 +83,11 @@ USERCONFIG default_config = {
 	{ 0, {}  },										// cruise slower
 	{ 2,	{ LEFT_MOUSE } },					// fire primary
 	{ 2,	{ RIGHT_MOUSE } },					// fire secondary
+#ifdef PANDORA
+	{ 1,	{ SDLK_BACKSPACE } },				// fire mine
+#else
 	{ 1,	{ SDLK_b } },						// fire mine
+#endif
 	{ 1,	{ SDLK_PAGEDOWN } },					// select next primary
 	{ 1,	{ SDLK_PAGEUP } },					// select prev primary
 	{ 1,	{ SDLK_HOME } },					// select next secondary
@@ -71,7 +95,11 @@ USERCONFIG default_config = {
 	{ 1,	{ SDLK_r } },						// select rear view
 	{ 1,	{ SDLK_h } },						// toggle headlights
 	{
+#ifdef PANDORA
+		{ 1, { SDLK_q } },						// select primary #1
+#else
 		{ 1, { SDLK_BACKQUOTE } },				// select primary #1
+#endif
 		{ 1, { SDLK_1	} },					// select primary #2
 		{ 1, { SDLK_4	} },					// select primary #3
 		{ 1, { SDLK_3	} },					// select primary #4
@@ -156,12 +184,31 @@ USERCONFIG my_controls = {
 	"Player",						// player name
 	0,								// bike (0=Lokasenna)
 	1,								// bike computer ( 1 = Brenda )
+#ifdef PANDORA
+	0.3F,							// mouse x sensitivity
+	0.2F,							// mouse y sensitivity
+#else
 	0.6F,							// mouse x sensitivity
 	0.6F,							// mouse y sensitivity
+#endif
 	0,								// pilot control (pitch forward = down, backward = up)
 	0,								// roll control...
 	0.05F,							// autolevel rate
 //	{ num_keys, { key list [ num_keys ] } },
+#ifdef PANDORA
+	{ 2,	{ SDLK_q	} },					// pitch forward
+	{ 2,	{ SDLK_e	} },					// pitch backward
+	{ 2,	{ SDLK_1	} },					// yaw left
+	{ 2,	{ SDLK_3	} },					// yaw right
+	{ 2,	{ SDLK_LEFT		} },				// roll left
+	{ 2,	{ SDLK_RIGHT	} },				// roll right
+	{ 1,	{ SDLK_q } },						// slide left
+	{ 1,	{ SDLK_e } },						// slide right
+	{ 1,	{ SDLK_UP } },						// slide up
+	{ 1,	{ SDLK_DOWN } },					// slide down
+	{ 1,	{ SDLK_2	} },					// forward
+	{ 1,	{ SDLK_4	} },					// backward
+#else
 	{ 2,	{ SDLK_UP	} },	// pitch forward
 	{ 2,	{ SDLK_DOWN	} },	// pitch backward
 	{ 2,	{ SDLK_LEFT	} },	// yaw left
@@ -174,6 +221,7 @@ USERCONFIG my_controls = {
 	{ 1,	{ SDLK_KP_PLUS } },						// slide down
 	{ 1,	{ SDLK_a	} },						// forward
 	{ 1,	{ SDLK_z	} },						// backward
+#endif
 	{ 1,	{ SDLK_LALT	} },					// slide
 	{ 0, {}  },										// roll
 	{ 1,	{ SDLK_s	} },						// turbo
@@ -181,7 +229,11 @@ USERCONFIG my_controls = {
 	{ 0, {}  },										// cruise slower
 	{ 2,	{ LEFT_MOUSE	} },	// fire primary
 	{ 2,	{ RIGHT_MOUSE	} },		// fire secondary
+#ifdef PANDORA
+	{ 1,	{ SDLK_BACKSPACE } },				// fire mine
+#else
 	{ 1,	{ SDLK_b } },						// fire mine
+#endif
 	{ 1,	{ SDLK_PAGEDOWN } },						// select next primary
 	{ 1,	{ SDLK_PAGEUP } },					// select prev primary
 	{ 1,	{ SDLK_HOME } },						// select next secondary
@@ -189,7 +241,11 @@ USERCONFIG my_controls = {
 	{ 1,	{ SDLK_r } },						// select rear view
 	{ 1,	{ SDLK_h } },						// toggle headlights
 	{
+#ifdef PANDORA
+		{ 1, { SDLK_q } },						// select primary #1
+#else
 		{ 1, { SDLK_BACKQUOTE } },				// select primary #1
+#endif
 		{ 1, { SDLK_1	} },					// select primary #2
 		{ 1, { SDLK_4	} },					// select primary #3
 		{ 1, { SDLK_3	} },					// select primary #4
@@ -1156,10 +1212,17 @@ void ConfigureSpaceorbAxis( int joystick )
 		JoystickInfo[ joystick ].Axis[ k ].fine = false;
 	}
 
+#ifdef PANDORA
+	JoystickInfo[ joystick ].Axis[ AXIS_XAxis ].action = SHIPACTION_SlideLeft;
+	JoystickInfo[ joystick ].Axis[ AXIS_YAxis ].action = SHIPACTION_MoveForward;
+	JoystickInfo[ joystick ].Axis[ AXIS_ZAxis ].action = SHIPACTION_SlideUp;
+	JoystickInfo[ joystick ].Axis[ AXIS_RzAxis ].action = SHIPACTION_RotateUp;
+#else
 	JoystickInfo[ joystick ].Axis[ AXIS_XAxis ].action = SHIPACTION_SlideLeft;
 	JoystickInfo[ joystick ].Axis[ AXIS_YAxis ].action = SHIPACTION_SlideUp;
 	JoystickInfo[ joystick ].Axis[ AXIS_ZAxis ].action = SHIPACTION_MoveForward;
 	JoystickInfo[ joystick ].Axis[ AXIS_RzAxis ].action = SHIPACTION_RotateUp;
+#endif
 	JoystickInfo[ joystick ].Axis[ AXIS_SliderAxis0 ].action = SHIPACTION_RotateLeft;
 	JoystickInfo[ joystick ].Axis[ AXIS_SliderAxis1 ].action = SHIPACTION_RollLeft;
 #if NOT_DONE_THIS_WAY
@@ -1230,13 +1293,22 @@ void DefaultJoystickSettings( USERCONFIG *u )
 				for ( k = AXIS_Start; k <= AXIS_End; k++ )
 				{
 					JoystickInfo[ j ].Axis[ k ].action = SHIPACTION_Nothing;
+#ifdef PANDORA
+					JoystickInfo[ j ].Axis[ k ].sensitivity = 0.01F;
+#else
 					JoystickInfo[ j ].Axis[ k ].sensitivity = 0.02F;
+#endif
 					JoystickInfo[ j ].Axis[ k ].deadzone = 20;
 					JoystickInfo[ j ].Axis[ k ].inverted = false;
 					JoystickInfo[ j ].Axis[ k ].fine = true;
 				}
+#ifdef PANDORA
+				JoystickInfo[ j ].Axis[ AXIS_XAxis ].action = SHIPACTION_SlideLeft;
+				JoystickInfo[ j ].Axis[ AXIS_YAxis ].action = SHIPACTION_MoveForward;
+#else
 				JoystickInfo[ j ].Axis[ AXIS_XAxis ].action = SHIPACTION_RotateLeft;
 				JoystickInfo[ j ].Axis[ AXIS_YAxis ].action = SHIPACTION_RotateUp;
+#endif
 			}
 			AddButton( j, 0, &u->fire_primary );
 			AddButton( j, 1, &u->fire_secondary );
@@ -1281,11 +1353,21 @@ void ReInitJoysticks( void )
 			for ( k = AXIS_Start; k <= AXIS_End; k++ )
 			{
 				tempJoystickInfo[ j ].Axis[ k ].action = SHIPACTION_Nothing;
+#ifdef PANDORA
+				tempJoystickInfo[ j ].Axis[ k ].sensitivity = 0.01F;
+#else
 				tempJoystickInfo[ j ].Axis[ k ].sensitivity = 0.02F;
+#endif
 				tempJoystickInfo[ j ].Axis[ k ].deadzone = 20;
 				tempJoystickInfo[ j ].Axis[ k ].inverted = false;
 				tempJoystickInfo[ j ].Axis[ k ].fine = true;
 			}
+#ifdef PANDORA
+			tempJoystickInfo[ j ].Axis[ AXIS_XAxis ].action = SHIPACTION_SlideLeft;
+			tempJoystickInfo[ j ].Axis[ AXIS_YAxis ].action = SHIPACTION_MoveForward;
+			if (j==0) tempJoystickInfo[j].assigned = true;	// always 1 nub activated, we want it enabled
+
+#endif
 			j++;
 		}
 	}
@@ -1303,7 +1385,6 @@ read_config( USERCONFIG *u, char *cfg_name )
 	FILE *f;
 	char token[80];
 	int j;
-
 	// all the config settings
 	static READCONFIGTABLE jumptab[] = {
 		{ "down",			read_down					},
@@ -1373,6 +1454,9 @@ read_config( USERCONFIG *u, char *cfg_name )
 		// tell debuggers
 		DebugPrintf( "read_config: couldn't open '%s'\n", cfg_name );
 
+	// reset all joystick settings before exiting...
+	ReInitJoysticks();
+
 		// failed ...
 		return 0;
 
@@ -1386,13 +1470,17 @@ read_config( USERCONFIG *u, char *cfg_name )
 	// files...
 	u->invert_turn = 0;	
 	u->invert_pitch = 0;
+#ifdef PANDORA
+	u->mouse_x_sensitivity = 0.3F;
+	u->mouse_y_sensitivity = 0.2F;
+#else
 	u->mouse_x_sensitivity = 0.6F;
 	u->mouse_y_sensitivity = 0.6F;
+#endif
 	u->send_msg.key[ 0 ] = SDLK_RETURN;
 
 	// reset all joystick settings
 	ReInitJoysticks();
-
 
 	// get a 80 character wide string from file
 	if ( fscanf( f, " %80s", token ) == 1 )

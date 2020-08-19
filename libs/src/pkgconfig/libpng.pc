@@ -1,0 +1,11 @@
+prefix=./libs
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/libpng14
+
+Name: libpng
+Description: Loads and saves PNG files
+Version: 1.4.4
+Libs: -L${libdir} -lpng14
+Libs.private: -lz -lm 
+Cflags: -I${includedir}

@@ -1,0 +1,43 @@
+#!/bin/bash -x
+cd "$(dirname -- "$0")"
+
+v=SDL-1.2-latest
+[[ -d $v ]] || hg clone http://hg.libsdl.org/SDL "$v" || exit 1
+(cd "$v" && hg update SDL-1.2 && hg pull) || exit 1
+
+os=$(uname -a | grep -qi darwin && echo macosx || echo linux)
+
+if [[ $os = macosx ]]; then
+	options="--enable-video-x11=no"
+fi
+
+function install
+{
+	(
+	cd $v
+	./autogen.sh &&
+	./configure "$options" --prefix= &&
+	make install DESTDIR=$PWD/../.. \
+		LDFLAGS=' -L/usr/lib/i386-linux-gnu/mesa' # this is benign if not on linux
+	) || return 1
+}
+
+# install but also grep for movq error
+# and apply the movq patch if needed
+install 2>&1 | tee >(cat - >&2) | grep -q "movq"
+read install_rv _ grep_rv <<< "${PIPESTATUS[@]}"
+if [[ $install_rv != 0 ]]; then
+	if [[ $grep_rv != 0 ]]; then
+		exit 1
+	else
+		echo "
+			The build failed and output mentioned movq!
+			Attempting to apply the movq patch and build again...
+		"
+		fix_movq
+		install || exit 1
+	fi
+fi
+
+cp pkgconfig/sdl.pc ../lib/pkgconfig/
+echo "Built: sdl"

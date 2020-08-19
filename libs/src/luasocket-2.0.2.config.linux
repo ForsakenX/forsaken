@@ -1,0 +1,27 @@
+# Output files
+
+EXT=so
+SOCKET_V=2.0.2
+MIME_V=1.0.2
+SOCKET_SO=socket.$(EXT).$(SOCKET_V) 
+MIME_SO=mime.$(EXT).$(MIME_V)
+UNIX_SO=unix.$(EXT)
+
+# Relative paths will be inside the src tree
+
+LUAINC=-I../../../include
+INSTALL_TOP_SHARE=../../../share/lua
+INSTALL_TOP_LIB=../../../lib/lua
+
+# Compiler and linker settings
+
+#CC=gcc # don't override environment
+DEF=-DLUASOCKET_DEBUG 
+CFLAGS= $(LUAINC) $(DEF) -pedantic -Wall -O2 -fpic
+LDFLAGS= -O -shared -fpic -L../../../lib -llua
+LD=$(CC)
+
+#
+
+INSTALL_DATA=cp
+INSTALL_EXEC=cp

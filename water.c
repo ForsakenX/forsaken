@@ -220,13 +220,24 @@ bool WaterLoad( void )
 		Uint16Pnt = (u_int16_t *) Buffer;
 		WO->Group = *Uint16Pnt++;
 		FloatPnt = (float*) Uint16Pnt;
-
+#ifdef ARM
+		memcpy(&WO->Pos, FloatPnt, 4*3);
+		FloatPnt+=3;
+#else
 		WO->Pos.x = *FloatPnt++;
 		WO->Pos.y = *FloatPnt++;
 		WO->Pos.z = *FloatPnt++;
+#endif
 		WO->offset = 0.0F;
 		GroupWaterLevel[WO->Group] = WO->Pos.y + WATER_CELLSIZE;
-
+#ifdef ARM
+		memcpy(&WO->XSize, FloatPnt++, 4);
+		memcpy(&WO->YSize, FloatPnt++, 4);
+		memcpy(&WO->uTL, FloatPnt++, 4);
+		memcpy(&WO->vTL, FloatPnt++, 4);
+		memcpy(&WO->uBR, FloatPnt++, 4);
+		memcpy(&WO->vBR, FloatPnt++, 4);
+#else
 		WO->XSize = *FloatPnt++;
 		WO->YSize = *FloatPnt++;
 
@@ -234,7 +245,7 @@ bool WaterLoad( void )
 		WO->vTL = *FloatPnt++;	// Uv coords...	Top Left...
 		WO->uBR = *FloatPnt++;	// Uv coords...	Bottom Right...
 		WO->vBR = *FloatPnt++;	// Uv coords...	Bottom Right...
-
+#endif
 		WO->uRange = WO->uBR - WO->uTL;
 		WO->vRange = WO->vBR - WO->vTL;
 
@@ -271,13 +282,21 @@ bool WaterLoad( void )
 		Buffer = (char*) D3DColourPnt;
 		
 		FloatPnt = (float*) Buffer;
-
+#ifdef ARM
+		memcpy(&WO->MaxLevel, FloatPnt++, 4);
+		memcpy(&WO->MinLevel, FloatPnt++, 4);
+		memcpy(&WO->FillRate, FloatPnt++, 4); WO->FillRate/=60.0f;
+		memcpy(&WO->DrainRate, FloatPnt++, 4); WO->DrainRate/=60.0f;
+		memcpy(&WO->Density, FloatPnt++, 4);
+		memcpy(&WO->MaxWaveSize, FloatPnt++, 4);
+#else
 		WO->MaxLevel = *FloatPnt++;
 		WO->MinLevel = *FloatPnt++;
 		WO->FillRate = *FloatPnt++ / 60.0F;
 		WO->DrainRate = *FloatPnt++ / 60.0F;
 		WO->Density = *FloatPnt++;
 		WO->MaxWaveSize = *FloatPnt++;
+#endif
 		Buffer = (char *) FloatPnt;		
 
 		Uint16Pnt = (u_int16_t *) Buffer;

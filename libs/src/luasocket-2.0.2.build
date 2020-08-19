@@ -1,0 +1,29 @@
+#!/bin/bash -x
+: ${AR:=ar}
+: ${RANLIB:=ranlib}
+tar -xvzf luasocket-2.0.2.tar.gz
+mv luasocket-2.0.2/config luasocket-2.0.2/config.backup
+os=$(uname -a | grep -qi darwin && echo macosx || echo linux)
+cp luasocket-2.0.2.config.$os luasocket-2.0.2/config
+mkdir ../lib/pkgconfig 2>/dev/null
+(
+	cd luasocket-2.0.2
+	make install || exit 1
+	# headers
+	cp src/luasocket.h src/mime.h ../../include
+	# static build
+	$AR cru ../../lib/liblua-socket.a $(echo src/*.o | sed 's!src/mime.o!!g')
+	$RANLIB ../../lib/liblua-socket.a
+	$AR cru ../../lib/liblua-mime.a src/mime.o
+	$RANLIB ../../lib/liblua-mime.a
+	if [[ $os = linux ]]; then
+		cp src/mime.so.1.0.2 ../../lib/liblua-mime.so
+		cp src/socket.so.2.0.2 ../../lib/liblua-socket.so
+	else
+		cp src/liblua-mime.so.dylib ../../lib/liblua-mime.so.dylib
+		cp src/liblua-socket.so.dylib ../../lib/liblua-socket.so.dylib
+	fi
+) || exit 1
+cp pkgconfig/lua-socket.pc ../lib/pkgconfig
+cp pkgconfig/lua-socket.pc ../lib/pkgconfig/lua5.1-socket.pc
+echo "Built: luasocket"

@@ -1,0 +1,27 @@
+# Output files
+
+EXT=so
+SOCKET_V=2.0.2
+MIME_V=1.0.2
+SOCKET_SO=liblua-socket.$(EXT).dylib
+MIME_SO=liblua-mime.$(EXT).dylib
+UNIX_SO=liblua-unix.$(EXT).dylib
+
+# Relative paths will be inside the src tree
+
+LUAINC=-I../../../include
+INSTALL_TOP_SHARE=../../../share/lua
+INSTALL_TOP_LIB=../../../lib/lua
+
+# Compiler and linker settings
+
+#CC=gcc # don't override environment
+DEF= -DLUASOCKET_DEBUG -DUNIX_HAS_SUN_LEN
+CFLAGS= $(LUAINC) -I$(COMPAT) $(DEF) -pedantic -Wall -O2 -fno-common
+LDFLAGS= -dynamiclib -install_name $@ -L../../../lib -llua
+LD=export MACOSX_DEPLOYMENT_TARGET="10.3"; $(CC)
+
+#
+
+INSTALL_DATA=cp
+INSTALL_EXEC=cp

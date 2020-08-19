@@ -1,0 +1,29 @@
+# lua.pc -- pkg-config data for Lua
+
+V= 2.0
+R= 2.0.2
+
+# relative path from forsaken src folder
+prefix= ./libs
+
+# grep '^INSTALL_.*=' ../Makefile | sed 's/INSTALL_TOP/prefix/'
+INSTALL_BIN= ${prefix}/bin
+INSTALL_INC= ${prefix}/include
+INSTALL_LIB= ${prefix}/lib
+INSTALL_MAN= ${prefix}/man/man1
+INSTALL_LMOD= ${prefix}/share/lua/${V}
+INSTALL_CMOD= ${prefix}/lib/lua/${V}
+
+# canonical vars
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: LuaSocket
+Description: Network libraries for lua
+Version: ${R}
+Requires: 
+Libs: -L${libdir} -llua-mime -llua-socket
+Cflags: -I${includedir}
+
+# (end of lua.pc)

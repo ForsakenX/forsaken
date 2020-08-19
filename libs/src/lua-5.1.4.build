@@ -1,0 +1,22 @@
+#!/bin/bash -x
+v=lua-5.1.4
+os=$(uname -a | grep -qi darwin && echo MACOSX || echo LINUX)
+tar -xvzf ${v}.tar.gz
+# AR should not be set to AR="ar rcu"
+sed -i -e 's/^AR=.*/AR=ar/g' -e 's/$(AR)/& rcu/g' $v/src/Makefile
+# if you want lua and luac binaries
+# you will also need: -lhistory -lncurses -lreadline
+	# ( cd ${v}; make linux install INSTALL_TOP=$PWD/../..; ) || exit 1
+# or if you only care about liblua
+	cp ${v}/Makefile ${v}/Makefile.backup
+	sed -i 's/^.*TO_BIN/#&/g' ${v}/Makefile
+	( cd ${v}/src;
+	make -e liblua.a \
+		MYCFLAGS=-DLUA_USE_$os \
+		MYLIBS="-Wl,-E -ldl"; ) || exit 1
+# install it
+( cd ${v}; make -e install INSTALL_TOP=$PWD/../..; ) || exit 1
+mkdir -p "../lib/pkgconfig/" 2>/dev/null
+cp pkgconfig/lua.pc ../lib/pkgconfig/
+cp pkgconfig/lua.pc ../lib/pkgconfig/lua5.1.pc
+echo "Built: lua"
