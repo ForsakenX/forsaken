@@ -8,7 +8,7 @@ CC=gcc
 
 # general compiler settings
 ifeq ($(M32),1)
-  FLAGS= -m32
+  FLAGS+= -m32
 endif
 FLAGS+= -std=gnu99 -pipe -fcommon
 CFLAGS=$(FLAGS) -Wall -Wextra
