@@ -523,6 +523,11 @@ static bool AppInit( char * lpCmdLine )
 	// exclusively grab input in fullscreen mode
 	input_grab( render_info.fullscreen );
 
+	if(!InitMusic()){
+	  Msg("InitMusic failed.\n");
+	  return false;
+	}
+
 	//
 	SetSoundLevels( NULL );
 
@@ -611,6 +616,10 @@ int main( int argc, char* argv[] )
 
 	while( !QuitRequested )
 	{
+		//Start Music Loop
+		if(!MusicLoop())
+			goto FAILURE;
+
 		// process system events
 		if(!handle_events())
 			goto FAILURE;
