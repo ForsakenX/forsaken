@@ -9,3 +9,5 @@ configs
 logs
 pilots
 savegame
+*.dll
+gmon.out
