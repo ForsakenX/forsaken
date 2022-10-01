@@ -1,4 +1,6 @@
+// see math_error.h for an explain of some details
 #ifdef DEBUG_ON
+#if defined(WIN32) && !defined(MINGW)
 #include "main.h"
 #include "new3d.h"
 #include "util.h"
@@ -118,4 +120,77 @@ int DebugMathErrors( void )
 		acos_exceptions, sqrt_exceptions, pow_exceptions, unhandled_exceptions );
 	return total_exceptions;
 }
+
+void InitMathErrors(void)
+{
+#if defined(DEBUG_ON) && defined(_SVID_)
+  _LIB_VERSION = _SVID_;
+#endif
+}
+
+#else // NOT WIN32
+
+// matherr was deprecated
+// https://man7.org/linux/man-pages/man7/math_error.7.html
+// https://man7.org/linux/man-pages/man3/fenv.3.html
+
+#include "math_error.h"
+#include "util.h"
+
+void InitMathErrors(void)
+{
+}
+
+//#define TEST_MATH_ERRORS
+#ifdef TEST_MATH_ERRORS
+#include <float.h>
+void TestMathErrors(void)
+{
+  // https://en.cppreference.com/w/c/numeric/fenv/fetestexcept
+  DebugPrintf("1.0/0.0 = %f\n", 1.0/0.0); // FE_DIVBYZERO
+  DebugPrintf("1.0/10.0 = %f\n", 1.0/10.0); // FE_INEXACT
+  DebugPrintf("sqrt(-1) = %f\n", sqrt(-1)); // FE_INVALID
+  DebugPrintf("DBL_MAX*2.0 = %f\n", DBL_MAX*2.0); // FE_INEXACT FE_OVERFLOW
+  DebugPrintf("nextafter(DBL_MIN/pow(2.0,52),0.0) = %.1f\n",
+    nextafter(DBL_MIN/pow(2.0,52),0.0)); // FE_INEXACT FE_UNDERFLOW
+}
+#endif
+
+// https://en.cppreference.com/w/c/numeric/fenv/fetestexcept
+int DebugMathErrors( void )
+{
+#ifdef TEST_MATH_ERRORS
+	TestMathErrors();
+#endif
+
+	if(!fetestexcept(FE_ALL_EXCEPT))
+		return 0;
+
+	DebugPrintf( "======================\n" );
+	DebugPrintf( "Math Exception Summary\n" );
+	DebugPrintf( "======================\n" );
+
+	if(fetestexcept(FE_DIVBYZERO))
+		DebugPrintf("FE_DIVBYZERO\n");
+
+	if(fetestexcept(FE_INEXACT))
+		DebugPrintf("FE_INEXACT\n");
+
+	if(fetestexcept(FE_INVALID))
+		DebugPrintf("FE_INVALID\n");
+
+	if(fetestexcept(FE_OVERFLOW))
+		DebugPrintf("FE_OVERFLOW\n");
+
+	if(fetestexcept(FE_UNDERFLOW))
+		DebugPrintf("FE_UNDERFLOW\n");
+
+	DebugPrintf( "======================\n" );
+
+	feclearexcept(FE_ALL_EXCEPT);
+
+	return 1;
+}
+
+#endif // NOT WIN32
 #endif // DEBUG_ON

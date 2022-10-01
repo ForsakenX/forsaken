@@ -411,8 +411,8 @@ extern RENDEROBJECT RenderBufs[4];
 
 static bool AppInit( char * lpCmdLine )
 {
-#if defined(DEBUG_ON) && defined(_SVID_)
-	_LIB_VERSION = _SVID_; // enable matherr
+#ifdef DEBUG_ON
+	InitMathErrors();
 #endif
 
 	ZERO_STACK_MEM(render_info);
@@ -580,7 +580,6 @@ static bool RenderLoop()
 // The main routine
 //
 
-extern int DebugMathErrors( void );
 extern void network_cleanup( void );
 extern bool SeriousError;
 extern void CleanUpAndPostQuit(void);
@@ -639,6 +638,10 @@ int main( int argc, char* argv[] )
 		// command line asks us to sleep and free up sys resources a bit...
 		if ( cliSleep )
 			SDL_Delay( cliSleep );
+
+#if defined(DEBUG_ON) && defined(DEBUG_ALL_MATH_ERRORS)
+		DebugMathErrors();
+#endif
 	}
 
 	DebugPrintf("exit(0)\n");
