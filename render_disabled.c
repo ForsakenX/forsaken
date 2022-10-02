@@ -173,6 +173,8 @@ float render_lighting_env_water_green = 0.0f;
 float render_lighting_env_water_blue  = 0.0f;
 int render_lighting_env_whiteout = 0;
 
+bool bSquareOnly = true;
+
 const char * render_error_description( int e ) { return NULL; }
 
 #endif // RENDER_DISABLED
