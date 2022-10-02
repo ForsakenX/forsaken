@@ -14031,10 +14031,7 @@ void PrintErrorMessage (char *ErrorStr, int BackBy, MENU *NewMenu, int type)
 
 	ErrorNewMenu = NewMenu;
 
-	if (type & ERROR_DONTUSE_MENUFUNCS)
-		IgnoreMenuFuncs = true;
-	else
-		IgnoreMenuFuncs = true;
+	IgnoreMenuFuncs = true;
 	
 	ChangeItem.Value = &MENU_NEW_Error;
 	MenuChange( &ChangeItem );

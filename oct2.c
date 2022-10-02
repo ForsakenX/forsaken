@@ -4588,7 +4588,7 @@ void DisplayNetworkInfo()
 	// get layout information
 	for( i = 0; i < MAX_PLAYERS; i++ )
 	{
-		if( GameStatus[i] != STATUS_Normal || ShipID == i )
+		if( GameStatus[i] != STATUS_Normal || WhoIAm == i )
 			continue;
 			
 		total_height += (3*row_height);

@@ -464,7 +464,7 @@ void ScreenPolyProcess( void )
 
 											Ships[WhoIAm].ShipThatLastKilledMe = WhoIAm;
 
-											if( (Ships[WhoIAm].Object.Mode == DEATH_MODE) || (Ships[WhoIAm].Object.Mode == LIMBO_MODE) || (Ships[WhoIAm].Object.Mode == DEATH_MODE) )
+											if( (Ships[WhoIAm].Object.Mode == DEATH_MODE) || (Ships[WhoIAm].Object.Mode == LIMBO_MODE) )
 											{
 												Ships[WhoIAm].Object.Mode = GAMEOVER_MODE;
 											}else{
@@ -1224,7 +1224,7 @@ void UpdateCountdownDigits( void )
 
 				Ships[WhoIAm].ShipThatLastKilledMe = WhoIAm;
 
-				if( (Ships[WhoIAm].Object.Mode == DEATH_MODE) || (Ships[WhoIAm].Object.Mode == LIMBO_MODE) || (Ships[WhoIAm].Object.Mode == DEATH_MODE) )
+				if( (Ships[WhoIAm].Object.Mode == DEATH_MODE) || (Ships[WhoIAm].Object.Mode == LIMBO_MODE) )
 				{
 					Ships[WhoIAm].Object.Mode = GAMEOVER_MODE;
 				}else{

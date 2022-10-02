@@ -1499,10 +1499,10 @@ BGOBJECT * LoadBGObjectData( int8_t * Filename, int16_t Type, VECTOR * Pos, VECT
 	   	MatrixMultiply( &Object->ColMatrix, &TempMatrix, &Object->Matrix );
 		MatrixTranspose( &Object->Matrix, &Object->InvMatrix );
 	
-	   	TempMatrix = MATRIX_Identity;
-	   	TempMatrix._11 = ( 1.0F / 1.0F );				// 1 / Scale
-	   	TempMatrix._22 = ( 1.0F / 1.0F );
-	   	TempMatrix._33 = ( 1.0F / 1.0F );
+		TempMatrix = MATRIX_Identity;
+		TempMatrix._11 = 1.0F;
+		TempMatrix._22 = 1.0F;
+		TempMatrix._33 = 1.0F;
 		Object->InvScaleMatrix = TempMatrix;
 	
 	   	TempMatrix = MATRIX_Identity;

@@ -3167,8 +3167,7 @@ bool ProcessMissiles( u_int16_t i, u_int16_t * NextMissile )
 		}
 	}
 
-	if( SecBulls[i].ColRadius ) HitTarget = CheckHitShip( SecBulls[i].OwnerType, SecBulls[i].Owner, &SecBulls[i].Pos, SecBulls[i].GroupImIn, &SecBulls[i].DirVector, &SecBulls[i].UpVector, Length, &Int_Point, &Int_Point2, &DistToInt, SecBulls[i].ColRadius, COLTYPE_Sphere );
-	else HitTarget = CheckHitShip( SecBulls[i].OwnerType, SecBulls[i].Owner, &SecBulls[i].Pos, SecBulls[i].GroupImIn, &SecBulls[i].DirVector, &SecBulls[i].UpVector, Length, &Int_Point, &Int_Point2, &DistToInt, SecBulls[i].ColRadius, COLTYPE_Sphere );
+	HitTarget = CheckHitShip( SecBulls[i].OwnerType, SecBulls[i].Owner, &SecBulls[i].Pos, SecBulls[i].GroupImIn, &SecBulls[i].DirVector, &SecBulls[i].UpVector, Length, &Int_Point, &Int_Point2, &DistToInt, SecBulls[i].ColRadius, COLTYPE_Sphere );
 
 	if( HitTarget != (u_int16_t) -1 ) HitWall = (u_int16_t) -1;
 
