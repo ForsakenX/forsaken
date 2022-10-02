@@ -1,0 +1,53 @@
+---
+# Configuration script for github continuous integration service
+
+name: SonarScanner
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Libraries
+        run: |
+          sudo apt-get install -y cmake mercurial autoconf libxext-dev
+          sudo apt-get install -y libgl-dev libglu1-mesa-dev
+          git clone https://github.com/ForsakenX/forsaken-libs.git libs
+          ./libs/src/build.sh
+
+      - name: Build Forsaken with Sonar
+        run: |
+          wget -q https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip -q build-wrapper-linux-x86.zip
+          cp ./build-wrapper-linux-x86/libinterceptor-x86_64.so ./build-wrapper-linux-x86/libinterceptor-haswell.so
+          ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./libs/make.sh
+
+      - name: Setup sonarqube
+        uses: warchant/setup-sonar-scanner@v3
+
+      - name: Run sonarqube
+        run: sonar-scanner
+          -Dsonar.host.url=https://sonarcloud.io/
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.projectKey=ForsakenX_forsaken
+          -Dsonar.organization=forsakenx
+          -Dsonar.projectVersion=1.0
+          -Dsonar.projectBaseDir=./
+          -Dsonar.cfamily.build-wrapper-output=bw-output
+          -Dsonar.cfamily.cache.enabled=false
+          -Dsonar.cfamily.threads=1
+          -Dsonar.coverage.exclusions=**
+          -Dsonar.sourceEncoding=UTF-8
+...
