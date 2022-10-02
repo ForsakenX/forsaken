@@ -103,6 +103,7 @@ endif
 # dynamic only libraries
 LIB+= `pkg-config --libs $(SDL_)`
 ifeq ($(MINGW),1)
+  CFLAGS += -DMINGW
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
   LIB += -lsocket -lws2_32 -lwsock32 -lwinmm -lOpenAL32

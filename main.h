@@ -114,13 +114,7 @@ typedef struct
 // _strupr use strtoupper see util.h
 #endif
 
-#ifdef DEBUG_ON
-#ifndef _SVID_SOURCE
-#define _SVID_SOURCE
-#endif
-#include <errno.h>
-#include <math.h>
-#endif
+#include "math_error.h"
 
 // c99 boolean support
 #include <stdbool.h>
