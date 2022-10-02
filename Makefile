@@ -120,10 +120,6 @@ ifneq ($(MINGW),1)
   LIB+= -ldl
 endif
 
-ifeq ($(BOT),1)
-  CFLAGS+= -DLUA_BOT
-endif
-
 # ProjectX-specific includes
 CFLAGS += -I.
 
@@ -141,6 +137,15 @@ CFLAGS+= -DNET_ENET_2 -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DS
 ifeq ($(DEBUG),1)
   CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT
 endif
+
+ifeq ($(BOT),1)
+  CFLAGS+= -DLUA_BOT
+endif
+
+ifeq ($(INPUT_DISABLED),1)
+  CFLAGS+= -DINPUT_DISABLED
+endif
+
 
 INC=$(wildcard *.h)
 SRC=$(wildcard *.c)
@@ -184,6 +189,7 @@ check:
 	@echo "BOT = $(BOT)"
 	@echo "GL = $(GL)"
 	@echo "RENDER_DISABLED = $(RENDER_DISABLED)"
+	@echo "INPUT_DISABLED = $(INPUT_DISABLED)"
 	@echo "LUA = $(LUA)"
 	@echo "SDL = $(SDL)"
 	@echo "SDL_ = $(SDL_)"

@@ -719,6 +719,8 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   if ( key_pressed( &conf->headlights ) )
 		Ships[WhoIAm].headlights = !Ships[WhoIAm].headlights;
 
+#ifndef INPUT_DISABLED
+
   ctrl->slide_mode = key_held( &conf->move );
   ctrl->roll_mode = key_held( &conf->roll );
   if ( ctrl->slide_mode )
@@ -918,6 +920,8 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 				ReadJoystickInput(ctrl, joystick);
 		}
 	}
+
+#endif // INPUT_DISABLED
 
 #ifdef LUA_BOT
 	ProcessBot1();
