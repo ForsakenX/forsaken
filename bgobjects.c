@@ -126,12 +126,9 @@ void InitBGObjects( void )
 		BGObjects[ i ].Index = i;
 		BGObjects[ i ].NextUsed = NULL;
 		BGObjects[ i ].PrevUsed = NULL;
-		BGObjects[ i ].NextFree = &BGObjects[ i + 1 ];
-		BGObjects[ i ].PrevFree = &BGObjects[ i - 1 ];
+		BGObjects[ i ].NextFree = i==(MAXBGOBJECTS-1) ? NULL : &BGObjects[ i + 1 ];
+		BGObjects[ i ].PrevFree = i==0                ? NULL : &BGObjects[ i - 1 ];
 	}
-
-	BGObjects[ 0 ].PrevFree = NULL;
-	BGObjects[ MAXBGOBJECTS - 1 ].NextFree = NULL;
 }
 
 /*===================================================================
