@@ -84,7 +84,7 @@ extern int   GetPlayerNumCount;
 
 extern bool	PickupValid[ MAXPICKUPTYPES ];
 
-#define YourVersion "YOUR VERSION: " PXVersion
+#define YourVersion "YOUR VERSION: " PX_VERSION_STR
 
 #define	ONEOVER32767 (1.0F / 32767.0F)
 #define	ONEOVER256 (1.0F / 256.0F)
@@ -3278,7 +3278,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					// display my version number
 					AddColourMessageToQue(SystemMessageColour, "%s", YourVersion );
 					// send my version number back
-					strncpy( (char *)&QuickText.text, PXVersion , sizeof(PXVersion) );
+					strncpy( (char *)&QuickText.text, PX_VERSION_STR , sizeof(PX_VERSION_STR) );
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
 					QuickText.text[0] = 0; // clean message buffer
 				}
@@ -3526,7 +3526,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpHereIAm = (LPHEREIAMMSG)&CommBuff[0];
         lpHereIAm->MsgCode = msg;
         lpHereIAm->WhoIAm = WhoIAm;
-		lpHereIAm->MPVersion = PXMPVINT;
+		lpHereIAm->MPVersion = PX_VERSION_NETWORK_COMPAT_INT;
 		nBytes = sizeof( HEREIAMMSG );
 		flags |= NETWORK_RELIABLE;
         break;
@@ -3575,7 +3575,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		// Check player has right version to join the game
 		//
 
-		if( PXMPVINT != mask )
+		if( PX_VERSION_NETWORK_COMPAT_INT != mask )
 		{
 			lpInit->YouAre = MAX_PLAYERS+3; // bad version
 			goto send;

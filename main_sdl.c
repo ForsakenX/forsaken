@@ -294,7 +294,7 @@ static void set_window_title( void )
 // this is now done in CreateWindow
 #if !SDL_VERSION_ATLEAST(2,0,0)
 	// window title, icon title (taskbar and other places)
-	SDL_WM_SetCaption(PXVersion,"ProjectX");
+	SDL_WM_SetCaption(PX_VERSION_STR,"ProjectX");
 #endif
 }
 
