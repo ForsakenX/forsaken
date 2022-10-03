@@ -75,6 +75,15 @@ else
   SDL_=sdl$(SDL)
 endif
 
+# a full list of libs pulled in by pkg-config
+PKG_CONFIG_DEPS= $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal
+
+# throw an error if any required deps are missing
+ifneq ($(MAKECMDGOALS),clean)
+$(if $(shell pkg-config --exists $(PKG_CONFIG_DEPS) || echo fail), \
+	$(error "some pkg-config libraries are missing (did you mean ./libs/make.sh): $(PKG_CONFIG_DEPS)"))
+endif
+
 # which version of GL do you want to use ?
 GL=1
 
@@ -82,7 +91,7 @@ $(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
      $(error "GL >= 3 only supported with SDL >= 2"))
 
 # library headers
-CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+CFLAGS+= `pkg-config --cflags $(PKG_CONFIG_DEPS)`
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -95,7 +104,7 @@ ifeq ($(STATIC),1)
   LIB+= -Wl,-dn
   PKG_CFG_OPTS= --static
 endif
-LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
+LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(PKG_CONFIG_DEPS)` -lm
 ifeq ($(STATIC),1)
   LIB+= -Wl,-dy
 endif
