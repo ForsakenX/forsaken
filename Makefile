@@ -64,7 +64,7 @@ endif
 #
 
 # some systems use lua5.1
-LUA=$(shell pkg-config lua && echo lua || echo lua5.1)
+LUA=$(shell pkg-config --exists lua && echo lua || echo lua5.1)
 MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
 # which version of sdl do you want to ask pkgconfig for ?
