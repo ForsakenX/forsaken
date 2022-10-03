@@ -82,7 +82,7 @@ $(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
      $(error "GL >= 3 only supported with SDL >= 2"))
 
 # library headers
-CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal ogg vorbisfile`
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -95,7 +95,7 @@ ifeq ($(STATIC),1)
   LIB+= -Wl,-dn
   PKG_CFG_OPTS= --static
 endif
-LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
+LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal ogg vorbisfile` -lm
 ifeq ($(STATIC),1)
   LIB+= -Wl,-dy
 endif

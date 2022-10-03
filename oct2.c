@@ -549,6 +549,7 @@ extern int FontSourceHeight;
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16_t NumOfActivePlayers;
 
+bool LoadLevel;
 int16_t   LevelNum = 0 ;
 int16_t   NewLevelNum = 0 ;
 int16_t   NumLevels = 0;
@@ -2218,6 +2219,7 @@ bool ChangeLevel( void )
 	//  return true;
 
 	LevelNum = NewLevelNum;
+        LoadLevel = true;
 
 	//NumGoldBars = 0;
 
