@@ -24,16 +24,31 @@ PROFILE=1
 # use this if you want to build everything statically
 STATIC=0
 
-# Mudflap is a pointer use checking library. For more info:
-# http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
-MUDFLAP=0
-
-ifeq ($(MUDFLAP),1)
+# https://github.com/google/sanitizers
+SANITIZE=0
+ifeq ($(SANITIZE),1)
   ifeq ($(DEBUG),1)
-    FLAGS+= -fmudflap
-    LIB+= -lmudflap
+    FLAGS+= -fsanitize=address
+    FLAGS+= -fsanitize-address-use-after-scope
+    FLAGS+= -fsanitize=leak
+
+    FLAGS+= -fsanitize=pointer-compare
+    FLAGS+= -fsanitize=pointer-subtract
+    FLAGS+= -fsanitize=bounds
+    FLAGS+= -fsanitize=bounds-strict
+    FLAGS+= -fsanitize=alignment
+
+    FLAGS+= -fsanitize=undefined
+    FLAGS+= -fsanitize=integer-divide-by-zero
+    FLAGS+= -fsanitize=float-divide-by-zero
+    FLAGS+= -fsanitize=float-cast-overflow
+    FLAGS+= -fsanitize=signed-integer-overflow
+    FLAGS+= -fsanitize=pointer-overflow
+
+    FLAGS+= -fsanitize=nonnull-attribute
+    FLAGS+= -fsanitize=returns-nonnull-attribute
   else
-    X:=$(error Mudflap enabled without debug mode - probably not what you meant)
+    X:=$(error sanitize enabled without debug mode - probably not what you wanted)
   endif
 endif
 
@@ -191,7 +206,7 @@ check:
 	@echo
 	@echo "DEBUG = $(DEBUG)"
 	@echo "PROFILE = $(PROFILE)"
-	@echo "MUDFLAP = $(MUDFLAP)"
+	@echo "SANITIZE = $(SANITIZE)"
 	@echo "STATIC = $(STATIC)"
 	@echo "PKG_CFG_OPTS = $(PKG_CFG_OPTS)"
 	@echo "MINGW = $(MINGW)"
