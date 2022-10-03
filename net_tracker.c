@@ -49,7 +49,7 @@ void send_tracker_update( char* host, int port )
 {
 	int i;
 	char message[ MAX_HOSTING_MSG ];
-	sprintf(message,"hosting %d %s %s",my_local_port,PX_VERSION_STR,my_player_name);
+	snprintf(message,MAX_HOSTING_MSG,"hosting %d %s %s",my_local_port,PX_VERSION_STR,my_player_name);
 	for(i=0; i<MAX_PLAYERS; i++)
 	{
 		if ( i != WhoIAm && STATUS_VALID_PLAYER(GameStatus[i]) )
