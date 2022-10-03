@@ -1399,7 +1399,7 @@ bool InitLevels( char * levels_list )
 
   // scan each level name into ShortLevelNames[j]
   j=0;
-  while ( j < MAXLEVELS && fscanf( f, " %s", ShortLevelNames[ j ] ) == 1 )
+  while ( j < MAXLEVELS && fscanf( f, " %32s", ShortLevelNames[ j ] ) == 1 )
   {
 
 

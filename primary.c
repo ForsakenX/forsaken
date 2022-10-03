@@ -724,8 +724,11 @@ void RestoreWeapons( void )
 	PrimaryWeaponsGot[ SUSS_GUN ] = 0;
 	PrimaryWeaponsGot[ LASER ] = 0;
 
-	Ships[ WhoIAm ].Primary = PULSAR;
-	Ships[ WhoIAm ].Secondary = MUGMISSILE;
+	if(WhoIAm != UNASSIGNED_SHIP)
+	{
+		Ships[ WhoIAm ].Primary = PULSAR;
+		Ships[ WhoIAm ].Secondary = MUGMISSILE;
+	}
 }
 
 /*===================================================================

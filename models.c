@@ -5017,6 +5017,10 @@ void CreateOrbitPulsar( u_int16_t Ship )
 	int16_t	Count;
 	u_int16_t	Model;
 
+	// avoid division by zero
+	if(Ships[Ship].NumMultiples == 0)
+		return;
+
 	Rot = 0.0F;
 	Inc = ( 360.0F / Ships[ Ship ].NumMultiples );
 

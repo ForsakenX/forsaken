@@ -591,15 +591,12 @@ void SetupSpotFX( void )
 
 		SpotFX[ i ].NextUsed = NULL;
 		SpotFX[ i ].PrevUsed = NULL;
-		SpotFX[ i ].NextFree = &SpotFX[ i + 1 ];
-		SpotFX[ i ].PrevFree = &SpotFX[ i - 1 ];
+		SpotFX[ i ].NextFree = i==(MAXSPOTFX-1) ? NULL : &SpotFX[ i + 1 ];
+		SpotFX[ i ].PrevFree = i==0             ? NULL : &SpotFX[ i - 1 ];
 		SpotFX[ i ].NextInGroup = NULL;
 		SpotFX[ i ].PrevInGroup = NULL;
 		SpotFX[ i ].Index = i;
 	}
-
-	SpotFX[ 0 ].PrevFree = NULL;
-	SpotFX[ MAXSPOTFX - 1 ].NextFree = NULL;
 }
 
 /*===================================================================

@@ -303,7 +303,7 @@ void StartAHostSession ( MENUITEM * Item )
 
 	MaxKills = MaxKillsSlider.value;
 
-	RandomStartPosModify = (u_int16_t) ( ms * 71.42857143 );
+	RandomStartPosModify = (u_int16_t) ( ms * 71 );
 
 	local_port = atoi(local_port_str.text);
 	SetGamePrefs();

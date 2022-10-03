@@ -688,8 +688,16 @@ void PrintScoreSort( void )
 			{
 				for(i=0; i<MAX_PLAYERS; i++)
 				{
-					tempwidth = (u_int16_t) log10(abs(GetKills(i)))+1;
+					int kills = GetKills(i);
+
+					// get display width of a number
+					// protecting against log10(0) throwing `inf`
+					tempwidth = (u_int16_t) (kills == 0 ? 1 : log10(abs(kills))+1);
+
+					// add space for negative sign?
 					if(GetKills(i) < 0)	tempwidth++;
+
+					// keep track of widest score?
 					if(tempwidth > scorewidth) scorewidth = tempwidth;			
 				}
 			}
