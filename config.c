@@ -647,7 +647,7 @@ read_headlights( FILE *f, USERCONFIG *u, char *last_token )
 static int
 read_general_macro( FILE *f, char *config_macro, char *last_token, TEXT *macro )
 {
-	char tempstr[ MAXTEXTMSG ];
+	char tempstr[ MAXTEXTMSG+1 ];
 	static char fmt[80];
 
 	sprintf( fmt, " %%%d[^\n]", MAXTEXTMSG );
@@ -716,7 +716,7 @@ read_mouse_sensitivity( FILE *f, USERCONFIG *u, char *last_token )
 static int
 read_name( FILE *f, USERCONFIG *u, char *last_token )
 {
-	char namebuf[80];
+	char namebuf[81];
 	int ok;
 
 	ok = fscanf( f, " %80s", namebuf );
@@ -1301,7 +1301,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 {
 
 	FILE *f;
-	char token[80];
+	char token[81];
 	int j;
 
 	// all the config settings

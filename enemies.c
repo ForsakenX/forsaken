@@ -3921,17 +3921,14 @@ void InitEnemies( void )
 		Enemies[ i ].Used = false;
 		Enemies[ i ].NextUsed = NULL;
 		Enemies[ i ].PrevUsed = NULL;
-		Enemies[ i ].NextFree = &Enemies[ i + 1 ];
-		Enemies[ i ].PrevFree = &Enemies[ i - 1 ];
+		Enemies[ i ].NextFree = i==(MAXENEMIES-1) ? NULL : &Enemies[ i + 1 ];
+		Enemies[ i ].PrevFree = i==0              ? NULL : &Enemies[ i - 1 ];
 
 		Enemies[ i ].NextInGroup = NULL;
 		Enemies[ i ].PrevInGroup = NULL;
 		Enemies[ i ].Index = i;
 		Enemies[ i ].Object.Type = OBJECT_TYPE_ENEMY;
 	}
-
-	Enemies[ 0 ].PrevFree = NULL;
-	Enemies[ MAXENEMIES - 1 ].NextFree = NULL;
 }
 
 /*===================================================================
