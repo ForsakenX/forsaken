@@ -508,7 +508,7 @@ static bool set_defaults( void )
 	return true;
 }
 
-static resize_viewport( int width, int height )
+static void resize_viewport( int width, int height )
 {
 	render_viewport_t viewport;
 	viewport.X = 0;

@@ -31,8 +31,8 @@
 
 #include <stdio.h>
 #include "lua_common.h"
-#include "luasocket.h"
-#include "mime.h"
+#include "luasocket/luasocket.h"
+#include "luasocket/mime.h"
 #include "main.h"
 
 lua_State *L1;

@@ -141,24 +141,6 @@ typedef struct VERT2D {
 	float	y;
 } VERT2D;
 /*===================================================================
-	3D Vertices
-===================================================================*/
-typedef struct VERT {
-	float	x;
-	float	y;
-	float	z;
-} VERT;
-
-/*===================================================================
-	3D Normal
-===================================================================*/
-typedef struct NORMAL {
-	union { float nx; float x; };
-	union { float ny; float y; };
-	union { float nz; float z; };
-} NORMAL;
-
-/*===================================================================
 	4 X 4 Matrix
 ===================================================================*/
 typedef struct MATRIX {
@@ -182,10 +164,12 @@ typedef struct MATRIX3X3 {
 	Vector
 ===================================================================*/
 typedef struct VECTOR {
-	float	x;
-	float	y;
-	float	z;
+	union { float nx; float x; };
+	union { float ny; float y; };
+	union { float nz; float z; };
 } VECTOR;
+typedef VECTOR VERT;
+typedef VECTOR NORMAL;
 
 /*===================================================================
 	Short Vector

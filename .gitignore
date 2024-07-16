@@ -4,10 +4,9 @@ projectx*
 libs*
 unix*
 mingw*
-data
-configs
-logs
-pilots
+configs/*
+logs/*
+pilots/*
 savegame
 *.dll
 gmon.out

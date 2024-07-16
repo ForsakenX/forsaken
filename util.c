@@ -7,13 +7,13 @@
 #include "util.h"
 #include "string.h"
 #include "title.h"
+#include <ctype.h>		// for toupper
 
 extern bool Debug;
 bool DebugLog = false;
 
 #ifdef WIN32
 #include <windows.h>	// for various things
-#include <ctype.h>		// for toupper
 #endif
 
 

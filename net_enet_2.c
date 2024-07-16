@@ -237,7 +237,7 @@ static network_return_t enet_setup( char* str_address, int port )
 	DebugPrintf("network: enet setup address %s\n",
 		address_to_str(&address));
 
-	enet_host = enet_host_create( &address, max_peers, 0, 0 );
+	enet_host = enet_host_create( &address, max_peers, 2, 0, 0 );
 
 	if ( enet_host == NULL )
 	{
@@ -267,7 +267,7 @@ static int enet_connect( char* str_address, int port )
 	DebugPrintf("network: enet connect to address %s\n",
 		address_to_str(&address));
 
-	peer = enet_host_connect( enet_host, &address, max_channels );
+	peer = enet_host_connect( enet_host, &address, max_channels, 0 );
 
 	if (peer == NULL)
 	{
@@ -761,7 +761,7 @@ static void new_connection( ENetPeer * peer )
 
 static void lost_connection( ENetPeer * peer, enet_uint32 data )
 {
-	char* reason = &data;
+	char* reason = (char*)&data;
 	network_peer_data_t * peer_data = peer->data;
 
 	// print debug info
@@ -1311,7 +1311,7 @@ static void new_packet( ENetEvent * event )
 					network_peer_data_t * new_peer_data;
 					DebugPrintf("network: host told us to connect to player %d address %s\n",
 						packet->id, address_to_str( address ));
-					new_peer = enet_host_connect( enet_host, address, max_channels );
+					new_peer = enet_host_connect( enet_host, address, max_channels, 0 );
 					if(!new_peer)
 					{
 						DebugPrintf("network: enet host connect returned NULL.\n");
