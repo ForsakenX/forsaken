@@ -37,6 +37,12 @@ jobs:
           cp ./build-wrapper-linux-x86/libinterceptor-x86_64.so ./build-wrapper-linux-x86/libinterceptor-haswell.so
           ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./libs/make.sh
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Setup sonarqube
         uses: warchant/setup-sonar-scanner@v8
 
@@ -49,7 +55,7 @@ jobs:
           -Dsonar.projectVersion=1.0
           -Dsonar.projectBaseDir=./
           -Dsonar.cfamily.build-wrapper-output=bw-output
-          -Dsonar.cfamily.cache.enabled=false
+          -Dsonar.cfamily.analysisCache.mode=server
           -Dsonar.cfamily.threads=1
           -Dsonar.coverage.exclusions=**
           -Dsonar.sourceEncoding=UTF-8
