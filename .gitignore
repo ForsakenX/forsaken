@@ -1,13 +1,10 @@
-*.sh
 *.o
 projectx*
 libs*
 unix*
 mingw*
-data
-configs
-logs
-pilots
 savegame
 *.dll
 gmon.out
+configs/*.txt
+logs/*.txt
