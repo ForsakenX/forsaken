@@ -13,6 +13,7 @@ typedef struct QUAT {
 	float	y;
 	float	z;
 } QUAT;
+
 typedef struct SHORTQUAT {
 	int16_t	w;
 	int16_t	x;
@@ -20,15 +21,12 @@ typedef struct SHORTQUAT {
 	int16_t	z;
 } SHORTQUAT;
 
-
 typedef struct {
-
 	QUAT		start;		// Starting QUATERNION
 	QUAT		end;		// Ending QUATERNION
 	QUAT *		crnt;		// Current QUATERNION to change
 	float		time;		// Time
 	float		dir;		// Direction
-
 } QUATLERP;
 
 /*===================================================================

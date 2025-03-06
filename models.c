@@ -3337,10 +3337,8 @@ bool AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 	u_int16_t					ExecBuf;
 	COLOR				Colour;
 #ifdef FAST_RGB_CLAMP
-#ifndef USEASM
 	u_int32_t					tempiA;
 	u_int32_t					carry, clamp;
-#endif
 	u_int32_t					tempiR, tempiG, tempiB;
 	u_int32_t					col_inc, inc_inv, inc_carry;
 #else
@@ -3391,35 +3389,6 @@ bool AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 			{
 				Colour = SrclpD3DLVERTEX->color;
 #ifdef FAST_RGB_CLAMP
-#ifdef	USEASM
-__asm
-{
-				mov	ecx , Colour		;int ecx = col   get the color
-
-				mov edi , ecx			;edi = col..
-				and ecx , 0x00ffffff	;and out the alpha
-				and edi , 0xff000000	;keep the alpha for later
-				
-				mov ebx , col_inc		;ebx = col_inc
-				mov edx , ecx			;edx = col
-
-				add ecx , ebx			;ecx = col + col_inc
-				xor edx , ebx			;edx = col ^ col_inc
-				xor edx , ecx			;edx = ( col + col_inc ) ^ ( col ^ col_inc )
-				and edx	, 0x01010100	;edx = carry = ( ( col + col_inc ) ^ ( col ^ col_inc ) ) & 0x01010100
-				sub ecx , edx			;ecx = (col + col_inc) - carry
-				mov ebx , inc_carry		;ebx = inc_carry
-				or  edx , ebx			;edx = carry = carry | inc_carry
-				mov eax , edx			;eax = carry
-				shr	edx , 8				;edx = ( carry >> 8 )
-				sub eax , edx			;eax = clamp = carry - ( carry >> 8 )
-				and ecx , eax			;col = ecx & clamp
-
-				or  ecx , edi			;or back in the alpha..
-
-				mov Colour, ecx			;int put the color back
-}
-#else	//USEASM
 				tempiA = Colour & 0xff000000;
 				// for subtraction, simply add the negative
 				carry = ( ( Colour + col_inc ) ^ ( Colour ^ col_inc ) ) & 0x01010100;
@@ -3430,13 +3399,12 @@ __asm
 				clamp = carry - ( carry >> 8 );
 				Colour = ( Colour & clamp ) & 0x00ffffff;
 				Colour |= tempiA;
-#endif // USEASM
 #else
 				r = RGBA_GETRED(Colour);
 				g = RGBA_GETGREEN(Colour);
 				b = RGBA_GETBLUE(Colour);
 				a = RGBA_GETALPHA(Colour);
-				r -= R;
+				R -= r;
 				g -= G;
 				b -= B;
 //				a -= A;
@@ -3481,10 +3449,8 @@ bool AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 	u_int16_t					ExecBuf;
 	COLOR				Colour;
 #ifdef FAST_RGB_CLAMP
-#ifndef USEASM
 	u_int32_t					tempiA;
 	u_int32_t					carry, clamp;
-#endif
 	u_int32_t					tempiR, tempiG, tempiB;
 	u_int32_t					col_inc, inc_inv, inc_carry;
 #else
@@ -3546,35 +3512,6 @@ bool AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 			{
 				Colour = SrclpD3DLVERTEX->color;
 #ifdef FAST_RGB_CLAMP
-#ifdef	USEASM
-__asm
-{
-				mov	ecx , Colour		;int ecx = col   get the color
-
-				mov edi , ecx			;edi = col..
-				and ecx , 0x00ffffff	;and out the alpha
-				and edi , 0xff000000	;keep the alpha for later
-				
-				mov ebx , col_inc		;ebx = col_inc
-				mov edx , ecx			;edx = col
-
-				add ecx , ebx			;ecx = col + col_inc
-				xor edx , ebx			;edx = col ^ col_inc
-				xor edx , ecx			;edx = ( col + col_inc ) ^ ( col ^ col_inc )
-				and edx	, 0x01010100	;edx = carry = ( ( col + col_inc ) ^ ( col ^ col_inc ) ) & 0x01010100
-				sub ecx , edx			;ecx = (col + col_inc) - carry
-				mov ebx , inc_carry		;ebx = inc_carry
-				or  edx , ebx			;edx = carry = carry | inc_carry
-				mov eax , edx			;eax = carry
-				shr	edx , 8				;edx = ( carry >> 8 )
-				sub eax , edx			;eax = clamp = carry - ( carry >> 8 )
-				and ecx , eax			;col = ecx & clamp
-
-				or  ecx , edi			;or back in the alpha..
-
-				mov Colour, ecx			;int put the color back
-}
-#else	//USEASM
 				tempiA = Colour & 0xff000000;
 				// for subtraction, simply add the negative
 				carry = ( ( Colour + col_inc ) ^ ( Colour ^ col_inc ) ) & 0x01010100;
@@ -3585,7 +3522,6 @@ __asm
 				clamp = carry - ( carry >> 8 );
 				Colour = ( Colour & clamp ) & 0x00ffffff;
 				Colour |= tempiA;
-#endif // USEASM
 #else
 				r = RGBA_GETRED(Colour);
 				g = RGBA_GETGREEN(Colour);

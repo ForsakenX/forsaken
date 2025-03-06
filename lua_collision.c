@@ -36,9 +36,9 @@ static int luacoll_bgcollide(lua_State *L)
 
 	/* get input parameters */
 	startpos = luaL_checkudata(L, 1, "VECTOR");
-	startgroup = luaL_checkint(L, 2);
+	startgroup = luaL_checkinteger(L, 2);
 	move_off = luaL_checkudata(L, 3, "VECTOR");
-	(void) luaL_checkint(L, 4);
+	(void) luaL_checkinteger(L, 4);
 	bgcol = lua_toboolean(L, 4);
 
 	/* initialize userdata memory for output values */

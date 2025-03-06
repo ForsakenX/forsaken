@@ -19,7 +19,6 @@
 	Structures for 2D Texture info
 ===================================================================*/
 typedef struct BOX_INFO {
-
 	int16_t	tpage;
 	float	u1;
 	float	v1;
@@ -27,40 +26,32 @@ typedef struct BOX_INFO {
 	float	v2;
 	int16_t	xsize;
 	int16_t	ysize;
-
 } BOX_INFO;
 
 typedef struct OFF_INFO {
-
-	int16_t	xoff;
-	int16_t	yoff;
-	u_int16_t	box;
-
+	int16_t	  xoff;
+	int16_t	  yoff;
+	u_int16_t box;
 } OFF_INFO;
 
 typedef struct BIT_INFO {
-
 	int16_t	startbit;
 	int16_t	numbits;
-
 } BIT_INFO;
 
 typedef struct FRAME_INFO {
-
 	int16_t			Num_Frames;
 	int8_t		*	File_Addr;
 	BOX_INFO	*	Box_Info;
 	OFF_INFO	*	Off_Info;
 	BIT_INFO	*	Bit_Info;
-	char			tpage_name[32];		// only valid if only one t-page is associated with box file
-	int16_t			vid_tpage_index;		//					---"---
-	int16_t			sys_tpage_index;		//					---"---
+	char			tpage_name[32];  // only valid if only one t-page is associated with box file
+	int16_t			vid_tpage_index; //					---"---
+	int16_t			sys_tpage_index; //					---"---
 	int16_t			NumBoxes;
-
 } FRAME_INFO;
 
 typedef struct OFF_FILES {
-
 	int8_t		*	Filename;
 	FRAME_INFO	**	InfoPtrAddr;
 	bool			LoadEnable;

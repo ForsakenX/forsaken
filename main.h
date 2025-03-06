@@ -79,20 +79,6 @@
 
 #define	GLOBAL_SCALE			(0.25F)
 
-typedef struct
-{
-    long    left;
-    long    top;
-    long    right;
-    long    bottom;
-} rect_t;
-
-typedef struct
-{
-    long  x;
-    long  y;
-} point_t;
-
 #undef MAX
 #define MAX(x, y) ((x) > (y)) ? (x) : (y)
 

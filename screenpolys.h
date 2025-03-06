@@ -66,15 +66,6 @@
 /*===================================================================
 	Structures
 ===================================================================*/
-typedef	struct SCRPOLY_RGB {
-
-	u_int8_t	R;
-	u_int8_t	G;
-	u_int8_t	B;
-	u_int8_t	Trans;
-
-} SCRPOLY_RGB;
-
 typedef struct SCRPOLY {
 
 	u_int16_t			Next;
@@ -89,7 +80,7 @@ typedef struct SCRPOLY {
 	u_int8_t			R;					// Colour
 	u_int8_t			G;					// Colour
 	u_int8_t			B;					// Colour
-	u_int8_t			Trans;				// Amount of transparency
+	u_int8_t		Trans;				// Amount of transparency
 	float			Xscale;				// XScale
 	float			Yscale;				// XScale
 	float			Frame;				// Animation Frame
@@ -109,10 +100,10 @@ typedef struct SCRPOLY {
 	float			y3;					// y3
 	float			x4;					// x4
 	float			y4;					// y4
-	SCRPOLY_RGB		Col1;				// Colour 1
-	SCRPOLY_RGB		Col2;				// Colour 2
-	SCRPOLY_RGB		Col3;				// Colour 3
-	SCRPOLY_RGB		Col4;				// Colour 4
+	RGBA			Col1;				// Colour 1
+	RGBA			Col2;				// Colour 2
+	RGBA			Col3;				// Colour 3
+	RGBA			Col4;				// Colour 4
 
 } SCRPOLY;
 

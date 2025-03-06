@@ -109,33 +109,31 @@
 		TPage Info Structure for FmPolys/Polys/ScreenPolys
 ===================================================================*/
 typedef struct TPAGEINFO {
-
-	u_int16_t		FirstPoly;		// Index to first Poly in TPage
-	int16_t		StartVert;		// Filled in by PolyDisp
-	int16_t		NumVerts;		// Filled in by PolyDisp
-	int16_t		NumTris;		// Filled in by PolyDisp
+	u_int16_t       FirstPoly;		// Index to first Poly in TPage
+	int16_t         StartVert;		// Filled in by PolyDisp
+	int16_t         NumVerts;		// Filled in by PolyDisp
+	int16_t         NumTris;		// Filled in by PolyDisp
 
 } TPAGEINFO;
 
 /*===================================================================
 	FmPoly Structure
 ===================================================================*/
-typedef struct FMPOLY{
-
-	u_int16_t			Next;
-	u_int16_t			Prev;
-	u_int16_t			NextInTPage;
-	u_int16_t			PrevInTPage;
+typedef struct FMPOLY {
+	u_int16_t       Next;
+	u_int16_t       Prev;
+	u_int16_t	    NextInTPage;
+	u_int16_t		PrevInTPage;
 	float			LifeCount;			// LifeCount
 	VECTOR			Pos;				// Position
-	u_int8_t			Start_R;			// Start Colour
-	u_int8_t			Start_G;
-	u_int8_t			Start_B;
-	u_int8_t			R;					// Colour
-	u_int8_t			G;
-	u_int8_t			B;
-	u_int8_t			Trans;				// Amount of transparency
-	u_int8_t			OnceOnly;			// Once Only
+	u_int8_t		Start_R;			// Start Colour
+	u_int8_t		Start_G;
+	u_int8_t		Start_B;
+	u_int8_t		R;					// Colour
+	u_int8_t		G;
+	u_int8_t		B;
+	u_int8_t        Trans;				// Amount of transparency
+	u_int8_t	    OnceOnly;			// Once Only
 	float			Rot;				// Rotation Angle
 	float			RotSpeed;			// Rotation Speed
 	float			Frame;				// Animation Frame
@@ -147,13 +145,12 @@ typedef struct FMPOLY{
 	VECTOR			DirVector;			// Direction to face
 	VECTOR			UpVector;			// Up Vector to face
 	MATRIX			Mat;				// Matrix ( Trojax );
-	u_int16_t			Group;				// GroupImIn
+	u_int16_t       Group;				// GroupImIn
 	float			Speed;				// Speed
 	float			UpSpeed;			// Speed
 	float			xsize;				// in world space
 	float			ysize;				// in world space
-	
-}FMPOLY;
+} FMPOLY;
 
 
 /*===================================================================

@@ -10,8 +10,8 @@ CC=gcc
 ifeq ($(M32),1)
   FLAGS+= -m32
 endif
-FLAGS+= -std=gnu99 -pipe -fcommon
-CFLAGS=$(FLAGS) -Wall -Wextra
+FLAGS+= -std=gnu2x -pipe -fcommon
+CFLAGS=$(FLAGS) -Wall -Wextra -Wno-unused-result -Wno-unused-variable -Wno-unused
 LDFLAGS=$(FLAGS)
 
 # right now non debug build would probably crash anyway
@@ -63,8 +63,8 @@ endif
 # ProjectX Specific
 #
 
-# some systems use lua5.1
-LUA=$(shell pkg-config lua && echo lua || echo lua5.1)
+# some systems use lua5.4
+LUA=lua5.4
 MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
 # which version of sdl do you want to ask pkgconfig for ?
@@ -76,13 +76,13 @@ else
 endif
 
 # which version of GL do you want to use ?
-GL=1
-
-$(if $(shell test "$(GL)" -ge 3 -a "$(SDL)" -lt 2 && echo fail), \
-     $(error "GL >= 3 only supported with SDL >= 2"))
+GL=3
 
 # library headers
-CFLAGS+= `pkg-config --cflags $(SDL_) $(LUA) $(LUA)-socket libenet libpng zlib openal`
+CFLAGS+= `pkg-config --cflags $(SDL_)`
+CFLAGS+= `pkg-config --cflags $(LUA)`
+CFLAGS+= `pkg-config --cflags libenet`
+CFLAGS+= `pkg-config --cflags libpng zlib openal`
 ifeq ($(MACOSX),1)
   CFLAGS += -DMACOSX
 endif
@@ -95,7 +95,9 @@ ifeq ($(STATIC),1)
   LIB+= -Wl,-dn
   PKG_CFG_OPTS= --static
 endif
-LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal` -lm
+LIBDIR=`pkg-config --variable=libdir $(LUA)`
+LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) libenet libpng zlib openal`
+LIB+= -L$(LIBDIR)/lua/5.4/ $(LIBDIR)/lua/5.4/mime/core.so $(LIBDIR)/lua/5.4/socket/core.so -lm
 ifeq ($(STATIC),1)
   LIB+= -Wl,-dy
 endif

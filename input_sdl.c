@@ -247,11 +247,17 @@ void app_keyboard( SDL_KeyboardEvent * key )
 	}
 	if( key->type == SDL_KEYDOWN )
 	{
+#if SDL_VERSION_ATLEAST(2,0,0)
+		input_buffer_send(
+				key->keysym.sym
+		);
+#else
 		input_buffer_send(
 			key->keysym.unicode ? 
 				key->keysym.unicode :
 				key->keysym.sym
 		);
+#endif
 	}
 }
 
@@ -539,7 +545,11 @@ bool joysticks_init(void)
 		{
 			DebugPrintf(
 				"joysticks_init: joystick (%d), '%s' failed to open\n",
+#if SDL_VERSION_ATLEAST(2,0,0)
+				i, SDL_JoystickNameForIndex(i)
+#else
 				i, SDL_JoystickName(i)
+#endif
 			);
 			continue;
 		}
@@ -555,8 +565,11 @@ bool joysticks_init(void)
 		// TODO
 		// JoystickInfo[i].NumBalls = SDL_JoystickNumBalls(joy);
 
+#if SDL_VERSION_ATLEAST(2,0,0)
+		JoystickInfo[i].Name = strdup( SDL_JoystickNameForIndex(i) );
+#else
 		JoystickInfo[i].Name = strdup( SDL_JoystickName(i) );
-
+#endif
 		DebugPrintf( 
 			"joysticks_init: joystick (%d), name='%s', axises=%d, buttons=%d, hats=%d\n", 
 			i, JoystickInfo[i].Name, JoystickInfo[i].NumAxis, JoystickInfo[i].NumButtons,
@@ -733,12 +746,11 @@ bool handle_events( void )
 		switch( _event.type )
 		{
 
-
 // previously mouse wheel was a button code
 // now it's an x/y axis since it supports mouse wheel balls
 #if SDL_VERSION_ATLEAST(2,0,0)
 		case SDL_MOUSEWHEEL:
-			app_mouse_wheel( &_event );
+			app_mouse_wheel( (SDL_MouseWheelEvent*)&_event );
 			break;
 #endif
 
@@ -748,7 +760,7 @@ bool handle_events( void )
 // TODO - we should call something like app_window
 //        which then delegates to app_active in correct case
 		case SDL_WINDOWEVENT:
-			app_active( &_event );
+			app_active( (SDL_WindowEvent*)&_event );
 			break;
 #else
 		case SDL_ACTIVEEVENT:
@@ -772,33 +784,33 @@ bool handle_events( void )
 #if SDL_VERSION_ATLEAST(2,0,0)
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
-			app_keyboard( &_event );
+			app_keyboard( (SDL_KeyboardEvent*)&_event );
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
-			app_mouse_button( &_event );
+			app_mouse_button( (SDL_MouseButtonEvent*)&_event );
 			break;
 
 		case SDL_MOUSEMOTION:
-			app_mouse_motion( &_event );
+			app_mouse_motion( (SDL_MouseMotionEvent*)&_event );
 			break;
 
 		case SDL_JOYAXISMOTION:
-			app_joy_axis( &_event );
+			app_joy_axis( (SDL_JoyAxisEvent*)&_event );
 			break;
 
 		case SDL_JOYBALLMOTION:
-			app_joy_ball( &_event );
+			app_joy_ball( (SDL_JoyBallEvent*)&_event );
 			break;
 
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYBUTTONUP:
-			app_joy_button( &_event );
+			app_joy_button( (SDL_JoyButtonEvent*)&_event );
 			break;
 
 		case SDL_JOYHATMOTION:
-			app_joy_hat( &_event );
+			app_joy_hat( (SDL_JoyHatEvent*)&_event );
 			break;
 
 #else
@@ -856,7 +868,7 @@ bool handle_events( void )
 
 // TODO
 		default:
-			printf("Unknown event type: %d\n",_event.type);
+			printf("Unknown event type: %x\n",_event.type);
 			break;
 		}
 	}

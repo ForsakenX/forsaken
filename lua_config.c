@@ -77,7 +77,7 @@ int config_get_int(const char *opt, int _default)
 	if (lua_isboolean(L1, -1))
 		i = lua_toboolean(L1, -1);
 	else
-		i = luaL_checkint(L1, -1);
+		i = luaL_checkinteger(L1, -1);
 	lua_pop(L1, 2);
 	return i;
 }

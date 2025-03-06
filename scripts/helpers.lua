@@ -31,3 +31,4 @@ function load_file(name)
 	local f,m = loadfile(name)
 	return assert(loadfile(name))
 end
+

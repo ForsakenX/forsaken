@@ -43,46 +43,37 @@
 /*===================================================================
 	Structures
 ===================================================================*/
-typedef	struct POLY_RGB {
-
-	u_int8_t	R;
-	u_int8_t	G;
-	u_int8_t	B;
-
-} POLY_RGB;
 
 typedef struct POLY {
+	u_int16_t Next;
+	u_int16_t Prev;
 
-	u_int16_t			Next;
-	u_int16_t			Prev;
-
-	u_int16_t			NextInTPage;
-	u_int16_t			PrevInTPage;
+	u_int16_t NextInTPage;
+	u_int16_t PrevInTPage;
 
 	VECTOR			Pos1;				// Position 1
 	VECTOR			Pos2;				// Position	2
 	VECTOR			Pos3;				// Position	3
 	VECTOR			Pos4;				// Position	4
-	POLY_RGB		Col1;				// Colour 1
-	POLY_RGB		Col2;				// Colour 2
-	POLY_RGB		Col3;				// Colour 3
-	POLY_RGB		Col4;				// Colour 4
-	u_int8_t			Trans1;				// Amount of transparency 1
-	u_int8_t			Trans2;				// Amount of transparency 2
-	u_int8_t			Trans3;				// Amount of transparency 3
-	u_int8_t			Trans4;				// Amount of transparency 4
+	RGB				Col1;				// Colour 1
+	RGB				Col2;				// Colour 2
+	RGB				Col3;				// Colour 3
+	RGB				Col4;				// Colour 4
+	u_int8_t        Trans1;				// Amount of transparency 1
+	u_int8_t        Trans2;				// Amount of transparency 2
+	u_int8_t        Trans3;				// Amount of transparency 3
+	u_int8_t        Trans4;				// Amount of transparency 4
 	int16_t			Flags;				// Flags
 	float			Scale;				// Scale Factor
 	float			Frame;				// Animation Frame
 	float			AnimSpeed;			// Animation Speed
 	FRAME_INFO	**	Frm_Info;			// Offset Info
 	int16_t			SeqNum;				// Process Sequence
-	u_int16_t			Group;				// Group
+	u_int16_t	    Group;				// Group
 	float			TimeStep;			// Time step for interpolation
 	QUATLERP		Qlerp;				// Quaternion Interpolation 
 	QUAT			Quat;				// Quat
-	u_int16_t			Ship;				// Ship
-
+	u_int16_t	    Ship;				// Ship
 } POLY;
 
 /*===================================================================

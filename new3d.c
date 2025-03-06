@@ -54,6 +54,7 @@ void BuildRotMatrix( float xa, float ya, float za, MATRIX * m )
 
 	m->_31 = ( ( c0s1 * c2 ) + ( s0 * s2 ) );
 	m->_32 = ( ( s0 * c2 ) - ( c0s1 * s2 ) );
+
 	m->_33 = c0 * c1;
 	m->_34 = 0.0F;
 
@@ -137,8 +138,6 @@ void MxV( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 // this is not a general purpose m*v function
 // it's meant to only be used in certain places
 
-//#ifndef USEASM
-#if 1
 void ApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 {
 	float x = m->_41;
@@ -153,63 +152,6 @@ void ApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 	v1->y = y;
 	v1->z = z;
 }
-#else
-// assumes v[W] == 1.0f
-//__declspec(naked) void MatMultVec3x4(Vector res, Matrix m, Vector v)
-__declspec(naked) void ApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
-{
-//	res[0] = m[0][0]*v[0] + m[0][1]*v[1] + m[0][2]*v[2] + m[0][3];
-//	res[1] = m[1][0]*v[0] + m[1][1]*v[1] + m[1][2]*v[2] + m[1][3];
-//	res[2] = m[2][0]*v[0] + m[2][1]*v[1] + m[2][2]*v[2] + m[2][3];
-	__asm
-	{
-		mov			eax, [esp + 12]
-		mov			ecx, [esp + 4]
-		mov			edx, [esp + 8]
-		fld			dword ptr [ecx]
-		fmul		dword ptr [edx]
-		fld			dword ptr [ecx + 4]
-		fmul		dword ptr [edx + 4]
-		fld			dword ptr [ecx + 8]
-		fmul		dword ptr [edx + 8]
-		fld			dword ptr [ecx + 16]
-		fmul		dword ptr [edx]
-		fld			dword ptr [ecx + 16 + 4]
-		fmul		dword ptr [edx + 4]
-		fld			dword ptr [ecx + 16 + 8]
-		fmul		dword ptr [edx + 8]
-		fxch		st(5)
-		fadd		dword ptr [ecx + 12]
-		fxch		st(4)
-		faddp		st(3), st
-		fxch		st(1)
-		fadd		dword ptr [ecx + 16 + 12]
-		fxch		st(4)
-		fld			dword ptr [ecx + 32]
-		fmul		dword ptr [edx]
-		fld			dword ptr [ecx + 32 + 4]
-		fmul		dword ptr [edx + 4]
-		fld			dword ptr [ecx + 32 + 8]
-		fmul		dword ptr [edx + 8]
-		fxch		st(4)
-		faddp		st(3), st
-		fxch		st(1)
-		fadd		dword ptr [ecx + 32 + 12]
-		fxch		st(5)
-		faddp		st(4), st
-		faddp		st(2), st
-		faddp		st(4), st
-		fxch		st(1)
-		fstp		dword ptr [eax]
-		faddp		st(1), st
-		fxch		st(1)
-		fstp		dword ptr [eax + 4]
-		fstp		dword ptr [eax + 8]
-		ret
-	}
-}
-
-#endif
 
 /*===================================================================
 	Function	:	Apply Matrix to a Vector
@@ -253,159 +195,25 @@ void AddMatrixTrans( float xt, float yt, float zt, MATRIX * m )
 				:	VECTOR	*	New Vector
 	Output		:	Nothing
 ===================================================================*/
-#ifndef USEASM
 void CrossProduct( VECTOR * a, VECTOR * b, VECTOR * ab )
 {
 	ab->x = ( a->y * b->z ) - ( a->z * b->y );
 	ab->y = ( a->z * b->x ) - ( a->x * b->z );
 	ab->z = ( a->x * b->y ) - ( a->y * b->x );
 }
-#else
-__declspec(naked) void CrossProduct(VECTOR * v, VECTOR * v1, VECTOR * v2)
-{
-	// v[X] = v1[Y]*v2[Z] - v1[Z]*v2[Y] = A - B
-	// v[Y] = v1[Z]*v2[X] - v1[X]*v2[Z] = C - D
-	// v[Z] = v1[X]*v2[Y] - v1[Y]*v2[X] = E - F
-	__asm
-	{
-		mov			eax, [esp + 12]
-		mov			ecx, [esp + 4]
-		mov			edx, [esp + 8]
 
-		fld			dword ptr [ecx + 4]
-		// v1[Y]
-		fmul		dword ptr [edx + 8]
-		// v1[Y]*v2[Z] (2)
-		fld			dword ptr [ecx + 8]
-		// v1[Z]
-		// v1[Y]*v2[Z] (1)
-		fmul		dword ptr [edx + 4]
-		// v1[Z]*v2[Y] (2)
-		// v1[Y]*v2[Z] (0)
-		fld			dword ptr [ecx + 8]
-		// v1[Z]
-		// v1[Z]*v2[Y] (1)
-		// v1[Y]*v2[Z] (0)
-		fmul		dword ptr [edx]
-		// v1[Z]*v2[X] (2)
-		// v1[Z]*v2[Y] (0)
-		// v1[Y]*v2[Z] (0)
-		fld			dword ptr [ecx]
-		// v1[X]
-		// v1[Z]*v2[X] (1)
-		// v1[Z]*v2[Y] (0)
-		// v1[Y]*v2[Z] (0)
-		fmul		dword ptr [edx + 8]
-		// v1[X]*v2[Z] (2)
-		// v1[Z]*v2[X] (0)
-		// v1[Z]*v2[Y] (0)
-		// v1[Y]*v2[Z] (0)
-		fld			dword ptr [ecx]
-		// v1[X]
-		// v1[X]*v2[Z] (1)
-		// v1[Z]*v2[X] (0)
-		// v1[Z]*v2[Y] (0)
-		// v1[Y]*v2[Z] (0)
-		fmul		dword ptr [edx + 4]
-		// v1[X]*v2[Y] (2)
-		// v1[X]*v2[Z] (0)
-		// v1[Z]*v2[X] (0)
-		// v1[Z]*v2[Y] (0)
-		// v1[Y]*v2[Z] (0)
-		fld			dword ptr [ecx + 4]
-		// v1[Y]
-		// v1[X]*v2[Y] (1)
-		// v1[X]*v2[Z] (0)
-		// v1[Z]*v2[X] (0)
-		// v1[Z]*v2[Y] (0)
-		// v1[Y]*v2[Z] (0)
-		fmul		dword ptr [edx]
-		// v1[Y]*v2[X] = F (2)
-		// v1[X]*v2[Y] = E (0)
-		// v1[X]*v2[Z] = D (0)
-		// v1[Z]*v2[X] = C (0)
-		// v1[Z]*v2[Y] = B (0)
-		// v1[Y]*v2[Z] = A (0)
-		fxch		st(5)
-		// v1[Y]*v2[Z] = A (0)
-		// v1[X]*v2[Y] = E (0)
-		// v1[X]*v2[Z] = D (0)
-		// v1[Z]*v2[X] = C (0)
-		// v1[Z]*v2[Y] = B (0)
-		// v1[Y]*v2[X] = F (2)
-		fsubrp	st(4), st
-		// v1[X]*v2[Y] = E (0)
-		// v1[X]*v2[Z] = D (0)
-		// v1[Z]*v2[X] = C (0)
-		// A - B (2)
-		// v1[Y]*v2[X] = F (1)
-		fxch		st(2)
-		// v1[Z]*v2[X] = C (0)
-		// v1[X]*v2[Z] = D (0)
-		// v1[X]*v2[Y] = E (0)
-		// A - B (2)
-		// v1[Y]*v2[X] = F (1)
-		fsubrp	st(1), st
-		// C - D (2)
-		// v1[X]*v2[Y] = E (0)
-		// A - B (1)
-		// v1[Y]*v2[X] = F (0)
-		fxch		st(1)
-		// v1[X]*v2[Y] = E (0)
-		// C - D (2)
-		// A - B (1)
-		// v1[Y]*v2[X] = F (0)
-		fsubrp	st(3), st
-		// C - D (1)
-		// A - B (0)
-		// E - F (2)
-		fxch		st(1)
-		// A - B (0)
-		// C - D (1)
-		// E - F (2)
-		// ******** 1 clock stall (needs result 1 cycle in advance) ********
-		fstp		dword ptr [eax]
-		fstp		dword ptr [eax + 4]
-		fstp		dword ptr [eax + 8]
-
-		ret
-	}
-}
-#endif
 /*===================================================================
 	Procedure	:	Calculate the Dod product of 2 VECTORS
 	Input		:	VECTOR * a
 				:	VECTOR * b
 	Output		:	float		Dot Product
 ===================================================================*/
-#ifndef USEASM
 float DotProduct( VECTOR * a , VECTOR * b ) 
 {
 	return( ( a->x * b->x ) +
 		    ( a->y * b->y ) +
 		    ( a->z * b->z ) );
 }
-#else
-__declspec(naked) float DotProduct( VECTOR * a, VECTOR * b)
-{
-	// a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]
-	__asm
-	{
-		mov			ecx, [esp + 4]
-		mov			edx, [esp + 8]
-		fld			dword ptr [ecx]
-		fmul		dword ptr [edx]
-		fld			dword ptr [ecx + 4]
-		fmul		dword ptr [edx + 4]
-		fld			dword ptr [ecx + 8]
-		fmul		dword ptr [edx + 8]
-		fxch		st(2)
-		faddp		st(1), st
-		faddp		st(1), st
-		ret
-	}
-}
-#endif
 
 /*===================================================================
 	Procedure	:	Reflect Vector off a surface normal

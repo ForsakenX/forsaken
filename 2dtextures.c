@@ -38,13 +38,13 @@ extern render_info_t render_info;
 #define	DO_SCALE		true
 #define	DONT_SCALE		false
 
-int8_t	*	OffsetPath = "data\\offsets\\";
+int8_t	* OffsetPath = "data\\offsets\\";
 int8_t  * FontBigFile = "fontbig.off";
-int8_t	*	Font512File = "font512.off";
-int8_t	*	VduFont512	= "f512x384.off";
-int8_t		FontFile[ 16 ];
+int8_t	* Font512File = "font512.off";
+int8_t	* VduFont512	= "f512x384.off";
+int8_t	  FontFile[ 16 ];
 int8_t    FontFileBig [ 16 ];
-int8_t		TitleFontFile[ 16 ];
+int8_t	  TitleFontFile[ 16 ];
 
 float VduScaleX, VduScaleY;
 

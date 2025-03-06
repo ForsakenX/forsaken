@@ -40,6 +40,19 @@ typedef DWORD COLOR; // bgra
 #define RGBA_MAKE(r, g, b, a)   ((COLOR) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
 #define	RGB_MAKE(r, g, b)    ((COLOR) (((r) << 16) | ((g) << 8) | (b)))
 
+typedef	struct RGB {
+	u_int8_t R;
+	u_int8_t G;
+	u_int8_t B;
+} RGB;
+
+typedef	struct RGBA {
+	u_int8_t R;
+	u_int8_t G;
+	u_int8_t B;
+	union { u_int8_t A; u_int8_t Trans; };
+} RGBA;
+
 // COLOR is packed bgra
 #define RGBA_GETALPHA(rgb)    ((rgb) >> 24)
 #define RGBA_GETRED(rgb)    (((rgb) >> 16) & 0xff)
@@ -141,24 +154,6 @@ typedef struct VERT2D {
 	float	y;
 } VERT2D;
 /*===================================================================
-	3D Vertices
-===================================================================*/
-typedef struct VERT {
-	float	x;
-	float	y;
-	float	z;
-} VERT;
-
-/*===================================================================
-	3D Normal
-===================================================================*/
-typedef struct NORMAL {
-	union { float nx; float x; };
-	union { float ny; float y; };
-	union { float nz; float z; };
-} NORMAL;
-
-/*===================================================================
 	4 X 4 Matrix
 ===================================================================*/
 typedef struct MATRIX {
@@ -182,10 +177,12 @@ typedef struct MATRIX3X3 {
 	Vector
 ===================================================================*/
 typedef struct VECTOR {
-	float	x;
-	float	y;
-	float	z;
+	union { float nx; float x; };
+	union { float ny; float y; };
+	union { float nz; float z; };
 } VECTOR;
+typedef VECTOR VERT;
+typedef VECTOR NORMAL;
 
 /*===================================================================
 	Short Vector
@@ -204,6 +201,20 @@ typedef struct PLANE {
 	VECTOR Normal;
 	float Offset;
 } PLANE;
+
+typedef struct
+{
+    int32_t    left;
+    int32_t    top;
+    int32_t    right;
+    int32_t    bottom;
+} rect_t;
+
+typedef struct
+{
+    int32_t  x;
+    int32_t  y;
+} point_t;
 
 /*===================================================================
 	Prototypes

@@ -14129,7 +14129,7 @@ void InitJoystickAxisConfig ( MENU *Menu)
 {
 	int i, j;
 //	float mid;
-	SCRPOLY_RGB light, dark, polycol[NUM_SHIP_AXIS_ACTIONS][2];
+	RGBA light, dark, polycol[NUM_SHIP_AXIS_ACTIONS][2];
 	float sensitivity;
 
 	light.R = 64;
@@ -14258,7 +14258,7 @@ void InitJoystickAxisConfig ( MENU *Menu)
 void UpdateAxisPtr( float pos )
 {
 	float distance, dx, xmin[2], xmax[2];
-	SCRPOLY_RGB light, dark, polycol[NUM_SHIP_AXIS_ACTIONS][2];
+	RGBA light, dark, polycol[NUM_SHIP_AXIS_ACTIONS][2];
 	int i;
 	
 	light.R = 64;

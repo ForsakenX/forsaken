@@ -119,11 +119,16 @@ bool sound_init( void )
 
 	Device = alcOpenDevice(NULL); // preferred device
 	if(!Device)
+	{
+		DebugPrintf("Could not init OpenAL device!");
 		return false;
-
+	}
 	Context = alcCreateContext(Device,NULL);
 	if(!Context)
+	{
+		DebugPrintf("Could not init OpenAL context!");
 		return false;
+	}
 
 	alcMakeContextCurrent(Context);
 
@@ -254,7 +259,7 @@ void sound_play_looping( sound_source_t * source )
 	alSourcei( source->id, AL_LOOPING, AL_TRUE );
 	sound_play( source );
 	//
-	//DebugPrintf("sound_play_looping: playing %d\n",stats.playing);
+	DebugPrintf("sound_play_looping: playing %d\n",stats.playing);
 }
 
 void sound_stop( sound_source_t * source )
@@ -265,7 +270,7 @@ void sound_stop( sound_source_t * source )
 	//
 	alSourceStop( source->id );
 	//
-	//DebugPrintf("sound_stop: playing %d\n",stats.playing);
+	DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
 bool sound_is_playing( sound_source_t * source )
@@ -422,8 +427,7 @@ sound_source_t * sound_source( sound_buffer_t * buffer )
 		Sound3D ? AL_FALSE : AL_TRUE);
 
 	stats.sources++;
-	//DebugPrintf("sound_source: sources %d buffers %d playing %d source %d\n",
-	//			stats.sources,stats.buffers,stats.playing,source);
+	DebugPrintf("sound_source: sources %d buffers %d playing %d source %d\n",stats.sources,stats.buffers,stats.playing,source);
 
 	return source;
 }
@@ -445,8 +449,7 @@ void sound_release_source( sound_source_t * source )
 	free(source);
 	// show stats
 	stats.sources--;
-	//DebugPrintf("sound_release_source: buffers %d sources %d playing %d source %d\n",
-	//			stats.buffers,stats.sources,stats.playing,source);
+	DebugPrintf("sound_release_source: buffers %d sources %d playing %d source %d\n",stats.buffers,stats.sources,stats.playing,source);
 	source = NULL;
 }
 

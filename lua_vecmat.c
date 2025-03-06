@@ -514,10 +514,10 @@ int luaopen_vecmat(lua_State *L)
 		lua_setglobal(L, func->name);
 	}
 	luaL_newmetatable(L, "VECTOR");
-	luaL_register(L, NULL, vecmt);
+	luaL_setfuncs(L, vecmt, 0);
 	lua_pop(L, 1);
 	luaL_newmetatable(L, "MATRIX");
-	luaL_register(L, NULL, matmt);
+	luaL_setfuncs(L, matmt, 0);
 	lua_pop(L, 1);
 	return 0;
 }

@@ -265,7 +265,7 @@ static int luaship_arrayindex(lua_State *L)
 	int *shipidx;
 	int i;
 	ships = *((GLOBALSHIP **) luaL_checkudata(L, 1, "GLOBALSHIPARRAYPTR"));
-	i = luaL_checkint(L, 2);
+	i = luaL_checkinteger(L, 2);
 	if (i < 0 || i >= MAX_PLAYERS)
 		return luaL_argerror(L, 2, "invalid ship index");
 	shipidx = lua_newuserdata(L, sizeof(int));
@@ -303,10 +303,10 @@ int luaopen_ships(lua_State *L)
 	GLOBALSHIP **ships = lua_newuserdata(L, sizeof(void *));
 	*ships = Ships;
 	luaL_newmetatable(L, "GLOBALSHIPARRAYPTR");
-	luaL_register(L, NULL, shiparrmt);
+	luaL_setfuncs(L, shiparrmt, 0);
 	lua_setmetatable(L, -2);
 	luaL_newmetatable(L, "GLOBALSHIPIDX");
-	luaL_register(L, NULL, shipmt);
+	luaL_setfuncs(L, shipmt, 0);
 	lua_pop(L, 1);
 	lua_setglobal(L, "Ships");
 	lua_pushcfunction(L, luaship_whoiam);

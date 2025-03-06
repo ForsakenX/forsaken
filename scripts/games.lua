@@ -34,7 +34,12 @@ local assert	= assert
 local pcall	= pcall
 local loadstring	= loadstring
 
-module("games")
+local select = select
+
+local _M = {}
+if module then -- heuristic for exporting a global package table
+    games = _M  -- luacheck: ignore
+end
 
 local url = "http://fly.thruhere.net/status/games.json"
 

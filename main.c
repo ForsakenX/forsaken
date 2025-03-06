@@ -451,6 +451,8 @@ static bool AppInit( char * lpCmdLine )
 
 #endif
 
+	if(!sound_init())
+		Msg("Could not init sound!\n");
 	//
 	if(!sdl_init())
 		return false;
@@ -527,7 +529,7 @@ static bool AppInit( char * lpCmdLine )
 	SetSoundLevels( NULL );
 
 	// done
-	DebugPrintf("AppInit finished...\n");
+	Msg("AppInit finished...\n");
     return true;
 
 }

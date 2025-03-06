@@ -146,7 +146,7 @@ int luaopen_controls(lua_State *L)
 	SHIPCONTROL **ctrl = lua_newuserdata(L, sizeof(void *));
 	*ctrl = &control;
 	luaL_newmetatable(L, "SHIPCONTROLPTR");
-	luaL_register(L, NULL, ctrlmt);
+	luaL_setfuncs(L, ctrlmt, 0);
 	lua_setmetatable(L, -2);
 	lua_setglobal(L, "control");
 	return 0;

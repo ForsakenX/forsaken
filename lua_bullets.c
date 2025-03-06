@@ -361,10 +361,10 @@ int luaopen_bullets(lua_State *L)
 	int i;
 
 	luaL_newmetatable(L, "PRIMARYWEAPONBULLETIDX");
-	luaL_register(L, NULL, primbullmt);
+	luaL_setfuncs(L, primbullmt, 0);
 	lua_pop(L, 1);
 	luaL_newmetatable(L, "SECONDARYWEAPONBULLETIDX");
-	luaL_register(L, NULL, secbullmt);
+	luaL_setfuncs(L, secbullmt, 0);
 	lua_pop(L, 1);
 	lua_createtable(L, MAXPRIMARYWEAPONBULLETS + MAXSECONDARYWEAPONBULLETS, 0);
 	for (i=0; i<MAXPRIMARYWEAPONBULLETS; i++)

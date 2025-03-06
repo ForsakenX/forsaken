@@ -103,7 +103,7 @@ int luaopen_enemies(lua_State *L)
 	int i;
 
 	luaL_newmetatable(L, "ENEMYIDX");
-	luaL_register(L, NULL, enemymt);
+	luaL_setfuncs(L, enemymt, 0);
 	lua_pop(L, 1);
 	lua_createtable(L, MAXENEMIES, 0);
 	for (i=0; i<MAXENEMIES; i++)

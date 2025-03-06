@@ -44,6 +44,7 @@
 #include "text.h"
 #include "title.h"
 #include "timer.h"
+#include "util.h"
 
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];	// which team each player is on

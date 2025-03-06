@@ -278,9 +278,9 @@ void light_vert( LVERTEX * vert, u_int8_t * color )
 	VECTOR world, v = {vert->x,vert->y,vert->z};
 	MxV( &world_matrix, &v, &world );
 	if( render_lighting_env_whiteout )
-		do_whiteout_effect( &world, color );
+		do_whiteout_effect( &world, (COLOR*)color );
 	else if( render_lighting_env_water )
-		do_water_effect( &world, color );
+		do_water_effect( &world, (COLOR*)color );
 #ifndef LIGHT_EVERYTHING
 	if( render_lighting_enabled )
 #endif

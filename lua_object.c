@@ -162,7 +162,7 @@ int luaopen_object(lua_State *L)
 		{ NULL, NULL }
 	};
 	luaL_newmetatable(L, "OBJECTPTR");
-	luaL_register(L, NULL, objmt);
+	luaL_setfuncs(L, objmt, 0);
 	lua_pop(L, 1);
 	return 0;
 }

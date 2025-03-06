@@ -533,6 +533,16 @@ bool  Panel = true;
 bool ChangeLevel( void );
 void SelectQuitCurrentGame( MENUITEM *Item );
 
+char GroupsVisible[256];
+char MemoryInfo[256];
+char PolygonInfo[256];
+char NetworkInfo[256];
+char FrameRate[256];
+char RecieveSizeInfo[256];
+extern u_int16_t NumGroupsVisible;
+extern u_int16_t GroupImIn;
+extern bool ShowInfo;
+extern bool ShowFrameRate;
 float pixel_aspect_ratio;
 float Oldframelag;  
 float framelag = 0.0F; 
@@ -1639,6 +1649,48 @@ void DrawSimplePanel()
 							/ (LevelTimeTaken / 60.0F) );
 					Print4x5Text( &MessageBuff[0], FontWidth, render_info.window_size.cy - FontWidth*6, RED);
 				}
+				// display the framerate
+				if( ShowFrameRate )
+				{
+					//printf("%s\n",buf);
+					//Print4x5Text( &buf[0], FontWidth, render_info.window_size.cy - FontWidth*6, 2);
+					CenterPrint4x5Text( (char *) &FrameRate[0] , FontHeight, 2 );
+				}
+				if( ShowInfo )
+				{
+
+					CenterPrint4x5Text( (char *) &GroupsVisible[0], (FontHeight+3)*3, 2 );
+					CenterPrint4x5Text( (char *) &MemoryInfo[0], (FontHeight+3)*4, 2 );
+					CenterPrint4x5Text( (char *) &PolygonInfo[0], (FontHeight+3)*6, 2 );
+
+					if ( ! ShowWeaponKills ) //ShowNetworkInfo)
+					{
+						CenterPrint4x5Text( "Network", (FontHeight+3)*8, 2 );
+						CenterPrint4x5Text( (char *) &NetworkInfo[0], (FontHeight+3)*9, 2 );
+						CenterPrint4x5Text( (char *) &RecieveSizeInfo[0], (FontHeight+3)*10, 2 );
+					}
+					if (ShowWeaponKills)
+					{
+						// show all primary weapon kills
+						for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
+						{
+							// display primary weapon name
+							Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+							// display primary weapon kills
+							Printu_int16_t( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+						}
+
+						// show all secondary weapon kills
+						for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
+						{
+							// display secondary weapon name
+							Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(render_info.window_size.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+							// display secondary weapon kills
+							Printu_int16_t( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (render_info.window_size.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+						}
+					}
+				}
+
 			}
 			// HUD settings only shown in watch mode
 			else
@@ -5266,11 +5318,6 @@ extern  int   NumOfVertsTouched;
 
 px_timer_t our_timer;
 float our_count = 0;
-extern bool ShowFrameRate;
-extern bool ShowInfo;
-extern	u_int16_t		NumGroupsVisible;
-extern u_int16_t	GroupImIn;
-
 bool Our_CalculateFrameRate(void)
 {
 	char buf[256];
@@ -5295,69 +5342,19 @@ bool Our_CalculateFrameRate(void)
 			//
 			our_count = 0;
 		}
-	}
-  
-	// display the framerate
-	if( ShowFrameRate )
-	{
-		sprintf(&buf[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
-		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
-	}
-
-	if( ShowInfo )
-	{
-
+		sprintf(&FrameRate[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
 		// group information
-		sprintf(&buf[0], "Groups Visible %d - Current Group %s", (int) NumGroupsVisible,
-			(GroupImIn == (u_int16_t) -1) ? "(outside)" : Mloadheader.Group[GroupImIn].name );
-		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*3, 2 );
-
+		sprintf(&GroupsVisible[0], "Groups Visible %d - Current Group %s", (int) NumGroupsVisible,
+				(GroupImIn == (u_int16_t) -1) ? "(outside)" : Mloadheader.Group[GroupImIn].name );
 		// memory information
-		sprintf(&buf[0], "Mem %d",(int)MemUsed );
-		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*4, 2 );
-
+		sprintf(&MemoryInfo[0], "Mem %d",(int)MemUsed );
 		// show polygon information
-		sprintf(&buf[0], "Face Me Polys %d - Dynamic? Polys %d - Screen Polys %d - Verts Touched (lighting?) %d",
-			(int) TotalFmPolysInUse,(int) TotalPolysInUse,(int) TotalScrPolysInUse, NumOfVertsTouched);
-		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*6, 2 );
-
-		if ( ! ShowWeaponKills ) //ShowNetworkInfo)
-		{
-
-			// newtork info
-			sprintf( &buf[0], "Network" );
-			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*8, 2 );
-
-			sprintf( &buf[0], "BPS %5d CurSent %5d MaxRec %5d MaxSent %5d",
+		sprintf(&PolygonInfo[0], "Face Me Polys %d - Dynamic? Polys %d - Screen Polys %d - Verts Touched (lighting?) %d",
+				(int) TotalFmPolysInUse,(int) TotalPolysInUse,(int) TotalScrPolysInUse, NumOfVertsTouched);
+		// newtork info
+		sprintf( &NetworkInfo[0], "BPS %5d CurSent %5d MaxRec %5d MaxSent %5d",
 				(int)CurrentBytesPerSecRec , (int)CurrentBytesPerSecSent , (int)MaxCurrentBytesPerSecRec , (int)MaxCurrentBytesPerSecSent );
-			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*9, 2 );
-
-			sprintf( &buf[0], "ReceiveSize %4d MaxReceiveSize %4d", (int)RecPacketSize , (int)MaxRecPacketSize );
-			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*10, 2 );
-
-		}
-
-		if (ShowWeaponKills)
-		{
-			// show all primary weapon kills
-			for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
-			{
-				// display primary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-				// display primary weapon kills
-				Printu_int16_t( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-			}
-
-			// show all secondary weapon kills
-			for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
-			{		
-				// display secondary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(render_info.window_size.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-				// display secondary weapon kills
-				Printu_int16_t( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (render_info.window_size.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-			}
-		}
-
+		sprintf( &RecieveSizeInfo[0], "ReceiveSize %4d MaxReceiveSize %4d", (int)RecPacketSize , (int)MaxRecPacketSize );
 	}
 
 #ifdef DEMO_SUPPORT

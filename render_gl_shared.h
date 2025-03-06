@@ -13,7 +13,11 @@
 #include "file.h"
 #include <stdio.h>
 #include "main_sdl.h"
+#define GL_GLEXT_PROTOTYPES
 #include "SDL_opengl.h"
+#include <GL/glcorearb.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 extern render_info_t render_info;
 
@@ -69,6 +73,7 @@ extern MATRIX world_matrix;
 
 #if GL != 1
 
+void ortho_update ( GLuint current_program );
 void mvp_update( GLuint current_program );
 
 extern GLuint vertex_shader;

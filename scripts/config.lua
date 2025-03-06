@@ -32,10 +32,10 @@ function config_path(name)
 end
 
 function config_load(name)
-	local cfg = {}
+	local cfg = setmetatable( { }, { __index = _G } )
 	local path = config_path(name)
 	touch_file(path)
-	setfenv(load_file(path), cfg)()
+	load_file(path, "t", cfg)()
 	for key, value in pairs(cfg) do
 		config[key] = value
 	end
