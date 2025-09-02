@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build Libraries
         run: |
@@ -38,7 +38,7 @@ jobs:
           ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ./libs/make.sh
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
